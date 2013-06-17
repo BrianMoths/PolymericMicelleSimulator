@@ -39,21 +39,7 @@ public class ProceduralBenchmark {
         rMax[1]=20;
     }
 
-//    private double areaOverlap(double[] position1, double[] position2) {
-//        for (int i = 0; i < dimension; i++) {
-//            if (Math.abs(position1[i] - position2[i]) >= interactionLength) {
-//                return 0;
-//            }
-//        }
-//
-//        double overlap = 1;
-//
-//        for (int i = 0; i < dimension; i++) {
-//            overlap *= interactionLength - Math.abs(position1[i] - position2[i]);
-//        }
-//
-//        return overlap;
-//    }
+    
     static private double areaOverlap(double[] position1, double[] position2) {
         double overlap = 1;
 
