@@ -4,6 +4,8 @@
  */
 package Engine;
 
+import java.awt.Color;
+import java.awt.Graphics;
 import java.util.Random;
 
 /**
@@ -14,13 +16,13 @@ public class PolymerSystem {
 
     private static final Random randomNumberGenerator;
     private final int dimension, numBeads, numABeads;//maybe package private
-
     private final int[] rMin, rMax;
     private final double temperature, similarOverlapCoefficient,
             differentOverlapCoefficient, interactionLength;
     private double energy, stepLength;
     private double[][] beadPositions;
     private int iterationNumber;
+    private Graphics graphics;
 
     static {
         randomNumberGenerator = new Random();
@@ -33,7 +35,7 @@ public class PolymerSystem {
 
         rMin = new int[dimension];
         rMax = new int[dimension];
-        
+
         for (int i = 0; i < dimension; i++) {
             rMin[i] = 0;
             rMax[i] = 20;
@@ -55,20 +57,20 @@ public class PolymerSystem {
         system.randomizePositions();
 
         System.out.println(system.getEnergy());
-        
+
         Long initialTime = System.nanoTime();
         system.doIterations(5000);
         Long finalTime = System.nanoTime();
-        
+
         System.out.println(system.getEnergy());
-        
+
         System.out.println((finalTime - initialTime) / 1000000);
     }
 
     public void randomizePositions() {
         for (int i = 0; i < numBeads; i++) {
             for (int j = 0; j < dimension; j++) {
-                beadPositions[i][j] = randomNumberGenerator.nextDouble() * (rMax[j]-rMin[j]) + rMin[j];
+                beadPositions[i][j] = randomNumberGenerator.nextDouble() * (rMax[j] - rMin[j]) + rMin[j];
             }
         }
         energy = densityEnergy();
@@ -153,7 +155,7 @@ public class PolymerSystem {
 
         return overlap;
     }
-    
+
 // <editor-fold defaultstate="collapsed" desc="getters">
     public int getDimension() {
         return dimension;
@@ -192,5 +194,40 @@ public class PolymerSystem {
     }
     // </editor-fold>
 
+    public void setGraphics(Graphics inGraphics) {
+        graphics = inGraphics;
+    }
 
+    public void draw() {
+        if (graphics == null) {
+            return;
+        }
+
+        if (dimension != 2) {
+            return;
+        }
+
+        int[] scaleFactor = new int[dimension];
+        for (int i = 0; i < dimension; i++) {
+            scaleFactor[i] = 600 / (rMax[i] - rMin[i]);
+        }
+
+        graphics.clearRect(0, 0, 600, 600);//fix this later
+
+        graphics.setColor(Color.RED);
+        for (int i = 0; i < numABeads; i++) {
+            graphics.fillOval((int) Math.round(beadPositions[i][0] * scaleFactor[0]),
+                    (int) Math.round(beadPositions[i][1] * scaleFactor[1]),
+                    (int) Math.round(interactionLength / 2 * scaleFactor[0]),
+                    (int) Math.round(interactionLength / 2 * scaleFactor[1]));
+        }
+
+        graphics.setColor(Color.BLUE);
+        for (int i = numABeads; i < numBeads; i++) {
+            graphics.fillOval((int) Math.round(beadPositions[i][0] * scaleFactor[0]),
+                    (int) Math.round(beadPositions[i][1] * scaleFactor[1]),
+                    (int) Math.round(interactionLength / 2 * scaleFactor[0]),
+                    (int) Math.round(interactionLength / 2 * scaleFactor[1]));
+        }
+    }
 }
