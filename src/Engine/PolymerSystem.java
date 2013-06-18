@@ -209,7 +209,7 @@ public class PolymerSystem {
 
         double scaleFactor = 600 / (rMax[0] - rMin[0]);
 
-        int diameter = (int) Math.round(interactionLength * scaleFactor);
+        int diameter = (int) Math.round(interactionLength * scaleFactor)/5;
         int radius = diameter / 2;
         
         graphics.clearRect(0, 0, 600, 600);//fix this later
@@ -229,7 +229,5 @@ public class PolymerSystem {
                     diameter,
                     diameter);
         }
-
-        graphics.drawLine(600, 0, 0, 600);
     }
 }
