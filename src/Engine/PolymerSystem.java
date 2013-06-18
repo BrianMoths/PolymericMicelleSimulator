@@ -207,27 +207,29 @@ public class PolymerSystem {
             return;
         }
 
-        int[] scaleFactor = new int[dimension];
-        for (int i = 0; i < dimension; i++) {
-            scaleFactor[i] = 600 / (rMax[i] - rMin[i]);
-        }
+        double scaleFactor = 600 / (rMax[0] - rMin[0]);
 
+        int diameter = (int) Math.round(interactionLength * scaleFactor);
+        int radius = diameter / 2;
+        
         graphics.clearRect(0, 0, 600, 600);//fix this later
 
         graphics.setColor(Color.RED);
         for (int i = 0; i < numABeads; i++) {
-            graphics.fillOval((int) Math.round(beadPositions[i][0] * scaleFactor[0]),
-                    (int) Math.round(beadPositions[i][1] * scaleFactor[1]),
-                    (int) Math.round(interactionLength / 2 * scaleFactor[0]),
-                    (int) Math.round(interactionLength / 2 * scaleFactor[1]));
+            graphics.fillRect((int) Math.round(beadPositions[i][0] * scaleFactor) - radius,
+                    (int) Math.round(beadPositions[i][1] * scaleFactor) - radius,
+                    diameter,
+                    diameter);
         }
 
         graphics.setColor(Color.BLUE);
         for (int i = numABeads; i < numBeads; i++) {
-            graphics.fillOval((int) Math.round(beadPositions[i][0] * scaleFactor[0]),
-                    (int) Math.round(beadPositions[i][1] * scaleFactor[1]),
-                    (int) Math.round(interactionLength / 2 * scaleFactor[0]),
-                    (int) Math.round(interactionLength / 2 * scaleFactor[1]));
+            graphics.fillRect((int) Math.round(beadPositions[i][0] * scaleFactor) - radius,
+                    (int) Math.round(beadPositions[i][1] * scaleFactor) - radius,
+                    diameter,
+                    diameter);
         }
+
+        graphics.drawLine(600, 0, 0, 600);
     }
 }
