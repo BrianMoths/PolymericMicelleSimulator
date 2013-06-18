@@ -76,7 +76,7 @@ public class PolymerSystem {
         energy = densityEnergy();
     }
 
-    private void doIterations(int n) {
+    public void doIterations(int n) {
         for (int i = 0; i < n; i++) {
             doIteration();
         }
