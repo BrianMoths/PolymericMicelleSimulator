@@ -18,7 +18,7 @@ public class PolymerSystem {
     private final int dimension, numBeads, numABeads;//maybe package private
     private final int[] rMin, rMax;
     private final double temperature, similarOverlapCoefficient,
-            differentOverlapCoefficient, interactionLength;
+            differentOverlapCoefficient, springCoefficient, interactionLength;
     private double energy, stepLength;
     private double[][] beadPositions;
     private int iterationNumber;
@@ -41,12 +41,13 @@ public class PolymerSystem {
             rMax[i] = 20;
         }
 
-        temperature = 1;
+        temperature = 100;
         similarOverlapCoefficient = 1;
         differentOverlapCoefficient = 4;
+        springCoefficient = 4;
         interactionLength = 5;
 
-        stepLength = interactionLength;
+        stepLength = 2 * interactionLength;
 
         beadPositions = new double[numBeads][dimension];
         iterationNumber = 0;
@@ -91,16 +92,20 @@ public class PolymerSystem {
 
         for (int i = 0; i < dimension; i++) {
             beadPositions[stepBead][i] += stepVector[i];
+
+            if (beadPositions[stepBead][i] < rMin[i] || beadPositions[stepBead][i] > rMax[i]) {
+                for (int j = i; j >= 0; j--) {
+                    beadPositions[stepBead][j] -= stepVector[j];
+                }
+                return;
+            }
         }
 
         final double newEnergy = densityEnergy();
 
         if ((newEnergy > energy
-                && randomNumberGenerator.nextDouble() > Math.exp((energy - newEnergy) / temperature))
-                || beadPositions[stepBead][0] < rMin[0]
-                || beadPositions[stepBead][0] > rMax[0]
-                || beadPositions[stepBead][1] < rMin[1]
-                || beadPositions[stepBead][1] > rMax[1]) {
+                && randomNumberGenerator.nextDouble()
+                > Math.exp((energy - newEnergy) / temperature))) {
             for (int i = 0; i < dimension; i++) {
                 beadPositions[stepBead][i] -= stepVector[i];
             }
@@ -109,41 +114,42 @@ public class PolymerSystem {
         }
     }
 
+//    private double springEnergy() {
+//        final double sqLength = 0;
+//
+//        for (int i = 0; i < numABeads; i++) {
+//            int[] neighbors = beadNeighbors[i];
+//            for (int j = 0, n = neighbors.length; j < n; j++) {
+//            }
+//        }
+//
+//
+//        return springCoefficient * sqLength;
+//    }
+    
     private double densityEnergy() {
-        final double[][] areaOverlapMatrix;
-        areaOverlapMatrix = areaOverlapMatrix(beadPositions);
-
         double similarOverlap = 0, differentOverlap = 0;
 
         for (int i = 0; i < numABeads; i++) {
             for (int j = 0; j < numABeads; j++) {
-                similarOverlap += areaOverlapMatrix[i][j];
+                similarOverlap += areaOverlap(beadPositions[i], beadPositions[j]);
             }
         }
 
         for (int i = numABeads; i < numBeads; i++) {
             for (int j = numABeads; j < numBeads; j++) {
-                similarOverlap += areaOverlapMatrix[i][j];
+                similarOverlap += areaOverlap(beadPositions[i], beadPositions[j]);
             }
         }
 
+
         for (int i = 0; i < numABeads; i++) {
             for (int j = numABeads; j < numBeads; j++) {
-                differentOverlap += areaOverlapMatrix[i][j];
+                differentOverlap += areaOverlap(beadPositions[i], beadPositions[j]);
             }
         }
 
         return similarOverlapCoefficient * similarOverlap + 2 * differentOverlapCoefficient * differentOverlap;
-    }
-
-    private double[][] areaOverlapMatrix(double[][] beadPositions) {
-        final double[][] areaOverlapMatrix = new double[numBeads][numBeads];
-        for (int i = 0; i < numBeads; i++) {
-            for (int j = 0; j < numBeads; j++) {
-                areaOverlapMatrix[i][j] = areaOverlap(beadPositions[i], beadPositions[j]);
-            }
-        }
-        return areaOverlapMatrix;
     }
 
     private double areaOverlap(double[] position1, double[] position2) {
@@ -209,9 +215,9 @@ public class PolymerSystem {
 
         double scaleFactor = 600 / (rMax[0] - rMin[0]);
 
-        int diameter = (int) Math.round(interactionLength * scaleFactor)/5;
+        int diameter = (int) Math.round(interactionLength * scaleFactor) / 5;
         int radius = diameter / 2;
-        
+
         graphics.clearRect(0, 0, 600, 600);//fix this later
 
         graphics.setColor(Color.RED);
