@@ -17,6 +17,7 @@ public class PolymerSystem {
     private static final Random randomNumberGenerator;
     private final int dimension, numBeads, numABeads;//maybe package private
     private final int[] rMin, rMax;
+    private final int[][] neighbors;
     private final double temperature, similarOverlapCoefficient,
             differentOverlapCoefficient, springCoefficient, interactionLength;
     private double energy, stepLength;
@@ -40,14 +41,25 @@ public class PolymerSystem {
             rMin[i] = 0;
             rMax[i] = 20;
         }
+        
+        neighbors = new int[numBeads][2];
+        
+        neighbors[0][0]=-1;
+        neighbors[0][1]=1;
+        for (int i = 0,N=numBeads-1; i < N; i++) {
+            neighbors[i][0] = i-1;
+            neighbors[i][1] = i+1;
+        }
+        neighbors[numBeads-1][0]=numBeads-2;
+        neighbors[numBeads-1][1]=-1;
 
-        temperature = 100;
+        temperature = 300;
         similarOverlapCoefficient = 1;
         differentOverlapCoefficient = 4;
-        springCoefficient = 4;
+        springCoefficient = 40;
         interactionLength = 5;
 
-        stepLength = 2 * interactionLength;
+        stepLength = interactionLength/2;
 
         beadPositions = new double[numBeads][dimension];
         iterationNumber = 0;
@@ -74,7 +86,7 @@ public class PolymerSystem {
                 beadPositions[i][j] = randomNumberGenerator.nextDouble() * (rMax[j] - rMin[j]) + rMin[j];
             }
         }
-        energy = densityEnergy();
+        energy = densityEnergy() + springEnergy();
     }
 
     public void doIterations(int n) {
@@ -101,7 +113,7 @@ public class PolymerSystem {
             }
         }
 
-        final double newEnergy = densityEnergy();
+        final double newEnergy = densityEnergy()+springEnergy();
 
         if ((newEnergy > energy
                 && randomNumberGenerator.nextDouble()
@@ -114,18 +126,29 @@ public class PolymerSystem {
         }
     }
 
-//    private double springEnergy() {
-//        final double sqLength = 0;
-//
-//        for (int i = 0; i < numABeads; i++) {
-//            int[] neighbors = beadNeighbors[i];
-//            for (int j = 0, n = neighbors.length; j < n; j++) {
-//            }
-//        }
-//
-//
-//        return springCoefficient * sqLength;
-//    }
+    private double springEnergy() {
+        double sqLength = 0;
+
+        for (int i = 0; i < numBeads; i++) {
+            for (int j = 0; j < 2; j++) {
+                int neighborIndex = neighbors[i][j];
+                if (neighborIndex>=0) {
+                    sqLength += sqDist(beadPositions[i],beadPositions[neighborIndex]);
+                }
+            }
+        }
+
+
+        return springCoefficient * sqLength;
+    }
+    
+    private double sqDist(double[] position1, double[] position2){
+        double sqDist = 0;
+        for (int i = 0; i < dimension; i++) {
+            sqDist += (position1[i]-position2[i])*(position1[i]-position2[i]);
+        }
+        return sqDist;
+    }
     
     private double densityEnergy() {
         double similarOverlap = 0, differentOverlap = 0;
@@ -234,6 +257,19 @@ public class PolymerSystem {
                     (int) Math.round(beadPositions[i][1] * scaleFactor) - radius,
                     diameter,
                     diameter);
+        }
+        
+        graphics.setColor(Color.BLACK);
+        for (int i = 0; i < numBeads; i++) {
+            for (int j = 0; j < 2; j++) {
+                int neighborIndex = neighbors[i][j];
+                if (neighborIndex>=i) {
+                    graphics.drawLine((int) Math.round(beadPositions[i][0] * scaleFactor),
+                            (int) Math.round(beadPositions[i][1] * scaleFactor),
+                            (int) Math.round(beadPositions[neighborIndex][0] * scaleFactor),
+                            (int) Math.round(beadPositions[neighborIndex][1] * scaleFactor));
+                }
+            }
         }
     }
 }
