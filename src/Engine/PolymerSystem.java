@@ -228,6 +228,10 @@ public class PolymerSystem {
     public double getStepLength() {
         return stepLength;
     }
+    
+    public double getIterationNumber(){
+        return iterationNumber;
+    }
     // </editor-fold>
 
     public void setGraphics(Graphics inGraphics) {
