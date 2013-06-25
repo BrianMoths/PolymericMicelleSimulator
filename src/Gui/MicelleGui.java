@@ -5,6 +5,7 @@
 package Gui;
 
 import Engine.PolymerSystem;
+import java.awt.Graphics;
 
 /**
  *
@@ -35,6 +36,11 @@ public class MicelleGui extends javax.swing.JFrame {
     private void update() {
         energyLbl.setText(String.valueOf(system.getEnergy()));
         numIterationsLbl.setText(String.valueOf(system.getIterationNumber()));
+        system.draw();
+    }
+
+    public void paint(Graphics graphics) {
+        super.paint(graphics);
         system.draw();
     }
 
@@ -211,6 +217,7 @@ public class MicelleGui extends javax.swing.JFrame {
 
         /* Create and display the form */
         java.awt.EventQueue.invokeLater(new Runnable() {
+            @Override
             public void run() {
                 MicelleGui gui = new MicelleGui();
                 gui.setVisible(true);
