@@ -16,7 +16,7 @@ public class PolymerSystem {
 
     private static final Random randomNumberGenerator;
     private final int dimension, numBeads, numABeads;//maybe package private
-    private final int[] rMin, rMax;
+    private final double[] rMax;
     private final int[][] neighbors;
     private final double temperature, similarOverlapCoefficient,
             differentOverlapCoefficient, springCoefficient, interactionLength;
@@ -34,11 +34,9 @@ public class PolymerSystem {
         numBeads = 100;
         numABeads = numBeads / 2;
 
-        rMin = new int[dimension];
-        rMax = new int[dimension];
+        rMax = new double[dimension];
 
         for (int i = 0; i < dimension; i++) {
-            rMin[i] = 0;
             rMax[i] = 20;
         }
 
@@ -65,25 +63,35 @@ public class PolymerSystem {
         iterationNumber = 0;
     }
 
-    public static void main(String[] argv) {
-        PolymerSystem system = new PolymerSystem();
-        system.randomizePositions();
+    public PolymerSystem(SystemGeometry systemGeometry,
+            PolymerCluster polymerCluster,
+            PhysicalConstants physicalConstants,
+            SimulationParameters simulationParameters) {
 
-        System.out.println(system.getEnergy());
+        dimension = systemGeometry.getDimension();
+        rMax = systemGeometry.getRMax();
 
-        Long initialTime = System.nanoTime();
-        system.doIterations(5000);
-        Long finalTime = System.nanoTime();
+        numBeads = polymerCluster.getNumBeads();
+        numABeads = polymerCluster.getNumABeads();
+        neighbors = polymerCluster.makeNeighbors();
 
-        System.out.println(system.getEnergy());
+        temperature = physicalConstants.getTemperature();
+        similarOverlapCoefficient = physicalConstants.getSimilarOverlapCoefficient();
+        differentOverlapCoefficient = physicalConstants.getDifferentOverlapCoefficient();
+        springCoefficient = physicalConstants.getSpringCoefficient();
 
-        System.out.println((finalTime - initialTime) / 1000000);
+
+        interactionLength = simulationParameters.getInteractionLength();
+        stepLength = simulationParameters.getStepLength();
+
+        beadPositions = new double[numBeads][dimension];
+        iterationNumber = 0;
     }
 
     public void randomizePositions() {
         for (int i = 0; i < numBeads; i++) {
             for (int j = 0; j < dimension; j++) {
-                beadPositions[i][j] = randomNumberGenerator.nextDouble() * (rMax[j] - rMin[j]) + rMin[j];
+                beadPositions[i][j] = randomNumberGenerator.nextDouble() * rMax[j];
             }
         }
         energy = energy();
@@ -96,6 +104,7 @@ public class PolymerSystem {
     }
 
     public void doIteration() {
+        iterationNumber++;
         final int stepBead = randomNumberGenerator.nextInt(numBeads);
         final double[] stepVector = new double[dimension];
         for (int i = 0; i < dimension; i++) {
@@ -105,7 +114,7 @@ public class PolymerSystem {
         for (int i = 0; i < dimension; i++) {
             beadPositions[stepBead][i] += stepVector[i];
 
-            if (beadPositions[stepBead][i] < rMin[i] || beadPositions[stepBead][i] > rMax[i]) {
+            if (beadPositions[stepBead][i] < 0 || beadPositions[stepBead][i] > rMax[i]) {
                 for (int j = i; j >= 0; j--) {
                     beadPositions[stepBead][j] -= stepVector[j];
                 }
@@ -123,7 +132,6 @@ public class PolymerSystem {
                 beadPositions[stepBead][i] -= stepVector[i];
             }
         }
-        iterationNumber++;
     }
 
     private double energy() {
@@ -228,8 +236,8 @@ public class PolymerSystem {
     public double getStepLength() {
         return stepLength;
     }
-    
-    public double getIterationNumber(){
+
+    public int getIterationNumber() {
         return iterationNumber;
     }
     // </editor-fold>
@@ -247,7 +255,7 @@ public class PolymerSystem {
             return;
         }
 
-        double scaleFactor = 600 / (rMax[0] - rMin[0]);
+        double scaleFactor = 600 / (rMax[0]);
 
         int diameter = (int) Math.round(interactionLength * scaleFactor) / 5;
         int radius = diameter / 2;
