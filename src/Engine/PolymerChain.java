@@ -37,7 +37,7 @@ public class PolymerChain {
 
     public void addBeads(boolean isTypeA, int numberOfBeads) {
         for (int i = 0; i < numberOfBeads; i++) {
-            types.add(isTypeA);
+            addBead(isTypeA);
         }
     }
 
