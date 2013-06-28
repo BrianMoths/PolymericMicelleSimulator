@@ -15,32 +15,23 @@ import java.util.Random;
 public class PolymerSystem {
 
     private static final Random randomNumberGenerator;
-    private final int dimension, numBeads, numABeads;//maybe package private
-    private final double[] rMax;
+    private final int numBeads, numABeads;
     private final int[][] neighbors;
-    private final double temperature, similarOverlapCoefficient,
-            differentOverlapCoefficient, springCoefficient, interactionLength;
-    private double energy, stepLength;
+    private double energy;
     private double[] beadEnergy;
     private double[][] beadPositions;
     private int iterationNumber;
     private Graphics graphics;
     private SystemGeometry geometry;
+    private PhysicalConstants physicalConstants;
 
     static {
         randomNumberGenerator = new Random();
     }
 
     public PolymerSystem() {
-        dimension = 2;
         numBeads = 100;
         numABeads = numBeads / 2;
-
-        rMax = new double[dimension];
-
-        for (int i = 0; i < dimension; i++) {
-            rMax[i] = 20;
-        }
 
         neighbors = new int[numBeads][2];
 
@@ -53,27 +44,47 @@ public class PolymerSystem {
         neighbors[numBeads - 1][0] = numBeads - 2;
         neighbors[numBeads - 1][1] = -1;
 
-        temperature = 300;
-        similarOverlapCoefficient = 1;
-        differentOverlapCoefficient = 4;
-        springCoefficient = 40;
-        interactionLength = 5;
-
-        stepLength = interactionLength / 2;
-
-        beadPositions = new double[numBeads][dimension];
         iterationNumber = 0;
         beadEnergy = new double[numBeads];
 
         makeGeometry();
+
+        makeParameters();
+
+        beadPositions = geometry.randomPositions(numBeads);
+        energy = energy();
     }
 
     private void makeGeometry() {
+        int dimension = 2;
         geometry = new SystemGeometry();
         geometry.setDimension(dimension);
         for (int i = 0; i < dimension; i++) {
-            geometry.setDimensionSize(i, rMax[i]);
+            geometry.setDimensionSize(i, 20);
         }
+    }
+
+    private void makeParameters() {
+        double interactionLength = 5;
+        double stepLength = interactionLength / 2;
+        SimulationParameters parameters;
+        parameters = new SimulationParameters();
+        parameters.setInteractionLength(interactionLength);
+        parameters.setStepLength(stepLength);
+        geometry.setParameters(parameters);
+    }
+
+    private void makePhysicalConstants() {
+        double temperature, similarOverlapCoefficient, differentOverlapCoefficient, springCoefficient;
+        physicalConstants = new PhysicalConstants();
+        temperature = 300;
+        similarOverlapCoefficient = 1;
+        differentOverlapCoefficient = 4;
+        springCoefficient = 40;
+        physicalConstants.setTemperature(temperature);
+        physicalConstants.setDifferentOverlapCoefficient(differentOverlapCoefficient);
+        physicalConstants.setSimilarOverlapCoefficient(similarOverlapCoefficient);
+        physicalConstants.setSpringCoefficient(springCoefficient);
     }
 
     public PolymerSystem(SystemGeometry systemGeometry,
@@ -81,27 +92,20 @@ public class PolymerSystem {
             PhysicalConstants physicalConstants,
             SimulationParameters simulationParameters) {
 
-        dimension = systemGeometry.getDimension();
-        rMax = systemGeometry.getRMax();
-
         numBeads = polymerCluster.getNumBeads();
         numABeads = polymerCluster.getNumABeads();
         neighbors = polymerCluster.makeNeighbors();
 
-        temperature = physicalConstants.getTemperature();
-        similarOverlapCoefficient = physicalConstants.getSimilarOverlapCoefficient();
-        differentOverlapCoefficient = physicalConstants.getDifferentOverlapCoefficient();
-        springCoefficient = physicalConstants.getSpringCoefficient();
+        geometry = systemGeometry;
+        geometry.setParameters(simulationParameters);
 
+        this.physicalConstants = physicalConstants;
 
-        interactionLength = simulationParameters.getInteractionLength();
-        stepLength = simulationParameters.getStepLength();
-
-        beadPositions = new double[numBeads][dimension];
         iterationNumber = 0;
         beadEnergy = new double[numBeads];
 
-        geometry = systemGeometry;
+        beadPositions = geometry.randomPositions(numBeads);
+        energy = energy();
     }
 
     public void randomizePositions() {
@@ -118,7 +122,7 @@ public class PolymerSystem {
     public void doIteration() {
         iterationNumber++;
         final int stepBead = randomNumberGenerator.nextInt(numBeads);
-        final double[] stepVector = geometry.randomGaussian(stepLength);
+        final double[] stepVector = geometry.randomGaussian();
 
 
         geometry.doStep(beadPositions[stepBead], stepVector);
@@ -128,7 +132,7 @@ public class PolymerSystem {
 
         boolean isStepInBounds = geometry.isPositionValid(beadPositions[stepBead]);
 
-        if (isStepInBounds && (energyChange < 0 || isStepAllowedAnyway(energyChange))) {
+        if (isStepInBounds && physicalConstants.isEnergeticallyAllowed(energyChange)) {
             energy = newEnergy;
         } else {
             geometry.undoStep(beadPositions[stepBead], stepVector);
@@ -141,39 +145,39 @@ public class PolymerSystem {
     }
 
     private void updateBeadDensityEnergy(int beadIndex, double[] stepVector) {
-        double[] initialAreaOverlap = new double[numBeads];
-        double[] finalAreaOverlap = new double[numBeads];
-
-        for (int i = 0; i < numBeads; i++) {
-            initialAreaOverlap[i] = geometry.areaOverlap(beadPositions[beadIndex], beadPositions[i], interactionLength);
-        }
-        geometry.doStep(beadPositions[beadIndex], stepVector);
-
-        for (int i = 0; i < numBeads; i++) {
-            finalAreaOverlap[i] = geometry.areaOverlap(beadPositions[beadIndex], beadPositions[i], interactionLength);
-        }
-
-        double energyChange;
-        double overlapCoefficientA, overlapCoefficientB;
-        if (beadIndex < numABeads) {
-            overlapCoefficientA = similarOverlapCoefficient;
-            overlapCoefficientB = differentOverlapCoefficient;
-        } else {
-            overlapCoefficientB = similarOverlapCoefficient;
-            overlapCoefficientA = differentOverlapCoefficient;
-        }
-        for (int i = 0; i < numABeads; i++) {
-            energyChange = overlapCoefficientA * (finalAreaOverlap[i] - initialAreaOverlap[i]);
-            beadEnergy[i] += energyChange;
-            beadEnergy[beadIndex] += energyChange;
-        }
-        for (int i = numABeads; i < numBeads; i++) {
-            energyChange = overlapCoefficientB * (finalAreaOverlap[i] - initialAreaOverlap[i]);
-            beadEnergy[i] += energyChange;
-            beadEnergy[beadIndex] += energyChange;
-        }
-
-        geometry.undoStep(beadPositions[beadIndex], stepVector);
+//        double[] initialAreaOverlap = new double[numBeads];
+//        double[] finalAreaOverlap = new double[numBeads];
+//
+//        for (int i = 0; i < numBeads; i++) {
+//            initialAreaOverlap[i] = geometry.areaOverlap(beadPositions[beadIndex], beadPositions[i]);
+//        }
+//        geometry.doStep(beadPositions[beadIndex], stepVector);
+//
+//        for (int i = 0; i < numBeads; i++) {
+//            finalAreaOverlap[i] = geometry.areaOverlap(beadPositions[beadIndex], beadPositions[i]);
+//        }
+//
+//        double energyChange;
+//        double overlapCoefficientA, overlapCoefficientB;
+//        if (beadIndex < numABeads) {
+//            overlapCoefficientA = similarOverlapCoefficient;
+//            overlapCoefficientB = differentOverlapCoefficient;
+//        } else {
+//            overlapCoefficientB = similarOverlapCoefficient;
+//            overlapCoefficientA = differentOverlapCoefficient;
+//        }
+//        for (int i = 0; i < numABeads; i++) {
+//            energyChange = overlapCoefficientA * (finalAreaOverlap[i] - initialAreaOverlap[i]);
+//            beadEnergy[i] += energyChange;
+//            beadEnergy[beadIndex] += energyChange;
+//        }
+//        for (int i = numABeads; i < numBeads; i++) {
+//            energyChange = overlapCoefficientB * (finalAreaOverlap[i] - initialAreaOverlap[i]);
+//            beadEnergy[i] += energyChange;
+//            beadEnergy[beadIndex] += energyChange;
+//        }
+//
+//        geometry.undoStep(beadPositions[beadIndex], stepVector);
     }
 
     private void updateBeadSpringEnergy(int beadIndex, double[] stepVector) {
@@ -195,7 +199,7 @@ public class PolymerSystem {
             }
         }
 
-        return springCoefficient * sqLength;
+        return physicalConstants.springEnergy(sqLength);
     }
 
     private double densityEnergy() {
@@ -203,35 +207,31 @@ public class PolymerSystem {
 
         for (int i = 0; i < numABeads; i++) {
             for (int j = 0; j < numABeads; j++) {
-                similarOverlap += geometry.areaOverlap(beadPositions[i], beadPositions[j], interactionLength);
+                similarOverlap += geometry.areaOverlap(beadPositions[i], beadPositions[j]);
             }
         }
 
         for (int i = numABeads; i < numBeads; i++) {
             for (int j = numABeads; j < numBeads; j++) {
-                similarOverlap += geometry.areaOverlap(beadPositions[i], beadPositions[j], interactionLength);
+                similarOverlap += geometry.areaOverlap(beadPositions[i], beadPositions[j]);
             }
         }
 
 
         for (int i = 0; i < numABeads; i++) {
             for (int j = numABeads; j < numBeads; j++) {
-                differentOverlap += geometry.areaOverlap(beadPositions[i], beadPositions[j], interactionLength);
+                differentOverlap += geometry.areaOverlap(beadPositions[i], beadPositions[j]);
             }
         }
 
-        return similarOverlapCoefficient * similarOverlap + 2 * differentOverlapCoefficient * differentOverlap;
+        return physicalConstants.densityEnergy(similarOverlap, differentOverlap);
     }
 
     private boolean isStepAllowedAnyway(double energyChange) {
-        return randomNumberGenerator.nextDouble() < Math.exp(-energyChange / temperature);
+        return true;
     }
 
 // <editor-fold defaultstate="collapsed" desc="getters">
-    public int getDimension() {
-        return dimension;
-    }
-
     public int getNumBeads() {
         return numBeads;
     }
@@ -240,28 +240,8 @@ public class PolymerSystem {
         return numABeads;
     }
 
-    public double getTemperature() {
-        return temperature;
-    }
-
-    public double getSimilarOverlapCoefficient() {
-        return similarOverlapCoefficient;
-    }
-
-    public double getDifferentOverlapCoefficient() {
-        return differentOverlapCoefficient;
-    }
-
-    public double getInteractionLength() {
-        return interactionLength;
-    }
-
     public double getEnergy() {
         return energy;
-    }
-
-    public double getStepLength() {
-        return stepLength;
     }
 
     public int getIterationNumber() {
@@ -278,13 +258,13 @@ public class PolymerSystem {
             return;
         }
 
-        if (dimension != 2) {
+        if (geometry.getDimension() != 2) {
             return;
         }
 
-        double scaleFactor = 600 / (rMax[0]);
+        double scaleFactor = 600 / geometry.getRMax()[0];
 
-        int diameter = (int) Math.round(interactionLength * scaleFactor) / 5;
+        int diameter = (int) Math.round(geometry.getParameters().getInteractionLength() * scaleFactor) / 5;
         int radius = diameter / 2;
 
         graphics.clearRect(0, 0, 600, 600);//fix this later
