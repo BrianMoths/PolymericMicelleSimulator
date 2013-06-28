@@ -126,16 +126,17 @@ public class PolymerSystem {
 
 
         geometry.doStep(beadPositions[stepBead], stepVector);
-
-        final double newEnergy = energy();
-        final double energyChange = newEnergy - energy;
-
         boolean isStepInBounds = geometry.isPositionValid(beadPositions[stepBead]);
 
-        if (isStepInBounds && physicalConstants.isEnergeticallyAllowed(energyChange)) {
-            energy = newEnergy;
-        } else {
-            geometry.undoStep(beadPositions[stepBead], stepVector);
+        if (isStepInBounds) {
+            final double newEnergy = energy();
+            final double energyChange = newEnergy - energy;
+
+            if (physicalConstants.isEnergeticallyAllowed(energyChange)) {
+                energy = newEnergy;
+            } else {
+                geometry.undoStep(beadPositions[stepBead], stepVector);
+            }
         }
     }
 
@@ -225,10 +226,6 @@ public class PolymerSystem {
         }
 
         return physicalConstants.densityEnergy(similarOverlap, differentOverlap);
-    }
-
-    private boolean isStepAllowedAnyway(double energyChange) {
-        return true;
     }
 
 // <editor-fold defaultstate="collapsed" desc="getters">
