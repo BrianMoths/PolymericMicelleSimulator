@@ -105,11 +105,7 @@ public class PolymerSystem {
     }
 
     public void randomizePositions() {
-        for (int i = 0; i < numBeads; i++) {
-            for (int j = 0; j < dimension; j++) {
-                beadPositions[i][j] = randomNumberGenerator.nextDouble() * rMax[j];
-            }
-        }
+        beadPositions = geometry.randomPositions(numBeads);
         energy = energy();
     }
 
@@ -122,13 +118,10 @@ public class PolymerSystem {
     public void doIteration() {
         iterationNumber++;
         final int stepBead = randomNumberGenerator.nextInt(numBeads);
-        final double[] stepVector = new double[dimension];
-        for (int i = 0; i < dimension; i++) {
-            stepVector[i] = randomNumberGenerator.nextGaussian() * stepLength;
-        }
+        final double[] stepVector = geometry.randomGaussian(stepLength);
 
 
-        doStep(stepBead, stepVector);
+        geometry.doStep(beadPositions[stepBead], stepVector);
 
         final double newEnergy = energy();
         final double energyChange = newEnergy - energy;
@@ -138,9 +131,7 @@ public class PolymerSystem {
         if (isStepInBounds && (energyChange < 0 || isStepAllowedAnyway(energyChange))) {
             energy = newEnergy;
         } else {
-            for (int i = 0; i < dimension; i++) {
-                beadPositions[stepBead][i] -= stepVector[i];
-            }
+            geometry.undoStep(beadPositions[stepBead], stepVector);
         }
     }
 
@@ -156,7 +147,7 @@ public class PolymerSystem {
         for (int i = 0; i < numBeads; i++) {
             initialAreaOverlap[i] = geometry.areaOverlap(beadPositions[beadIndex], beadPositions[i], interactionLength);
         }
-        doStep(beadIndex, stepVector);
+        geometry.doStep(beadPositions[beadIndex], stepVector);
 
         for (int i = 0; i < numBeads; i++) {
             finalAreaOverlap[i] = geometry.areaOverlap(beadPositions[beadIndex], beadPositions[i], interactionLength);
@@ -182,7 +173,7 @@ public class PolymerSystem {
             beadEnergy[beadIndex] += energyChange;
         }
 
-        undoStep(beadIndex, stepVector);
+        geometry.undoStep(beadPositions[beadIndex], stepVector);
     }
 
     private void updateBeadSpringEnergy(int beadIndex, double[] stepVector) {
@@ -234,18 +225,6 @@ public class PolymerSystem {
 
     private boolean isStepAllowedAnyway(double energyChange) {
         return randomNumberGenerator.nextDouble() < Math.exp(-energyChange / temperature);
-    }
-
-    private void doStep(int stepBeadIndex, double[] stepVector) {
-        for (int i = 0; i < dimension; i++) {
-            beadPositions[stepBeadIndex][i] += stepVector[i];
-        }
-    }
-
-    private void undoStep(int stepBeadIndex, double[] stepVector) {
-        for (int i = 0; i < dimension; i++) {
-            beadPositions[stepBeadIndex][i] -= stepVector[i];
-        }
     }
 
 // <editor-fold defaultstate="collapsed" desc="getters">
