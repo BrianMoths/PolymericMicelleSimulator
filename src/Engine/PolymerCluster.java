@@ -16,16 +16,35 @@ public class PolymerCluster {
     private final List<PolymerChain> polymerChainList;
     private int numBeads, numABeads;
 
-    public PolymerCluster() {
+    private PolymerCluster() {
+        polymerChainList = new ArrayList<>();
+        numBeads = 0;
+        numABeads = 0;
+    }
+
+    public PolymerCluster(PolymerChain polymerChain) {
         polymerChainList = new ArrayList<>();
         numBeads = 0;
         numABeads = 0;
 
-        PolymerChain polymerChain = new PolymerChain();
-        polymerChain.addBeadsStartingWithA(5, 15);
-        for (int i = 0; i < 8; i++) {
-            this.addChainPrivate(polymerChain);
-        }
+        addChainPrivate(polymerChain);
+    }
+
+    static public PolymerCluster makeClusterFromChain(PolymerChain polymerChain) {
+        PolymerCluster polymerCluster = new PolymerCluster(polymerChain);
+        return polymerCluster;
+    }
+
+    static public PolymerCluster makeRepeatedChainCluster(PolymerChain polymerChain, int numTimes) {
+        PolymerCluster polymerCluster = new PolymerCluster();
+        polymerCluster.addChainMultipleTimes(polymerChain, numTimes);
+        return polymerCluster;
+    }
+
+    static public PolymerCluster defaultCluster() {
+        PolymerCluster polymerCluster = new PolymerCluster();
+        polymerCluster.addChain(PolymerChain.makeSingletChainOfType(true));
+        return polymerCluster;
     }
 
     public static PolymerCluster copy(PolymerCluster polymerCluster) {
@@ -60,14 +79,12 @@ public class PolymerCluster {
     }
 
     public void addSingletOfType(boolean type) {
-        PolymerChain polymerChain = new PolymerChain();
-        polymerChain.addBead(type);
+        PolymerChain polymerChain = PolymerChain.makeSingletChainOfType(type);
         addChain(polymerChain);
     }
 
     public void addSingletOfTypeMultipleTimes(boolean type, int numTimes) {
-        PolymerChain polymerChain = new PolymerChain();
-        polymerChain.addBead(type);
+        PolymerChain polymerChain = PolymerChain.makeSingletChainOfType(type);
         addChainMultipleTimes(polymerChain, numTimes);
     }
 
