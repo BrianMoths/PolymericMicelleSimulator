@@ -4,11 +4,10 @@
  */
 package Engine;
 
-import Engine.SystemGeometry.HardWallSystemGeometry;
-import Engine.SystemGeometry.PeriodicSystemGeometry;
 import Engine.SystemGeometry.SystemGeometry;
 import java.awt.Color;
 import java.awt.Graphics;
+import java.awt.Point;
 import java.util.Random;
 
 /**
@@ -26,18 +25,6 @@ public class PolymerPosition {
     private int stepBead;
     private double[] stepVector;
 
-//    public PolymerPosition() {
-//        PolymerCluster polymerCluster = new PolymerCluster();
-//
-//        numBeads = polymerCluster.getNumBeads();
-//        numABeads = polymerCluster.getNumABeads();
-//        neighbors = polymerCluster.makeNeighbors();
-//
-////        systemGeometry = new HardWallSystemGeometry();
-//        systemGeometry = new PeriodicSystemGeometry();
-//
-//        randomizePrivate();
-//    }
     public PolymerPosition(PolymerCluster polymerCluster, SystemGeometry systemGeometry) {
         numBeads = polymerCluster.getNumBeads();
         numABeads = polymerCluster.getNumABeads();
@@ -198,41 +185,79 @@ public class PolymerPosition {
             return;
         }
 
-        double scaleFactor = 600 / systemGeometry.getRMax()[0];
+        final int displaySize = 600;
 
-        int diameter = (int) Math.round(systemGeometry.getParameters().getInteractionLength() * scaleFactor) / 2;
-        int radius = diameter / 2;
+        final double scaleFactor = displaySize / systemGeometry.getRMax()[0];
 
-        graphics.clearRect(0, 0, 600, 600);//fix this later
+        final int diameter = (int) Math.round(systemGeometry.getParameters().getInteractionLength() * scaleFactor) / 5;
+        final int radius = diameter / 2;
 
-        graphics.setColor(Color.RED);
-        for (int i = 0; i < numABeads; i++) {
-            graphics.fillRect((int) Math.round(beadPositions[i][0] * scaleFactor) - radius,
-                    (int) Math.round(beadPositions[i][1] * scaleFactor) - radius,
-                    diameter,
-                    diameter);
-        }
+        graphics.clearRect(0, 0, displaySize, displaySize);//fix this later
 
-        graphics.setColor(Color.BLUE);
-        for (int i = numABeads; i < numBeads; i++) {
-            graphics.fillRect((int) Math.round(beadPositions[i][0] * scaleFactor) - radius,
-                    (int) Math.round(beadPositions[i][1] * scaleFactor) - radius,
-                    diameter,
-                    diameter);
-        }
+        class Drawer {
 
-        graphics.setColor(Color.BLACK);
-        for (int i = 0; i < numBeads; i++) {
-            for (int j = 0; j < 2; j++) {
-                int neighborIndex = neighbors[i][j];
-                if (neighborIndex >= i) {
-                    graphics.drawLine((int) Math.round(beadPositions[i][0] * scaleFactor),
-                            (int) Math.round(beadPositions[i][1] * scaleFactor),
-                            (int) Math.round(beadPositions[neighborIndex][0] * scaleFactor),
-                            (int) Math.round(beadPositions[neighborIndex][1] * scaleFactor));
+            private void draw() {
+                drawBeads();
+                drawBonds();
+            }
+
+            private void drawBeads() {
+                drawABeads();
+                drawBBeads();
+            }
+
+            private void drawABeads() {
+                graphics.setColor(Color.RED);
+                for (int i = 0; i < numABeads; i++) {
+                    drawBead(i);
                 }
             }
+
+            private void drawBBeads() {
+                graphics.setColor(Color.BLUE);
+                for (int i = numABeads; i < numBeads; i++) {
+                    drawBead(i);
+                }
+            }
+
+            private void drawBead(int i) {
+                Point point = beadCenterPixel(i);
+                graphics.fillRect(point.x - radius, point.y - radius, diameter, diameter);
+            }
+
+            private void drawBonds() {
+                graphics.setColor(Color.BLACK);
+                for (int bead1 = 0; bead1 < numBeads; bead1++) {
+                    for (int bondDirection = 0; bondDirection < 2; bondDirection++) {
+                        int bead2 = neighbors[bead1][bondDirection];
+                        if (bead2 > bead1) {
+                            drawBond(bead1, bead2);
+                        }
+                    }
+                }
+            }
+
+            private void drawBond(int bead1, int bead2) {
+                Point point1 = beadCenterPixel(bead1);
+                Point point2 = beadCenterPixel(bead2);
+
+                if (isCloseEnough(point1, point2)) {
+                    graphics.drawLine(point1.x, point1.y, point2.x, point2.y);
+                }
+            }
+
+            private boolean isCloseEnough(Point point1, Point point2) {
+                return Math.abs(point1.x - point2.x) < displaySize / 2 && Math.abs(point1.y - point2.y) < displaySize / 2;
+            }
+
+            private Point beadCenterPixel(int i) {
+                return new Point((int) Math.round(beadPositions[i][0] * scaleFactor),
+                        (int) Math.round(beadPositions[i][1] * scaleFactor));
+            }
         }
+
+        Drawer drawer = new Drawer();
+        drawer.draw();
     }
 
     public int getNumBeads() {
