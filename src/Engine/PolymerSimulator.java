@@ -56,10 +56,10 @@ public class PolymerSimulator {
     private void makePhysicalConstants() {
         double temperature, similarOverlapCoefficient, differentOverlapCoefficient, springCoefficient;
         physicalConstants = new PhysicalConstants();
-        temperature = 300;
-        similarOverlapCoefficient = 1;
-        differentOverlapCoefficient = 4;
-        springCoefficient = 400;
+        temperature = 120;
+        similarOverlapCoefficient = 5;
+        differentOverlapCoefficient = 15;
+        springCoefficient = 40;
         physicalConstants.setTemperature(temperature);
         physicalConstants.setDifferentOverlapCoefficient(differentOverlapCoefficient);
         physicalConstants.setSimilarOverlapCoefficient(similarOverlapCoefficient);
@@ -67,10 +67,18 @@ public class PolymerSimulator {
     }
 
     private void makePolymerPosition() {
-        PolymerChain polymerChain = PolymerChain.makeChainStartingWithA(30, 30);
-        PolymerCluster polymerCluster = PolymerCluster.makeRepeatedChainCluster(polymerChain, 10);
+        PolymerChain polymerChain = PolymerChain.makeChainStartingWithA(6, 6);
+        PolymerCluster polymerCluster = PolymerCluster.makeRepeatedChainCluster(polymerChain, 100);
         polymerPosition = new PolymerPosition(polymerCluster, geometry);
         polymerPosition.randomize();
+
+        SimulationParameters simulationParameters = geometry.getParameters();
+        double interactionLength;
+        interactionLength = Math.pow(14 * geometry.getVolume() / polymerCluster.getNumBeads(), 1.0 / geometry.getDimension());
+        simulationParameters.setInteractionLength(interactionLength);
+        double stepLength;
+        stepLength = Math.sqrt(physicalConstants.getTemperature() / physicalConstants.getSpringCoefficient());
+        simulationParameters.setStepLength(stepLength);
     }
 
     public PolymerSimulator(SystemGeometry systemGeometry,
@@ -91,6 +99,7 @@ public class PolymerSimulator {
     }
 
     public void randomizePositions() {
+        iterationNumber = 0;
         polymerPosition.randomize();
         energy = energy();
     }
