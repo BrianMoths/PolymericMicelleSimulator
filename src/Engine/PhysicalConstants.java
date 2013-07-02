@@ -28,7 +28,7 @@ public class PhysicalConstants {
     }
 
     public double densityEnergy(double similarOverlap, double differentOverlap) {
-        return similarOverlapCoefficient * similarOverlap + 2 * differentOverlapCoefficient * differentOverlap;
+        return similarOverlapCoefficient * similarOverlap + differentOverlapCoefficient * differentOverlap;
     }
 
     public boolean isEnergeticallyAllowed(double energyChange) {
