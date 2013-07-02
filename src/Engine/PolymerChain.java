@@ -16,7 +16,25 @@ public class PolymerChain {
     private final List<Boolean> types;
     private int numABeads;
 
-    PolymerChain() {
+    static public PolymerChain makeSingletChainOfType(boolean isTypeA) {
+        PolymerChain polymerChain = new PolymerChain();
+        polymerChain.addBead(isTypeA);
+        return polymerChain;
+    }
+
+    static public PolymerChain makeChainOfType(boolean isTypeA, int numBeads) {
+        PolymerChain polymerChain = new PolymerChain();
+        polymerChain.addBeads(isTypeA, numBeads);
+        return polymerChain;
+    }
+
+    static public PolymerChain makeChainStartingWithA(int... numberOfBeads) {
+        PolymerChain polymerChain = new PolymerChain();
+        polymerChain.addBeadsStartingWithA(numberOfBeads);
+        return polymerChain;
+    }
+
+    private PolymerChain() {
         types = new ArrayList<>();
         numABeads = 0;
     }
