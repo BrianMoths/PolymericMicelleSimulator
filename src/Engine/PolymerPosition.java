@@ -4,10 +4,14 @@
  */
 package Engine;
 
+import Engine.SystemGeometry.AreaOverlap;
 import Engine.SystemGeometry.SystemGeometry;
 import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Point;
+import java.util.Arrays;
+import java.util.Iterator;
+import java.util.List;
 import java.util.Random;
 
 /**
@@ -22,8 +26,7 @@ public class PolymerPosition {
     private double[][] beadPositions;
     private SystemGeometry systemGeometry;
     private Graphics graphics;
-    private int stepBead;
-    private double[] stepVector;
+    private SimulationStep simulationStep;
 
     public PolymerPosition(PolymerCluster polymerCluster, SystemGeometry systemGeometry) {
         numBeads = polymerCluster.getNumBeads();
@@ -31,6 +34,8 @@ public class PolymerPosition {
         neighbors = polymerCluster.makeNeighbors();
 
         this.systemGeometry = systemGeometry;
+
+        simulationStep = new SimulationStep();
 
         randomizePrivate();
     }
@@ -48,12 +53,14 @@ public class PolymerPosition {
     }
 
     public void setStep(int stepBead, double[] stepVector) {
-        this.stepBead = stepBead;
-        this.stepVector = stepVector;
+        simulationStep.setStepBead(stepBead);
+        simulationStep.setInitialPosition(beadPositions[stepBead]);
+        systemGeometry.incrementFirstVector(stepVector, beadPositions[stepBead]);
+        simulationStep.setFinalPosition(stepVector);
     }
 
     public boolean isStepInBounds() {
-        return systemGeometry.isSumInBounds(beadPositions[stepBead], stepVector);
+        return systemGeometry.isPositionValid(simulationStep.getFinalPosition());
     }
 
     public boolean isPositionValid(int stepBead) {
@@ -61,19 +68,19 @@ public class PolymerPosition {
     }
 
     public void doStep() {
-        systemGeometry.doStep(beadPositions[stepBead], stepVector);
+        beadPositions[simulationStep.getStepBead()] = simulationStep.getFinalPosition();
     }
 
     public void doStep(int stepBead, double[] stepVector) {
-        systemGeometry.doStep(beadPositions[stepBead], stepVector);
+        systemGeometry.incrementFirstVector(beadPositions[stepBead], stepVector);
     }
 
     public void undoStep() {
-        systemGeometry.undoStep(beadPositions[stepBead], stepVector);
+        beadPositions[simulationStep.getStepBead()] = simulationStep.getInitialPosition();
     }
 
     public void undoStep(int stepBead, double[] stepVector) {
-        systemGeometry.undoStep(beadPositions[stepBead], stepVector);
+        systemGeometry.decrementFirstVector(beadPositions[stepBead], stepVector);
     }
 
     public double totalSpringStretching() {
@@ -95,13 +102,33 @@ public class PolymerPosition {
         double sqLength = 0;
 
         for (int direction = 0; direction < 2; direction++) {
-            int neighborIndex = neighbors[stepBead][direction];
+            int neighborIndex = neighbors[simulationStep.getStepBead()][direction];
             if (neighborIndex >= 0) {
-                sqLength += systemGeometry.sqDist(beadPositions[stepBead], beadPositions[neighborIndex]);
+                sqLength += systemGeometry.sqDist(beadPositions[simulationStep.getStepBead()], beadPositions[neighborIndex]);
             }
         }
 
         return sqLength;
+    }
+
+    public double sqLengthChange() {
+        double sqLengthChange = stepBeadSpringStretching();
+        doStep();
+        sqLengthChange = stepBeadSpringStretching() - sqLengthChange;
+        undoStep();
+        return sqLengthChange;
+    }
+
+    public AreaOverlap overlapChange() {
+        double similarOverlapChange = stepBeadSimilarOverlap();
+        double differentOverlapChange = stepBeadDifferentOverlap();
+
+        doStep();
+
+        similarOverlapChange = stepBeadSimilarOverlap() - similarOverlapChange;
+        differentOverlapChange = stepBeadDifferentOverlap() - differentOverlapChange;
+
+        return AreaOverlap.overlapWithSimDiff(similarOverlapChange, differentOverlapChange);
     }
 
     public double totalSimilarOverlap() {
@@ -138,7 +165,7 @@ public class PolymerPosition {
         double similarOverlap = 0;
         int begin, end;
 
-        if (isTypeA(stepBead)) {
+        if (isTypeA(simulationStep.getStepBead())) {
             begin = 0;
             end = numABeads;
         } else {
@@ -147,7 +174,7 @@ public class PolymerPosition {
         }
 
         for (int bead = begin; bead < end; bead++) {
-            similarOverlap += systemGeometry.areaOverlap(beadPositions[stepBead], beadPositions[bead]);
+            similarOverlap += systemGeometry.areaOverlap(beadPositions[simulationStep.getStepBead()], beadPositions[bead]);
         }
 
         return similarOverlap;
@@ -157,7 +184,7 @@ public class PolymerPosition {
         double differentOverlap = 0;
         int begin, end;
 
-        if (isTypeA(stepBead)) {
+        if (isTypeA(simulationStep.getStepBead())) {
             begin = numABeads;
             end = numBeads;
         } else {
@@ -166,12 +193,80 @@ public class PolymerPosition {
         }
 
         for (int bead = begin; bead < end; bead++) {
-            differentOverlap += systemGeometry.areaOverlap(beadPositions[stepBead], beadPositions[bead]);
+            differentOverlap += systemGeometry.areaOverlap(beadPositions[simulationStep.getStepBead()], beadPositions[bead]);
         }
 
         return differentOverlap;
     }
 
+    public AreaOverlap stepBeadOverlap() {
+        double AOverlap = 0, BOverlap = 0;
+        AreaOverlap areaOverlap;
+
+        for (int bead = 0; bead < numABeads; bead++) {
+            AOverlap += systemGeometry.areaOverlap(beadPositions[simulationStep.getStepBead()], beadPositions[bead]);
+        }
+
+        for (int bead = numABeads; bead < numBeads; bead++) {
+            BOverlap += systemGeometry.areaOverlap(beadPositions[simulationStep.getStepBead()], beadPositions[bead]);
+        }
+
+        if (isTypeA(simulationStep.getStepBead())) {
+            areaOverlap = AreaOverlap.overlapWithSimDiff(AOverlap, BOverlap);
+        } else {
+            areaOverlap = AreaOverlap.overlapWithSimDiff(BOverlap, AOverlap);
+        }
+
+        return areaOverlap;
+    }
+
+//    public double stepBeadOverlapOptimized() {
+//        double similarOverlap, differentOverlap;
+//        double AOverlap = 0, BOverlap = 0;
+//
+//        int[] nearbyBeads = findNearbyBeads();
+//        for (Integer nearbyBead : nearbyBeads) {
+//            if (nearbyBead < numABeads) {
+//                AOverlap += systemGeometry.areaOverlap(beadPositions[stepBead], beadPositions[nearbyBead]);
+//            } else {
+//                BOverlap += systemGeometry.areaOverlap(beadPositions[stepBead], beadPositions[nearbyBead]);
+//            }
+//        }
+//
+//        if (isTypeA(stepBead)) {
+//            similarOverlap = AOverlap;
+//            differentOverlap = BOverlap;
+//        } else {
+//            differentOverlap = AOverlap;
+//            similarOverlap = BOverlap;
+//        }
+//    }
+//
+//    private int[] findNearbyBeads() {
+//        int numNearbyBeads = numNearbyBeads();
+//        int[] nearbyBeads = new int[numNearbyBeads];
+//
+//        int numAdded = 0;
+//        Iterator<List<Integer>> binIterator = getBinIterator();
+//        while (binIterator.hasNext()) {
+//            List<Integer> bin = binIterator.next();
+//            for (Integer bead : bin) {
+//                nearbyBeads[numAdded] = bead;
+//            }
+//        }
+//        return nearbyBeads;
+//    }
+//
+//    private int numNearbyBeads() {
+//        int numNearbyBeads;
+//
+//        BinIterator binIterator = getBinIterator();
+//        while (binIterator.hasNext()) {
+//            numNearbyBeads += binIterator.next().size();
+//        }
+//
+//        return numNearbyBeads;
+//    }
     public void setGraphics(Graphics inGraphics) {
         graphics = inGraphics;
     }
@@ -230,7 +325,7 @@ public class PolymerPosition {
                 for (int bead1 = 0; bead1 < numBeads; bead1++) {
                     for (int bondDirection = 0; bondDirection < 2; bondDirection++) {
                         int bead2 = neighbors[bead1][bondDirection];
-                        if (bead2 > bead1) {
+                        if (bead2 > bead1) { //tests for bead2!=-1 (bead1 has no neighbor in that direction) *and* makes sure to draw each bond only once
                             drawBond(bead1, bead2);
                         }
                     }
