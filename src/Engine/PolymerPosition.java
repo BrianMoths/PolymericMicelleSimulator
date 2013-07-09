@@ -101,38 +101,6 @@ public class PolymerPosition {
         return sqLength / 2; //divide by two since double counting
     }
 
-    public double stepBeadSpringStretching() {
-        double sqLength = 0;
-
-        for (int direction = 0; direction < 2; direction++) {
-            int neighborIndex = neighbors[simulationStep.getStepBead()][direction];
-            if (neighborIndex >= 0) {
-                sqLength += systemGeometry.sqDist(beadPositions[simulationStep.getStepBead()], beadPositions[neighborIndex]);
-            }
-        }
-
-        return sqLength;
-    }
-
-    public double sqLengthChange() {
-        double sqLengthChange = stepBeadSpringStretching();
-        doStep();
-        sqLengthChange = stepBeadSpringStretching() - sqLengthChange;
-        undoStep();
-        return sqLengthChange;
-    }
-
-    public AreaOverlap overlapChange() {
-        AreaOverlap initialAreaOverlap = stepBeadOverlapOptimized();
-
-        doStep();
-        AreaOverlap finalAreaOverlap = stepBeadOverlapOptimized();
-
-        undoStep();
-
-        return AreaOverlap.subtract(finalAreaOverlap, initialAreaOverlap);
-    }
-
     public double totalSimilarOverlap() {
         double similarOverlap = 0;
 
@@ -163,28 +131,39 @@ public class PolymerPosition {
         return differentOverlap;
     }
 
-    public AreaOverlap stepBeadOverlap() {
-        double AOverlap = 0, BOverlap = 0;
-        AreaOverlap areaOverlap;
-
-        for (int bead = 0; bead < numABeads; bead++) {
-            AOverlap += systemGeometry.areaOverlap(beadPositions[simulationStep.getStepBead()], beadPositions[bead]);
-        }
-
-        for (int bead = numABeads; bead < numBeads; bead++) {
-            BOverlap += systemGeometry.areaOverlap(beadPositions[simulationStep.getStepBead()], beadPositions[bead]);
-        }
-
-        if (isTypeA(simulationStep.getStepBead())) {
-            areaOverlap = AreaOverlap.overlapWithSimDiff(AOverlap, BOverlap);
-        } else {
-            areaOverlap = AreaOverlap.overlapWithSimDiff(BOverlap, AOverlap);
-        }
-
-        return areaOverlap;
+    public double sqLengthChange() {
+        double sqLengthChange = stepBeadSpringStretching();
+        doStep();
+        sqLengthChange = stepBeadSpringStretching() - sqLengthChange;
+        undoStep();
+        return sqLengthChange;
     }
 
-    public AreaOverlap stepBeadOverlapOptimized() {
+    public double stepBeadSpringStretching() {
+        double sqLength = 0;
+
+        for (int direction = 0; direction < 2; direction++) {
+            int neighborIndex = neighbors[simulationStep.getStepBead()][direction];
+            if (neighborIndex >= 0) {
+                sqLength += systemGeometry.sqDist(beadPositions[simulationStep.getStepBead()], beadPositions[neighborIndex]);
+            }
+        }
+
+        return sqLength;
+    }
+
+    public AreaOverlap overlapChange() {
+        AreaOverlap initialAreaOverlap = stepBeadOverlap();
+
+        doStep();
+        AreaOverlap finalAreaOverlap = stepBeadOverlap();
+
+        undoStep();
+
+        return AreaOverlap.subtract(finalAreaOverlap, initialAreaOverlap);
+    }
+
+    public AreaOverlap stepBeadOverlap() {
         AreaOverlap areaOverlap;
         double AOverlap = 0, BOverlap = 0;
         final double[] stepBeadPosition = beadPositions[simulationStep.getStepBead()];
