@@ -125,15 +125,10 @@ public class PolymerSimulator {
 
         polymerPosition.setStep(stepBead, stepVector);
         if (polymerPosition.isStepInBounds()) {
-            double oldBeadEnergry = beadEnergy();
-            polymerPosition.doStep();
-            double newBeadEnergy = beadEnergy();
-            double energyChange = newBeadEnergy - oldBeadEnergry;
-
+            double energyChange = beadEnergyChange();
             if (physicalConstants.isEnergeticallyAllowed(energyChange)) {
                 energy += energyChange;
-            } else {
-                polymerPosition.undoStep();
+                polymerPosition.doStep();
             }
         }
 
