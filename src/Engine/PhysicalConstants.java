@@ -4,6 +4,7 @@
  */
 package Engine;
 
+import Engine.SystemGeometry.AreaOverlap;
 import java.util.Random;
 
 /**
@@ -28,7 +29,11 @@ public class PhysicalConstants {
     }
 
     public double densityEnergy(double similarOverlap, double differentOverlap) {
-        return similarOverlapCoefficient * similarOverlap + differentOverlapCoefficient * differentOverlap;
+        return 2 * (similarOverlapCoefficient * similarOverlap + differentOverlapCoefficient * differentOverlap);
+    }
+
+    public double densityEnergy(AreaOverlap areaOverlap) {
+        return 2 * (similarOverlapCoefficient * areaOverlap.similarOverlap + differentOverlapCoefficient * areaOverlap.differentOverlap);
     }
 
     public boolean isEnergeticallyAllowed(double energyChange) {

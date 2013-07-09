@@ -187,15 +187,17 @@ public class PolymerPosition {
     public AreaOverlap stepBeadOverlapOptimized() {
         AreaOverlap areaOverlap;
         double AOverlap = 0, BOverlap = 0;
-
+//        final double[] stepBeadPosition = beadPositions[simulationStep.getStepBead()];
         Iterator<Integer> nearbyBeadIterator = beadBinner.getNearbyBeadIterator();
         while (nearbyBeadIterator.hasNext()) {
             final int currentBead = nearbyBeadIterator.next();
             //System.out.println(String.valueOf(currentBead));
             if (currentBead < numABeads) {
                 AOverlap += systemGeometry.areaOverlap(beadPositions[simulationStep.getStepBead()], beadPositions[currentBead]);
+//                AOverlap += systemGeometry.areaOverlap(stepBeadPosition, beadPositions[currentBead]);
             } else {
                 BOverlap += systemGeometry.areaOverlap(beadPositions[simulationStep.getStepBead()], beadPositions[currentBead]);
+//                BOverlap += systemGeometry.areaOverlap(stepBeadPosition, beadPositions[currentBead]);
             }
         }
 

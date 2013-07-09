@@ -51,7 +51,7 @@ public class PeriodicSystemGeometry extends AbstractGeometry {
     }
 
     @Override
-    public void doStep(double[] toStep, double[] stepVector) {
+    public void incrementFirstVector(double[] toStep, double[] stepVector) {
         for (int i = 0; i < dimension; i++) {
             toStep[i] += stepVector[i];
             toStep[i] = projectComponent(toStep[i], i);
@@ -59,7 +59,7 @@ public class PeriodicSystemGeometry extends AbstractGeometry {
     }
 
     @Override
-    public void undoStep(double[] toStep, double[] stepVector) {
+    public void decrementFirstVector(double[] toStep, double[] stepVector) {
         for (int i = 0; i < dimension; i++) {
             toStep[i] -= stepVector[i];
             toStep[i] = projectComponent(toStep[i], i);
@@ -78,11 +78,7 @@ public class PeriodicSystemGeometry extends AbstractGeometry {
     private double componentDistance(double component1, double component2, int dimension) {
         double distance;
         distance = Math.abs(component1 - component2);
-
-        if (distance > fullRMax[dimension] / 2) {
-            distance = fullRMax[dimension] - distance;
-        }
-
+        distance = Math.min(distance, fullRMax[dimension] - distance);
         return distance;
     }
 }

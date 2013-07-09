@@ -96,7 +96,7 @@ public class PolymerCluster {
         return numABeads;
     }
 
-    public int[][] makeNeighbors() { //needs to be tested
+    public int[][] makeNeighbors() {
         int[][] neighbors = new int[numBeads][2];
         int ABeadIndex = 0;
         int BBeadIndex = numABeads;

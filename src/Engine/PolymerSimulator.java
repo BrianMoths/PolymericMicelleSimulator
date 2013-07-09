@@ -19,12 +19,14 @@ public class PolymerSimulator {
 
     private double energy;
     private int iterationNumber;
+    private int acceptedIterations;
     private SystemGeometry geometry;
     private PhysicalConstants physicalConstants;
     private PolymerPosition polymerPosition;
 
     public PolymerSimulator() {
         iterationNumber = 0;
+        acceptedIterations = 0;
 
         makeGeometry();
         makeParameters();
@@ -102,12 +104,15 @@ public class PolymerSimulator {
         setDefaultSimulationParameters();
 
         iterationNumber = 0;
+        acceptedIterations = 0;
+
 
         energy = energy();
     }
 
     public void randomizePositions() {
         iterationNumber = 0;
+        acceptedIterations = 0;
         polymerPosition.randomize();
         energy = energy();
     }
@@ -122,13 +127,14 @@ public class PolymerSimulator {
         iterationNumber++;
         final int stepBead = polymerPosition.randomBeadIndex();
         final double[] stepVector = geometry.randomGaussian();
-
         polymerPosition.setStep(stepBead, stepVector);
+
         if (polymerPosition.isStepInBounds()) {
             double energyChange = beadEnergyChange();
             if (physicalConstants.isEnergeticallyAllowed(energyChange)) {
                 energy += energyChange;
                 polymerPosition.doStep();
+                acceptedIterations++;
             }
         }
 
@@ -170,13 +176,13 @@ public class PolymerSimulator {
         return springEnergy() + densityEnergy();
     }
 
-    private double springEnergy() {
+    public double springEnergy() {
         double sqLength = polymerPosition.totalSpringStretching();
 
         return physicalConstants.springEnergy(sqLength);
     }
 
-    private double densityEnergy() {
+    public double densityEnergy() {
         double similarOverlap = polymerPosition.totalSimilarOverlap();
         double differentOverlap = polymerPosition.totalDifferentOverlap();
 
@@ -194,6 +200,10 @@ public class PolymerSimulator {
 
     public int getIterationNumber() {
         return iterationNumber;
+    }
+
+    public int getAcceptedIterations() {
+        return acceptedIterations;
     }
     // </editor-fold>
 
