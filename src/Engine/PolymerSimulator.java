@@ -4,6 +4,7 @@
  */
 package Engine;
 
+import Engine.SystemGeometry.AreaOverlap;
 import Engine.SystemGeometry.HardWallSystemGeometry;
 import Engine.SystemGeometry.PeriodicSystemGeometry;
 import Engine.SystemGeometry.SystemGeometry;
@@ -29,6 +30,8 @@ public class PolymerSimulator {
         makeParameters();
         makePhysicalConstants();
         makePolymerPosition();
+
+        setDefaultSimulationParameters();
 
         energy = energy();
     }
@@ -71,10 +74,13 @@ public class PolymerSimulator {
         PolymerCluster polymerCluster = PolymerCluster.makeRepeatedChainCluster(polymerChain, 100);
         polymerPosition = new PolymerPosition(polymerCluster, geometry);
         polymerPosition.randomize();
+    }
 
+    private void setDefaultSimulationParameters() {
         SimulationParameters simulationParameters = geometry.getParameters();
         double interactionLength;
-        interactionLength = Math.pow(14 * geometry.getVolume() / polymerCluster.getNumBeads(), 1.0 / geometry.getDimension());
+        interactionLength = Math.pow(14 * geometry.getVolume() / polymerPosition.getNumBeads(), 1.0 / geometry.getDimension());
+        //System.out.println(String.valueOf(interactionLength)); added display of interactionLength
         simulationParameters.setInteractionLength(interactionLength);
         double stepLength;
         stepLength = Math.sqrt(physicalConstants.getTemperature() / physicalConstants.getSpringCoefficient());
@@ -92,6 +98,8 @@ public class PolymerSimulator {
         this.physicalConstants = physicalConstants;
 
         polymerPosition = new PolymerPosition(polymerCluster, systemGeometry);
+
+        setDefaultSimulationParameters();
 
         iterationNumber = 0;
 
@@ -131,6 +139,22 @@ public class PolymerSimulator {
 
     }
 
+    private double beadEnergyChange() {
+        return beadSpringEnergyChange() + beadDensityEnergyChange();
+    }
+
+    private double beadSpringEnergyChange() {
+        double sqLengthChange = polymerPosition.sqLengthChange();
+
+        return physicalConstants.springEnergy(sqLengthChange);
+    }
+
+    private double beadDensityEnergyChange() {
+        AreaOverlap overlapChange = polymerPosition.overlapChange();
+
+        return physicalConstants.densityEnergy(overlapChange);
+    }
+
     private double beadEnergy() {
         return beadSpringEnergy() + beadDensityEnergy();
     }
@@ -142,10 +166,9 @@ public class PolymerSimulator {
     }
 
     private double beadDensityEnergy() {
-        double similarOverlap = polymerPosition.stepBeadSimilarOverlap();
-        double differentOverlap = polymerPosition.stepBeadDifferentOverlap();
+        AreaOverlap areaOverlap = polymerPosition.stepBeadOverlap();
 
-        return physicalConstants.densityEnergy(similarOverlap, differentOverlap);
+        return physicalConstants.densityEnergy(areaOverlap);
     }
 
     private double energy() {
