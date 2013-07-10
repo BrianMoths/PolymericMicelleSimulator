@@ -16,19 +16,13 @@ public interface SystemGeometry {
 
     public boolean isSumInBounds(double[] position, double[] translation);
 
-    public void setDimension(int dimension);
-
     public int getDimension();
-
-    public void setDimensionSize(int dimensionToBeSized, double size);
 
     public double[] getRMax();
 
     public double getVolume();
 
     public SimulationParameters getParameters();
-
-    public void setParameters(SimulationParameters parameters);
 
     public double sqDist(double[] position1, double[] position2);
 

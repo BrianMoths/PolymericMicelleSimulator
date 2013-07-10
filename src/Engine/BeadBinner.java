@@ -17,11 +17,11 @@ import java.util.Set;
  */
 public class BeadBinner {
 
+    private final int dimension;
+    private final double[] binSize;
+    private final int[] numBins;
     private List<List<Set<Integer>>> beadBins;
     private SimulationStep simulationStep;
-    private double[] binSize;
-    private int[] numBins;
-    private int dimension;
     private boolean isStepDone = false;
 
     static private class BinIndex {
@@ -118,7 +118,7 @@ public class BeadBinner {
         binBeadsPrivate(beadPositions);
     }
 
-    private void initializeBeadBins() {
+    private void allocateBeadBins() {
         beadBins = new ArrayList<>(numBins[0]);
         for (int i = 0; i < numBins[0]; i++) {
             beadBins.add(make1DBinList());
@@ -138,7 +138,7 @@ public class BeadBinner {
     }
 
     private void binBeadsPrivate(double[][] beadPositions) {
-        initializeBeadBins();
+        allocateBeadBins();
         for (int bead = 0; bead < beadPositions.length; bead++) {
             addBeadAt(bead, beadPositions[bead]);
         }
@@ -169,7 +169,7 @@ public class BeadBinner {
     private BinIndex getBinIndex(double[] position) {
         BinIndex binIndex = new BinIndex();
         binIndex.x = (int) Math.floor(position[0] / binSize[0]);
-        binIndex.y = (int) Math.floor(position[1] / binSize[1]); //make this nicer
+        binIndex.y = (int) Math.floor(position[1] / binSize[1]); //make this nicer like a loop or something
         return binIndex;
     }
 

@@ -4,7 +4,8 @@
  */
 package Engine;
 
-import Engine.SystemGeometry.HardWallSystemGeometry;
+import Engine.PhysicalConstants.PhysicalConstantsBuilder;
+import Engine.SystemGeometry.HardWallGeometry;
 
 /**
  *
@@ -12,50 +13,48 @@ import Engine.SystemGeometry.HardWallSystemGeometry;
  */
 public class PolymerSimulatorFactory {
 
-    private HardWallSystemGeometry systemGeometry;
+    private HardWallGeometry systemGeometry;
     private PolymerCluster polymerCluster;
-    private PhysicalConstants physicalConstants;
+    private PhysicalConstantsBuilder physicalConstantsBuilder;
     private SimulationParameters simulationParameters;
 
     public PolymerSimulatorFactory() {
-        systemGeometry = new HardWallSystemGeometry();
+        systemGeometry = HardWallGeometry.getDefaultGeometry();
         polymerCluster = PolymerCluster.defaultCluster();
-        physicalConstants = new PhysicalConstants();
-        simulationParameters = new SimulationParameters();
+        physicalConstantsBuilder = new PhysicalConstantsBuilder();
     }
 
     public PolymerSimulator makePolymerSystem() {
         return new PolymerSimulator(
                 systemGeometry,
                 polymerCluster,
-                physicalConstants,
-                simulationParameters);
+                physicalConstantsBuilder.buildPhysicalConstants());
     }
 
     public void setTemperature(double temperature) {
-        physicalConstants.setTemperature(temperature);
+        physicalConstantsBuilder.setTemperature(temperature);
     }
 
     public void setSimilarOverlapCoefficient(double similarOverlapCoefficient) {
-        physicalConstants.setSimilarOverlapCoefficient(similarOverlapCoefficient);
+        physicalConstantsBuilder.setAAOverlapCoefficient(similarOverlapCoefficient);
+        physicalConstantsBuilder.setBBOverlapCoefficient(similarOverlapCoefficient);
     }
 
     public void setDifferentOverlapCoefficient(double differentOverlapCoefficient) {
-        physicalConstants.setDifferentOverlapCoefficient(differentOverlapCoefficient);
+        physicalConstantsBuilder.setABOverlapCoefficient(differentOverlapCoefficient);
     }
 
     public void setSpringCoefficient(double springCoefficient) {
-        physicalConstants.setSpringCoefficient(springCoefficient);
+        physicalConstantsBuilder.setSpringCoefficient(springCoefficient);
     }
 
-    public void setInteractionLength(double interactionLength) {
-        simulationParameters.setInteractionLength(interactionLength);
-    }
-
-    public void setStepLength(double stepLength) {
-        simulationParameters.setStepLength(stepLength);
-    }
-
+//    public void setInteractionLength(double interactionLength) {
+//        simulationParameters.setInteractionLength(interactionLength);
+//    }
+//
+//    public void setStepLength(double stepLength) {
+//        simulationParameters.setStepLength(stepLength);
+//    }
     public void setPolymerCluster(PolymerCluster polymerCluster) {
         this.polymerCluster = PolymerCluster.copy(polymerCluster);
     }

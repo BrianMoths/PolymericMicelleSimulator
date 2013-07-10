@@ -10,12 +10,23 @@ import Engine.SimulationParameters;
  *
  * @author bmoths
  */
-public class HardWallSystemGeometry extends AbstractGeometry {
+public class HardWallGeometry extends AbstractGeometry {
 
-    public HardWallSystemGeometry() {
-        dimension = 2;
-        fullRMax = new double[]{20, 20, 20};
-        parameters = new SimulationParameters();
+    public static class HardWallGeometryBuilder extends GeometryBuilder {
+
+        @Override
+        public HardWallGeometry buildGeometry() {
+            return new HardWallGeometry(dimension, fullRMax, parameters);
+        }
+    }
+
+    static public HardWallGeometry getDefaultGeometry() {
+        HardWallGeometryBuilder builder = new HardWallGeometryBuilder();
+        return builder.buildGeometry();
+    }
+
+    public HardWallGeometry(int dimension, double[] fullRMax, SimulationParameters parameters) {
+        super(dimension, fullRMax, parameters);
     }
 
     @Override

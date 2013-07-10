@@ -21,11 +21,11 @@ public class PolymerPosition {
     private static final Random randomNumberGenerator = new Random();
     private final int numBeads, numABeads;
     private final int[][] neighbors;
+    private final SystemGeometry systemGeometry;
+    private BeadBinner beadBinner;
     private double[][] beadPositions;
-    private SystemGeometry systemGeometry;
     private Graphics graphics;
     private SimulationStep simulationStep;
-    private BeadBinner beadBinner;
 
     public PolymerPosition(PolymerCluster polymerCluster, SystemGeometry systemGeometry) {
         numBeads = polymerCluster.getNumBeads();
@@ -55,7 +55,7 @@ public class PolymerPosition {
     public void setStep(int stepBead, double[] stepVector) {
         simulationStep.setStepBead(stepBead);
         simulationStep.setInitialPosition(beadPositions[stepBead]);
-        systemGeometry.incrementFirstVector(stepVector, beadPositions[stepBead]);
+        systemGeometry.incrementFirstVector(stepVector, beadPositions[stepBead]); //this is a really bad idea
         simulationStep.setFinalPosition(stepVector);
         beadBinner.setStep(simulationStep);
     }
@@ -164,7 +164,6 @@ public class PolymerPosition {
     }
 
     public AreaOverlap stepBeadOverlap() {
-        AreaOverlap areaOverlap;
         double AOverlap = 0, BOverlap = 0;
         final double[] stepBeadPosition = beadPositions[simulationStep.getStepBead()];
         Iterator<Integer> nearbyBeadIterator = beadBinner.getNearbyBeadIterator();
@@ -178,10 +177,13 @@ public class PolymerPosition {
             }
         }
 
+        AreaOverlap areaOverlap = new AreaOverlap();
         if (isTypeA(simulationStep.getStepBead())) {
-            areaOverlap = AreaOverlap.overlapWithSimDiff(AOverlap, BOverlap);
+            areaOverlap.AAOverlap = AOverlap;
+            areaOverlap.ABOverlap = BOverlap;
         } else {
-            areaOverlap = AreaOverlap.overlapWithSimDiff(BOverlap, AOverlap);
+            areaOverlap.ABOverlap = AOverlap;
+            areaOverlap.BBOverlap = BOverlap;
         }
 
         return areaOverlap;

@@ -4,20 +4,20 @@
  */
 package Gui;
 
-import Engine.PhysicalConstants;
+import Engine.PhysicalConstants.PhysicalConstantsBuilder;
 import Engine.PolymerChain;
 import Engine.PolymerCluster;
 import Engine.PolymerSimulator;
 import Engine.SimulationParameters;
-import Engine.SystemGeometry.HardWallSystemGeometry;
-import Engine.SystemGeometry.PeriodicSystemGeometry;
-import Engine.SystemGeometry.SystemGeometry;
+import Engine.SystemGeometry.HardWallGeometry.HardWallGeometryBuilder;
+import Engine.SystemGeometry.PeriodicGeometry.PeriodicGeometryBuilder;
+import Engine.SystemGeometry.AbstractGeometry.GeometryBuilder;
 
 /**
  *
  * @author bmoths
  */
-public class SystemConfiguration extends javax.swing.JFrame {
+public class SystemConfiguration extends javax.swing.JFrame { //broken, need to initialize simulation parameters
 
     private final MicelleGui gui;
 
@@ -338,8 +338,8 @@ public class SystemConfiguration extends javax.swing.JFrame {
     }//GEN-LAST:event_springConstantFldActionPerformed
 
     private void buildSystembtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_buildSystembtnActionPerformed
-        SystemGeometry systemGeometry = new PeriodicSystemGeometry();
-        PhysicalConstants physicalConstants = new PhysicalConstants();
+        GeometryBuilder systemGeometryBuilder = new PeriodicGeometryBuilder();
+        PhysicalConstantsBuilder physicalConstantsBuilder = new PhysicalConstantsBuilder();
         SimulationParameters simulationParameters = new SimulationParameters();
 
         int dimension, numChains, numABeads, numBBeads;
@@ -451,32 +451,33 @@ public class SystemConfiguration extends javax.swing.JFrame {
         }
 
         if (periodicRdo.isSelected()) {
-            systemGeometry = new PeriodicSystemGeometry();
+            systemGeometryBuilder = new PeriodicGeometryBuilder();
         } else if (hardWallRdo.isSelected()) {
-            systemGeometry = new HardWallSystemGeometry();
+            systemGeometryBuilder = new HardWallGeometryBuilder();
         }
 
+        physicalConstantsBuilder.setTemperature(temperature);
+        physicalConstantsBuilder.setAAOverlapCoefficient(similarOverlapCoefficient);
+        physicalConstantsBuilder.setBBOverlapCoefficient(similarOverlapCoefficient);
+        physicalConstantsBuilder.setABOverlapCoefficient(differentOverlapCoefficient);
+        physicalConstantsBuilder.setSpringCoefficient(springConstant);
 
-
-        systemGeometry.setDimension(dimension);
-        systemGeometry.setDimensionSize(0, xMax);
-        systemGeometry.setDimensionSize(1, yMax);
-        systemGeometry.setDimensionSize(2, zMax);
+        systemGeometryBuilder.setDimension(dimension);
+        systemGeometryBuilder.setDimensionSize(0, xMax);
+        systemGeometryBuilder.setDimensionSize(1, yMax);
+        systemGeometryBuilder.setDimensionSize(2, zMax);
+        systemGeometryBuilder.setParameters(simulationParameters);
 
         PolymerChain polymerChain = PolymerChain.makeChainStartingWithA(numABeads, numBBeads);
         PolymerCluster polymerCluster = PolymerCluster.makeRepeatedChainCluster(polymerChain, numChains);
 
-        physicalConstants.setTemperature(temperature);
-        physicalConstants.setSimilarOverlapCoefficient(similarOverlapCoefficient);
-        physicalConstants.setDifferentOverlapCoefficient(differentOverlapCoefficient);
-        physicalConstants.setSpringCoefficient(springConstant);
+
 
         PolymerSimulator polymerSystem;
         polymerSystem = new PolymerSimulator(
-                systemGeometry,
+                systemGeometryBuilder.buildGeometry(),
                 polymerCluster,
-                physicalConstants,
-                simulationParameters);
+                physicalConstantsBuilder.buildPhysicalConstants());
 
         gui.setSystem(polymerSystem);
     }//GEN-LAST:event_buildSystembtnActionPerformed

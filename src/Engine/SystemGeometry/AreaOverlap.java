@@ -10,23 +10,21 @@ package Engine.SystemGeometry;
  */
 public class AreaOverlap {
 
-    public double similarOverlap;
-    public double differentOverlap;
+    public double AAOverlap, BBOverlap, ABOverlap;
 
-    public static AreaOverlap overlapWithSimDiff(double similarOverlap, double differentOverlap) {
-        AreaOverlap areaOverlap = new AreaOverlap();
-        areaOverlap.similarOverlap = similarOverlap;
-        areaOverlap.differentOverlap = differentOverlap;
-        return areaOverlap;
-    }
-
-    private AreaOverlap() {
-        similarOverlap = 0;
-        differentOverlap = 0;
+    public AreaOverlap() {
+        AAOverlap = 0;
+        BBOverlap = 0;
+        ABOverlap = 0;
     }
 
     public static AreaOverlap subtract(AreaOverlap overlap1, AreaOverlap overlap2) {
-        return AreaOverlap.overlapWithSimDiff(overlap1.similarOverlap - overlap2.similarOverlap,
-                overlap1.differentOverlap - overlap2.differentOverlap);
+        AreaOverlap overlapDifference = new AreaOverlap();
+
+        overlapDifference.AAOverlap = overlap1.AAOverlap - overlap2.AAOverlap;
+        overlapDifference.ABOverlap = overlap1.ABOverlap - overlap2.ABOverlap;
+        overlapDifference.BBOverlap = overlap1.BBOverlap - overlap2.BBOverlap;
+
+        return overlapDifference;
     }
 }

@@ -4,9 +4,10 @@
  */
 package Engine;
 
+import Engine.PhysicalConstants.PhysicalConstantsBuilder;
 import Engine.SystemGeometry.AreaOverlap;
-import Engine.SystemGeometry.HardWallSystemGeometry;
-import Engine.SystemGeometry.PeriodicSystemGeometry;
+import Engine.SystemGeometry.HardWallGeometry.HardWallGeometryBuilder;
+import Engine.SystemGeometry.PeriodicGeometry.PeriodicGeometryBuilder;
 import Engine.SystemGeometry.SystemGeometry;
 import java.awt.Graphics;
 
@@ -15,93 +16,96 @@ import java.awt.Graphics;
  * @author brian
  */
 public class PolymerSimulator {
-    //next implement bead collection
 
+    private final SystemGeometry geometry;
+    private final PhysicalConstants physicalConstants;
+    private final PolymerPosition polymerPosition;
     private double energy;
     private int iterationNumber;
     private int acceptedIterations;
-    private SystemGeometry geometry;
-    private PhysicalConstants physicalConstants;
-    private PolymerPosition polymerPosition;
 
     public PolymerSimulator() {
+        final int ABeadsPerChain = 6, BBeadsPerChain = 6, numChains = 100;
+
+        final int numBeads = (ABeadsPerChain + BBeadsPerChain) * numChains;
         iterationNumber = 0;
         acceptedIterations = 0;
 
-        makeGeometry();
-        makeParameters();
-        makePhysicalConstants();
-        makePolymerPosition();
-
-        setDefaultSimulationParameters();
+        physicalConstants = makeDefaultPhysicalConstants();
+        geometry = makeGeometryBuilder(numBeads);
+        polymerPosition = makePolymerPosition();
 
         energy = energy();
     }
 
-    private void makeGeometry() {
-        int dimension = 2;
-//        geometry = new HardWallSystemGeometry();
-        geometry = new PeriodicSystemGeometry();
-        geometry.setDimension(dimension);
+    private SystemGeometry makeGeometryBuilder(int numBeads) {
+        final int dimension = 2;
+        final double boxLength = 20;
+//        HardWallGeometryBuilder geometryBuilder = new HardWallGeometryBuilder();
+        PeriodicGeometryBuilder geometryBuilder = new PeriodicGeometryBuilder();
+        geometryBuilder.setDimension(dimension);
         for (int i = 0; i < dimension; i++) {
-            geometry.setDimensionSize(i, 20);
+            geometryBuilder.setDimensionSize(i, boxLength);
         }
+
+        geometryBuilder.setParameters(makeDefaultParameters(numBeads, boxLength, dimension));
+
+        return geometryBuilder.buildGeometry();
     }
 
-    private void makeParameters() {
-        double interactionLength = Math.pow(14 * 400 / 100, .5);
-        double stepLength = interactionLength / 10;
-        SimulationParameters parameters;
-        parameters = new SimulationParameters();
-        parameters.setInteractionLength(interactionLength);
-        parameters.setStepLength(stepLength);
-        geometry.setParameters(parameters);
+    private SimulationParameters makeDefaultParameters(int numBeads, double boxLength, int dimension) {
+        SimulationParameters simulationParameters;
+        double interactionLength;
+        interactionLength = Math.pow(14 * Math.pow(boxLength, dimension) / numBeads, 1.0 / dimension);
+        double stepLength;
+        stepLength = Math.sqrt(physicalConstants.getTemperature() / physicalConstants.getSpringCoefficient());
+        simulationParameters = new SimulationParameters(stepLength, interactionLength);
+        return simulationParameters;
     }
 
-    private void makePhysicalConstants() {
+//    private SimulationParameters makeDefaultParameters() {
+//        double interactionLength = Math.pow(14 * 400 / 100, .5);
+//        double stepLength = interactionLength / 10;
+//        SimulationParameters defaultParameters;
+//        defaultParameters = new SimulationParameters(stepLength, interactionLength);
+//
+//        return defaultParameters;
+//    }
+    private PhysicalConstants makeDefaultPhysicalConstants() {
         double temperature, similarOverlapCoefficient, differentOverlapCoefficient, springCoefficient;
-        physicalConstants = new PhysicalConstants();
+        PhysicalConstantsBuilder defaultPhysicalConstantsBuilder = new PhysicalConstantsBuilder();
         temperature = 120;
         similarOverlapCoefficient = 5;
         differentOverlapCoefficient = 15;
         springCoefficient = 40;
-        physicalConstants.setTemperature(temperature);
-        physicalConstants.setDifferentOverlapCoefficient(differentOverlapCoefficient);
-        physicalConstants.setSimilarOverlapCoefficient(similarOverlapCoefficient);
-        physicalConstants.setSpringCoefficient(springCoefficient);
+
+        defaultPhysicalConstantsBuilder
+                .setTemperature(temperature)
+                .setABOverlapCoefficient(differentOverlapCoefficient)
+                .setAAOverlapCoefficient(similarOverlapCoefficient)
+                .setBBOverlapCoefficient(similarOverlapCoefficient)
+                .setSpringCoefficient(springCoefficient);
+
+        return defaultPhysicalConstantsBuilder.buildPhysicalConstants();
     }
 
-    private void makePolymerPosition() {
+    private PolymerPosition makePolymerPosition() {
         PolymerChain polymerChain = PolymerChain.makeChainStartingWithA(6, 6);
         PolymerCluster polymerCluster = PolymerCluster.makeRepeatedChainCluster(polymerChain, 100);
-        polymerPosition = new PolymerPosition(polymerCluster, geometry);
-        polymerPosition.randomize();
-    }
-
-    private void setDefaultSimulationParameters() {
-        SimulationParameters simulationParameters = geometry.getParameters();
-        double interactionLength;
-        interactionLength = Math.pow(14 * geometry.getVolume() / polymerPosition.getNumBeads(), 1.0 / geometry.getDimension());
-        //System.out.println(String.valueOf(interactionLength)); added display of interactionLength
-        simulationParameters.setInteractionLength(interactionLength);
-        double stepLength;
-        stepLength = Math.sqrt(physicalConstants.getTemperature() / physicalConstants.getSpringCoefficient());
-        simulationParameters.setStepLength(stepLength);
+        PolymerPosition defaultPolymerPosition = new PolymerPosition(polymerCluster, geometry);
+        defaultPolymerPosition.randomize();
+        return defaultPolymerPosition;
     }
 
     public PolymerSimulator(SystemGeometry systemGeometry,
             PolymerCluster polymerCluster,
-            PhysicalConstants physicalConstants,
-            SimulationParameters simulationParameters) {
+            PhysicalConstants physicalConstants) {
 
         geometry = systemGeometry;
-        geometry.setParameters(simulationParameters);
 
         this.physicalConstants = physicalConstants;
 
         polymerPosition = new PolymerPosition(polymerCluster, systemGeometry);
-
-        setDefaultSimulationParameters();
 
         iterationNumber = 0;
         acceptedIterations = 0;
@@ -130,7 +134,7 @@ public class PolymerSimulator {
         polymerPosition.setStep(stepBead, stepVector);
 
         if (polymerPosition.isStepInBounds()) {
-            double energyChange = beadEnergyChange();
+            final double energyChange = beadEnergyChange();
             if (physicalConstants.isEnergeticallyAllowed(energyChange)) {
                 energy += energyChange;
                 polymerPosition.doStep();
@@ -207,8 +211,8 @@ public class PolymerSimulator {
     }
     // </editor-fold>
 
-    public void setGraphics(Graphics inGraphics) {
-        polymerPosition.setGraphics(inGraphics);
+    public void setGraphics(Graphics graphics) {
+        polymerPosition.setGraphics(graphics);
     }
 
     public void draw() {

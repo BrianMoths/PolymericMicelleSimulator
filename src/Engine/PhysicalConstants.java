@@ -13,15 +13,88 @@ import java.util.Random;
  */
 public class PhysicalConstants {
 
-    static private Random randomNumberGenerator = new Random();
-    private double temperature, similarOverlapCoefficient,
-            differentOverlapCoefficient, springCoefficient;
+    //<editor-fold defaultstate="collapsed" desc="builder class">
+    static public class PhysicalConstantsBuilder {
 
-    public PhysicalConstants() {
-        temperature = 300;
-        similarOverlapCoefficient = 1;
-        differentOverlapCoefficient = 4;
-        springCoefficient = 40;
+        private double temperature = 300,
+                AAOverlapCoefficient = 1,
+                BBOverlapCoefficient = 1,
+                ABOverlapCoefficient = 4,
+                springCoefficient = 40;
+
+        public PhysicalConstants buildPhysicalConstants() {
+            return new PhysicalConstants(temperature,
+                    AAOverlapCoefficient,
+                    BBOverlapCoefficient,
+                    ABOverlapCoefficient,
+                    springCoefficient);
+        }
+
+        public double getTemperature() {
+            return temperature;
+        }
+
+        public PhysicalConstantsBuilder setTemperature(double temperature) {
+            if (temperature > 0) {
+                this.temperature = temperature;
+            }
+            return this;
+        }
+
+        public double getAAOverlapCoefficient() {
+            return AAOverlapCoefficient;
+        }
+
+        public PhysicalConstantsBuilder setAAOverlapCoefficient(double AAOverlapCoefficient) {
+            this.AAOverlapCoefficient = AAOverlapCoefficient;
+            return this;
+        }
+
+        public double getBBOverlapCoefficient() {
+            return BBOverlapCoefficient;
+        }
+
+        public PhysicalConstantsBuilder setBBOverlapCoefficient(double BBOverlapCoefficient) {
+            this.BBOverlapCoefficient = BBOverlapCoefficient;
+            return this;
+        }
+
+        public double getABOverlapCoefficient() {
+            return ABOverlapCoefficient;
+        }
+
+        public PhysicalConstantsBuilder setABOverlapCoefficient(double ABOverlapCoefficient) {
+            this.ABOverlapCoefficient = ABOverlapCoefficient;
+            return this;
+        }
+
+        public double getSpringCoefficient() {
+            return springCoefficient;
+        }
+
+        public PhysicalConstantsBuilder setSpringCoefficient(double springCoefficient) {
+            this.springCoefficient = springCoefficient;
+            return this;
+        }
+    }
+    //</editor-fold>
+    static private Random randomNumberGenerator = new Random();
+    private final double temperature,
+            AAOverlapCoefficient,
+            BBOverlapCoefficient,
+            ABOverlapCoefficient,
+            springCoefficient;
+
+    static public PhysicalConstants defaultPhysicalConstants() {
+        return new PhysicalConstantsBuilder().buildPhysicalConstants();
+    }
+
+    private PhysicalConstants(double temperature, double AAOverlapCoefficient, double BBOverlapCoefficient, double ABOverlapCoefficient, double springCoefficient) {
+        this.temperature = temperature;
+        this.AAOverlapCoefficient = AAOverlapCoefficient;
+        this.BBOverlapCoefficient = BBOverlapCoefficient;
+        this.ABOverlapCoefficient = ABOverlapCoefficient;
+        this.springCoefficient = springCoefficient;
     }
 
     public double springEnergy(double squareLength) {
@@ -29,11 +102,13 @@ public class PhysicalConstants {
     }
 
     public double densityEnergy(double similarOverlap, double differentOverlap) {
-        return 2 * (similarOverlapCoefficient * similarOverlap + differentOverlapCoefficient * differentOverlap);
+        return 2 * ((AAOverlapCoefficient + BBOverlapCoefficient) / 2 * similarOverlap + ABOverlapCoefficient * differentOverlap);
     }
 
     public double densityEnergy(AreaOverlap areaOverlap) {
-        return 2 * (similarOverlapCoefficient * areaOverlap.similarOverlap + differentOverlapCoefficient * areaOverlap.differentOverlap);
+        return 2 * (AAOverlapCoefficient * areaOverlap.AAOverlap
+                + BBOverlapCoefficient * areaOverlap.BBOverlap
+                + ABOverlapCoefficient * areaOverlap.ABOverlap);
     }
 
     public boolean isEnergeticallyAllowed(double energyChange) {
@@ -41,37 +116,25 @@ public class PhysicalConstants {
                 || randomNumberGenerator.nextDouble() < Math.exp(-energyChange / temperature);
     }
 
+    //<editor-fold defaultstate="collapsed" desc="getters">
     public double getTemperature() {
         return temperature;
     }
 
-    public void setTemperature(double temperature) {
-        if (temperature > 0) {
-            this.temperature = temperature;
-        }
+    public double getAAOverlapCoefficient() {
+        return AAOverlapCoefficient;
     }
 
-    public double getSimilarOverlapCoefficient() {
-        return similarOverlapCoefficient;
+    public double getBBOverlapCoefficient() {
+        return BBOverlapCoefficient;
     }
 
-    public void setSimilarOverlapCoefficient(double similarOverlapCoefficient) {
-        this.similarOverlapCoefficient = similarOverlapCoefficient;
-    }
-
-    public double getDifferentOverlapCoefficient() {
-        return differentOverlapCoefficient;
-    }
-
-    public void setDifferentOverlapCoefficient(double differentOverlapCoefficient) {
-        this.differentOverlapCoefficient = differentOverlapCoefficient;
+    public double getABOverlapCoefficient() {
+        return ABOverlapCoefficient;
     }
 
     public double getSpringCoefficient() {
         return springCoefficient;
     }
-
-    public void setSpringCoefficient(double springCoefficient) {
-        this.springCoefficient = springCoefficient;
-    }
+    //</editor-fold>
 }

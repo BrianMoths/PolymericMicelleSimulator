@@ -11,30 +11,112 @@ import java.util.Random;
  *
  * @author bmoths
  */
-abstract class AbstractGeometry implements SystemGeometry {
+public abstract class AbstractGeometry implements SystemGeometry {
 
-    protected int dimension;
-    protected double[] fullRMax;
-    public static Random randomNumberGenerator = new Random();
-    protected SimulationParameters parameters;
+    //<editor-fold defaultstate="collapsed" desc="BuilderClass">
+    public abstract static class GeometryBuilder {
 
-    @Override
-    public void setDimension(int dimension) {
-        if (dimension > 2 || dimension <= 3) {
-            this.dimension = dimension;
+        protected int dimension;
+        protected double[] fullRMax;
+        protected SimulationParameters parameters;
+
+        public GeometryBuilder() {
+            this.dimension = 2;
+            this.fullRMax = new double[]{20, 20, 20};
+            this.parameters = new SimulationParameters();
         }
+
+        public GeometryBuilder(AbstractGeometry geometry) {
+            dimension = geometry.dimension;
+            fullRMax = new double[dimension];
+            System.arraycopy(fullRMax, 0, geometry.getRMax(), 0, dimension);
+            parameters = geometry.getParameters();
+        }
+
+        public int getDimension() {
+            return dimension;
+        }
+
+        public GeometryBuilder setDimension(int dimension) {
+            this.dimension = dimension;
+            return this;
+        }
+
+        public double[] getFullRMax() {
+            double[] rMax = new double[dimension];
+            System.arraycopy(fullRMax, 0, rMax, 0, dimension);
+            return rMax;
+        }
+
+        public GeometryBuilder setDimensionSize(int dimension, double size) {
+            this.fullRMax[dimension] = size;
+            return this;
+        }
+
+        public SimulationParameters getParameters() {
+            return parameters;
+        }
+
+        public GeometryBuilder setParameters(SimulationParameters parameters) {
+            this.parameters = parameters;
+            return this;
+        }
+
+        abstract public SystemGeometry buildGeometry();
+    }
+    //</editor-fold>
+    protected final int dimension;
+    protected final double[] fullRMax; //try to make this constant
+    public static final Random randomNumberGenerator = new Random();
+    protected final SimulationParameters parameters;
+
+    protected AbstractGeometry(int dimension, double[] fullRMax, SimulationParameters parameters) {
+        this.dimension = dimension;
+        this.fullRMax = new double[dimension];
+        System.arraycopy(this.fullRMax, 0, fullRMax, 0, dimension);
+        this.parameters = parameters;
     }
 
+    @Override
+    public double[] randomPosition() {
+        double[] position = new double[dimension];
+        for (int i = 0; i < dimension; i++) {
+            position[i] = randomNumberGenerator.nextDouble() * fullRMax[i];
+        }
+        return position;
+    }
+
+    @Override
+    public double[][] randomPositions(int numPositions) {
+        double[][] randomPositions = new double[numPositions][];
+        for (int i = 0; i < numPositions; i++) {
+            randomPositions[i] = randomPosition();
+        }
+        return randomPositions;
+    }
+
+    @Override
+    public double[] randomGaussian() {
+        double[] randomVector = new double[dimension];
+        for (int i = 0; i < dimension; i++) {
+            randomVector[i] = randomNumberGenerator.nextGaussian() * parameters.getStepLength();
+        }
+        return randomVector;
+    }
+
+    @Override
+    public double getVolume() {
+        double volume = 1;
+        for (int i = 0; i < dimension; i++) {
+            volume *= fullRMax[i];
+        }
+        return volume;
+    }
+
+    //<editor-fold defaultstate="collapsed" desc="getters">
     @Override
     public int getDimension() {
         return dimension;
-    }
-
-    @Override
-    public void setDimensionSize(int dimensionToBeSized, double size) {
-        if (dimensionToBeSized >= 0 && dimensionToBeSized < 3 && size > 0) {
-            fullRMax[dimensionToBeSized] = size;
-        }
     }
 
     @Override
@@ -44,45 +126,9 @@ abstract class AbstractGeometry implements SystemGeometry {
         return rMax;
     }
 
-    public double getVolume() {
-        double volume = 1;
-        for (int i = 0; i < dimension; i++) {
-            volume *= fullRMax[i];
-        }
-        return volume;
-    }
-
     @Override
     public SimulationParameters getParameters() {
         return parameters;
     }
-
-    @Override
-    public void setParameters(SimulationParameters parameters) {
-        this.parameters = parameters;
-    }
-
-    public double[] randomPosition() {
-        double[] position = new double[dimension];
-        for (int i = 0; i < dimension; i++) {
-            position[i] = randomNumberGenerator.nextDouble() * fullRMax[i];
-        }
-        return position;
-    }
-
-    public double[][] randomPositions(int numPositions) {
-        double[][] randomPositions = new double[numPositions][];
-        for (int i = 0; i < numPositions; i++) {
-            randomPositions[i] = randomPosition();
-        }
-        return randomPositions;
-    }
-
-    public double[] randomGaussian() {
-        double[] randomVector = new double[dimension];
-        for (int i = 0; i < dimension; i++) {
-            randomVector[i] = randomNumberGenerator.nextGaussian() * parameters.getStepLength();
-        }
-        return randomVector;
-    }
+    //</editor-fold>
 }
