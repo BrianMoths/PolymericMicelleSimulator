@@ -12,7 +12,7 @@ import java.awt.Graphics;
  * @author brian
  */
 public class MicelleGui extends javax.swing.JFrame {
-    
+
     private PolymerSimulator system;
 
     /**
@@ -22,32 +22,32 @@ public class MicelleGui extends javax.swing.JFrame {
         initComponents();
         system = new PolymerSimulator();
     }
-    
+
     public void initialize() {
         registerGuiWithSystem();
         system.randomizePositions();
-        update();
+        updateDisplay();
     }
-    
+
     private void registerGuiWithSystem() {
         system.setGraphics(displayPanel.getGraphics());
     }
-    
-    private void update() {
+
+    private void updateDisplay() {
         energyLbl.setText(String.valueOf(system.getEnergy()));
         numIterationsLbl.setText(String.valueOf(system.getIterationNumber()));
         numAcceptedIterationsLbl.setText(String.valueOf(system.getAcceptedIterations()));
-        System.out.println(String.valueOf(system.springEnergy() / system.getNumBeads()));
+        //System.out.println(String.valueOf(system.springEnergy() / system.getNumBeads()));
         repaint();
     }
-    
+
     public void setSystem(PolymerSimulator system) {
         this.system = system;
         registerGuiWithSystem();
         system.randomizePositions();
-        update();
+        updateDisplay();
     }
-    
+
     @Override
     public void paint(Graphics graphics) {
         super.paint(graphics);
@@ -202,9 +202,9 @@ public class MicelleGui extends javax.swing.JFrame {
 
     private void iterateBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_iterateBtnActionPerformed
         system.doIteration();
-        update();
+        updateDisplay();
     }//GEN-LAST:event_iterateBtnActionPerformed
-    
+
     private void doIterationsBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_doIterationsBtnActionPerformed
         int numIterations;
         try {
@@ -215,15 +215,15 @@ public class MicelleGui extends javax.swing.JFrame {
         }
         if (numIterations > 0) {
             system.doIterations(numIterations);
-            update();
+            updateDisplay();
         }
     }//GEN-LAST:event_doIterationsBtnActionPerformed
-    
+
     private void randomizeBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_randomizeBtnActionPerformed
         system.randomizePositions();
-        update();
+        updateDisplay();
     }//GEN-LAST:event_randomizeBtnActionPerformed
-    
+
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
         SystemConfiguration configurator = new SystemConfiguration(this);
         configurator.setVisible(true);
