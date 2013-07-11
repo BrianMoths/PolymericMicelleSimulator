@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 
-<Form version="1.3" maxVersion="1.8" type="org.netbeans.modules.form.forminfo.JFrameFormInfo">
+<Form version="1.5" maxVersion="1.8" type="org.netbeans.modules.form.forminfo.JFrameFormInfo">
   <NonVisualComponents>
     <Component class="javax.swing.ButtonGroup" name="boundaryConditionBgp">
     </Component>
@@ -31,16 +31,13 @@
           <Group type="102" attributes="0">
               <EmptySpace max="-2" attributes="0"/>
               <Group type="103" groupAlignment="0" max="-2" attributes="0">
-                  <Component id="physicalConstantsPanel" max="32767" attributes="0"/>
                   <Component id="geometryPanel" max="32767" attributes="0"/>
+                  <Component id="physicalConstantsPanel" max="32767" attributes="0"/>
               </Group>
               <EmptySpace type="unrelated" max="-2" attributes="0"/>
               <Group type="103" groupAlignment="0" attributes="0">
                   <Component id="PolymerClusterPanel" max="32767" attributes="0"/>
-                  <Group type="102" attributes="0">
-                      <Component id="buildSystembtn" min="-2" pref="216" max="-2" attributes="0"/>
-                      <EmptySpace min="0" pref="8" max="32767" attributes="0"/>
-                  </Group>
+                  <Component id="buildSystembtn" max="32767" attributes="0"/>
               </Group>
               <EmptySpace max="-2" attributes="0"/>
           </Group>
@@ -51,18 +48,15 @@
           <Group type="102" alignment="0" attributes="0">
               <EmptySpace max="-2" attributes="0"/>
               <Group type="103" groupAlignment="0" max="-2" attributes="0">
-                  <Group type="102" attributes="0">
-                      <Component id="geometryPanel" min="-2" max="-2" attributes="0"/>
-                      <EmptySpace max="-2" attributes="0"/>
-                      <Component id="physicalConstantsPanel" min="-2" max="-2" attributes="0"/>
-                  </Group>
-                  <Group type="102" attributes="0">
-                      <Component id="PolymerClusterPanel" min="-2" max="-2" attributes="0"/>
-                      <EmptySpace max="32767" attributes="0"/>
-                      <Component id="buildSystembtn" min="-2" pref="122" max="-2" attributes="0"/>
-                  </Group>
+                  <Component id="PolymerClusterPanel" max="32767" attributes="0"/>
+                  <Component id="geometryPanel" max="32767" attributes="0"/>
               </Group>
-              <EmptySpace pref="14" max="32767" attributes="0"/>
+              <EmptySpace max="-2" attributes="0"/>
+              <Group type="103" groupAlignment="1" attributes="0">
+                  <Component id="physicalConstantsPanel" min="-2" max="-2" attributes="0"/>
+                  <Component id="buildSystembtn" min="-2" pref="140" max="-2" attributes="0"/>
+              </Group>
+              <EmptySpace max="32767" attributes="0"/>
           </Group>
       </Group>
     </DimensionLayout>
@@ -100,12 +94,12 @@
                   <EmptySpace min="-2" pref="1" max="-2" attributes="0"/>
                   <Group type="103" groupAlignment="0" attributes="0">
                       <Group type="102" attributes="0">
-                          <Component id="jLabel1" min="-2" pref="179" max="-2" attributes="0"/>
+                          <Component id="boundaryConditionsCaptionLbl" min="-2" pref="179" max="-2" attributes="0"/>
                           <EmptySpace max="32767" attributes="0"/>
                       </Group>
                       <Group type="102" alignment="0" attributes="0">
                           <Component id="periodicRdo" min="-2" max="-2" attributes="0"/>
-                          <EmptySpace max="32767" attributes="0"/>
+                          <EmptySpace pref="40" max="32767" attributes="0"/>
                           <Component id="hardWallRdo" min="-2" max="-2" attributes="0"/>
                           <EmptySpace min="-2" pref="22" max="-2" attributes="0"/>
                       </Group>
@@ -131,13 +125,13 @@
                       <Component id="yMaxFld" alignment="3" min="-2" max="-2" attributes="0"/>
                   </Group>
                   <EmptySpace max="-2" attributes="0"/>
-                  <Component id="jLabel1" min="-2" max="-2" attributes="0"/>
+                  <Component id="boundaryConditionsCaptionLbl" min="-2" max="-2" attributes="0"/>
                   <EmptySpace type="unrelated" max="-2" attributes="0"/>
                   <Group type="103" groupAlignment="3" attributes="0">
                       <Component id="hardWallRdo" alignment="3" min="-2" max="-2" attributes="0"/>
                       <Component id="periodicRdo" alignment="3" min="-2" max="-2" attributes="0"/>
                   </Group>
-                  <EmptySpace pref="11" max="32767" attributes="0"/>
+                  <EmptySpace max="32767" attributes="0"/>
               </Group>
           </Group>
         </DimensionLayout>
@@ -174,10 +168,15 @@
         </Component>
         <Component class="javax.swing.JTextField" name="yMaxFld">
           <Properties>
-            <Property name="text" type="java.lang.String" value="20"/>
+            <Property name="editable" type="boolean" value="false"/>
           </Properties>
+          <BindingProperties>
+            <BindingProperty name="text" source="xMaxFld" sourcePath="${text}" target="yMaxFld" targetPath="text" updateStrategy="0" immediately="false">
+              <BindingParameter name="javax.swing.binding.ParameterKeys.TEXT_CHANGE_STRATEGY" value="javax.swing.binding.TextChangeStrategy.ON_TYPE"/>
+            </BindingProperty>
+          </BindingProperties>
         </Component>
-        <Component class="javax.swing.JLabel" name="jLabel1">
+        <Component class="javax.swing.JLabel" name="boundaryConditionsCaptionLbl">
           <Properties>
             <Property name="text" type="java.lang.String" value="Boundary Conditions:"/>
           </Properties>
@@ -215,18 +214,20 @@
           <Group type="103" groupAlignment="0" attributes="0">
               <Group type="102" alignment="0" attributes="0">
                   <EmptySpace max="-2" attributes="0"/>
-                  <Group type="103" groupAlignment="1" max="-2" attributes="0">
-                      <Component id="springConstantCaptionLbl" max="32767" attributes="0"/>
-                      <Component id="differentCoefficientCaptionLbl" max="32767" attributes="0"/>
-                      <Component id="similarCoefficientCaptionLbl" max="32767" attributes="0"/>
-                      <Component id="temperatureCaptionLbl" max="32767" attributes="0"/>
+                  <Group type="103" groupAlignment="0" max="-2" attributes="0">
+                      <Component id="BBCoeffCaptionLbl" max="32767" attributes="0"/>
+                      <Component id="springConstantCaptionLbl" alignment="1" max="32767" attributes="0"/>
+                      <Component id="ABCoefficientCaptionLbl" alignment="1" max="32767" attributes="0"/>
+                      <Component id="AACoefficientCaptionLbl" alignment="1" max="32767" attributes="0"/>
+                      <Component id="temperatureCaptionLbl" alignment="1" max="32767" attributes="0"/>
                   </Group>
                   <EmptySpace max="-2" attributes="0"/>
                   <Group type="103" groupAlignment="0" attributes="0">
-                      <Component id="temperatureFld" pref="106" max="32767" attributes="0"/>
-                      <Component id="similarOverlapCoefficientFld" max="32767" attributes="0"/>
-                      <Component id="differentOverlapCoefficientFld" alignment="0" max="32767" attributes="0"/>
+                      <Component id="temperatureFld" max="32767" attributes="0"/>
+                      <Component id="AAOverlapCoefficientFld" max="32767" attributes="0"/>
+                      <Component id="ABOverlapCoefficientFld" alignment="0" max="32767" attributes="0"/>
                       <Component id="springConstantFld" alignment="0" max="32767" attributes="0"/>
+                      <Component id="BBOverlapCoefficientFld" alignment="0" max="32767" attributes="0"/>
                   </Group>
                   <EmptySpace max="-2" attributes="0"/>
               </Group>
@@ -241,13 +242,18 @@
                   </Group>
                   <EmptySpace max="-2" attributes="0"/>
                   <Group type="103" groupAlignment="3" attributes="0">
-                      <Component id="similarCoefficientCaptionLbl" alignment="3" min="-2" max="-2" attributes="0"/>
-                      <Component id="similarOverlapCoefficientFld" alignment="3" min="-2" max="-2" attributes="0"/>
+                      <Component id="AACoefficientCaptionLbl" alignment="3" min="-2" max="-2" attributes="0"/>
+                      <Component id="AAOverlapCoefficientFld" alignment="3" min="-2" max="-2" attributes="0"/>
                   </Group>
                   <EmptySpace max="-2" attributes="0"/>
                   <Group type="103" groupAlignment="3" attributes="0">
-                      <Component id="differentCoefficientCaptionLbl" alignment="3" min="-2" max="-2" attributes="0"/>
-                      <Component id="differentOverlapCoefficientFld" alignment="3" min="-2" max="-2" attributes="0"/>
+                      <Component id="BBCoeffCaptionLbl" alignment="3" min="-2" pref="15" max="-2" attributes="0"/>
+                      <Component id="BBOverlapCoefficientFld" alignment="3" min="-2" max="-2" attributes="0"/>
+                  </Group>
+                  <EmptySpace max="-2" attributes="0"/>
+                  <Group type="103" groupAlignment="3" attributes="0">
+                      <Component id="ABCoefficientCaptionLbl" alignment="3" min="-2" max="-2" attributes="0"/>
+                      <Component id="ABOverlapCoefficientFld" alignment="3" min="-2" max="-2" attributes="0"/>
                   </Group>
                   <EmptySpace max="-2" attributes="0"/>
                   <Group type="103" groupAlignment="3" attributes="0">
@@ -272,23 +278,23 @@
             <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="temperatureFldActionPerformed"/>
           </Events>
         </Component>
-        <Component class="javax.swing.JLabel" name="similarCoefficientCaptionLbl">
+        <Component class="javax.swing.JLabel" name="AACoefficientCaptionLbl">
           <Properties>
-            <Property name="text" type="java.lang.String" value="SimilarCoeff.:"/>
+            <Property name="text" type="java.lang.String" value="AACoeff.:"/>
           </Properties>
         </Component>
-        <Component class="javax.swing.JTextField" name="similarOverlapCoefficientFld">
+        <Component class="javax.swing.JTextField" name="AAOverlapCoefficientFld">
           <Properties>
             <Property name="text" type="java.lang.String" value="1"/>
           </Properties>
         </Component>
-        <Component class="javax.swing.JLabel" name="differentCoefficientCaptionLbl">
+        <Component class="javax.swing.JLabel" name="ABCoefficientCaptionLbl">
           <Properties>
             <Property name="horizontalAlignment" type="int" value="4"/>
-            <Property name="text" type="java.lang.String" value="Diff. Coeff.:"/>
+            <Property name="text" type="java.lang.String" value="AB Coeff.:"/>
           </Properties>
         </Component>
-        <Component class="javax.swing.JTextField" name="differentOverlapCoefficientFld">
+        <Component class="javax.swing.JTextField" name="ABOverlapCoefficientFld">
           <Properties>
             <Property name="text" type="java.lang.String" value="4"/>
           </Properties>
@@ -305,6 +311,17 @@
           <Events>
             <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="springConstantFldActionPerformed"/>
           </Events>
+        </Component>
+        <Component class="javax.swing.JLabel" name="BBCoeffCaptionLbl">
+          <Properties>
+            <Property name="horizontalAlignment" type="int" value="4"/>
+            <Property name="text" type="java.lang.String" value="BB Coeff.:"/>
+          </Properties>
+        </Component>
+        <Component class="javax.swing.JTextField" name="BBOverlapCoefficientFld">
+          <Properties>
+            <Property name="text" type="java.lang.String" value="1"/>
+          </Properties>
         </Component>
       </SubComponents>
     </Container>
@@ -338,7 +355,7 @@
                       <Group type="102" attributes="0">
                           <EmptySpace max="-2" attributes="0"/>
                           <Group type="103" groupAlignment="0" attributes="0">
-                              <Group type="102" alignment="0" attributes="0">
+                              <Group type="102" attributes="0">
                                   <Component id="diblockRdo" min="-2" max="-2" attributes="0"/>
                                   <EmptySpace min="0" pref="0" max="32767" attributes="0"/>
                               </Group>
@@ -346,14 +363,21 @@
                                   <Group type="103" groupAlignment="0" attributes="0">
                                       <Component id="numABeadsCaptionLbl" alignment="0" min="-2" max="-2" attributes="0"/>
                                       <Component id="numBBeadsCaptionLbl" alignment="0" min="-2" max="-2" attributes="0"/>
+                                      <Component id="numRepeatsCaptionLbl" alignment="0" min="-2" pref="139" max="-2" attributes="0"/>
                                   </Group>
                                   <EmptySpace min="-2" pref="2" max="-2" attributes="0"/>
                                   <Group type="103" groupAlignment="0" attributes="0">
-                                      <Component id="numABeadsFld" max="32767" attributes="0"/>
+                                      <Component id="numABeadsFld" pref="76" max="32767" attributes="0"/>
                                       <Component id="numBBeadsFld" max="32767" attributes="0"/>
+                                      <Component id="numRepeatsFld" alignment="0" max="32767" attributes="0"/>
                                   </Group>
                               </Group>
                           </Group>
+                      </Group>
+                      <Group type="102" attributes="0">
+                          <Component id="concentrationCaptionLbl" min="-2" max="-2" attributes="0"/>
+                          <EmptySpace max="-2" attributes="0"/>
+                          <Component id="concentrationFld" max="32767" attributes="0"/>
                       </Group>
                   </Group>
                   <EmptySpace max="-2" attributes="0"/>
@@ -379,6 +403,17 @@
                       <Component id="numBBeadsCaptionLbl" alignment="3" min="-2" max="-2" attributes="0"/>
                       <Component id="numBBeadsFld" alignment="3" min="-2" max="-2" attributes="0"/>
                   </Group>
+                  <EmptySpace max="-2" attributes="0"/>
+                  <Group type="103" groupAlignment="3" attributes="0">
+                      <Component id="numRepeatsCaptionLbl" alignment="3" min="-2" max="-2" attributes="0"/>
+                      <Component id="numRepeatsFld" alignment="3" min="-2" max="-2" attributes="0"/>
+                  </Group>
+                  <EmptySpace pref="27" max="32767" attributes="0"/>
+                  <Group type="103" groupAlignment="3" attributes="0">
+                      <Component id="concentrationCaptionLbl" alignment="3" min="-2" max="-2" attributes="0"/>
+                      <Component id="concentrationFld" alignment="3" min="-2" max="-2" attributes="0"/>
+                  </Group>
+                  <EmptySpace max="-2" attributes="0"/>
               </Group>
           </Group>
         </DimensionLayout>
@@ -422,6 +457,27 @@
           <Properties>
             <Property name="text" type="java.lang.String" value="10"/>
             <Property name="toolTipText" type="java.lang.String" value=""/>
+          </Properties>
+        </Component>
+        <Component class="javax.swing.JLabel" name="concentrationCaptionLbl">
+          <Properties>
+            <Property name="horizontalAlignment" type="int" value="4"/>
+            <Property name="text" type="java.lang.String" value="Concentration:"/>
+          </Properties>
+        </Component>
+        <Component class="javax.swing.JTextField" name="concentrationFld">
+          <Properties>
+            <Property name="text" type="java.lang.String" value="1"/>
+          </Properties>
+        </Component>
+        <Component class="javax.swing.JLabel" name="numRepeatsCaptionLbl">
+          <Properties>
+            <Property name="text" type="java.lang.String" value="Number of repeats:"/>
+          </Properties>
+        </Component>
+        <Component class="javax.swing.JTextField" name="numRepeatsFld">
+          <Properties>
+            <Property name="text" type="java.lang.String" value="1"/>
           </Properties>
         </Component>
       </SubComponents>

@@ -15,6 +15,7 @@ public class PolymerCluster {
 
     private final List<PolymerChain> polymerChainList;
     private int numBeads, numABeads;
+    private double concentrationInWater = 1;
 
     private PolymerCluster() {
         polymerChainList = new ArrayList<>();
@@ -88,18 +89,10 @@ public class PolymerCluster {
         addChainMultipleTimes(polymerChain, numTimes);
     }
 
-    public int getNumBeads() {
-        return numBeads;
-    }
-
-    public int getNumABeads() {
-        return numABeads;
-    }
-
     public int[][] makeNeighbors() {
         int[][] neighbors = new int[numBeads][2];
-        int ABeadIndex = 0;
-        int BBeadIndex = numABeads;
+        int nextFreeABeadIndex = 0;
+        int nextFreeBBeadIndex = numABeads;
         int currentIndex, lastIndex;
 
         for (PolymerChain polymerChain : polymerChainList) {
@@ -107,11 +100,11 @@ public class PolymerCluster {
             for (int chainIndex = 0, N = polymerChain.getNumBeads(); chainIndex < N; chainIndex++) {
                 lastIndex = currentIndex;
                 if (polymerChain.isTypeA(chainIndex)) {
-                    currentIndex = ABeadIndex;
-                    ABeadIndex++;
+                    currentIndex = nextFreeABeadIndex;
+                    nextFreeABeadIndex++;
                 } else {
-                    currentIndex = BBeadIndex;
-                    BBeadIndex++;
+                    currentIndex = nextFreeBBeadIndex;
+                    nextFreeBBeadIndex++;
                 }
 
                 neighbors[currentIndex][0] = lastIndex;
@@ -122,5 +115,25 @@ public class PolymerCluster {
             neighbors[currentIndex][1] = -1;
         }
         return neighbors;
+    }
+
+    public double getConcentrationInWater() {
+        return concentrationInWater;
+    }
+
+    public void setConcentrationInWater(double concentrationInWater) {
+        this.concentrationInWater = concentrationInWater;
+    }
+
+    public double getNumBeadsIncludingWater() {
+        return numBeads / concentrationInWater;
+    }
+
+    public int getNumBeads() {
+        return numBeads;
+    }
+
+    public int getNumABeads() {
+        return numABeads;
     }
 }

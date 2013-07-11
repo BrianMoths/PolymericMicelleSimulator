@@ -25,20 +25,18 @@ public class PolymerSimulator {
     private int acceptedIterations;
 
     public PolymerSimulator() {
-        final int ABeadsPerChain = 6, BBeadsPerChain = 6, numChains = 100;
-
-        final int numBeads = (ABeadsPerChain + BBeadsPerChain) * numChains;
         iterationNumber = 0;
         acceptedIterations = 0;
 
+        PolymerCluster polymerCluster = makeDefaultPolymerCluster();
         physicalConstants = makeDefaultPhysicalConstants();
-        geometry = makeGeometryBuilder(numBeads);
-        polymerPosition = makePolymerPosition();
 
+        geometry = makeGeometry(polymerCluster);
+        polymerPosition = makePolymerPosition(polymerCluster, geometry);
         energy = energy();
     }
 
-    private SystemGeometry makeGeometryBuilder(int numBeads) {
+    private SystemGeometry makeGeometry(PolymerCluster polymerCluster) {
         final int dimension = 2;
         final double boxLength = 20;
 //        HardWallGeometryBuilder geometryBuilder = new HardWallGeometryBuilder();
@@ -48,29 +46,25 @@ public class PolymerSimulator {
             geometryBuilder.setDimensionSize(i, boxLength);
         }
 
-        geometryBuilder.setParameters(makeDefaultParameters(numBeads, boxLength, dimension));
+        geometryBuilder.setParameters(makeDefaultParametersPrivate(polymerCluster, boxLength, dimension, physicalConstants));
 
         return geometryBuilder.buildGeometry();
     }
 
-    private SimulationParameters makeDefaultParameters(int numBeads, double boxLength, int dimension) {
+    public static SimulationParameters makeDefaultParameters(PolymerCluster polymerCluster, double boxLength, int dimension, PhysicalConstants physicalConstants) {
+        return makeDefaultParametersPrivate(polymerCluster, boxLength, dimension, physicalConstants);
+    }
+
+    private static SimulationParameters makeDefaultParametersPrivate(PolymerCluster polymerCluster, double boxLength, int dimension, PhysicalConstants physicalConstants) {
         SimulationParameters simulationParameters;
         double interactionLength;
-        interactionLength = Math.pow(14 * Math.pow(boxLength, dimension) / numBeads, 1.0 / dimension);
+        interactionLength = Math.pow(14 * Math.pow(boxLength, dimension) / polymerCluster.getNumBeadsIncludingWater(), 1.0 / dimension);
         double stepLength;
         stepLength = Math.sqrt(physicalConstants.getTemperature() / physicalConstants.getSpringCoefficient());
         simulationParameters = new SimulationParameters(stepLength, interactionLength);
         return simulationParameters;
     }
 
-//    private SimulationParameters makeDefaultParameters() {
-//        double interactionLength = Math.pow(14 * 400 / 100, .5);
-//        double stepLength = interactionLength / 10;
-//        SimulationParameters defaultParameters;
-//        defaultParameters = new SimulationParameters(stepLength, interactionLength);
-//
-//        return defaultParameters;
-//    }
     private PhysicalConstants makeDefaultPhysicalConstants() {
         double temperature, similarOverlapCoefficient, differentOverlapCoefficient, springCoefficient;
         PhysicalConstantsBuilder defaultPhysicalConstantsBuilder = new PhysicalConstantsBuilder();
@@ -89,9 +83,13 @@ public class PolymerSimulator {
         return defaultPhysicalConstantsBuilder.buildPhysicalConstants();
     }
 
-    private PolymerPosition makePolymerPosition() {
+    static public PolymerCluster makeDefaultPolymerCluster() {
         PolymerChain polymerChain = PolymerChain.makeChainStartingWithA(6, 6);
         PolymerCluster polymerCluster = PolymerCluster.makeRepeatedChainCluster(polymerChain, 100);
+        return polymerCluster;
+    }
+
+    private PolymerPosition makePolymerPosition(PolymerCluster polymerCluster, SystemGeometry geometry) {
         PolymerPosition defaultPolymerPosition = new PolymerPosition(polymerCluster, geometry);
         defaultPolymerPosition.randomize();
         return defaultPolymerPosition;
@@ -186,7 +184,7 @@ public class PolymerSimulator {
         return physicalConstants.springEnergy(sqLength);
     }
 
-    public double densityEnergy() {
+    public double densityEnergy() { //can be optimized
         double similarOverlap = polymerPosition.totalSimilarOverlap();
         double differentOverlap = polymerPosition.totalDifferentOverlap();
 

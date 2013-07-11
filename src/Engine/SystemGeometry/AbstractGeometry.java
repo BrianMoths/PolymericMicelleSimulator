@@ -73,7 +73,7 @@ public abstract class AbstractGeometry implements SystemGeometry {
     protected AbstractGeometry(int dimension, double[] fullRMax, SimulationParameters parameters) {
         this.dimension = dimension;
         this.fullRMax = new double[dimension];
-        System.arraycopy(this.fullRMax, 0, fullRMax, 0, dimension);
+        System.arraycopy(fullRMax, 0, this.fullRMax, 0, dimension);
         this.parameters = parameters;
     }
 

@@ -44,7 +44,7 @@ public class BeadBinner {
 
     private class NearbyBeadIterator implements Iterator<Integer> {
 
-        private BinIndex binIndex;
+        private final BinIndex binIndex;
         private Iterator<Integer> beadIterator;
         int i = -1, j = -1;
 

@@ -4,6 +4,7 @@
  */
 package Gui;
 
+import Engine.PhysicalConstants;
 import Engine.PhysicalConstants.PhysicalConstantsBuilder;
 import Engine.PolymerChain;
 import Engine.PolymerCluster;
@@ -37,6 +38,7 @@ public class SystemConfiguration extends javax.swing.JFrame { //broken, need to 
     @SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
+        bindingGroup = new org.jdesktop.beansbinding.BindingGroup();
 
         boundaryConditionBgp = new javax.swing.ButtonGroup();
         geometryPanel = new javax.swing.JPanel();
@@ -46,18 +48,20 @@ public class SystemConfiguration extends javax.swing.JFrame { //broken, need to 
         dimensionFld = new javax.swing.JTextField();
         xMaxFld = new javax.swing.JTextField();
         yMaxFld = new javax.swing.JTextField();
-        jLabel1 = new javax.swing.JLabel();
+        boundaryConditionsCaptionLbl = new javax.swing.JLabel();
         hardWallRdo = new javax.swing.JRadioButton();
         periodicRdo = new javax.swing.JRadioButton();
         physicalConstantsPanel = new javax.swing.JPanel();
         temperatureCaptionLbl = new javax.swing.JLabel();
         temperatureFld = new javax.swing.JTextField();
-        similarCoefficientCaptionLbl = new javax.swing.JLabel();
-        similarOverlapCoefficientFld = new javax.swing.JTextField();
-        differentCoefficientCaptionLbl = new javax.swing.JLabel();
-        differentOverlapCoefficientFld = new javax.swing.JTextField();
+        AACoefficientCaptionLbl = new javax.swing.JLabel();
+        AAOverlapCoefficientFld = new javax.swing.JTextField();
+        ABCoefficientCaptionLbl = new javax.swing.JLabel();
+        ABOverlapCoefficientFld = new javax.swing.JTextField();
         springConstantCaptionLbl = new javax.swing.JLabel();
         springConstantFld = new javax.swing.JTextField();
+        BBCoeffCaptionLbl = new javax.swing.JLabel();
+        BBOverlapCoefficientFld = new javax.swing.JTextField();
         buildSystembtn = new javax.swing.JButton();
         PolymerClusterPanel = new javax.swing.JPanel();
         numberOfChainsCaptionLbl = new javax.swing.JLabel();
@@ -67,6 +71,10 @@ public class SystemConfiguration extends javax.swing.JFrame { //broken, need to 
         numABeadsFld = new javax.swing.JTextField();
         numBBeadsCaptionLbl = new javax.swing.JLabel();
         numBBeadsFld = new javax.swing.JTextField();
+        concentrationCaptionLbl = new javax.swing.JLabel();
+        concentrationFld = new javax.swing.JTextField();
+        numRepeatsCaptionLbl = new javax.swing.JLabel();
+        numRepeatsFld = new javax.swing.JTextField();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         setTitle("Simulator Configuration");
@@ -89,9 +97,12 @@ public class SystemConfiguration extends javax.swing.JFrame { //broken, need to 
             }
         });
 
-        yMaxFld.setText("20");
+        yMaxFld.setEditable(false);
 
-        jLabel1.setText("Boundary Conditions:");
+        org.jdesktop.beansbinding.Binding binding = org.jdesktop.beansbinding.Bindings.createAutoBinding(org.jdesktop.beansbinding.AutoBinding.UpdateStrategy.READ_WRITE, xMaxFld, org.jdesktop.beansbinding.ELProperty.create("${text}"), yMaxFld, org.jdesktop.beansbinding.BeanProperty.create("text"));
+        bindingGroup.addBinding(binding);
+
+        boundaryConditionsCaptionLbl.setText("Boundary Conditions:");
 
         boundaryConditionBgp.add(hardWallRdo);
         hardWallRdo.setText("Hard Wall");
@@ -120,11 +131,11 @@ public class SystemConfiguration extends javax.swing.JFrame { //broken, need to 
                 .addGap(1, 1, 1)
                 .addGroup(geometryPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(geometryPanelLayout.createSequentialGroup()
-                        .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 179, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(boundaryConditionsCaptionLbl, javax.swing.GroupLayout.PREFERRED_SIZE, 179, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                     .addGroup(geometryPanelLayout.createSequentialGroup()
                         .addComponent(periodicRdo)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 40, Short.MAX_VALUE)
                         .addComponent(hardWallRdo)
                         .addGap(22, 22, 22))))
         );
@@ -143,12 +154,12 @@ public class SystemConfiguration extends javax.swing.JFrame { //broken, need to 
                     .addComponent(yMaxCaptionLbl)
                     .addComponent(yMaxFld, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jLabel1)
+                .addComponent(boundaryConditionsCaptionLbl)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addGroup(geometryPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(hardWallRdo)
                     .addComponent(periodicRdo))
-                .addContainerGap(11, Short.MAX_VALUE))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
         physicalConstantsPanel.setBorder(javax.swing.BorderFactory.createTitledBorder("Physical Constants"));
@@ -162,14 +173,14 @@ public class SystemConfiguration extends javax.swing.JFrame { //broken, need to 
             }
         });
 
-        similarCoefficientCaptionLbl.setText("SimilarCoeff.:");
+        AACoefficientCaptionLbl.setText("AACoeff.:");
 
-        similarOverlapCoefficientFld.setText("1");
+        AAOverlapCoefficientFld.setText("1");
 
-        differentCoefficientCaptionLbl.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
-        differentCoefficientCaptionLbl.setText("Diff. Coeff.:");
+        ABCoefficientCaptionLbl.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
+        ABCoefficientCaptionLbl.setText("AB Coeff.:");
 
-        differentOverlapCoefficientFld.setText("4");
+        ABOverlapCoefficientFld.setText("4");
 
         springConstantCaptionLbl.setText("Spring Const:");
 
@@ -180,23 +191,30 @@ public class SystemConfiguration extends javax.swing.JFrame { //broken, need to 
             }
         });
 
+        BBCoeffCaptionLbl.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
+        BBCoeffCaptionLbl.setText("BB Coeff.:");
+
+        BBOverlapCoefficientFld.setText("1");
+
         javax.swing.GroupLayout physicalConstantsPanelLayout = new javax.swing.GroupLayout(physicalConstantsPanel);
         physicalConstantsPanel.setLayout(physicalConstantsPanelLayout);
         physicalConstantsPanelLayout.setHorizontalGroup(
             physicalConstantsPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(physicalConstantsPanelLayout.createSequentialGroup()
                 .addContainerGap()
-                .addGroup(physicalConstantsPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
-                    .addComponent(springConstantCaptionLbl, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(differentCoefficientCaptionLbl, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(similarCoefficientCaptionLbl, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(temperatureCaptionLbl, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addGroup(physicalConstantsPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                    .addComponent(BBCoeffCaptionLbl, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(springConstantCaptionLbl, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(ABCoefficientCaptionLbl, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(AACoefficientCaptionLbl, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(temperatureCaptionLbl, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(physicalConstantsPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(temperatureFld, javax.swing.GroupLayout.DEFAULT_SIZE, 106, Short.MAX_VALUE)
-                    .addComponent(similarOverlapCoefficientFld)
-                    .addComponent(differentOverlapCoefficientFld)
-                    .addComponent(springConstantFld))
+                    .addComponent(temperatureFld)
+                    .addComponent(AAOverlapCoefficientFld)
+                    .addComponent(ABOverlapCoefficientFld)
+                    .addComponent(springConstantFld)
+                    .addComponent(BBOverlapCoefficientFld))
                 .addContainerGap())
         );
         physicalConstantsPanelLayout.setVerticalGroup(
@@ -207,12 +225,16 @@ public class SystemConfiguration extends javax.swing.JFrame { //broken, need to 
                     .addComponent(temperatureFld, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(physicalConstantsPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(similarCoefficientCaptionLbl)
-                    .addComponent(similarOverlapCoefficientFld, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(AACoefficientCaptionLbl)
+                    .addComponent(AAOverlapCoefficientFld, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(physicalConstantsPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(differentCoefficientCaptionLbl)
-                    .addComponent(differentOverlapCoefficientFld, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(BBCoeffCaptionLbl, javax.swing.GroupLayout.PREFERRED_SIZE, 15, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(BBOverlapCoefficientFld, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(physicalConstantsPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(ABCoefficientCaptionLbl)
+                    .addComponent(ABOverlapCoefficientFld, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(physicalConstantsPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(springConstantCaptionLbl)
@@ -245,6 +267,15 @@ public class SystemConfiguration extends javax.swing.JFrame { //broken, need to 
         numBBeadsFld.setText("10");
         numBBeadsFld.setToolTipText("");
 
+        concentrationCaptionLbl.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
+        concentrationCaptionLbl.setText("Concentration:");
+
+        concentrationFld.setText("1");
+
+        numRepeatsCaptionLbl.setText("Number of repeats:");
+
+        numRepeatsFld.setText("1");
+
         javax.swing.GroupLayout PolymerClusterPanelLayout = new javax.swing.GroupLayout(PolymerClusterPanel);
         PolymerClusterPanel.setLayout(PolymerClusterPanelLayout);
         PolymerClusterPanelLayout.setHorizontalGroup(
@@ -264,11 +295,17 @@ public class SystemConfiguration extends javax.swing.JFrame { //broken, need to 
                             .addGroup(PolymerClusterPanelLayout.createSequentialGroup()
                                 .addGroup(PolymerClusterPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                                     .addComponent(numABeadsCaptionLbl)
-                                    .addComponent(numBBeadsCaptionLbl))
+                                    .addComponent(numBBeadsCaptionLbl)
+                                    .addComponent(numRepeatsCaptionLbl, javax.swing.GroupLayout.PREFERRED_SIZE, 139, javax.swing.GroupLayout.PREFERRED_SIZE))
                                 .addGap(2, 2, 2)
                                 .addGroup(PolymerClusterPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addComponent(numABeadsFld)
-                                    .addComponent(numBBeadsFld))))))
+                                    .addComponent(numABeadsFld, javax.swing.GroupLayout.DEFAULT_SIZE, 76, Short.MAX_VALUE)
+                                    .addComponent(numBBeadsFld)
+                                    .addComponent(numRepeatsFld)))))
+                    .addGroup(PolymerClusterPanelLayout.createSequentialGroup()
+                        .addComponent(concentrationCaptionLbl)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(concentrationFld)))
                 .addContainerGap())
         );
         PolymerClusterPanelLayout.setVerticalGroup(
@@ -286,7 +323,16 @@ public class SystemConfiguration extends javax.swing.JFrame { //broken, need to 
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(PolymerClusterPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(numBBeadsCaptionLbl)
-                    .addComponent(numBBeadsFld, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                    .addComponent(numBBeadsFld, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(PolymerClusterPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(numRepeatsCaptionLbl)
+                    .addComponent(numRepeatsFld, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 27, Short.MAX_VALUE)
+                .addGroup(PolymerClusterPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(concentrationCaptionLbl)
+                    .addComponent(concentrationFld, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addContainerGap())
         );
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
@@ -296,14 +342,12 @@ public class SystemConfiguration extends javax.swing.JFrame { //broken, need to 
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addComponent(physicalConstantsPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(geometryPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                    .addComponent(geometryPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(physicalConstantsPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(PolymerClusterPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addGroup(layout.createSequentialGroup()
-                        .addComponent(buildSystembtn, javax.swing.GroupLayout.PREFERRED_SIZE, 216, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(0, 8, Short.MAX_VALUE)))
+                    .addComponent(buildSystembtn, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addContainerGap())
         );
         layout.setVerticalGroup(
@@ -311,16 +355,16 @@ public class SystemConfiguration extends javax.swing.JFrame { //broken, need to 
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addGroup(layout.createSequentialGroup()
-                        .addComponent(geometryPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(physicalConstantsPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addGroup(layout.createSequentialGroup()
-                        .addComponent(PolymerClusterPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(buildSystembtn, javax.swing.GroupLayout.PREFERRED_SIZE, 122, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                    .addComponent(PolymerClusterPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(geometryPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addComponent(physicalConstantsPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(buildSystembtn, javax.swing.GroupLayout.PREFERRED_SIZE, 140, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
+
+        bindingGroup.bind();
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
@@ -340,11 +384,12 @@ public class SystemConfiguration extends javax.swing.JFrame { //broken, need to 
     private void buildSystembtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_buildSystembtnActionPerformed
         GeometryBuilder systemGeometryBuilder = new PeriodicGeometryBuilder();
         PhysicalConstantsBuilder physicalConstantsBuilder = new PhysicalConstantsBuilder();
-        SimulationParameters simulationParameters = new SimulationParameters();
+        SimulationParameters simulationParameters;
 
-        int dimension, numChains, numABeads, numBBeads;
+        int dimension, numChains, numABeadsPerChain, numBBeadsPerChain, numRepeats;
         double xMax = 0, yMax = 0, zMax = 0;
-        double temperature, similarOverlapCoefficient, differentOverlapCoefficient, springConstant;
+        double temperature, AAOverlapCoefficient, BBOverlapCoefficient,
+                ABOverlapCoefficient, springConstant, concentration;
 
         try {
             final String dimensionString = dimensionFld.getText();
@@ -379,16 +424,23 @@ public class SystemConfiguration extends javax.swing.JFrame { //broken, need to 
         }
 
         try {
-            final String similarOverlapCoefficientString = similarOverlapCoefficientFld.getText();
-            similarOverlapCoefficient = Double.parseDouble(similarOverlapCoefficientString);
+            final String AAOverlapCoefficientString = AAOverlapCoefficientFld.getText();
+            AAOverlapCoefficient = Double.parseDouble(AAOverlapCoefficientString);
+        } catch (NumberFormatException e) {
+            System.err.println("couldn't parse similarOverlapCoefficient");
+            return;
+        }
+        try {
+            final String BBOverlapCoefficientString = BBOverlapCoefficientFld.getText();
+            BBOverlapCoefficient = Double.parseDouble(BBOverlapCoefficientString);
         } catch (NumberFormatException e) {
             System.err.println("couldn't parse similarOverlapCoefficient");
             return;
         }
 
         try {
-            final String differentOverlapCoefficientString = differentOverlapCoefficientFld.getText();
-            differentOverlapCoefficient = Double.parseDouble(differentOverlapCoefficientString);
+            final String ABOverlapCoefficientString = ABOverlapCoefficientFld.getText();
+            ABOverlapCoefficient = Double.parseDouble(ABOverlapCoefficientString);
         } catch (NumberFormatException e) {
             System.err.println("couldn't parse differentOverlapCoefficient");
             return;
@@ -412,7 +464,7 @@ public class SystemConfiguration extends javax.swing.JFrame { //broken, need to 
 
         try {
             final String numABeadsString = numABeadsFld.getText();
-            numABeads = Integer.parseInt(numABeadsString);
+            numABeadsPerChain = Integer.parseInt(numABeadsString);
         } catch (NumberFormatException e) {
             System.err.println("couldn't parse number of A Beads");
             return;
@@ -420,9 +472,25 @@ public class SystemConfiguration extends javax.swing.JFrame { //broken, need to 
 
         try {
             final String numBBeadsString = numBBeadsFld.getText();
-            numBBeads = Integer.parseInt(numBBeadsString);
+            numBBeadsPerChain = Integer.parseInt(numBBeadsString);
         } catch (NumberFormatException e) {
             System.err.println("couldn't parse number of B Beads.");
+            return;
+        }
+
+        try {
+            final String numRepeatsString = numRepeatsFld.getText();
+            numRepeats = Integer.parseInt(numRepeatsString);
+        } catch (NumberFormatException e) {
+            System.err.println("couldn't parse number of repeats.");
+            return;
+        }
+
+        try {
+            final String concentrationString = concentrationFld.getText();
+            concentration = Double.parseDouble(concentrationString);
+        } catch (NumberFormatException e) {
+            System.err.println("couldn't concentration.");
             return;
         }
 
@@ -436,18 +504,26 @@ public class SystemConfiguration extends javax.swing.JFrame { //broken, need to 
             return;
         }
 
-        if (numABeads < 0) {
-            System.err.println("number of A Beads must be positive.");
+        if (numRepeats < 1) {
+            System.err.println("number of repeats must be positive.");
+        }
+
+        if (numABeadsPerChain < 0) {
+            System.err.println("number of A Beads must be non-negative.");
             return;
         }
 
-        if (numBBeads < 0) {
-            System.err.println("number of B Beads must be positive.");
+        if (numBBeadsPerChain < 0) {
+            System.err.println("number of B Beads must be non-negative.");
             return;
         }
 
-        if (numABeads + numBBeads < 1) {
+        if (numABeadsPerChain + numBBeadsPerChain < 1) {
             System.err.println("There must be at least one bead per chain.");
+        }
+
+        if (concentration <= 0) {
+            System.err.println("Concentration must have a positive value");
         }
 
         if (periodicRdo.isSelected()) {
@@ -457,10 +533,22 @@ public class SystemConfiguration extends javax.swing.JFrame { //broken, need to 
         }
 
         physicalConstantsBuilder.setTemperature(temperature);
-        physicalConstantsBuilder.setAAOverlapCoefficient(similarOverlapCoefficient);
-        physicalConstantsBuilder.setBBOverlapCoefficient(similarOverlapCoefficient);
-        physicalConstantsBuilder.setABOverlapCoefficient(differentOverlapCoefficient);
+        physicalConstantsBuilder.setAAOverlapCoefficient(AAOverlapCoefficient);
+        physicalConstantsBuilder.setBBOverlapCoefficient(BBOverlapCoefficient);
+        physicalConstantsBuilder.setABOverlapCoefficient(ABOverlapCoefficient);
         physicalConstantsBuilder.setSpringCoefficient(springConstant);
+
+        PhysicalConstants physicalConstants = physicalConstantsBuilder.buildPhysicalConstants();
+
+        PolymerChain polymerChain = PolymerChain.makeChainStartingWithA(numABeadsPerChain, numBBeadsPerChain);
+        for (int i = 1; i < numRepeats; i++) {
+            polymerChain.addBeads(true, numABeadsPerChain);
+            polymerChain.addBeads(false, numBBeadsPerChain);
+        }
+        PolymerCluster polymerCluster = PolymerCluster.makeRepeatedChainCluster(polymerChain, numChains);
+        polymerCluster.setConcentrationInWater(concentration);
+
+        simulationParameters = PolymerSimulator.makeDefaultParameters(polymerCluster, xMax, dimension, physicalConstants);
 
         systemGeometryBuilder.setDimension(dimension);
         systemGeometryBuilder.setDimensionSize(0, xMax);
@@ -468,16 +556,11 @@ public class SystemConfiguration extends javax.swing.JFrame { //broken, need to 
         systemGeometryBuilder.setDimensionSize(2, zMax);
         systemGeometryBuilder.setParameters(simulationParameters);
 
-        PolymerChain polymerChain = PolymerChain.makeChainStartingWithA(numABeads, numBBeads);
-        PolymerCluster polymerCluster = PolymerCluster.makeRepeatedChainCluster(polymerChain, numChains);
-
-
-
         PolymerSimulator polymerSystem;
         polymerSystem = new PolymerSimulator(
                 systemGeometryBuilder.buildGeometry(),
                 polymerCluster,
-                physicalConstantsBuilder.buildPhysicalConstants());
+                physicalConstants);
 
         gui.setSystem(polymerSystem);
     }//GEN-LAST:event_buildSystembtnActionPerformed
@@ -516,27 +599,33 @@ public class SystemConfiguration extends javax.swing.JFrame { //broken, need to 
 //        });
 //    }
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JLabel AACoefficientCaptionLbl;
+    private javax.swing.JTextField AAOverlapCoefficientFld;
+    private javax.swing.JLabel ABCoefficientCaptionLbl;
+    private javax.swing.JTextField ABOverlapCoefficientFld;
+    private javax.swing.JLabel BBCoeffCaptionLbl;
+    private javax.swing.JTextField BBOverlapCoefficientFld;
     private javax.swing.JPanel PolymerClusterPanel;
     private javax.swing.ButtonGroup boundaryConditionBgp;
+    private javax.swing.JLabel boundaryConditionsCaptionLbl;
     private javax.swing.JButton buildSystembtn;
+    private javax.swing.JLabel concentrationCaptionLbl;
+    private javax.swing.JTextField concentrationFld;
     private javax.swing.JRadioButton diblockRdo;
-    private javax.swing.JLabel differentCoefficientCaptionLbl;
-    private javax.swing.JTextField differentOverlapCoefficientFld;
     private javax.swing.JLabel dimensionCaptionLbl;
     private javax.swing.JTextField dimensionFld;
     private javax.swing.JPanel geometryPanel;
     private javax.swing.JRadioButton hardWallRdo;
-    private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel numABeadsCaptionLbl;
     private javax.swing.JTextField numABeadsFld;
     private javax.swing.JLabel numBBeadsCaptionLbl;
     private javax.swing.JTextField numBBeadsFld;
+    private javax.swing.JLabel numRepeatsCaptionLbl;
+    private javax.swing.JTextField numRepeatsFld;
     private javax.swing.JLabel numberOfChainsCaptionLbl;
     private javax.swing.JTextField numberOfChainsFld;
     private javax.swing.JRadioButton periodicRdo;
     private javax.swing.JPanel physicalConstantsPanel;
-    private javax.swing.JLabel similarCoefficientCaptionLbl;
-    private javax.swing.JTextField similarOverlapCoefficientFld;
     private javax.swing.JLabel springConstantCaptionLbl;
     private javax.swing.JTextField springConstantFld;
     private javax.swing.JLabel temperatureCaptionLbl;
@@ -545,5 +634,6 @@ public class SystemConfiguration extends javax.swing.JFrame { //broken, need to 
     private javax.swing.JTextField xMaxFld;
     private javax.swing.JLabel yMaxCaptionLbl;
     private javax.swing.JTextField yMaxFld;
+    private org.jdesktop.beansbinding.BindingGroup bindingGroup;
     // End of variables declaration//GEN-END:variables
 }
