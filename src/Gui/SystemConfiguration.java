@@ -255,13 +255,15 @@ public class SystemConfiguration extends javax.swing.JFrame { //broken, need to 
         numberOfChainsFld.setText("10");
 
         diblockRdo.setSelected(true);
-        diblockRdo.setText("Diblock Copolymer");
+        diblockRdo.setText("(AB)^n Block Copolymer");
 
+        numABeadsCaptionLbl.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
         numABeadsCaptionLbl.setLabelFor(numABeadsFld);
         numABeadsCaptionLbl.setText("Number of A Beads:");
 
         numABeadsFld.setText("10");
 
+        numBBeadsCaptionLbl.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
         numBBeadsCaptionLbl.setText("Number of B Beads:");
 
         numBBeadsFld.setText("10");
@@ -272,7 +274,8 @@ public class SystemConfiguration extends javax.swing.JFrame { //broken, need to 
 
         concentrationFld.setText("1");
 
-        numRepeatsCaptionLbl.setText("Number of repeats:");
+        numRepeatsCaptionLbl.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
+        numRepeatsCaptionLbl.setText("Number of repeats 'n':");
 
         numRepeatsFld.setText("1");
 
@@ -291,16 +294,16 @@ public class SystemConfiguration extends javax.swing.JFrame { //broken, need to 
                         .addGroup(PolymerClusterPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addGroup(PolymerClusterPanelLayout.createSequentialGroup()
                                 .addComponent(diblockRdo)
-                                .addGap(0, 0, Short.MAX_VALUE))
+                                .addGap(0, 65, Short.MAX_VALUE))
                             .addGroup(PolymerClusterPanelLayout.createSequentialGroup()
-                                .addGroup(PolymerClusterPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addComponent(numABeadsCaptionLbl)
-                                    .addComponent(numBBeadsCaptionLbl)
-                                    .addComponent(numRepeatsCaptionLbl, javax.swing.GroupLayout.PREFERRED_SIZE, 139, javax.swing.GroupLayout.PREFERRED_SIZE))
-                                .addGap(2, 2, 2)
-                                .addGroup(PolymerClusterPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addComponent(numABeadsFld, javax.swing.GroupLayout.DEFAULT_SIZE, 76, Short.MAX_VALUE)
-                                    .addComponent(numBBeadsFld)
+                                .addGroup(PolymerClusterPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                                    .addComponent(numRepeatsCaptionLbl, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                    .addComponent(numBBeadsCaptionLbl, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                    .addComponent(numABeadsCaptionLbl, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                .addGroup(PolymerClusterPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                                    .addComponent(numBBeadsFld, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 86, Short.MAX_VALUE)
+                                    .addComponent(numABeadsFld, javax.swing.GroupLayout.Alignment.TRAILING)
                                     .addComponent(numRepeatsFld)))))
                     .addGroup(PolymerClusterPanelLayout.createSequentialGroup()
                         .addComponent(concentrationCaptionLbl)
@@ -361,7 +364,7 @@ public class SystemConfiguration extends javax.swing.JFrame { //broken, need to 
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                     .addComponent(physicalConstantsPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(buildSystembtn, javax.swing.GroupLayout.PREFERRED_SIZE, 140, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addContainerGap(13, Short.MAX_VALUE))
         );
 
         bindingGroup.bind();

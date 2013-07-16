@@ -12,6 +12,19 @@ public class AreaOverlap {
 
     public double AAOverlap, BBOverlap, ABOverlap;
 
+    public static AreaOverlap overlapOfBead(boolean isTypeA, double AOverlap, double BOverlap) {
+        AreaOverlap areaOverlap = new AreaOverlap();
+        if (isTypeA) {
+            areaOverlap.AAOverlap = AOverlap;
+            areaOverlap.ABOverlap = BOverlap;
+        } else {
+            areaOverlap.ABOverlap = AOverlap;
+            areaOverlap.BBOverlap = BOverlap;
+        }
+
+        return areaOverlap;
+    }
+
     public AreaOverlap() {
         AAOverlap = 0;
         BBOverlap = 0;
@@ -26,5 +39,17 @@ public class AreaOverlap {
         overlapDifference.BBOverlap = overlap1.BBOverlap - overlap2.BBOverlap;
 
         return overlapDifference;
+    }
+
+    public void incrementBy(AreaOverlap areaOverlap) {
+        AAOverlap += areaOverlap.AAOverlap;
+        BBOverlap += areaOverlap.BBOverlap;
+        ABOverlap += areaOverlap.ABOverlap;
+    }
+
+    public void halve() {
+        AAOverlap /= 2;
+        ABOverlap /= 2;
+        BBOverlap /= 2;
     }
 }

@@ -65,9 +65,9 @@ public abstract class AbstractGeometry implements SystemGeometry {
         abstract public SystemGeometry buildGeometry();
     }
     //</editor-fold>
+    public static final Random randomNumberGenerator = new Random();
     protected final int dimension;
     protected final double[] fullRMax; //try to make this constant
-    public static final Random randomNumberGenerator = new Random();
     protected final SimulationParameters parameters;
 
     protected AbstractGeometry(int dimension, double[] fullRMax, SimulationParameters parameters) {

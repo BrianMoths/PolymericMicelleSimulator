@@ -46,9 +46,11 @@ public class BeadBinner {
 
         private final BinIndex binIndex;
         private Iterator<Integer> beadIterator;
-        int i = -1, j = -1;
+        int i, j;
 
         public NearbyBeadIterator(BinIndex binIndex) {
+            i = -1;
+            j = -1;
             this.binIndex = new BinIndex(binIndex);
             updateBeadIterator();
         }
@@ -59,7 +61,7 @@ public class BeadBinner {
                 return true;
             } else {
                 goToNextNonEmptyBin();
-                return i <= 1; //we have iterated too far already
+                return !isOutOfBins(); //we have iterated too far already
             }
         }
 
@@ -74,7 +76,7 @@ public class BeadBinner {
         }
 
         private void goToNextNonEmptyBin() {
-            while (!beadIterator.hasNext()) {
+            while (!beadIterator.hasNext() && !isOutOfBins()) {
                 iterateBin();
             }
         }
@@ -84,7 +86,7 @@ public class BeadBinner {
             if (j > 1) {
                 j = -1;
                 i++;
-                if (i > 1) {
+                if (isOutOfBins()) {
                     return;
                 }
             }
@@ -96,6 +98,10 @@ public class BeadBinner {
             BinIndex neighboringBinIndex = new BinIndex(binIndex.x + i, binIndex.y + j);
             projectBinIndex(neighboringBinIndex);
             beadIterator = getBin(neighboringBinIndex).iterator();
+        }
+
+        private boolean isOutOfBins() {
+            return i > 1;
         }
 
         @Override
@@ -203,13 +209,13 @@ public class BeadBinner {
         }
     }
 
-    public Iterator<Integer> getNearbyBeadIterator() {
-        BinIndex binIndex;
-        if (isStepDone) {
-            binIndex = getBinIndex(simulationStep.getFinalPosition());
-        } else {
-            binIndex = getBinIndex(simulationStep.getInitialPosition());
-        }
+    public Iterator<Integer> getStepBeadNearbyBeadIterator() {
+        final double[] position = isStepDone ? simulationStep.getFinalPosition() : simulationStep.getInitialPosition();
+        return getNearbyBeadIterator(position);
+    }
+
+    public Iterator<Integer> getNearbyBeadIterator(double[] position) {
+        BinIndex binIndex = getBinIndex(position);
 
         NearbyBeadIterator iterator = new NearbyBeadIterator(binIndex);
 
