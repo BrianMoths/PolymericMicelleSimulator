@@ -121,13 +121,16 @@ public class PolymerSimulator {
         energy = energy();
     }
 
-    public void doIterations(int n) { //possibly optomize by unrolling loop and tracking pairwise interactions
+    public synchronized void doIterations(int n) { //possibly optomize by unrolling loop and tracking pairwise interactions
         for (int i = 0; i < n; i++) {
             doIteration();
+            if (Thread.interrupted()) {
+                return;
+            }
         }
     }
 
-    public void doIteration() {
+    public synchronized void doIteration() {
         iterationNumber++;
         final int stepBead = polymerPosition.randomBeadIndex();
         final double[] stepVector = geometry.randomGaussian();
@@ -195,11 +198,10 @@ public class PolymerSimulator {
     }
     // </editor-fold>
 
-    public void setGraphics(Graphics graphics) {
-        polymerPosition.setGraphics(graphics);
-    }
-
-    public void draw() {
-        polymerPosition.draw();
+//    public void setGraphics(Graphics graphics) {
+//        polymerPosition.setGraphics(graphics);
+//    }
+    public void draw(Graphics graphics) {
+        polymerPosition.draw(graphics);
     }
 }

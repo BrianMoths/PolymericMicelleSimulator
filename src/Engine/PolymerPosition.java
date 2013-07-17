@@ -24,7 +24,7 @@ public class PolymerPosition {
     private final SystemGeometry systemGeometry;
     private BeadBinner beadBinner;
     private double[][] beadPositions;
-    private Graphics graphics;
+//    private Graphics graphics;
     private SimulationStep simulationStep;
 
     public PolymerPosition(PolymerCluster polymerCluster, SystemGeometry systemGeometry) {
@@ -163,11 +163,10 @@ public class PolymerPosition {
         return beadOverlap(simulationStep.getStepBead());
     }
 
-    public void setGraphics(Graphics inGraphics) {
-        graphics = inGraphics;
-    }
-
-    public void draw() {
+//    public void setGraphics(Graphics inGraphics) {
+//        graphics = inGraphics;
+//    }
+    public void draw(final Graphics graphics) {
         if (graphics == null) {
             return;
         }
