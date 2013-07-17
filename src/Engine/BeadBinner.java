@@ -8,6 +8,7 @@ import Engine.SystemGeometry.SystemGeometry;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Iterator;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
 
@@ -56,12 +57,12 @@ public class BeadBinner {
         }
 
         @Override
-        public boolean hasNext() { //this still doesn't work
+        public boolean hasNext() {
             if (beadIterator.hasNext()) {
                 return true;
             } else {
                 goToNextNonEmptyBin();
-                return !isOutOfBins(); //we have iterated too far already
+                return !isOutOfBins();
             }
         }
 
@@ -124,21 +125,6 @@ public class BeadBinner {
         binBeadsPrivate(beadPositions);
     }
 
-    private void allocateBeadBins() {
-        beadBins = new ArrayList<>(numBins[0]);
-        for (int i = 0; i < numBins[0]; i++) {
-            beadBins.add(make1DBinList());
-        }
-    }
-
-    private List<Set<Integer>> make1DBinList() {
-        List<Set<Integer>> binList = new ArrayList<>(numBins[1]);
-        for (int i = 0; i < numBins[1]; i++) {
-            binList.add(new HashSet<Integer>());
-        }
-        return binList;
-    }
-
     public void binBeads(double[][] beadPositions) {
         binBeadsPrivate(beadPositions);
     }
@@ -148,6 +134,21 @@ public class BeadBinner {
         for (int bead = 0; bead < beadPositions.length; bead++) {
             addBeadAt(bead, beadPositions[bead]);
         }
+    }
+
+    private void allocateBeadBins() {
+        beadBins = new ArrayList<>(numBins[0]);
+        for (int i = 0; i < numBins[0]; i++) {
+            beadBins.add(allocate1DBinList());
+        }
+    }
+
+    private List<Set<Integer>> allocate1DBinList() {
+        List<Set<Integer>> binList = new ArrayList<>(numBins[1]);
+        for (int i = 0; i < numBins[1]; i++) {
+            binList.add(new HashSet<Integer>()); //linkedHashSet is a better implementation?
+        }
+        return binList;
     }
 
     private void addBeadAt(int bead, double[] position) {

@@ -30,8 +30,10 @@ public class PolymerSimulator {
 
     private static SimulationParameters makeDefaultParametersPrivate(PolymerCluster polymerCluster, double boxLength, int dimension, PhysicalConstants physicalConstants) {
         SimulationParameters simulationParameters;
+//        int averageNumberOfNeighbors = 14
+        int averageNumberOfNeighbors = 14;
         double interactionLength;
-        interactionLength = Math.pow(14 * Math.pow(boxLength, dimension) / polymerCluster.getNumBeadsIncludingWater(), 1.0 / dimension);
+        interactionLength = Math.pow(averageNumberOfNeighbors * Math.pow(boxLength, dimension) / polymerCluster.getNumBeadsIncludingWater(), 1.0 / dimension);
         double stepLength;
         stepLength = Math.sqrt(physicalConstants.getTemperature() / physicalConstants.getSpringCoefficient());
         simulationParameters = new SimulationParameters(stepLength, interactionLength);
@@ -114,7 +116,7 @@ public class PolymerSimulator {
         energy = energy();
     }
 
-    public void randomizePositions() {
+    public synchronized void randomizePositions() {
         iterationNumber = 0;
         acceptedIterations = 0;
         polymerPosition.randomize();

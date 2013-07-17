@@ -28,18 +28,17 @@
   <Layout>
     <DimensionLayout dim="0">
       <Group type="103" groupAlignment="0" attributes="0">
-          <Group type="102" attributes="0">
+          <Group type="102" alignment="0" attributes="0">
               <EmptySpace max="-2" attributes="0"/>
-              <Group type="103" groupAlignment="0" max="-2" attributes="0">
-                  <Component id="geometryPanel" max="32767" attributes="0"/>
-                  <Component id="physicalConstantsPanel" max="32767" attributes="0"/>
+              <Group type="103" groupAlignment="1" max="-2" attributes="0">
+                  <Group type="102" attributes="0">
+                      <Component id="defaultParametersPnl" max="32767" attributes="0"/>
+                      <EmptySpace max="-2" attributes="0"/>
+                      <Component id="buildSystembtn" min="-2" pref="291" max="-2" attributes="0"/>
+                  </Group>
+                  <Component id="simulationParametersPnl" min="-2" max="-2" attributes="0"/>
               </Group>
-              <EmptySpace type="unrelated" max="-2" attributes="0"/>
-              <Group type="103" groupAlignment="0" attributes="0">
-                  <Component id="PolymerClusterPanel" max="32767" attributes="0"/>
-                  <Component id="buildSystembtn" max="32767" attributes="0"/>
-              </Group>
-              <EmptySpace max="-2" attributes="0"/>
+              <EmptySpace max="32767" attributes="0"/>
           </Group>
       </Group>
     </DimensionLayout>
@@ -47,284 +46,21 @@
       <Group type="103" groupAlignment="0" attributes="0">
           <Group type="102" alignment="0" attributes="0">
               <EmptySpace max="-2" attributes="0"/>
-              <Group type="103" groupAlignment="0" max="-2" attributes="0">
-                  <Component id="PolymerClusterPanel" max="32767" attributes="0"/>
-                  <Component id="geometryPanel" max="32767" attributes="0"/>
+              <Component id="simulationParametersPnl" min="-2" max="-2" attributes="0"/>
+              <EmptySpace max="-2" attributes="0"/>
+              <Group type="103" groupAlignment="0" attributes="0">
+                  <Group type="102" attributes="0">
+                      <Component id="buildSystembtn" min="-2" pref="140" max="-2" attributes="0"/>
+                      <EmptySpace min="0" pref="31" max="32767" attributes="0"/>
+                  </Group>
+                  <Component id="defaultParametersPnl" max="32767" attributes="0"/>
               </Group>
               <EmptySpace max="-2" attributes="0"/>
-              <Group type="103" groupAlignment="1" attributes="0">
-                  <Component id="physicalConstantsPanel" min="-2" max="-2" attributes="0"/>
-                  <Component id="buildSystembtn" min="-2" pref="140" max="-2" attributes="0"/>
-              </Group>
-              <EmptySpace pref="13" max="32767" attributes="0"/>
           </Group>
       </Group>
     </DimensionLayout>
   </Layout>
   <SubComponents>
-    <Container class="javax.swing.JPanel" name="geometryPanel">
-      <Properties>
-        <Property name="border" type="javax.swing.border.Border" editor="org.netbeans.modules.form.editors2.BorderEditor">
-          <Border info="org.netbeans.modules.form.compat2.border.TitledBorderInfo">
-            <TitledBorder title="System Geometry"/>
-          </Border>
-        </Property>
-      </Properties>
-
-      <Layout>
-        <DimensionLayout dim="0">
-          <Group type="103" groupAlignment="0" attributes="0">
-              <Group type="102" alignment="1" attributes="0">
-                  <Group type="103" groupAlignment="1" attributes="0">
-                      <Component id="yMaxCaptionLbl" min="-2" max="-2" attributes="0"/>
-                      <Component id="xMaxCaptionLbl" min="-2" max="-2" attributes="0"/>
-                  </Group>
-                  <EmptySpace max="-2" attributes="0"/>
-                  <Group type="103" groupAlignment="0" attributes="0">
-                      <Component id="xMaxFld" max="32767" attributes="0"/>
-                      <Component id="yMaxFld" max="32767" attributes="0"/>
-                  </Group>
-              </Group>
-              <Group type="102" alignment="1" attributes="0">
-                  <Component id="dimensionCaptionLbl" min="-2" max="-2" attributes="0"/>
-                  <EmptySpace max="-2" attributes="0"/>
-                  <Component id="dimensionFld" max="32767" attributes="0"/>
-              </Group>
-              <Group type="102" alignment="0" attributes="0">
-                  <EmptySpace min="-2" pref="1" max="-2" attributes="0"/>
-                  <Group type="103" groupAlignment="0" attributes="0">
-                      <Group type="102" attributes="0">
-                          <Component id="boundaryConditionsCaptionLbl" min="-2" pref="179" max="-2" attributes="0"/>
-                          <EmptySpace max="32767" attributes="0"/>
-                      </Group>
-                      <Group type="102" alignment="0" attributes="0">
-                          <Component id="periodicRdo" min="-2" max="-2" attributes="0"/>
-                          <EmptySpace pref="40" max="32767" attributes="0"/>
-                          <Component id="hardWallRdo" min="-2" max="-2" attributes="0"/>
-                          <EmptySpace min="-2" pref="22" max="-2" attributes="0"/>
-                      </Group>
-                  </Group>
-              </Group>
-          </Group>
-        </DimensionLayout>
-        <DimensionLayout dim="1">
-          <Group type="103" groupAlignment="0" attributes="0">
-              <Group type="102" alignment="0" attributes="0">
-                  <Group type="103" groupAlignment="3" attributes="0">
-                      <Component id="dimensionCaptionLbl" alignment="3" min="-2" max="-2" attributes="0"/>
-                      <Component id="dimensionFld" alignment="3" min="-2" max="-2" attributes="0"/>
-                  </Group>
-                  <EmptySpace max="-2" attributes="0"/>
-                  <Group type="103" groupAlignment="3" attributes="0">
-                      <Component id="xMaxCaptionLbl" alignment="3" min="-2" pref="15" max="-2" attributes="0"/>
-                      <Component id="xMaxFld" alignment="3" min="-2" max="-2" attributes="0"/>
-                  </Group>
-                  <EmptySpace max="-2" attributes="0"/>
-                  <Group type="103" groupAlignment="3" attributes="0">
-                      <Component id="yMaxCaptionLbl" alignment="3" min="-2" max="-2" attributes="0"/>
-                      <Component id="yMaxFld" alignment="3" min="-2" max="-2" attributes="0"/>
-                  </Group>
-                  <EmptySpace max="-2" attributes="0"/>
-                  <Component id="boundaryConditionsCaptionLbl" min="-2" max="-2" attributes="0"/>
-                  <EmptySpace type="unrelated" max="-2" attributes="0"/>
-                  <Group type="103" groupAlignment="3" attributes="0">
-                      <Component id="hardWallRdo" alignment="3" min="-2" max="-2" attributes="0"/>
-                      <Component id="periodicRdo" alignment="3" min="-2" max="-2" attributes="0"/>
-                  </Group>
-                  <EmptySpace max="32767" attributes="0"/>
-              </Group>
-          </Group>
-        </DimensionLayout>
-      </Layout>
-      <SubComponents>
-        <Component class="javax.swing.JLabel" name="dimensionCaptionLbl">
-          <Properties>
-            <Property name="text" type="java.lang.String" value="Dimension:"/>
-          </Properties>
-        </Component>
-        <Component class="javax.swing.JLabel" name="xMaxCaptionLbl">
-          <Properties>
-            <Property name="text" type="java.lang.String" value="Width in X:"/>
-          </Properties>
-        </Component>
-        <Component class="javax.swing.JLabel" name="yMaxCaptionLbl">
-          <Properties>
-            <Property name="text" type="java.lang.String" value="Width in Y:"/>
-          </Properties>
-        </Component>
-        <Component class="javax.swing.JTextField" name="dimensionFld">
-          <Properties>
-            <Property name="editable" type="boolean" value="false"/>
-            <Property name="text" type="java.lang.String" value="2"/>
-          </Properties>
-        </Component>
-        <Component class="javax.swing.JTextField" name="xMaxFld">
-          <Properties>
-            <Property name="text" type="java.lang.String" value="20"/>
-          </Properties>
-          <Events>
-            <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="xMaxFldActionPerformed"/>
-          </Events>
-        </Component>
-        <Component class="javax.swing.JTextField" name="yMaxFld">
-          <Properties>
-            <Property name="editable" type="boolean" value="false"/>
-          </Properties>
-          <BindingProperties>
-            <BindingProperty name="text" source="xMaxFld" sourcePath="${text}" target="yMaxFld" targetPath="text" updateStrategy="0" immediately="false">
-              <BindingParameter name="javax.swing.binding.ParameterKeys.TEXT_CHANGE_STRATEGY" value="javax.swing.binding.TextChangeStrategy.ON_TYPE"/>
-            </BindingProperty>
-          </BindingProperties>
-        </Component>
-        <Component class="javax.swing.JLabel" name="boundaryConditionsCaptionLbl">
-          <Properties>
-            <Property name="text" type="java.lang.String" value="Boundary Conditions:"/>
-          </Properties>
-        </Component>
-        <Component class="javax.swing.JRadioButton" name="hardWallRdo">
-          <Properties>
-            <Property name="buttonGroup" type="javax.swing.ButtonGroup" editor="org.netbeans.modules.form.RADComponent$ButtonGroupPropertyEditor">
-              <ComponentRef name="boundaryConditionBgp"/>
-            </Property>
-            <Property name="text" type="java.lang.String" value="Hard Wall"/>
-          </Properties>
-        </Component>
-        <Component class="javax.swing.JRadioButton" name="periodicRdo">
-          <Properties>
-            <Property name="buttonGroup" type="javax.swing.ButtonGroup" editor="org.netbeans.modules.form.RADComponent$ButtonGroupPropertyEditor">
-              <ComponentRef name="boundaryConditionBgp"/>
-            </Property>
-            <Property name="selected" type="boolean" value="true"/>
-            <Property name="text" type="java.lang.String" value="Periodic"/>
-          </Properties>
-        </Component>
-      </SubComponents>
-    </Container>
-    <Container class="javax.swing.JPanel" name="physicalConstantsPanel">
-      <Properties>
-        <Property name="border" type="javax.swing.border.Border" editor="org.netbeans.modules.form.editors2.BorderEditor">
-          <Border info="org.netbeans.modules.form.compat2.border.TitledBorderInfo">
-            <TitledBorder title="Physical Constants"/>
-          </Border>
-        </Property>
-      </Properties>
-
-      <Layout>
-        <DimensionLayout dim="0">
-          <Group type="103" groupAlignment="0" attributes="0">
-              <Group type="102" alignment="0" attributes="0">
-                  <EmptySpace max="-2" attributes="0"/>
-                  <Group type="103" groupAlignment="0" max="-2" attributes="0">
-                      <Component id="BBCoeffCaptionLbl" max="32767" attributes="0"/>
-                      <Component id="springConstantCaptionLbl" alignment="1" max="32767" attributes="0"/>
-                      <Component id="ABCoefficientCaptionLbl" alignment="1" max="32767" attributes="0"/>
-                      <Component id="AACoefficientCaptionLbl" alignment="1" max="32767" attributes="0"/>
-                      <Component id="temperatureCaptionLbl" alignment="1" max="32767" attributes="0"/>
-                  </Group>
-                  <EmptySpace max="-2" attributes="0"/>
-                  <Group type="103" groupAlignment="0" attributes="0">
-                      <Component id="temperatureFld" max="32767" attributes="0"/>
-                      <Component id="AAOverlapCoefficientFld" max="32767" attributes="0"/>
-                      <Component id="ABOverlapCoefficientFld" alignment="0" max="32767" attributes="0"/>
-                      <Component id="springConstantFld" alignment="0" max="32767" attributes="0"/>
-                      <Component id="BBOverlapCoefficientFld" alignment="0" max="32767" attributes="0"/>
-                  </Group>
-                  <EmptySpace max="-2" attributes="0"/>
-              </Group>
-          </Group>
-        </DimensionLayout>
-        <DimensionLayout dim="1">
-          <Group type="103" groupAlignment="0" attributes="0">
-              <Group type="102" alignment="0" attributes="0">
-                  <Group type="103" groupAlignment="3" attributes="0">
-                      <Component id="temperatureCaptionLbl" alignment="3" min="-2" max="-2" attributes="0"/>
-                      <Component id="temperatureFld" alignment="3" min="-2" max="-2" attributes="0"/>
-                  </Group>
-                  <EmptySpace max="-2" attributes="0"/>
-                  <Group type="103" groupAlignment="3" attributes="0">
-                      <Component id="AACoefficientCaptionLbl" alignment="3" min="-2" max="-2" attributes="0"/>
-                      <Component id="AAOverlapCoefficientFld" alignment="3" min="-2" max="-2" attributes="0"/>
-                  </Group>
-                  <EmptySpace max="-2" attributes="0"/>
-                  <Group type="103" groupAlignment="3" attributes="0">
-                      <Component id="BBCoeffCaptionLbl" alignment="3" min="-2" pref="15" max="-2" attributes="0"/>
-                      <Component id="BBOverlapCoefficientFld" alignment="3" min="-2" max="-2" attributes="0"/>
-                  </Group>
-                  <EmptySpace max="-2" attributes="0"/>
-                  <Group type="103" groupAlignment="3" attributes="0">
-                      <Component id="ABCoefficientCaptionLbl" alignment="3" min="-2" max="-2" attributes="0"/>
-                      <Component id="ABOverlapCoefficientFld" alignment="3" min="-2" max="-2" attributes="0"/>
-                  </Group>
-                  <EmptySpace max="-2" attributes="0"/>
-                  <Group type="103" groupAlignment="3" attributes="0">
-                      <Component id="springConstantCaptionLbl" alignment="3" min="-2" max="-2" attributes="0"/>
-                      <Component id="springConstantFld" alignment="3" min="-2" max="-2" attributes="0"/>
-                  </Group>
-              </Group>
-          </Group>
-        </DimensionLayout>
-      </Layout>
-      <SubComponents>
-        <Component class="javax.swing.JLabel" name="temperatureCaptionLbl">
-          <Properties>
-            <Property name="text" type="java.lang.String" value="Temperature:"/>
-          </Properties>
-        </Component>
-        <Component class="javax.swing.JTextField" name="temperatureFld">
-          <Properties>
-            <Property name="text" type="java.lang.String" value="400"/>
-          </Properties>
-          <Events>
-            <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="temperatureFldActionPerformed"/>
-          </Events>
-        </Component>
-        <Component class="javax.swing.JLabel" name="AACoefficientCaptionLbl">
-          <Properties>
-            <Property name="text" type="java.lang.String" value="AACoeff.:"/>
-          </Properties>
-        </Component>
-        <Component class="javax.swing.JTextField" name="AAOverlapCoefficientFld">
-          <Properties>
-            <Property name="text" type="java.lang.String" value="1"/>
-          </Properties>
-        </Component>
-        <Component class="javax.swing.JLabel" name="ABCoefficientCaptionLbl">
-          <Properties>
-            <Property name="horizontalAlignment" type="int" value="4"/>
-            <Property name="text" type="java.lang.String" value="AB Coeff.:"/>
-          </Properties>
-        </Component>
-        <Component class="javax.swing.JTextField" name="ABOverlapCoefficientFld">
-          <Properties>
-            <Property name="text" type="java.lang.String" value="4"/>
-          </Properties>
-        </Component>
-        <Component class="javax.swing.JLabel" name="springConstantCaptionLbl">
-          <Properties>
-            <Property name="text" type="java.lang.String" value="Spring Const:"/>
-          </Properties>
-        </Component>
-        <Component class="javax.swing.JTextField" name="springConstantFld">
-          <Properties>
-            <Property name="text" type="java.lang.String" value="40"/>
-          </Properties>
-          <Events>
-            <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="springConstantFldActionPerformed"/>
-          </Events>
-        </Component>
-        <Component class="javax.swing.JLabel" name="BBCoeffCaptionLbl">
-          <Properties>
-            <Property name="horizontalAlignment" type="int" value="4"/>
-            <Property name="text" type="java.lang.String" value="BB Coeff.:"/>
-          </Properties>
-        </Component>
-        <Component class="javax.swing.JTextField" name="BBOverlapCoefficientFld">
-          <Properties>
-            <Property name="text" type="java.lang.String" value="1"/>
-          </Properties>
-        </Component>
-      </SubComponents>
-    </Container>
     <Component class="javax.swing.JButton" name="buildSystembtn">
       <Properties>
         <Property name="text" type="java.lang.String" value="Build System"/>
@@ -333,11 +69,460 @@
         <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="buildSystembtnActionPerformed"/>
       </Events>
     </Component>
-    <Container class="javax.swing.JPanel" name="PolymerClusterPanel">
+    <Container class="javax.swing.JPanel" name="simulationParametersPnl">
       <Properties>
         <Property name="border" type="javax.swing.border.Border" editor="org.netbeans.modules.form.editors2.BorderEditor">
           <Border info="org.netbeans.modules.form.compat2.border.TitledBorderInfo">
-            <TitledBorder title="Polymer Description"/>
+            <TitledBorder title="Simulation Parameters"/>
+          </Border>
+        </Property>
+      </Properties>
+
+      <Layout>
+        <DimensionLayout dim="0">
+          <Group type="103" groupAlignment="0" attributes="0">
+              <Group type="102" alignment="0" attributes="0">
+                  <EmptySpace max="32767" attributes="0"/>
+                  <Component id="geometryPanel" min="-2" max="-2" attributes="0"/>
+                  <EmptySpace max="-2" attributes="0"/>
+                  <Component id="PolymerClusterPanel" min="-2" max="-2" attributes="0"/>
+                  <EmptySpace max="-2" attributes="0"/>
+                  <Component id="physicalConstantsPanel" min="-2" max="-2" attributes="0"/>
+              </Group>
+          </Group>
+        </DimensionLayout>
+        <DimensionLayout dim="1">
+          <Group type="103" groupAlignment="0" attributes="0">
+              <Component id="PolymerClusterPanel" max="32767" attributes="0"/>
+              <Component id="geometryPanel" max="32767" attributes="0"/>
+              <Component id="physicalConstantsPanel" alignment="0" max="32767" attributes="0"/>
+          </Group>
+        </DimensionLayout>
+      </Layout>
+      <SubComponents>
+        <Container class="javax.swing.JPanel" name="geometryPanel">
+          <Properties>
+            <Property name="border" type="javax.swing.border.Border" editor="org.netbeans.modules.form.editors2.BorderEditor">
+              <Border info="org.netbeans.modules.form.compat2.border.TitledBorderInfo">
+                <TitledBorder title="System Geometry"/>
+              </Border>
+            </Property>
+          </Properties>
+
+          <Layout>
+            <DimensionLayout dim="0">
+              <Group type="103" groupAlignment="0" attributes="0">
+                  <Group type="102" alignment="1" attributes="0">
+                      <Group type="103" groupAlignment="1" attributes="0">
+                          <Component id="yMaxCaptionLbl" min="-2" max="-2" attributes="0"/>
+                          <Component id="xMaxCaptionLbl" min="-2" max="-2" attributes="0"/>
+                      </Group>
+                      <EmptySpace max="-2" attributes="0"/>
+                      <Group type="103" groupAlignment="0" attributes="0">
+                          <Component id="xMaxFld" max="32767" attributes="0"/>
+                          <Component id="yMaxFld" max="32767" attributes="0"/>
+                      </Group>
+                  </Group>
+                  <Group type="102" alignment="1" attributes="0">
+                      <Component id="dimensionCaptionLbl" min="-2" max="-2" attributes="0"/>
+                      <EmptySpace max="-2" attributes="0"/>
+                      <Component id="dimensionFld" max="32767" attributes="0"/>
+                  </Group>
+                  <Group type="102" alignment="0" attributes="0">
+                      <EmptySpace min="-2" pref="1" max="-2" attributes="0"/>
+                      <Group type="103" groupAlignment="0" attributes="0">
+                          <Group type="102" attributes="0">
+                              <Component id="boundaryConditionsCaptionLbl" min="-2" pref="179" max="-2" attributes="0"/>
+                              <EmptySpace max="32767" attributes="0"/>
+                          </Group>
+                          <Group type="102" alignment="0" attributes="0">
+                              <Component id="periodicRdo" min="-2" max="-2" attributes="0"/>
+                              <EmptySpace pref="40" max="32767" attributes="0"/>
+                              <Component id="hardWallRdo" min="-2" max="-2" attributes="0"/>
+                              <EmptySpace min="-2" pref="22" max="-2" attributes="0"/>
+                          </Group>
+                      </Group>
+                  </Group>
+              </Group>
+            </DimensionLayout>
+            <DimensionLayout dim="1">
+              <Group type="103" groupAlignment="0" attributes="0">
+                  <Group type="102" alignment="0" attributes="0">
+                      <Group type="103" groupAlignment="3" attributes="0">
+                          <Component id="dimensionCaptionLbl" alignment="3" min="-2" max="-2" attributes="0"/>
+                          <Component id="dimensionFld" alignment="3" min="-2" max="-2" attributes="0"/>
+                      </Group>
+                      <EmptySpace max="-2" attributes="0"/>
+                      <Group type="103" groupAlignment="3" attributes="0">
+                          <Component id="xMaxCaptionLbl" alignment="3" min="-2" pref="15" max="-2" attributes="0"/>
+                          <Component id="xMaxFld" alignment="3" min="-2" max="-2" attributes="0"/>
+                      </Group>
+                      <EmptySpace max="-2" attributes="0"/>
+                      <Group type="103" groupAlignment="3" attributes="0">
+                          <Component id="yMaxCaptionLbl" alignment="3" min="-2" max="-2" attributes="0"/>
+                          <Component id="yMaxFld" alignment="3" min="-2" max="-2" attributes="0"/>
+                      </Group>
+                      <EmptySpace max="-2" attributes="0"/>
+                      <Component id="boundaryConditionsCaptionLbl" min="-2" max="-2" attributes="0"/>
+                      <EmptySpace type="unrelated" max="-2" attributes="0"/>
+                      <Group type="103" groupAlignment="3" attributes="0">
+                          <Component id="hardWallRdo" alignment="3" min="-2" max="-2" attributes="0"/>
+                          <Component id="periodicRdo" alignment="3" min="-2" max="-2" attributes="0"/>
+                      </Group>
+                      <EmptySpace max="32767" attributes="0"/>
+                  </Group>
+              </Group>
+            </DimensionLayout>
+          </Layout>
+          <SubComponents>
+            <Component class="javax.swing.JLabel" name="dimensionCaptionLbl">
+              <Properties>
+                <Property name="text" type="java.lang.String" value="Dimension:"/>
+              </Properties>
+            </Component>
+            <Component class="javax.swing.JLabel" name="xMaxCaptionLbl">
+              <Properties>
+                <Property name="text" type="java.lang.String" value="Width in X:"/>
+              </Properties>
+            </Component>
+            <Component class="javax.swing.JLabel" name="yMaxCaptionLbl">
+              <Properties>
+                <Property name="text" type="java.lang.String" value="Width in Y:"/>
+              </Properties>
+            </Component>
+            <Component class="javax.swing.JTextField" name="dimensionFld">
+              <Properties>
+                <Property name="editable" type="boolean" value="false"/>
+                <Property name="text" type="java.lang.String" value="2"/>
+              </Properties>
+            </Component>
+            <Component class="javax.swing.JTextField" name="xMaxFld">
+              <Properties>
+                <Property name="text" type="java.lang.String" value="20"/>
+              </Properties>
+              <Events>
+                <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="xMaxFldActionPerformed"/>
+              </Events>
+            </Component>
+            <Component class="javax.swing.JTextField" name="yMaxFld">
+              <Properties>
+                <Property name="editable" type="boolean" value="false"/>
+              </Properties>
+              <BindingProperties>
+                <BindingProperty name="text" source="xMaxFld" sourcePath="${text}" target="yMaxFld" targetPath="text" updateStrategy="0" immediately="false">
+                  <BindingParameter name="javax.swing.binding.ParameterKeys.TEXT_CHANGE_STRATEGY" value="javax.swing.binding.TextChangeStrategy.ON_TYPE"/>
+                </BindingProperty>
+              </BindingProperties>
+            </Component>
+            <Component class="javax.swing.JLabel" name="boundaryConditionsCaptionLbl">
+              <Properties>
+                <Property name="text" type="java.lang.String" value="Boundary Conditions:"/>
+              </Properties>
+            </Component>
+            <Component class="javax.swing.JRadioButton" name="hardWallRdo">
+              <Properties>
+                <Property name="buttonGroup" type="javax.swing.ButtonGroup" editor="org.netbeans.modules.form.RADComponent$ButtonGroupPropertyEditor">
+                  <ComponentRef name="boundaryConditionBgp"/>
+                </Property>
+                <Property name="text" type="java.lang.String" value="Hard Wall"/>
+              </Properties>
+            </Component>
+            <Component class="javax.swing.JRadioButton" name="periodicRdo">
+              <Properties>
+                <Property name="buttonGroup" type="javax.swing.ButtonGroup" editor="org.netbeans.modules.form.RADComponent$ButtonGroupPropertyEditor">
+                  <ComponentRef name="boundaryConditionBgp"/>
+                </Property>
+                <Property name="selected" type="boolean" value="true"/>
+                <Property name="text" type="java.lang.String" value="Periodic"/>
+              </Properties>
+            </Component>
+          </SubComponents>
+        </Container>
+        <Container class="javax.swing.JPanel" name="PolymerClusterPanel">
+          <Properties>
+            <Property name="border" type="javax.swing.border.Border" editor="org.netbeans.modules.form.editors2.BorderEditor">
+              <Border info="org.netbeans.modules.form.compat2.border.TitledBorderInfo">
+                <TitledBorder title="Polymer Description"/>
+              </Border>
+            </Property>
+          </Properties>
+
+          <Layout>
+            <DimensionLayout dim="0">
+              <Group type="103" groupAlignment="0" attributes="0">
+                  <Group type="102" attributes="0">
+                      <Group type="103" groupAlignment="0" attributes="0">
+                          <Group type="102" alignment="0" attributes="0">
+                              <Component id="numberOfChainsCaptionLbl" min="-2" max="-2" attributes="0"/>
+                              <EmptySpace min="-2" pref="2" max="-2" attributes="0"/>
+                              <Component id="numberOfChainsFld" max="32767" attributes="0"/>
+                          </Group>
+                          <Group type="102" attributes="0">
+                              <EmptySpace max="-2" attributes="0"/>
+                              <Group type="103" groupAlignment="0" attributes="0">
+                                  <Group type="102" attributes="0">
+                                      <Component id="diblockRdo" min="-2" max="-2" attributes="0"/>
+                                      <EmptySpace min="0" pref="65" max="32767" attributes="0"/>
+                                  </Group>
+                                  <Group type="102" alignment="0" attributes="0">
+                                      <Group type="103" groupAlignment="0" max="-2" attributes="0">
+                                          <Component id="numRepeatsCaptionLbl" alignment="0" max="32767" attributes="0"/>
+                                          <Component id="numBBeadsCaptionLbl" alignment="0" max="32767" attributes="0"/>
+                                          <Component id="numABeadsCaptionLbl" alignment="0" max="32767" attributes="0"/>
+                                      </Group>
+                                      <EmptySpace max="32767" attributes="0"/>
+                                      <Group type="103" groupAlignment="0" max="-2" attributes="0">
+                                          <Component id="numBBeadsFld" alignment="1" pref="86" max="32767" attributes="0"/>
+                                          <Component id="numABeadsFld" alignment="1" max="32767" attributes="0"/>
+                                          <Component id="numRepeatsFld" max="32767" attributes="0"/>
+                                      </Group>
+                                  </Group>
+                              </Group>
+                          </Group>
+                          <Group type="102" attributes="0">
+                              <Component id="concentrationCaptionLbl" min="-2" max="-2" attributes="0"/>
+                              <EmptySpace max="-2" attributes="0"/>
+                              <Component id="concentrationFld" max="32767" attributes="0"/>
+                          </Group>
+                      </Group>
+                      <EmptySpace max="-2" attributes="0"/>
+                  </Group>
+              </Group>
+            </DimensionLayout>
+            <DimensionLayout dim="1">
+              <Group type="103" groupAlignment="0" attributes="0">
+                  <Group type="102" alignment="0" attributes="0">
+                      <Group type="103" groupAlignment="3" attributes="0">
+                          <Component id="numberOfChainsCaptionLbl" alignment="3" min="-2" max="-2" attributes="0"/>
+                          <Component id="numberOfChainsFld" alignment="3" min="-2" max="-2" attributes="0"/>
+                      </Group>
+                      <EmptySpace max="-2" attributes="0"/>
+                      <Component id="diblockRdo" min="-2" max="-2" attributes="0"/>
+                      <EmptySpace max="-2" attributes="0"/>
+                      <Group type="103" groupAlignment="3" attributes="0">
+                          <Component id="numABeadsCaptionLbl" alignment="3" min="-2" max="-2" attributes="0"/>
+                          <Component id="numABeadsFld" alignment="3" min="-2" max="-2" attributes="0"/>
+                      </Group>
+                      <EmptySpace max="-2" attributes="0"/>
+                      <Group type="103" groupAlignment="3" attributes="0">
+                          <Component id="numBBeadsCaptionLbl" alignment="3" min="-2" max="-2" attributes="0"/>
+                          <Component id="numBBeadsFld" alignment="3" min="-2" max="-2" attributes="0"/>
+                      </Group>
+                      <EmptySpace max="-2" attributes="0"/>
+                      <Group type="103" groupAlignment="3" attributes="0">
+                          <Component id="numRepeatsCaptionLbl" alignment="3" min="-2" max="-2" attributes="0"/>
+                          <Component id="numRepeatsFld" alignment="3" min="-2" max="-2" attributes="0"/>
+                      </Group>
+                      <EmptySpace pref="35" max="32767" attributes="0"/>
+                      <Group type="103" groupAlignment="3" attributes="0">
+                          <Component id="concentrationCaptionLbl" alignment="3" min="-2" max="-2" attributes="0"/>
+                          <Component id="concentrationFld" alignment="3" min="-2" max="-2" attributes="0"/>
+                      </Group>
+                      <EmptySpace max="-2" attributes="0"/>
+                  </Group>
+              </Group>
+            </DimensionLayout>
+          </Layout>
+          <SubComponents>
+            <Component class="javax.swing.JLabel" name="numberOfChainsCaptionLbl">
+              <Properties>
+                <Property name="text" type="java.lang.String" value="Number of Chains:"/>
+              </Properties>
+            </Component>
+            <Component class="javax.swing.JTextField" name="numberOfChainsFld">
+              <Properties>
+                <Property name="text" type="java.lang.String" value="10"/>
+              </Properties>
+            </Component>
+            <Component class="javax.swing.JRadioButton" name="diblockRdo">
+              <Properties>
+                <Property name="selected" type="boolean" value="true"/>
+                <Property name="text" type="java.lang.String" value="(AB)^n Block Copolymer"/>
+              </Properties>
+            </Component>
+            <Component class="javax.swing.JLabel" name="numABeadsCaptionLbl">
+              <Properties>
+                <Property name="horizontalAlignment" type="int" value="4"/>
+                <Property name="labelFor" type="java.awt.Component" editor="org.netbeans.modules.form.ComponentChooserEditor">
+                  <ComponentRef name="numABeadsFld"/>
+                </Property>
+                <Property name="text" type="java.lang.String" value="Number of A Beads:"/>
+              </Properties>
+            </Component>
+            <Component class="javax.swing.JTextField" name="numABeadsFld">
+              <Properties>
+                <Property name="text" type="java.lang.String" value="10"/>
+              </Properties>
+            </Component>
+            <Component class="javax.swing.JLabel" name="numBBeadsCaptionLbl">
+              <Properties>
+                <Property name="horizontalAlignment" type="int" value="4"/>
+                <Property name="text" type="java.lang.String" value="Number of B Beads:"/>
+              </Properties>
+            </Component>
+            <Component class="javax.swing.JTextField" name="numBBeadsFld">
+              <Properties>
+                <Property name="text" type="java.lang.String" value="10"/>
+                <Property name="toolTipText" type="java.lang.String" value=""/>
+              </Properties>
+            </Component>
+            <Component class="javax.swing.JLabel" name="concentrationCaptionLbl">
+              <Properties>
+                <Property name="horizontalAlignment" type="int" value="4"/>
+                <Property name="text" type="java.lang.String" value="Concentration:"/>
+              </Properties>
+            </Component>
+            <Component class="javax.swing.JTextField" name="concentrationFld">
+              <Properties>
+                <Property name="text" type="java.lang.String" value="1"/>
+              </Properties>
+            </Component>
+            <Component class="javax.swing.JLabel" name="numRepeatsCaptionLbl">
+              <Properties>
+                <Property name="horizontalAlignment" type="int" value="4"/>
+                <Property name="text" type="java.lang.String" value="Number of repeats &apos;n&apos;:"/>
+              </Properties>
+            </Component>
+            <Component class="javax.swing.JTextField" name="numRepeatsFld">
+              <Properties>
+                <Property name="text" type="java.lang.String" value="1"/>
+              </Properties>
+            </Component>
+          </SubComponents>
+        </Container>
+        <Container class="javax.swing.JPanel" name="physicalConstantsPanel">
+          <Properties>
+            <Property name="border" type="javax.swing.border.Border" editor="org.netbeans.modules.form.editors2.BorderEditor">
+              <Border info="org.netbeans.modules.form.compat2.border.TitledBorderInfo">
+                <TitledBorder title="Physical Constants"/>
+              </Border>
+            </Property>
+          </Properties>
+
+          <Layout>
+            <DimensionLayout dim="0">
+              <Group type="103" groupAlignment="0" attributes="0">
+                  <Group type="102" alignment="0" attributes="0">
+                      <EmptySpace max="-2" attributes="0"/>
+                      <Group type="103" groupAlignment="0" max="-2" attributes="0">
+                          <Component id="BBCoeffCaptionLbl" max="32767" attributes="0"/>
+                          <Component id="springConstantCaptionLbl" alignment="1" max="32767" attributes="0"/>
+                          <Component id="ABCoefficientCaptionLbl" alignment="1" max="32767" attributes="0"/>
+                          <Component id="AACoefficientCaptionLbl" alignment="1" max="32767" attributes="0"/>
+                          <Component id="temperatureCaptionLbl" alignment="1" max="32767" attributes="0"/>
+                      </Group>
+                      <EmptySpace max="-2" attributes="0"/>
+                      <Group type="103" groupAlignment="0" attributes="0">
+                          <Component id="temperatureFld" pref="88" max="32767" attributes="0"/>
+                          <Component id="AAOverlapCoefficientFld" max="32767" attributes="0"/>
+                          <Component id="ABOverlapCoefficientFld" alignment="0" max="32767" attributes="0"/>
+                          <Component id="springConstantFld" alignment="0" max="32767" attributes="0"/>
+                          <Component id="BBOverlapCoefficientFld" alignment="0" max="32767" attributes="0"/>
+                      </Group>
+                      <EmptySpace max="-2" attributes="0"/>
+                  </Group>
+              </Group>
+            </DimensionLayout>
+            <DimensionLayout dim="1">
+              <Group type="103" groupAlignment="0" attributes="0">
+                  <Group type="102" alignment="0" attributes="0">
+                      <Group type="103" groupAlignment="3" attributes="0">
+                          <Component id="temperatureCaptionLbl" alignment="3" min="-2" max="-2" attributes="0"/>
+                          <Component id="temperatureFld" alignment="3" min="-2" max="-2" attributes="0"/>
+                      </Group>
+                      <EmptySpace max="-2" attributes="0"/>
+                      <Group type="103" groupAlignment="3" attributes="0">
+                          <Component id="AACoefficientCaptionLbl" alignment="3" min="-2" max="-2" attributes="0"/>
+                          <Component id="AAOverlapCoefficientFld" alignment="3" min="-2" max="-2" attributes="0"/>
+                      </Group>
+                      <EmptySpace max="-2" attributes="0"/>
+                      <Group type="103" groupAlignment="3" attributes="0">
+                          <Component id="BBCoeffCaptionLbl" alignment="3" min="-2" pref="15" max="-2" attributes="0"/>
+                          <Component id="BBOverlapCoefficientFld" alignment="3" min="-2" max="-2" attributes="0"/>
+                      </Group>
+                      <EmptySpace max="-2" attributes="0"/>
+                      <Group type="103" groupAlignment="3" attributes="0">
+                          <Component id="ABCoefficientCaptionLbl" alignment="3" min="-2" max="-2" attributes="0"/>
+                          <Component id="ABOverlapCoefficientFld" alignment="3" min="-2" max="-2" attributes="0"/>
+                      </Group>
+                      <EmptySpace max="-2" attributes="0"/>
+                      <Group type="103" groupAlignment="3" attributes="0">
+                          <Component id="springConstantCaptionLbl" alignment="3" min="-2" max="-2" attributes="0"/>
+                          <Component id="springConstantFld" alignment="3" min="-2" max="-2" attributes="0"/>
+                      </Group>
+                      <EmptySpace max="32767" attributes="0"/>
+                  </Group>
+              </Group>
+            </DimensionLayout>
+          </Layout>
+          <SubComponents>
+            <Component class="javax.swing.JLabel" name="temperatureCaptionLbl">
+              <Properties>
+                <Property name="text" type="java.lang.String" value="Temperature:"/>
+              </Properties>
+            </Component>
+            <Component class="javax.swing.JTextField" name="temperatureFld">
+              <Properties>
+                <Property name="text" type="java.lang.String" value="400"/>
+              </Properties>
+              <Events>
+                <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="temperatureFldActionPerformed"/>
+              </Events>
+            </Component>
+            <Component class="javax.swing.JLabel" name="AACoefficientCaptionLbl">
+              <Properties>
+                <Property name="text" type="java.lang.String" value="AACoeff.:"/>
+              </Properties>
+            </Component>
+            <Component class="javax.swing.JTextField" name="AAOverlapCoefficientFld">
+              <Properties>
+                <Property name="text" type="java.lang.String" value="1"/>
+              </Properties>
+            </Component>
+            <Component class="javax.swing.JLabel" name="ABCoefficientCaptionLbl">
+              <Properties>
+                <Property name="horizontalAlignment" type="int" value="4"/>
+                <Property name="text" type="java.lang.String" value="AB Coeff.:"/>
+              </Properties>
+            </Component>
+            <Component class="javax.swing.JTextField" name="ABOverlapCoefficientFld">
+              <Properties>
+                <Property name="text" type="java.lang.String" value="4"/>
+              </Properties>
+            </Component>
+            <Component class="javax.swing.JLabel" name="springConstantCaptionLbl">
+              <Properties>
+                <Property name="text" type="java.lang.String" value="Spring Const:"/>
+              </Properties>
+            </Component>
+            <Component class="javax.swing.JTextField" name="springConstantFld">
+              <Properties>
+                <Property name="text" type="java.lang.String" value="40"/>
+              </Properties>
+              <Events>
+                <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="springConstantFldActionPerformed"/>
+              </Events>
+            </Component>
+            <Component class="javax.swing.JLabel" name="BBCoeffCaptionLbl">
+              <Properties>
+                <Property name="horizontalAlignment" type="int" value="4"/>
+                <Property name="text" type="java.lang.String" value="BB Coeff.:"/>
+              </Properties>
+            </Component>
+            <Component class="javax.swing.JTextField" name="BBOverlapCoefficientFld">
+              <Properties>
+                <Property name="text" type="java.lang.String" value="1"/>
+              </Properties>
+            </Component>
+          </SubComponents>
+        </Container>
+      </SubComponents>
+    </Container>
+    <Container class="javax.swing.JPanel" name="defaultParametersPnl">
+      <Properties>
+        <Property name="border" type="javax.swing.border.Border" editor="org.netbeans.modules.form.editors2.BorderEditor">
+          <Border info="org.netbeans.modules.form.compat2.border.TitledBorderInfo">
+            <TitledBorder title="Default Parameters"/>
           </Border>
         </Property>
       </Properties>
@@ -346,39 +531,11 @@
         <DimensionLayout dim="0">
           <Group type="103" groupAlignment="0" attributes="0">
               <Group type="102" attributes="0">
+                  <EmptySpace max="-2" attributes="0"/>
                   <Group type="103" groupAlignment="0" attributes="0">
-                      <Group type="102" alignment="0" attributes="0">
-                          <Component id="numberOfChainsCaptionLbl" min="-2" max="-2" attributes="0"/>
-                          <EmptySpace min="-2" pref="2" max="-2" attributes="0"/>
-                          <Component id="numberOfChainsFld" max="32767" attributes="0"/>
-                      </Group>
-                      <Group type="102" attributes="0">
-                          <EmptySpace max="-2" attributes="0"/>
-                          <Group type="103" groupAlignment="0" attributes="0">
-                              <Group type="102" attributes="0">
-                                  <Component id="diblockRdo" min="-2" max="-2" attributes="0"/>
-                                  <EmptySpace min="0" pref="65" max="32767" attributes="0"/>
-                              </Group>
-                              <Group type="102" alignment="0" attributes="0">
-                                  <Group type="103" groupAlignment="0" max="-2" attributes="0">
-                                      <Component id="numRepeatsCaptionLbl" alignment="0" max="32767" attributes="0"/>
-                                      <Component id="numBBeadsCaptionLbl" alignment="0" max="32767" attributes="0"/>
-                                      <Component id="numABeadsCaptionLbl" alignment="0" max="32767" attributes="0"/>
-                                  </Group>
-                                  <EmptySpace max="32767" attributes="0"/>
-                                  <Group type="103" groupAlignment="0" max="-2" attributes="0">
-                                      <Component id="numBBeadsFld" alignment="1" pref="86" max="32767" attributes="0"/>
-                                      <Component id="numABeadsFld" alignment="1" max="32767" attributes="0"/>
-                                      <Component id="numRepeatsFld" max="32767" attributes="0"/>
-                                  </Group>
-                              </Group>
-                          </Group>
-                      </Group>
-                      <Group type="102" attributes="0">
-                          <Component id="concentrationCaptionLbl" min="-2" max="-2" attributes="0"/>
-                          <EmptySpace max="-2" attributes="0"/>
-                          <Component id="concentrationFld" max="32767" attributes="0"/>
-                      </Group>
+                      <Component id="lamellaeBtn" alignment="0" max="32767" attributes="0"/>
+                      <Component id="disorderBtn" alignment="1" max="32767" attributes="0"/>
+                      <Component id="micelleBtn" alignment="0" max="32767" attributes="0"/>
                   </Group>
                   <EmptySpace max="-2" attributes="0"/>
               </Group>
@@ -387,101 +544,41 @@
         <DimensionLayout dim="1">
           <Group type="103" groupAlignment="0" attributes="0">
               <Group type="102" alignment="0" attributes="0">
-                  <Group type="103" groupAlignment="3" attributes="0">
-                      <Component id="numberOfChainsCaptionLbl" alignment="3" min="-2" max="-2" attributes="0"/>
-                      <Component id="numberOfChainsFld" alignment="3" min="-2" max="-2" attributes="0"/>
-                  </Group>
                   <EmptySpace max="-2" attributes="0"/>
-                  <Component id="diblockRdo" min="-2" max="-2" attributes="0"/>
+                  <Component id="lamellaeBtn" min="-2" max="-2" attributes="0"/>
                   <EmptySpace max="-2" attributes="0"/>
-                  <Group type="103" groupAlignment="3" attributes="0">
-                      <Component id="numABeadsCaptionLbl" alignment="3" min="-2" max="-2" attributes="0"/>
-                      <Component id="numABeadsFld" alignment="3" min="-2" max="-2" attributes="0"/>
-                  </Group>
+                  <Component id="disorderBtn" min="-2" max="-2" attributes="0"/>
                   <EmptySpace max="-2" attributes="0"/>
-                  <Group type="103" groupAlignment="3" attributes="0">
-                      <Component id="numBBeadsCaptionLbl" alignment="3" min="-2" max="-2" attributes="0"/>
-                      <Component id="numBBeadsFld" alignment="3" min="-2" max="-2" attributes="0"/>
-                  </Group>
-                  <EmptySpace max="-2" attributes="0"/>
-                  <Group type="103" groupAlignment="3" attributes="0">
-                      <Component id="numRepeatsCaptionLbl" alignment="3" min="-2" max="-2" attributes="0"/>
-                      <Component id="numRepeatsFld" alignment="3" min="-2" max="-2" attributes="0"/>
-                  </Group>
-                  <EmptySpace pref="27" max="32767" attributes="0"/>
-                  <Group type="103" groupAlignment="3" attributes="0">
-                      <Component id="concentrationCaptionLbl" alignment="3" min="-2" max="-2" attributes="0"/>
-                      <Component id="concentrationFld" alignment="3" min="-2" max="-2" attributes="0"/>
-                  </Group>
-                  <EmptySpace max="-2" attributes="0"/>
+                  <Component id="micelleBtn" min="-2" max="-2" attributes="0"/>
+                  <EmptySpace max="32767" attributes="0"/>
               </Group>
           </Group>
         </DimensionLayout>
       </Layout>
       <SubComponents>
-        <Component class="javax.swing.JLabel" name="numberOfChainsCaptionLbl">
+        <Component class="javax.swing.JButton" name="lamellaeBtn">
           <Properties>
-            <Property name="text" type="java.lang.String" value="Number of Chains:"/>
+            <Property name="text" type="java.lang.String" value="Parameters to form lamellae"/>
           </Properties>
+          <Events>
+            <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="lamellaeBtnActionPerformed"/>
+          </Events>
         </Component>
-        <Component class="javax.swing.JTextField" name="numberOfChainsFld">
+        <Component class="javax.swing.JButton" name="disorderBtn">
           <Properties>
-            <Property name="text" type="java.lang.String" value="10"/>
+            <Property name="text" type="java.lang.String" value="Parameters for disorder"/>
           </Properties>
+          <Events>
+            <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="disorderBtnActionPerformed"/>
+          </Events>
         </Component>
-        <Component class="javax.swing.JRadioButton" name="diblockRdo">
+        <Component class="javax.swing.JButton" name="micelleBtn">
           <Properties>
-            <Property name="selected" type="boolean" value="true"/>
-            <Property name="text" type="java.lang.String" value="(AB)^n Block Copolymer"/>
+            <Property name="text" type="java.lang.String" value="Parameters for micelles"/>
           </Properties>
-        </Component>
-        <Component class="javax.swing.JLabel" name="numABeadsCaptionLbl">
-          <Properties>
-            <Property name="horizontalAlignment" type="int" value="4"/>
-            <Property name="labelFor" type="java.awt.Component" editor="org.netbeans.modules.form.ComponentChooserEditor">
-              <ComponentRef name="numABeadsFld"/>
-            </Property>
-            <Property name="text" type="java.lang.String" value="Number of A Beads:"/>
-          </Properties>
-        </Component>
-        <Component class="javax.swing.JTextField" name="numABeadsFld">
-          <Properties>
-            <Property name="text" type="java.lang.String" value="10"/>
-          </Properties>
-        </Component>
-        <Component class="javax.swing.JLabel" name="numBBeadsCaptionLbl">
-          <Properties>
-            <Property name="horizontalAlignment" type="int" value="4"/>
-            <Property name="text" type="java.lang.String" value="Number of B Beads:"/>
-          </Properties>
-        </Component>
-        <Component class="javax.swing.JTextField" name="numBBeadsFld">
-          <Properties>
-            <Property name="text" type="java.lang.String" value="10"/>
-            <Property name="toolTipText" type="java.lang.String" value=""/>
-          </Properties>
-        </Component>
-        <Component class="javax.swing.JLabel" name="concentrationCaptionLbl">
-          <Properties>
-            <Property name="horizontalAlignment" type="int" value="4"/>
-            <Property name="text" type="java.lang.String" value="Concentration:"/>
-          </Properties>
-        </Component>
-        <Component class="javax.swing.JTextField" name="concentrationFld">
-          <Properties>
-            <Property name="text" type="java.lang.String" value="1"/>
-          </Properties>
-        </Component>
-        <Component class="javax.swing.JLabel" name="numRepeatsCaptionLbl">
-          <Properties>
-            <Property name="horizontalAlignment" type="int" value="4"/>
-            <Property name="text" type="java.lang.String" value="Number of repeats &apos;n&apos;:"/>
-          </Properties>
-        </Component>
-        <Component class="javax.swing.JTextField" name="numRepeatsFld">
-          <Properties>
-            <Property name="text" type="java.lang.String" value="1"/>
-          </Properties>
+          <Events>
+            <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="micelleBtnActionPerformed"/>
+          </Events>
         </Component>
       </SubComponents>
     </Container>
