@@ -5,6 +5,7 @@
 package Engine.SystemGeometry;
 
 import Engine.SimulationParameters;
+import Engine.TwoBeadOverlap;
 
 /**
  *
@@ -13,8 +14,6 @@ import Engine.SimulationParameters;
 public interface SystemGeometry {
 
     public boolean isPositionValid(double[] position);
-
-    public boolean isSumInBounds(double[] position, double[] translation);
 
     public int getDimension();
 
@@ -27,6 +26,8 @@ public interface SystemGeometry {
     public double sqDist(double[] position1, double[] position2);
 
     public double areaOverlap(double[] position1, double[] position2);
+
+    public TwoBeadOverlap twoBeadOverlap(double[] position1, double[] position2);
 
     public double[] randomPosition();
 

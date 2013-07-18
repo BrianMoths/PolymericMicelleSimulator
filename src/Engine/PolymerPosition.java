@@ -136,6 +136,22 @@ public class PolymerPosition {
         return AreaOverlap.overlapOfBead(isTypeA(bead), AOverlap, BOverlap);
     }
 
+    public AreaOverlap beadOverlapWithHardCore(int bead) {
+        TwoBeadOverlap AOverlap = new TwoBeadOverlap(), BOverlap = new TwoBeadOverlap();
+        final double[] beadPosition = beadPositions[bead];
+        Iterator<Integer> nearbyBeadIterator = beadBinner.getNearbyBeadIterator(beadPosition);
+        while (nearbyBeadIterator.hasNext()) {
+            final int currentBead = nearbyBeadIterator.next();
+            if (currentBead < numABeads) {
+                AOverlap.increment(systemGeometry.twoBeadOverlap(beadPosition, beadPositions[currentBead]));
+            } else {
+                BOverlap.increment(systemGeometry.twoBeadOverlap(beadPosition, beadPositions[currentBead]));
+            }
+        }
+
+        return AreaOverlap.overlapOfBead(isTypeA(bead), AOverlap, BOverlap);
+    }
+
     public double sqLengthChange() {
         double initialSqLength = stepBeadSpringStretching();
         doStep();

@@ -5,6 +5,7 @@
 package Engine.SystemGeometry;
 
 import Engine.SimulationParameters;
+import Engine.TwoBeadOverlap;
 
 /**
  *
@@ -40,18 +41,6 @@ public class HardWallGeometry extends AbstractGeometry {
     }
 
     @Override
-    public boolean isSumInBounds(double[] position, double[] translation) {
-        double sumCoordinate;
-        for (int i = 0; i < dimension; i++) {
-            sumCoordinate = position[i] + translation[i];
-            if (sumCoordinate < 0 || sumCoordinate > fullRMax[i]) {
-                return false;
-            }
-        }
-        return true;
-    }
-
-    @Override
     public double sqDist(double[] position1, double[] position2) {
         double sqDist = 0;
         for (int i = 0; i < dimension; i++) {
@@ -69,6 +58,19 @@ public class HardWallGeometry extends AbstractGeometry {
         }
 
         return overlap;
+    }
+
+    @Override
+    public TwoBeadOverlap twoBeadOverlap(double[] position1, double[] position2) {
+        TwoBeadOverlap twoBeadOverlap = new TwoBeadOverlap(1, 1);
+
+        for (int i = 0; i < dimension; i++) {
+            double componentDistance = Math.abs(position1[i] - position2[i]);
+            twoBeadOverlap.softOverlap *= Math.max(parameters.getInteractionLength() - componentDistance, 0.0);
+            twoBeadOverlap.hardOverlap *= Math.max(parameters.getCoreLength() - componentDistance, 0.0);
+        }
+
+        return twoBeadOverlap;
     }
 
     @Override

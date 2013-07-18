@@ -27,6 +27,7 @@ public class PhysicalConstants {
                     AAOverlapCoefficient,
                     BBOverlapCoefficient,
                     ABOverlapCoefficient,
+                    calculateHardOverlapCoefficient(),
                     springCoefficient);
         }
 
@@ -76,6 +77,10 @@ public class PhysicalConstants {
             this.springCoefficient = springCoefficient;
             return this;
         }
+
+        private double calculateHardOverlapCoefficient() {
+            return 100 * Math.max(Math.max(AAOverlapCoefficient, BBOverlapCoefficient), ABOverlapCoefficient);
+        }
     }
     //</editor-fold>
     static private Random randomNumberGenerator = new Random();
@@ -83,17 +88,19 @@ public class PhysicalConstants {
             AAOverlapCoefficient,
             BBOverlapCoefficient,
             ABOverlapCoefficient,
+            hardOverlapCoefficient,
             springCoefficient;
 
     static public PhysicalConstants defaultPhysicalConstants() {
         return new PhysicalConstantsBuilder().buildPhysicalConstants();
     }
 
-    private PhysicalConstants(double temperature, double AAOverlapCoefficient, double BBOverlapCoefficient, double ABOverlapCoefficient, double springCoefficient) {
+    private PhysicalConstants(double temperature, double AAOverlapCoefficient, double BBOverlapCoefficient, double ABOverlapCoefficient, double hardOverlapCoefficient, double springCoefficient) {
         this.temperature = temperature;
         this.AAOverlapCoefficient = AAOverlapCoefficient;
         this.BBOverlapCoefficient = BBOverlapCoefficient;
         this.ABOverlapCoefficient = ABOverlapCoefficient;
+        this.hardOverlapCoefficient = hardOverlapCoefficient;
         this.springCoefficient = springCoefficient;
     }
 
@@ -109,6 +116,13 @@ public class PhysicalConstants {
         return 2 * (AAOverlapCoefficient * areaOverlap.AAOverlap
                 + BBOverlapCoefficient * areaOverlap.BBOverlap
                 + ABOverlapCoefficient * areaOverlap.ABOverlap);
+    }
+
+    public double densityEnergyWithCore(AreaOverlap areaOverlap) {
+        return 2 * (AAOverlapCoefficient * areaOverlap.AAOverlap
+                + BBOverlapCoefficient * areaOverlap.BBOverlap
+                + ABOverlapCoefficient * areaOverlap.ABOverlap
+                + hardOverlapCoefficient * areaOverlap.hardOverlap);
     }
 
     public boolean isEnergeticallyAllowed(double energyChange) {

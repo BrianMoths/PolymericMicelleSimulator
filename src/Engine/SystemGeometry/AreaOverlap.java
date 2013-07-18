@@ -4,13 +4,15 @@
  */
 package Engine.SystemGeometry;
 
+import Engine.TwoBeadOverlap;
+
 /**
  *
  * @author bmoths
  */
 public class AreaOverlap {
 
-    public double AAOverlap, BBOverlap, ABOverlap;
+    public double AAOverlap, BBOverlap, ABOverlap, hardOverlap;
 
     public static AreaOverlap overlapOfBead(boolean isTypeA, double AOverlap, double BOverlap) {
         AreaOverlap areaOverlap = new AreaOverlap();
@@ -25,10 +27,24 @@ public class AreaOverlap {
         return areaOverlap;
     }
 
+    public static AreaOverlap overlapOfBead(boolean isTypeA, TwoBeadOverlap AOverlap, TwoBeadOverlap BOverlap) {
+        AreaOverlap areaOverlap = new AreaOverlap();
+        if (isTypeA) {
+            areaOverlap.AAOverlap = AOverlap.softOverlap;
+            areaOverlap.ABOverlap = BOverlap.softOverlap;
+        } else {
+            areaOverlap.ABOverlap = AOverlap.softOverlap;
+            areaOverlap.BBOverlap = BOverlap.softOverlap;
+        }
+
+        return areaOverlap;
+    }
+
     public AreaOverlap() {
         AAOverlap = 0;
         BBOverlap = 0;
         ABOverlap = 0;
+        hardOverlap = 0;
     }
 
     public static AreaOverlap subtract(AreaOverlap overlap1, AreaOverlap overlap2) {
@@ -45,11 +61,13 @@ public class AreaOverlap {
         AAOverlap += areaOverlap.AAOverlap;
         BBOverlap += areaOverlap.BBOverlap;
         ABOverlap += areaOverlap.ABOverlap;
+        hardOverlap += areaOverlap.hardOverlap;
     }
 
     public void halve() {
         AAOverlap /= 2;
         ABOverlap /= 2;
         BBOverlap /= 2;
+        hardOverlap /= 2;
     }
 }
