@@ -79,7 +79,11 @@ public class PhysicalConstants {
         }
 
         private double calculateHardOverlapCoefficient() {
-            return 100 * Math.max(Math.max(AAOverlapCoefficient, BBOverlapCoefficient), ABOverlapCoefficient);
+            return 100 * Math.max(
+                    Math.max(
+                    Math.abs(AAOverlapCoefficient),
+                    Math.abs(BBOverlapCoefficient)),
+                    Math.abs(ABOverlapCoefficient));
         }
     }
     //</editor-fold>

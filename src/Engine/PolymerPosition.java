@@ -111,7 +111,7 @@ public class PolymerPosition {
         AreaOverlap overlap = new AreaOverlap();
 
         for (int i = 0; i < numBeads; i++) {
-            overlap.incrementBy(beadOverlap(i));
+            overlap.incrementBy(beadOverlapWithHardCore(i));
         }
 
         overlap.halve(); //divide by two since double counting
@@ -149,7 +149,7 @@ public class PolymerPosition {
             }
         }
 
-        return AreaOverlap.overlapOfBead(isTypeA(bead), AOverlap, BOverlap);
+        return AreaOverlap.overlapOfBeadWithCore(isTypeA(bead), AOverlap, BOverlap);
     }
 
     public double sqLengthChange() {
@@ -176,7 +176,7 @@ public class PolymerPosition {
     }
 
     public AreaOverlap stepBeadOverlap() {
-        return beadOverlap(simulationStep.getStepBead());
+        return beadOverlapWithHardCore(simulationStep.getStepBead());
     }
 
 //    public void setGraphics(Graphics inGraphics) {

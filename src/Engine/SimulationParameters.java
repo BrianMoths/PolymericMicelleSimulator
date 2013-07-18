@@ -13,21 +13,36 @@ public class SimulationParameters {
     private final double interactionLength, coreLength, stepLength;
 
     public SimulationParameters() {
+        double tempCoreLength;
+
         interactionLength = 5;
-        coreLength = interactionLength / 2;
+        tempCoreLength = setCoreLength(interactionLength);
+        coreLength = tempCoreLength;
         stepLength = interactionLength / 2;
     }
 
     public SimulationParameters(double stepLength, double interactionLength) {
+        double tempCoreLength;
+
         this.interactionLength = interactionLength;
         this.stepLength = stepLength;
-        coreLength = interactionLength / 2;
+
+        tempCoreLength = setCoreLength(interactionLength);
+        coreLength = tempCoreLength;
     }
 
     public SimulationParameters(SimulationParameters simulationParameters) {
+        double tempCoreLength;
+
         this.stepLength = simulationParameters.stepLength;
         this.interactionLength = simulationParameters.interactionLength;
-        coreLength = interactionLength / 2;
+
+        tempCoreLength = setCoreLength(interactionLength);
+        coreLength = tempCoreLength;
+    }
+
+    private double setCoreLength(double interactionLength) {
+        return interactionLength;
     }
 
     public double getStepLength() {
