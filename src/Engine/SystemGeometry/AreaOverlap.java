@@ -68,6 +68,7 @@ public class AreaOverlap {
         overlapDifference.AAOverlap = overlap1.AAOverlap - overlap2.AAOverlap;
         overlapDifference.ABOverlap = overlap1.ABOverlap - overlap2.ABOverlap;
         overlapDifference.BBOverlap = overlap1.BBOverlap - overlap2.BBOverlap;
+        overlapDifference.hardOverlap = overlap1.hardOverlap - overlap2.hardOverlap;
 
         return overlapDifference;
     }
