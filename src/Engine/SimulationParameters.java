@@ -42,7 +42,7 @@ public class SimulationParameters {
     }
 
     private double setCoreLength(double interactionLength) {
-        return interactionLength / 6;
+        return interactionLength / 1.5;
     }
 
     public double getStepLength() {
