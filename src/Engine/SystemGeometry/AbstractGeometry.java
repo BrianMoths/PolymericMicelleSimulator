@@ -69,12 +69,14 @@ public abstract class AbstractGeometry implements SystemGeometry {
     protected final int dimension;
     protected final double[] fullRMax; //try to make this constant
     protected final SimulationParameters parameters;
+    protected final InteractionCalculator interactionCalculator;
 
     protected AbstractGeometry(int dimension, double[] fullRMax, SimulationParameters parameters) {
         this.dimension = dimension;
         this.fullRMax = new double[dimension];
         System.arraycopy(fullRMax, 0, this.fullRMax, 0, dimension);
         this.parameters = parameters;
+        interactionCalculator = new InteractionCalculator(parameters);
     }
 
     @Override
@@ -111,6 +113,17 @@ public abstract class AbstractGeometry implements SystemGeometry {
             volume *= fullRMax[i];
         }
         return volume;
+    }
+
+    /**
+     *
+     * @param position1
+     * @param position2
+     * @return
+     */
+    public final double calculateInteraction(double[] position1, double[] position2) {
+        double overlap = areaOverlap(position1, position2);
+        return interactionCalculator.calculateInteraction(overlap);
     }
 
     //<editor-fold defaultstate="collapsed" desc="getters">

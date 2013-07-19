@@ -29,6 +29,8 @@ public interface SystemGeometry {
 
     public TwoBeadOverlap twoBeadOverlap(double[] position1, double[] position2);
 
+    public double calculateInteraction(double[] position1, double[] position2);
+
     public double[] randomPosition();
 
     public double[][] randomPositions(int numPositions);

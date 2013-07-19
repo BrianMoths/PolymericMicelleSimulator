@@ -162,7 +162,7 @@ public class PolymerSimulator {
     private double beadDensityEnergyChange() {
         AreaOverlap overlapChange = polymerPosition.overlapChange();
 
-        return physicalConstants.densityEnergyWithCore(overlapChange);
+        return physicalConstants.densityEnergy(overlapChange);
     }
 
     private double energy() {
