@@ -626,6 +626,18 @@ public class SystemConfiguration extends javax.swing.JFrame { //broken, need to 
 
         simulationParameters = PolymerSimulator.makeDefaultParameters(polymerCluster, xMax, dimension, physicalConstants);
 
+
+
+        //just added by brian to avoid clustering. Let's see if it works
+        simulationParameters = simulationParameters.makeParametersFromPhysicalConstants(physicalConstants);
+        physicalConstants = physicalConstants.getPhysicalConstantsFromParameters(simulationParameters);
+
+        System.out.println("Interaction Length: " + simulationParameters.getInteractionLength());
+        System.out.println("Core Length: " + simulationParameters.getCoreLength());
+        System.out.println("HardOverlap: " + physicalConstants.getHardOverlapCoefficient());
+        System.out.println("Interaction Length: " + simulationParameters.getInteractionLength());
+
+
         systemGeometryBuilder.setDimension(dimension);
         systemGeometryBuilder.setDimensionSize(0, xMax);
         systemGeometryBuilder.setDimensionSize(1, yMax);
