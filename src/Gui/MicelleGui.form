@@ -49,6 +49,7 @@
                           <Component id="iterateBtn" alignment="0" max="32767" attributes="0"/>
                           <Component id="numIterationsFld" alignment="0" max="32767" attributes="0"/>
                           <Component id="jButton1" pref="0" max="32767" attributes="0"/>
+                          <Component id="cancelBtn" alignment="0" pref="123" max="32767" attributes="0"/>
                       </Group>
                   </Group>
               </Group>
@@ -68,8 +69,10 @@
                       <EmptySpace max="-2" attributes="0"/>
                       <Component id="doIterationsBtn" min="-2" max="-2" attributes="0"/>
                       <EmptySpace max="-2" attributes="0"/>
+                      <Component id="cancelBtn" min="-2" pref="50" max="-2" attributes="0"/>
+                      <EmptySpace min="-2" pref="62" max="-2" attributes="0"/>
                       <Component id="randomizeBtn" min="-2" pref="50" max="-2" attributes="0"/>
-                      <EmptySpace min="-2" pref="18" max="-2" attributes="0"/>
+                      <EmptySpace min="-2" pref="56" max="-2" attributes="0"/>
                       <Component id="jButton1" min="-2" pref="49" max="-2" attributes="0"/>
                   </Group>
                   <Component id="displayPanel1" alignment="0" min="-2" max="-2" attributes="0"/>
@@ -198,5 +201,13 @@
         </DimensionLayout>
       </Layout>
     </Container>
+    <Component class="javax.swing.JButton" name="cancelBtn">
+      <Properties>
+        <Property name="text" type="java.lang.String" value="Cancel"/>
+      </Properties>
+      <Events>
+        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="cancelBtnActionPerformed"/>
+      </Events>
+    </Component>
   </SubComponents>
 </Form>

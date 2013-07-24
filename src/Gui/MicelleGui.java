@@ -5,7 +5,10 @@
 package Gui;
 
 import Engine.PolymerSimulator;
+import java.util.HashSet;
+import java.util.Set;
 import java.util.concurrent.ArrayBlockingQueue;
+import java.util.concurrent.FutureTask;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 import java.util.logging.Level;
@@ -16,6 +19,17 @@ import java.util.logging.Logger;
  * @author brian
  */
 public class MicelleGui extends javax.swing.JFrame {
+
+    private class SimulationTask extends FutureTask<Void> {
+
+        public SimulationTask(int numIterations) {
+            super(new SimulationRunnable(numIterations), null);
+        }
+//        @Override
+//        protected void done() {
+//            simulationTasks.remove(this);
+//        }
+    }
 
     private class SimulationRunnable implements Runnable {
 
@@ -33,6 +47,7 @@ public class MicelleGui extends javax.swing.JFrame {
     private PolymerSimulator system;
     private final Thread updaterThread;
     private final ThreadPoolExecutor simulationExecutor;
+    private final Set<SimulationTask> simulationTasks;
 
     /**
      * Creates new form MicelleGui
@@ -56,7 +71,9 @@ public class MicelleGui extends javax.swing.JFrame {
 
         int numThreadsAlwaysPresent = 1;
         int maxThreads = 1;
-        simulationExecutor = new ThreadPoolExecutor(numThreadsAlwaysPresent, maxThreads, 1, TimeUnit.SECONDS, new ArrayBlockingQueue<Runnable>(5));
+        long keepAliveTime = 1;
+        simulationExecutor = new ThreadPoolExecutor(numThreadsAlwaysPresent, maxThreads, keepAliveTime, TimeUnit.SECONDS, new ArrayBlockingQueue<Runnable>(5));
+        simulationTasks = new HashSet<>();
     }
 
     public void initialize() {
@@ -106,6 +123,7 @@ public class MicelleGui extends javax.swing.JFrame {
         numAcceptedIterationsCaptionLbl = new javax.swing.JLabel();
         numAcceptedIterationsLbl = new javax.swing.JLabel();
         displayPanel1 = new Gui.DisplayPanel();
+        cancelBtn = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle("Polymer Simulator");
@@ -169,6 +187,13 @@ public class MicelleGui extends javax.swing.JFrame {
             .addGap(0, 600, Short.MAX_VALUE)
         );
 
+        cancelBtn.setText("Cancel");
+        cancelBtn.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                cancelBtnActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
@@ -194,7 +219,8 @@ public class MicelleGui extends javax.swing.JFrame {
                             .addComponent(doIterationsBtn, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE)
                             .addComponent(iterateBtn, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                             .addComponent(numIterationsFld, javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE))))
+                            .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE)
+                            .addComponent(cancelBtn, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 123, Short.MAX_VALUE))))
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
@@ -209,8 +235,10 @@ public class MicelleGui extends javax.swing.JFrame {
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(doIterationsBtn)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(cancelBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 50, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(62, 62, 62)
                         .addComponent(randomizeBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 50, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(18, 18, 18)
+                        .addGap(56, 56, 56)
                         .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 49, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addComponent(displayPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
@@ -244,7 +272,9 @@ public class MicelleGui extends javax.swing.JFrame {
         } catch (NumberFormatException e) {
             return;
         }
-        simulationExecutor.execute(new SimulationRunnable(numIterations));
+        SimulationTask simulationTask = new SimulationTask(numIterations);
+        simulationTasks.add(simulationTask);
+        simulationExecutor.execute(simulationTask);
     }//GEN-LAST:event_doIterationsBtnActionPerformed
     private void randomizeBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_randomizeBtnActionPerformed
         system.randomizePositions();
@@ -255,6 +285,17 @@ public class MicelleGui extends javax.swing.JFrame {
         SystemConfiguration configurator = new SystemConfiguration(this);
         configurator.setVisible(true);
     }//GEN-LAST:event_jButton1ActionPerformed
+
+    private void cancelBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cancelBtnActionPerformed
+//        for (SimulationTask simulationTask : simulationTasks) {
+//            simulationTask.cancel(false);
+//        }
+        for (SimulationTask simulationTask : simulationTasks) {
+            simulationTask.cancel(true);
+        }
+        simulationExecutor.purge();
+        simulationTasks.removeAll(simulationTasks);
+    }//GEN-LAST:event_cancelBtnActionPerformed
 
     /**
      * @param args the command line arguments
@@ -308,6 +349,7 @@ public class MicelleGui extends javax.swing.JFrame {
         });
     }
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton cancelBtn;
     private Gui.DisplayPanel displayPanel1;
     private javax.swing.JButton doIterationsBtn;
     private javax.swing.JLabel energyCaptionLbl;
