@@ -80,6 +80,7 @@ public class SystemConfiguration extends javax.swing.JFrame { //broken, need to 
         lamellaeBtn = new javax.swing.JButton();
         disorderBtn = new javax.swing.JButton();
         micelleBtn = new javax.swing.JButton();
+        softMicelleBtn = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         setTitle("Simulator Configuration");
@@ -259,7 +260,7 @@ public class SystemConfiguration extends javax.swing.JFrame { //broken, need to 
                 .addGroup(PolymerClusterPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(numRepeatsCaptionLbl)
                     .addComponent(numRepeatsFld, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 35, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 37, Short.MAX_VALUE)
                 .addGroup(PolymerClusterPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(concentrationCaptionLbl)
                     .addComponent(concentrationFld, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
@@ -388,6 +389,13 @@ public class SystemConfiguration extends javax.swing.JFrame { //broken, need to 
             }
         });
 
+        softMicelleBtn.setText("Parameters for soft micelles");
+        softMicelleBtn.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                softMicelleBtnActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout defaultParametersPnlLayout = new javax.swing.GroupLayout(defaultParametersPnl);
         defaultParametersPnl.setLayout(defaultParametersPnlLayout);
         defaultParametersPnlLayout.setHorizontalGroup(
@@ -397,7 +405,8 @@ public class SystemConfiguration extends javax.swing.JFrame { //broken, need to 
                 .addGroup(defaultParametersPnlLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(lamellaeBtn, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(disorderBtn, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(micelleBtn, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                    .addComponent(micelleBtn, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(softMicelleBtn, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addContainerGap())
         );
         defaultParametersPnlLayout.setVerticalGroup(
@@ -409,6 +418,8 @@ public class SystemConfiguration extends javax.swing.JFrame { //broken, need to 
                 .addComponent(disorderBtn)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(micelleBtn)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(softMicelleBtn)
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
@@ -435,7 +446,7 @@ public class SystemConfiguration extends javax.swing.JFrame { //broken, need to 
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createSequentialGroup()
                         .addComponent(buildSystembtn, javax.swing.GroupLayout.PREFERRED_SIZE, 140, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(0, 31, Short.MAX_VALUE))
+                        .addGap(0, 33, Short.MAX_VALUE))
                     .addComponent(defaultParametersPnl, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addContainerGap())
         );
@@ -703,6 +714,23 @@ public class SystemConfiguration extends javax.swing.JFrame { //broken, need to 
         numRepeatsFld.setText("7");
         concentrationFld.setText(".02");
     }//GEN-LAST:event_micelleBtnActionPerformed
+
+    private void softMicelleBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_softMicelleBtnActionPerformed
+        dimensionFld.setText("2");
+        xMaxFld.setText("20");
+        yMaxFld.setText("20");
+        periodicRdo.setSelected(true);
+        temperatureFld.setText("40");
+        AAOverlapCoefficientFld.setText("100");
+        BBOverlapCoefficientFld.setText("-200");
+        ABOverlapCoefficientFld.setText("100");
+        springConstantFld.setText("200");
+        numberOfChainsFld.setText("1");
+        numABeadsFld.setText("6");
+        numBBeadsFld.setText("6");
+        numRepeatsFld.setText("12");
+        concentrationFld.setText(".004");
+    }//GEN-LAST:event_softMicelleBtnActionPerformed
 //    /**
 //     * @param args the command line arguments
 //     */
@@ -770,6 +798,7 @@ public class SystemConfiguration extends javax.swing.JFrame { //broken, need to 
     private javax.swing.JRadioButton periodicRdo;
     private javax.swing.JPanel physicalConstantsPanel;
     private javax.swing.JPanel simulationParametersPnl;
+    private javax.swing.JButton softMicelleBtn;
     private javax.swing.JLabel springConstantCaptionLbl;
     private javax.swing.JTextField springConstantFld;
     private javax.swing.JLabel temperatureCaptionLbl;

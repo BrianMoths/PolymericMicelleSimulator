@@ -29,7 +29,9 @@ public class DisplayPanel extends javax.swing.JPanel {
     @Override
     protected void paintComponent(Graphics graphics) {
         super.paintComponent(graphics);
-        polymerSimulator.draw(graphics);
+        if (polymerSimulator != null) {
+            polymerSimulator.draw(graphics);
+        }
     }
 
     /**

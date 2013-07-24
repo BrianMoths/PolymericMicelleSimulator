@@ -99,6 +99,25 @@ public class PhysicalConstants {
         return new PhysicalConstantsBuilder().buildPhysicalConstants();
     }
 
+    public PhysicalConstants getPhysicalConstantsFromParameters(SimulationParameters parameters) {
+        return new PhysicalConstants(this, parameters);
+    }
+
+    private PhysicalConstants(PhysicalConstants physicalConstants, SimulationParameters parameters) {
+        this.temperature = physicalConstants.temperature;
+        this.AAOverlapCoefficient = physicalConstants.AAOverlapCoefficient;
+        this.BBOverlapCoefficient = physicalConstants.BBOverlapCoefficient;
+        this.ABOverlapCoefficient = physicalConstants.ABOverlapCoefficient;
+        this.springCoefficient = physicalConstants.springCoefficient;
+        this.hardOverlapCoefficient = hardOverlapCoefficientFromParamters(parameters);
+    }
+
+    private double hardOverlapCoefficientFromParamters(SimulationParameters parameters) {
+        double minCoefficientForBonding = - 3 * temperature / (parameters.getInteractionLength() * parameters.getInteractionLength());
+        double minAttraction = Math.min(Math.min(BBOverlapCoefficient, AAOverlapCoefficient), minCoefficientForBonding);
+        return (5 * temperature - parameters.getInteractionLength() * parameters.getInteractionLength() * minAttraction) / (parameters.getCoreLength() * parameters.getCoreLength());
+    }
+
     private PhysicalConstants(double temperature, double AAOverlapCoefficient, double BBOverlapCoefficient, double ABOverlapCoefficient, double hardOverlapCoefficient, double springCoefficient) {
         this.temperature = temperature;
         this.AAOverlapCoefficient = AAOverlapCoefficient;
@@ -149,6 +168,10 @@ public class PhysicalConstants {
 
     public double getABOverlapCoefficient() {
         return ABOverlapCoefficient;
+    }
+
+    public double getHardOverlapCoefficient() {
+        return hardOverlapCoefficient;
     }
 
     public double getSpringCoefficient() {

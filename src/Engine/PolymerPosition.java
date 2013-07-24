@@ -195,7 +195,7 @@ public class PolymerPosition {
 
         final double scaleFactor = displaySize / systemGeometry.getRMax()[0];
 
-        final int diameter = (int) Math.round(systemGeometry.getParameters().getInteractionLength() * scaleFactor) / 5;
+        final int diameter = (int) Math.round(systemGeometry.getParameters().getInteractionLength() * scaleFactor); //make diameter smaller
         final int radius = diameter / 2;
 
         graphics.clearRect(0, 0, displaySize, displaySize);//fix this later

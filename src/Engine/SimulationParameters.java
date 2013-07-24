@@ -16,7 +16,7 @@ public class SimulationParameters {
         double tempCoreLength;
 
         interactionLength = 5;
-        tempCoreLength = setCoreLength(interactionLength);
+        tempCoreLength = calculateCoreLength(interactionLength);
         coreLength = tempCoreLength;
         stepLength = interactionLength / 2;
     }
@@ -27,7 +27,7 @@ public class SimulationParameters {
         this.interactionLength = interactionLength;
         this.stepLength = stepLength;
 
-        tempCoreLength = setCoreLength(interactionLength);
+        tempCoreLength = calculateCoreLength(interactionLength);
         coreLength = tempCoreLength;
     }
 
@@ -37,12 +37,31 @@ public class SimulationParameters {
         this.stepLength = simulationParameters.stepLength;
         this.interactionLength = simulationParameters.interactionLength;
 
-        tempCoreLength = setCoreLength(interactionLength);
+        tempCoreLength = calculateCoreLength(interactionLength);
         coreLength = tempCoreLength;
     }
 
-    private double setCoreLength(double interactionLength) {
-        return interactionLength / 1.5;
+    public SimulationParameters makeParametersFromPhysicalConstants(PhysicalConstants physicalConstants) {
+        return new SimulationParameters(this, physicalConstants);
+    }
+
+    private SimulationParameters(SimulationParameters simulationParameters, PhysicalConstants physicalConstants) {
+        this.stepLength = simulationParameters.stepLength;
+        this.interactionLength = simulationParameters.interactionLength;
+
+        coreLength = coreLengthFromPhysicalConstants(physicalConstants);
+    }
+
+    private double coreLengthFromPhysicalConstants(PhysicalConstants physicalConstants) {
+        double thermalForce = .5 * physicalConstants.getTemperature() / interactionLength;
+        double minCoefficientForBonding = -thermalForce / interactionLength;
+        System.out.println(minCoefficientForBonding);
+        double minAttraction = Math.min(Math.min(physicalConstants.getBBOverlapCoefficient(), physicalConstants.getAAOverlapCoefficient()), minCoefficientForBonding);
+        return interactionLength + thermalForce / minAttraction;
+    }
+
+    private double calculateCoreLength(double interactionLength) {
+        return interactionLength / 2;
     }
 
     public double getStepLength() {
