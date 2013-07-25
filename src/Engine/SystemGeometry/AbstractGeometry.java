@@ -81,7 +81,7 @@ public abstract class AbstractGeometry implements SystemGeometry {
     public double[] randomPosition() {
         double[] position = new double[dimension];
         for (int i = 0; i < dimension; i++) {
-            position[i] = randomNumberGenerator.nextDouble() * fullRMax[i];
+            position[i] = randomNumberGenerator.nextDouble() * fullRMax[i] / 3;
         }
         return position;
     }
