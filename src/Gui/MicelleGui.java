@@ -287,9 +287,6 @@ public class MicelleGui extends javax.swing.JFrame {
     }//GEN-LAST:event_jButton1ActionPerformed
 
     private void cancelBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cancelBtnActionPerformed
-//        for (SimulationTask simulationTask : simulationTasks) {
-//            simulationTask.cancel(false);
-//        }
         for (SimulationTask simulationTask : simulationTasks) {
             simulationTask.cancel(true);
         }
