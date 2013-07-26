@@ -25,10 +25,6 @@ public class MicelleGui extends javax.swing.JFrame {
         public SimulationTask(int numIterations) {
             super(new SimulationRunnable(numIterations), null);
         }
-//        @Override
-//        protected void done() {
-//            simulationTasks.remove(this);
-//        }
     }
 
     private class SimulationRunnable implements Runnable {
@@ -100,6 +96,10 @@ public class MicelleGui extends javax.swing.JFrame {
         registerGuiWithSystem();
         system.randomizePositions();
         updateDisplay();
+    }
+
+    public void cancelComputation() {
+        cancelBtnActionPerformed(null);
     }
 
     /**
@@ -277,6 +277,7 @@ public class MicelleGui extends javax.swing.JFrame {
         simulationExecutor.execute(simulationTask);
     }//GEN-LAST:event_doIterationsBtnActionPerformed
     private void randomizeBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_randomizeBtnActionPerformed
+        cancelComputation();
         system.randomizePositions();
         updateDisplay();
     }//GEN-LAST:event_randomizeBtnActionPerformed

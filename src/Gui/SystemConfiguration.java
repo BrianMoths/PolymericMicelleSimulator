@@ -584,32 +584,6 @@ public class SystemConfiguration extends javax.swing.JFrame { //broken, need to 
             return;
         }
 
-//        if (blockCopolymerRdo.isSelected()) {
-//            try {
-//                final String numABeadsString = numABeadsFld.getText();
-//                numABeadsPerChain = Integer.parseInt(numABeadsString);
-//            } catch (NumberFormatException e) {
-//                System.err.println("couldn't parse number of A Beads");
-//                return;
-//            }
-//
-//            try {
-//                final String numBBeadsString = numBBeadsFld.getText();
-//                numBBeadsPerChain = Integer.parseInt(numBBeadsString);
-//            } catch (NumberFormatException e) {
-//                System.err.println("couldn't parse number of B Beads.");
-//                return;
-//            }
-//
-//            try {
-//                final String numRepeatsString = numRepeatsFld.getText();
-//                numRepeats = Integer.parseInt(numRepeatsString);
-//            } catch (NumberFormatException e) {
-//                System.err.println("couldn't parse number of repeats.");
-//                return;
-//            }
-//        } else if (arrayOfLengthsRdo.isSelected()) {
-//        }
 
 
         try {
@@ -629,27 +603,10 @@ public class SystemConfiguration extends javax.swing.JFrame { //broken, need to 
             System.err.println("must have at least one chain.");
             return;
         }
-//        if (numRepeats
-//                < 1) {
-//            System.err.println("number of repeats must be positive.");
-//        }
-//        if (numABeadsPerChain
-//                < 0) {
-//            System.err.println("number of A Beads must be non-negative.");
-//            return;
-//        }
-//        if (numBBeadsPerChain
-//                < 0) {
-//            System.err.println("number of B Beads must be non-negative.");
-//            return;
-//        }
-//        if (numABeadsPerChain + numBBeadsPerChain
-//                < 1) {
-//            System.err.println("There must be at least one bead per chain.");
-//        }
         if (concentration
                 <= 0) {
             System.err.println("Concentration must have a positive value");
+            return;
         }
 
         if (periodicRdo.isSelected()) {
@@ -668,15 +625,8 @@ public class SystemConfiguration extends javax.swing.JFrame { //broken, need to 
 
         physicalConstantsBuilder.setSpringCoefficient(springConstant);
         PhysicalConstants physicalConstants = physicalConstantsBuilder.buildPhysicalConstants();
-//        PolymerChain polymerChain = PolymerChain.makeChainStartingWithA(numABeadsPerChain, numBBeadsPerChain);
         PolymerChain polymerChain = makePolymerChain();
 
-//        for (int i = 1;
-//                i < numRepeats;
-//                i++) {
-//            polymerChain.addBeads(true, numABeadsPerChain);
-//            polymerChain.addBeads(false, numBBeadsPerChain);
-//        }
         PolymerCluster polymerCluster = PolymerCluster.makeRepeatedChainCluster(polymerChain, numChains);
 
         polymerCluster.setConcentrationInWater(concentration);
@@ -709,6 +659,8 @@ public class SystemConfiguration extends javax.swing.JFrame { //broken, need to 
                 systemGeometryBuilder.buildGeometry(),
                 polymerCluster,
                 physicalConstants);
+
+        gui.cancelComputation();
 
         gui.setSystem(polymerSystem);
     }//GEN-LAST:event_buildSystembtnActionPerformed
@@ -779,7 +731,9 @@ public class SystemConfiguration extends javax.swing.JFrame { //broken, need to 
     private PolymerChain makeChainFromArray() {
         int[] numBeadsAlternating;
         final String numBeadsAlternatingString = arrayOfLengthsTxt.getText();
-        String[] numBeadsAlternatingStringArray = numBeadsAlternatingString.replaceAll("\\[", "").replaceAll("\\]", "").split(",");
+        String[] numBeadsAlternatingStringArray =
+                numBeadsAlternatingString.replaceAll("[\\[\\]\\n {}()]", "")
+                .split(",");
 
         numBeadsAlternating = new int[numBeadsAlternatingStringArray.length];
 
