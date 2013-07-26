@@ -185,7 +185,8 @@ public class SystemConfiguration extends javax.swing.JFrame { //broken, need to 
 
         temperatureCaptionLbl.setText("Temperature:");
 
-        temperatureFld.setText("400");
+        temperatureFld.setEditable(false);
+        temperatureFld.setText("1");
         temperatureFld.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 temperatureFldActionPerformed(evt);
@@ -319,7 +320,7 @@ public class SystemConfiguration extends javax.swing.JFrame { //broken, need to 
                         .addComponent(numberOfChainsFld))
                     .addGroup(PolymerClusterPanelLayout.createSequentialGroup()
                         .addComponent(concentrationCaptionLbl)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 24, Short.MAX_VALUE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                         .addComponent(concentrationFld, javax.swing.GroupLayout.PREFERRED_SIZE, 129, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addGroup(PolymerClusterPanelLayout.createSequentialGroup()
                         .addContainerGap()
@@ -440,10 +441,9 @@ public class SystemConfiguration extends javax.swing.JFrame { //broken, need to 
                 .addContainerGap()
                 .addGroup(defaultParametersPnlLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
                     .addComponent(softMicelleBtn, javax.swing.GroupLayout.DEFAULT_SIZE, 325, Short.MAX_VALUE)
-                    .addGroup(defaultParametersPnlLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
-                        .addComponent(micelleBtn, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(disorderBtn, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(lamellaeBtn, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 325, Short.MAX_VALUE)))
+                    .addComponent(micelleBtn, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(disorderBtn, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(lamellaeBtn, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 325, Short.MAX_VALUE))
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         defaultParametersPnlLayout.setVerticalGroup(
@@ -753,11 +753,11 @@ public class SystemConfiguration extends javax.swing.JFrame { //broken, need to 
         xMaxFld.setText("20");
         yMaxFld.setText("20");
         periodicRdo.setSelected(true);
-        temperatureFld.setText("350");
-        AAOverlapCoefficientFld.setText("1");
-        BBOverlapCoefficientFld.setText("1");
-        ABOverlapCoefficientFld.setText("15");
-        springConstantFld.setText("100");
+        temperatureFld.setText("1");
+        AAOverlapCoefficientFld.setText(".003");
+        BBOverlapCoefficientFld.setText(".003");
+        ABOverlapCoefficientFld.setText(".045");
+        springConstantFld.setText(".33");
         numberOfChainsFld.setText("300");
         blockCopolymerRdo.setSelected(true);
         numABeadsFld.setText("3");
@@ -771,11 +771,11 @@ public class SystemConfiguration extends javax.swing.JFrame { //broken, need to 
         xMaxFld.setText("20");
         yMaxFld.setText("20");
         periodicRdo.setSelected(true);
-        temperatureFld.setText("1000");
-        AAOverlapCoefficientFld.setText("1");
-        BBOverlapCoefficientFld.setText("1");
-        ABOverlapCoefficientFld.setText("15");
-        springConstantFld.setText("100");
+        temperatureFld.setText("1");
+        AAOverlapCoefficientFld.setText(".001");
+        BBOverlapCoefficientFld.setText(".001");
+        ABOverlapCoefficientFld.setText(".015");
+        springConstantFld.setText(".1");
         numberOfChainsFld.setText("300");
         blockCopolymerRdo.setSelected(true);
         numABeadsFld.setText("3");
@@ -789,11 +789,11 @@ public class SystemConfiguration extends javax.swing.JFrame { //broken, need to 
         xMaxFld.setText("20");
         yMaxFld.setText("20");
         periodicRdo.setSelected(true);
-        temperatureFld.setText("40");
-        AAOverlapCoefficientFld.setText("5");
-        BBOverlapCoefficientFld.setText("-20");
-        ABOverlapCoefficientFld.setText("20");
-        springConstantFld.setText("200");
+        temperatureFld.setText("1");
+        AAOverlapCoefficientFld.setText(".12");
+        BBOverlapCoefficientFld.setText("-.5");
+        ABOverlapCoefficientFld.setText(".5");
+        springConstantFld.setText("5");
         numberOfChainsFld.setText("5");
         blockCopolymerRdo.setSelected(true);
         numABeadsFld.setText("3");
@@ -807,11 +807,11 @@ public class SystemConfiguration extends javax.swing.JFrame { //broken, need to 
         xMaxFld.setText("20");
         yMaxFld.setText("20");
         periodicRdo.setSelected(true);
-        temperatureFld.setText("40");
-        AAOverlapCoefficientFld.setText("100");
-        BBOverlapCoefficientFld.setText("-200");
-        ABOverlapCoefficientFld.setText("100");
-        springConstantFld.setText("200");
+        temperatureFld.setText("1");
+        AAOverlapCoefficientFld.setText("2.5");
+        BBOverlapCoefficientFld.setText("-5");
+        ABOverlapCoefficientFld.setText("2.5");
+        springConstantFld.setText("5");
         numberOfChainsFld.setText("1");
         blockCopolymerRdo.setSelected(true);
         numABeadsFld.setText("6");
