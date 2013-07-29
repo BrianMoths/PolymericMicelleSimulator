@@ -21,22 +21,22 @@ import javax.swing.JTextField;
  * @author brian
  */
 public class MicelleGui extends javax.swing.JFrame {
-    
+
     private class SimulationTask extends FutureTask<Void> {
-        
+
         public SimulationTask(int numIterations) {
             super(new SimulationRunnable(numIterations), null);
         }
     }
-    
+
     private class SimulationRunnable implements Runnable {
-        
+
         private int numIterations;
-        
+
         public SimulationRunnable(int numIterations) {
             this.numIterations = numIterations;
         }
-        
+
         @Override
         public void run() {
             system.doIterations(numIterations);
@@ -67,25 +67,25 @@ public class MicelleGui extends javax.swing.JFrame {
                 }
             }
         });
-        
+
         int numThreadsAlwaysPresent = 1;
         int maxThreads = 1;
         long keepAliveTime = 1;
         simulationExecutor = new ThreadPoolExecutor(numThreadsAlwaysPresent, maxThreads, keepAliveTime, TimeUnit.SECONDS, new ArrayBlockingQueue<Runnable>(5));
         simulationTasks = new HashSet<>();
     }
-    
+
     public void initialize() {
         registerGuiWithSystem();
         system.randomizePositions();
         //updateDisplay();
         updaterThread.start();
     }
-    
+
     private void registerGuiWithSystem() {
         displayPanel1.setPolymerSimulator(system);
     }
-    
+
     private void updateDisplay() {
         energyLbl.setText(String.valueOf(system.getEnergy()));
         numIterationsLbl.setText(String.valueOf(system.getIterationNumber()));
@@ -95,21 +95,21 @@ public class MicelleGui extends javax.swing.JFrame {
         ABCoefficientLbl.setText(String.format("%.4f", system.getPhysicalConstants().getABOverlapCoefficient()));
         temperatureLbl.setText(String.format("%.4f", system.getPhysicalConstants().getTemperature()));
         springConstantLbl.setText(String.format("%.4f", system.getPhysicalConstants().getSpringCoefficient()));
-        interactionLengthCaptionLbl.setText(String.format("%.4f", system.getSimulationParameters().getInteractionLength()));
+        beadSizeLbl.setText(String.format("%.4f", system.getSimulationParameters().getInteractionLength()));
         hardCoresChk.setSelected(system.getSimulationParameters().getCoreLength() != 0);
 //        hardCoresChk.setSelected(system.getPhysicalConstants().getHardOverlapCoefficient() != 0);
 
         //System.out.println(String.valueOf(system.springEnergy() / system.getNumBeads()));
         repaint();
     }
-    
+
     public void setSystem(PolymerSimulator system) {
         this.system = system;
         registerGuiWithSystem();
         system.randomizePositions();
         updateDisplay();
     }
-    
+
     public void cancelComputation() {
         cancelBtnActionPerformed(null);
     }
@@ -398,7 +398,7 @@ public class MicelleGui extends javax.swing.JFrame {
         system.doIteration();
         updateDisplay();
     }//GEN-LAST:event_iterateBtnActionPerformed
-    
+
     private void doIterationsBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_doIterationsBtnActionPerformed
         final int numIterations;
         try {
@@ -416,12 +416,12 @@ public class MicelleGui extends javax.swing.JFrame {
         system.randomizePositions();
         updateDisplay();
     }//GEN-LAST:event_randomizeBtnActionPerformed
-    
+
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
         SystemConfiguration configurator = new SystemConfiguration(this);
         configurator.setVisible(true);
     }//GEN-LAST:event_jButton1ActionPerformed
-    
+
     private void cancelBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cancelBtnActionPerformed
         for (SimulationTask simulationTask : simulationTasks) {
             simulationTask.cancel(true);
@@ -444,16 +444,16 @@ public class MicelleGui extends javax.swing.JFrame {
                 if ("Nimbus".equals(info.getName())) {
                     javax.swing.UIManager.setLookAndFeel(info.getClassName());
                     break;
-                    
-                    
-                    
-                    
-                    
-                    
-                    
-                    
-                    
-                    
+
+
+
+
+
+
+
+
+
+
                 }
             }
         } catch (ClassNotFoundException ex) {
