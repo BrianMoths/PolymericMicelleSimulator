@@ -4,6 +4,7 @@
  */
 package Engine.SystemGeometry;
 
+import Engine.PolymerCluster;
 import Engine.SimulationParameters;
 import java.util.Random;
 
@@ -14,55 +15,74 @@ import java.util.Random;
 public abstract class AbstractGeometry implements SystemGeometry {
 
     //<editor-fold defaultstate="collapsed" desc="BuilderClass">
-    public abstract static class GeometryBuilder {
+    public abstract static class AbstractGeometryBuilder implements GeometryBuilder {
 
         protected int dimension;
         protected double[] fullRMax;
         protected SimulationParameters parameters;
 
-        public GeometryBuilder() {
+        public AbstractGeometryBuilder() {
             this.dimension = 2;
             this.fullRMax = new double[]{20, 20, 20};
             this.parameters = new SimulationParameters();
         }
 
-        public GeometryBuilder(AbstractGeometry geometry) {
-            dimension = geometry.dimension;
+        public AbstractGeometryBuilder(SystemGeometry geometry) {
+            dimension = geometry.getDimension();
             fullRMax = new double[dimension];
             System.arraycopy(fullRMax, 0, geometry.getRMax(), 0, dimension);
             parameters = geometry.getParameters();
         }
 
+        @Override
         public int getDimension() {
             return dimension;
         }
 
-        public GeometryBuilder setDimension(int dimension) {
+        @Override
+        public AbstractGeometryBuilder setDimension(int dimension) {
             this.dimension = dimension;
             return this;
         }
 
+        @Override
         public double[] getFullRMax() {
             double[] rMax = new double[dimension];
             System.arraycopy(fullRMax, 0, rMax, 0, dimension);
             return rMax;
         }
 
-        public GeometryBuilder setDimensionSize(int dimension, double size) {
+        @Override
+        public AbstractGeometryBuilder setDimensionSize(int dimension, double size) {
             this.fullRMax[dimension] = size;
             return this;
         }
 
+        @Override
         public SimulationParameters getParameters() {
             return parameters;
         }
 
-        public GeometryBuilder setParameters(SimulationParameters parameters) {
+        @Override
+        public AbstractGeometryBuilder setParameters(SimulationParameters parameters) {
             this.parameters = parameters;
             return this;
         }
 
-        abstract public SystemGeometry buildGeometry();
+        @Override
+        public void makeConsistentWith(PolymerCluster polymerCluster, SimulationParameters simulationParameters) {
+            this.parameters = simulationParameters;
+            double boxLength;
+            boxLength = findBoxLength(polymerCluster, simulationParameters);
+            for (int i = 0; i < dimension; i++) {
+                setDimensionSize(i, boxLength);
+            }
+        }
+
+        private double findBoxLength(PolymerCluster polymerCluster, SimulationParameters simulationParameters) {
+            double fractionInteracting = 14 / polymerCluster.getNumBeadsIncludingWater();
+            return simulationParameters.getInteractionLength() * Math.pow(1 / fractionInteracting, 1. / dimension);
+        }
     }
     //</editor-fold>
     public static final Random randomNumberGenerator = new Random();

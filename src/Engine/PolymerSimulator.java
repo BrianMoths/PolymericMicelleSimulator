@@ -24,6 +24,7 @@ public class PolymerSimulator {
     private int iterationNumber;
     private int acceptedIterations;
 
+    //public static SystemGeometry makeDefaultSystemGeometry(SystemGeometry systemGeometry, PolymerCluster polymerCluster)
     public static SimulationParameters makeDefaultParameters(PolymerCluster polymerCluster, double boxLength, int dimension, PhysicalConstants physicalConstants) {
         return makeDefaultParametersPrivate(polymerCluster, boxLength, dimension, physicalConstants);
     }
@@ -111,8 +112,6 @@ public class PolymerSimulator {
 
         iterationNumber = 0;
         acceptedIterations = 0;
-
-
         energy = energy();
     }
 
@@ -193,6 +192,14 @@ public class PolymerSimulator {
 
     public int getIterationNumber() {
         return iterationNumber;
+    }
+
+    public PhysicalConstants getPhysicalConstants() {
+        return physicalConstants;
+    }
+
+    public SimulationParameters getSimulationParameters() {
+        return geometry.getParameters();
     }
 
     public int getAcceptedIterations() {

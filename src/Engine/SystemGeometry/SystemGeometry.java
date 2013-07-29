@@ -13,6 +13,8 @@ import Engine.TwoBeadOverlap;
  */
 public interface SystemGeometry {
 
+    public GeometryBuilder toBuilder();
+
     public boolean isPositionValid(double[] position);
 
     public int getDimension();

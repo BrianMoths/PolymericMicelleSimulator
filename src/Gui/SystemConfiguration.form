@@ -48,12 +48,11 @@
           <Group type="102" alignment="0" attributes="0">
               <EmptySpace max="-2" attributes="0"/>
               <Component id="simulationParametersPnl" min="-2" max="-2" attributes="0"/>
-              <EmptySpace max="-2" attributes="0"/>
+              <EmptySpace pref="8" max="32767" attributes="0"/>
               <Group type="103" groupAlignment="0" max="-2" attributes="0">
                   <Component id="defaultParametersPnl" max="32767" attributes="0"/>
-                  <Component id="buildSystembtn" max="32767" attributes="0"/>
+                  <Component id="buildSystembtn" min="-2" pref="179" max="-2" attributes="0"/>
               </Group>
-              <EmptySpace max="32767" attributes="0"/>
           </Group>
       </Group>
     </DimensionLayout>
@@ -96,16 +95,11 @@
         </DimensionLayout>
         <DimensionLayout dim="1">
           <Group type="103" groupAlignment="0" attributes="0">
+              <Component id="PolymerClusterPanel" alignment="0" max="32767" attributes="0"/>
               <Group type="102" alignment="1" attributes="0">
-                  <Group type="103" groupAlignment="1" attributes="0">
-                      <Component id="PolymerClusterPanel" alignment="0" max="32767" attributes="0"/>
-                      <Group type="102" alignment="1" attributes="0">
-                          <Component id="geometryPanel" max="32767" attributes="0"/>
-                          <EmptySpace max="-2" attributes="0"/>
-                          <Component id="physicalConstantsPanel" min="-2" max="-2" attributes="0"/>
-                      </Group>
-                  </Group>
-                  <EmptySpace min="-2" max="-2" attributes="0"/>
+                  <Component id="geometryPanel" min="-2" max="-2" attributes="0"/>
+                  <EmptySpace max="-2" attributes="0"/>
+                  <Component id="physicalConstantsPanel" min="-2" max="-2" attributes="0"/>
               </Group>
           </Group>
         </DimensionLayout>
@@ -205,19 +199,23 @@
               <Properties>
                 <Property name="editable" type="boolean" value="false"/>
                 <Property name="text" type="java.lang.String" value="2"/>
+                <Property name="enabled" type="boolean" value="false"/>
+                <Property name="focusable" type="boolean" value="false"/>
               </Properties>
             </Component>
             <Component class="javax.swing.JTextField" name="xMaxFld">
               <Properties>
+                <Property name="editable" type="boolean" value="false"/>
                 <Property name="text" type="java.lang.String" value="20"/>
+                <Property name="enabled" type="boolean" value="false"/>
+                <Property name="focusable" type="boolean" value="false"/>
               </Properties>
-              <Events>
-                <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="xMaxFldActionPerformed"/>
-              </Events>
             </Component>
             <Component class="javax.swing.JTextField" name="yMaxFld">
               <Properties>
                 <Property name="editable" type="boolean" value="false"/>
+                <Property name="enabled" type="boolean" value="false"/>
+                <Property name="focusable" type="boolean" value="false"/>
               </Properties>
               <BindingProperties>
                 <BindingProperty name="text" source="xMaxFld" sourcePath="${text}" target="yMaxFld" targetPath="text" updateStrategy="0" immediately="false">
@@ -261,22 +259,29 @@
           <Layout>
             <DimensionLayout dim="0">
               <Group type="103" groupAlignment="0" attributes="0">
-                  <Group type="102" alignment="0" attributes="0">
-                      <EmptySpace max="-2" attributes="0"/>
-                      <Group type="103" groupAlignment="0" max="-2" attributes="0">
-                          <Component id="BBCoeffCaptionLbl" max="32767" attributes="0"/>
-                          <Component id="springConstantCaptionLbl" alignment="1" max="32767" attributes="0"/>
-                          <Component id="ABCoefficientCaptionLbl" alignment="1" max="32767" attributes="0"/>
-                          <Component id="AACoefficientCaptionLbl" alignment="1" max="32767" attributes="0"/>
-                          <Component id="temperatureCaptionLbl" alignment="1" max="32767" attributes="0"/>
-                      </Group>
+                  <Group type="102" attributes="0">
                       <EmptySpace max="-2" attributes="0"/>
                       <Group type="103" groupAlignment="0" attributes="0">
-                          <Component id="temperatureFld" max="32767" attributes="0"/>
-                          <Component id="AAOverlapCoefficientFld" max="32767" attributes="0"/>
-                          <Component id="ABOverlapCoefficientFld" alignment="0" max="32767" attributes="0"/>
-                          <Component id="springConstantFld" alignment="0" max="32767" attributes="0"/>
-                          <Component id="BBOverlapCoefficientFld" alignment="0" max="32767" attributes="0"/>
+                          <Component id="hardCoresChk" max="32767" attributes="0"/>
+                          <Group type="102" alignment="0" attributes="0">
+                              <Group type="103" groupAlignment="1" max="-2" attributes="0">
+                                  <Component id="interactionLengthCaptionLbl" alignment="0" max="32767" attributes="0"/>
+                                  <Component id="BBCoeffCaptionLbl" alignment="0" max="32767" attributes="0"/>
+                                  <Component id="springConstantCaptionLbl" alignment="1" max="32767" attributes="0"/>
+                                  <Component id="ABCoefficientCaptionLbl" alignment="1" max="32767" attributes="0"/>
+                                  <Component id="AACoefficientCaptionLbl" alignment="1" max="32767" attributes="0"/>
+                                  <Component id="temperatureCaptionLbl" alignment="1" max="32767" attributes="0"/>
+                              </Group>
+                              <EmptySpace max="-2" attributes="0"/>
+                              <Group type="103" groupAlignment="0" attributes="0">
+                                  <Component id="temperatureFld" max="32767" attributes="0"/>
+                                  <Component id="AAOverlapCoefficientFld" max="32767" attributes="0"/>
+                                  <Component id="ABOverlapCoefficientFld" alignment="0" max="32767" attributes="0"/>
+                                  <Component id="springConstantFld" alignment="0" max="32767" attributes="0"/>
+                                  <Component id="BBOverlapCoefficientFld" alignment="0" max="32767" attributes="0"/>
+                                  <Component id="interactionLengthFld" alignment="0" max="32767" attributes="0"/>
+                              </Group>
+                          </Group>
                       </Group>
                       <EmptySpace max="-2" attributes="0"/>
                   </Group>
@@ -309,7 +314,14 @@
                           <Component id="springConstantCaptionLbl" alignment="3" min="-2" max="-2" attributes="0"/>
                           <Component id="springConstantFld" alignment="3" min="-2" max="-2" attributes="0"/>
                       </Group>
+                      <EmptySpace max="-2" attributes="0"/>
+                      <Group type="103" groupAlignment="3" attributes="0">
+                          <Component id="interactionLengthCaptionLbl" alignment="3" min="-2" max="-2" attributes="0"/>
+                          <Component id="interactionLengthFld" alignment="3" min="-2" max="-2" attributes="0"/>
+                      </Group>
                       <EmptySpace max="32767" attributes="0"/>
+                      <Component id="hardCoresChk" min="-2" max="-2" attributes="0"/>
+                      <EmptySpace max="-2" attributes="0"/>
                   </Group>
               </Group>
             </DimensionLayout>
@@ -324,9 +336,11 @@
               <Properties>
                 <Property name="editable" type="boolean" value="false"/>
                 <Property name="text" type="java.lang.String" value="1"/>
+                <Property name="enabled" type="boolean" value="false"/>
+                <Property name="focusable" type="boolean" value="false"/>
               </Properties>
               <Events>
-                <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="temperatureFldActionPerformed"/>
+                <EventHandler event="focusGained" listener="java.awt.event.FocusListener" parameters="java.awt.event.FocusEvent" handler="temperatureFocusGained"/>
               </Events>
             </Component>
             <Component class="javax.swing.JLabel" name="AACoefficientCaptionLbl">
@@ -358,7 +372,9 @@
             </Component>
             <Component class="javax.swing.JTextField" name="springConstantFld">
               <Properties>
-                <Property name="text" type="java.lang.String" value="40"/>
+                <Property name="editable" type="boolean" value="false"/>
+                <Property name="text" type="java.lang.String" value="1"/>
+                <Property name="enabled" type="boolean" value="false"/>
               </Properties>
               <Events>
                 <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="springConstantFldActionPerformed"/>
@@ -371,6 +387,22 @@
               </Properties>
             </Component>
             <Component class="javax.swing.JTextField" name="BBOverlapCoefficientFld">
+              <Properties>
+                <Property name="text" type="java.lang.String" value="1"/>
+              </Properties>
+            </Component>
+            <Component class="javax.swing.JCheckBox" name="hardCoresChk">
+              <Properties>
+                <Property name="text" type="java.lang.String" value="Give Beads Hard Cores"/>
+              </Properties>
+            </Component>
+            <Component class="javax.swing.JLabel" name="interactionLengthCaptionLbl">
+              <Properties>
+                <Property name="horizontalAlignment" type="int" value="11"/>
+                <Property name="text" type="java.lang.String" value="Bead Size:"/>
+              </Properties>
+            </Component>
+            <Component class="javax.swing.JTextField" name="interactionLengthFld">
               <Properties>
                 <Property name="text" type="java.lang.String" value="1"/>
               </Properties>
@@ -607,7 +639,7 @@
                   <Component id="micelleBtn" min="-2" max="-2" attributes="0"/>
                   <EmptySpace max="-2" attributes="0"/>
                   <Component id="softMicelleBtn" min="-2" max="-2" attributes="0"/>
-                  <EmptySpace pref="13" max="32767" attributes="0"/>
+                  <EmptySpace max="32767" attributes="0"/>
               </Group>
           </Group>
         </DimensionLayout>

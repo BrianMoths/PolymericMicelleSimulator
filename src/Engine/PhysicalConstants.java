@@ -11,7 +11,7 @@ import java.util.Random;
  *
  * @author bmoths
  */
-public class PhysicalConstants {
+public final class PhysicalConstants {
 
     //<editor-fold defaultstate="collapsed" desc="builder class">
     static public class PhysicalConstantsBuilder {
@@ -109,10 +109,10 @@ public class PhysicalConstants {
         this.BBOverlapCoefficient = physicalConstants.BBOverlapCoefficient;
         this.ABOverlapCoefficient = physicalConstants.ABOverlapCoefficient;
         this.springCoefficient = physicalConstants.springCoefficient;
-        this.hardOverlapCoefficient = hardOverlapCoefficientFromParamters(parameters);
+        this.hardOverlapCoefficient = hardOverlapCoefficientFromParameters(parameters);
     }
 
-    private double hardOverlapCoefficientFromParamters(SimulationParameters parameters) {
+    private double hardOverlapCoefficientFromParameters(SimulationParameters parameters) {
         double minCoefficientForBonding = - 3 * temperature / (parameters.getInteractionLength() * parameters.getInteractionLength());
         double minAttraction = Math.min(Math.min(BBOverlapCoefficient, AAOverlapCoefficient), minCoefficientForBonding);
         return (5 * temperature - parameters.getInteractionLength() * parameters.getInteractionLength() * minAttraction) / (parameters.getCoreLength() * parameters.getCoreLength());
@@ -151,6 +151,10 @@ public class PhysicalConstants {
     public boolean isEnergeticallyAllowed(double energyChange) {
         return energyChange < 0
                 || randomNumberGenerator.nextDouble() < Math.exp(-energyChange / temperature);
+    }
+
+    public double idealStepLength() {
+        return Math.sqrt(getTemperature() / getSpringCoefficient());
     }
 
     //<editor-fold defaultstate="collapsed" desc="getters">

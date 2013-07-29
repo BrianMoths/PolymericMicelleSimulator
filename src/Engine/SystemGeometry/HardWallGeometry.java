@@ -11,9 +11,22 @@ import Engine.TwoBeadOverlap;
  *
  * @author bmoths
  */
-public class HardWallGeometry extends AbstractGeometry {
+public final class HardWallGeometry extends AbstractGeometry {
 
-    public static class HardWallGeometryBuilder extends GeometryBuilder {
+    @Override
+    public GeometryBuilder toBuilder() {
+        return new HardWallGeometryBuilder(this);
+    }
+
+    public static class HardWallGeometryBuilder extends AbstractGeometryBuilder {
+
+        private HardWallGeometryBuilder(HardWallGeometry geometry) {
+            super(geometry);
+        }
+
+        public HardWallGeometryBuilder() {
+            super();
+        }
 
         @Override
         public HardWallGeometry buildGeometry() {

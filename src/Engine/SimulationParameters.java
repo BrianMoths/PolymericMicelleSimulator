@@ -8,37 +8,32 @@ package Engine;
  *
  * @author bmoths
  */
-public class SimulationParameters {
+public final class SimulationParameters {
 
     private final double interactionLength, coreLength, stepLength;
 
     public SimulationParameters() {
-        double tempCoreLength;
-
         interactionLength = 5;
-        tempCoreLength = calculateCoreLength(interactionLength);
-        coreLength = tempCoreLength;
-        stepLength = interactionLength / 2;
+        coreLength = 0;
+        stepLength = interactionLength / 2; //step length should be set by spring constant
     }
 
     public SimulationParameters(double stepLength, double interactionLength) {
-        double tempCoreLength;
-
         this.interactionLength = interactionLength;
         this.stepLength = stepLength;
+        coreLength = 0;
+    }
 
-        tempCoreLength = calculateCoreLength(interactionLength);
-        coreLength = tempCoreLength;
+    public SimulationParameters(double stepLength, double interactionLength, double coreLength) {
+        this.interactionLength = interactionLength;
+        this.stepLength = stepLength;
+        this.coreLength = coreLength;
     }
 
     public SimulationParameters(SimulationParameters simulationParameters) {
-        double tempCoreLength;
-
-        this.stepLength = simulationParameters.stepLength;
-        this.interactionLength = simulationParameters.interactionLength;
-
-        tempCoreLength = calculateCoreLength(interactionLength);
-        coreLength = tempCoreLength;
+        stepLength = simulationParameters.stepLength;
+        interactionLength = simulationParameters.interactionLength;
+        coreLength = simulationParameters.getCoreLength();
     }
 
     public SimulationParameters makeParametersFromPhysicalConstants(PhysicalConstants physicalConstants) {
@@ -46,9 +41,9 @@ public class SimulationParameters {
     }
 
     private SimulationParameters(SimulationParameters simulationParameters, PhysicalConstants physicalConstants) {
-        this.stepLength = simulationParameters.stepLength;
+//        this.stepLength = simulationParameters.stepLength;
         this.interactionLength = simulationParameters.interactionLength;
-
+        stepLength = physicalConstants.idealStepLength();
         coreLength = coreLengthFromPhysicalConstants(physicalConstants);
     }
 
@@ -58,10 +53,6 @@ public class SimulationParameters {
         System.out.println(minCoefficientForBonding);
         double minAttraction = Math.min(Math.min(physicalConstants.getBBOverlapCoefficient(), physicalConstants.getAAOverlapCoefficient()), minCoefficientForBonding);
         return interactionLength + thermalForce / minAttraction;
-    }
-
-    private double calculateCoreLength(double interactionLength) {
-        return interactionLength / 2;
     }
 
     public double getStepLength() {

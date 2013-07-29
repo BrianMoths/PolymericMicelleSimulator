@@ -11,9 +11,22 @@ import Engine.TwoBeadOverlap;
  *
  * @author bmoths
  */
-public class PeriodicGeometry extends AbstractGeometry {
+public final class PeriodicGeometry extends AbstractGeometry {
 
-    public static class PeriodicGeometryBuilder extends GeometryBuilder {
+    @Override
+    public GeometryBuilder toBuilder() {
+        return new PeriodicGeometryBuilder(this);
+    }
+
+    public static class PeriodicGeometryBuilder extends AbstractGeometryBuilder {
+
+        private PeriodicGeometryBuilder(PeriodicGeometry geometry) {
+            super(geometry);
+        }
+
+        public PeriodicGeometryBuilder() {
+            super();
+        }
 
         @Override
         public PeriodicGeometry buildGeometry() {
@@ -88,9 +101,9 @@ public class PeriodicGeometry extends AbstractGeometry {
 
     private double projectComponent(double component, int dimension) {
         if (component < 0) {
-            component += fullRMax[dimension];
+            component = (component % fullRMax[dimension]) + fullRMax[dimension];
         } else if (component > fullRMax[dimension]) {
-            component -= fullRMax[dimension];
+            component = component % fullRMax[dimension];
         }
         return component;
     }
