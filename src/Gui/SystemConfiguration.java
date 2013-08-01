@@ -14,8 +14,6 @@ import Engine.SystemGeometry.HardWallGeometry.HardWallGeometryBuilder;
 import Engine.SystemGeometry.PeriodicGeometry.PeriodicGeometryBuilder;
 import Engine.SystemGeometry.AbstractGeometry.AbstractGeometryBuilder;
 import java.awt.event.FocusAdapter;
-import java.awt.event.FocusEvent;
-import java.awt.event.FocusListener;
 import java.util.ArrayList;
 import java.util.List;
 import javax.swing.JTextField;
@@ -53,6 +51,7 @@ public class SystemConfiguration extends javax.swing.JFrame { //broken, need to 
                 }
             });
         }
+        this.getRootPane().setDefaultButton(buildSystembtn);
         this.gui = gui;
     }
 
@@ -113,7 +112,7 @@ public class SystemConfiguration extends javax.swing.JFrame { //broken, need to 
         lamellaeBtn = new javax.swing.JButton();
         disorderBtn = new javax.swing.JButton();
         micelleBtn = new javax.swing.JButton();
-        softMicelleBtn = new javax.swing.JButton();
+        blueDropBtn = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         setTitle("Simulator Configuration");
@@ -255,7 +254,7 @@ public class SystemConfiguration extends javax.swing.JFrame { //broken, need to 
         hardCoresChk.setText("Give Beads Hard Cores");
 
         interactionLengthCaptionLbl.setHorizontalAlignment(javax.swing.SwingConstants.TRAILING);
-        interactionLengthCaptionLbl.setText("Bead Size:");
+        interactionLengthCaptionLbl.setText("Int. Length");
 
         interactionLengthFld.setText("1");
 
@@ -476,10 +475,10 @@ public class SystemConfiguration extends javax.swing.JFrame { //broken, need to 
             }
         });
 
-        softMicelleBtn.setText("Parameters for soft micelles");
-        softMicelleBtn.addActionListener(new java.awt.event.ActionListener() {
+        blueDropBtn.setText("Parameters for blue drop");
+        blueDropBtn.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                softMicelleBtnActionPerformed(evt);
+                blueDropBtnActionPerformed(evt);
             }
         });
 
@@ -490,7 +489,7 @@ public class SystemConfiguration extends javax.swing.JFrame { //broken, need to 
             .addGroup(defaultParametersPnlLayout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(defaultParametersPnlLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
-                    .addComponent(softMicelleBtn, javax.swing.GroupLayout.DEFAULT_SIZE, 325, Short.MAX_VALUE)
+                    .addComponent(blueDropBtn, javax.swing.GroupLayout.DEFAULT_SIZE, 325, Short.MAX_VALUE)
                     .addComponent(micelleBtn, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(disorderBtn, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(lamellaeBtn, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 325, Short.MAX_VALUE))
@@ -506,7 +505,7 @@ public class SystemConfiguration extends javax.swing.JFrame { //broken, need to 
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(micelleBtn)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(softMicelleBtn)
+                .addComponent(blueDropBtn)
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
@@ -529,7 +528,7 @@ public class SystemConfiguration extends javax.swing.JFrame { //broken, need to 
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
                 .addComponent(simulationParametersPnl, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 8, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                     .addComponent(defaultParametersPnl, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(buildSystembtn, javax.swing.GroupLayout.PREFERRED_SIZE, 179, javax.swing.GroupLayout.PREFERRED_SIZE)))
@@ -543,18 +542,18 @@ public class SystemConfiguration extends javax.swing.JFrame { //broken, need to 
     private void springConstantFldActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_springConstantFldActionPerformed
         // TODO add your handling code here:
     }//GEN-LAST:event_springConstantFldActionPerformed
-
+    
     private void buildSystembtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_buildSystembtnActionPerformed
         gui.cancelComputation();
-
+        
         PhysicalConstantsBuilder physicalConstantsBuilder = new PhysicalConstantsBuilder();
         SimulationParameters simulationParameters;
-
+        
         int dimension, numChains, numABeadsPerChain, numBBeadsPerChain, numRepeats;
         double xMax = 0, yMax = 0, zMax = 0;
         double temperature, AAOverlapCoefficient, BBOverlapCoefficient,
                 ABOverlapCoefficient, springConstant, concentration, interactionLength;
-
+        
         try {
             final String dimensionString = dimensionFld.getText();
             dimension = Integer.parseInt(dimensionString);
@@ -562,7 +561,7 @@ public class SystemConfiguration extends javax.swing.JFrame { //broken, need to 
             System.err.println("couldn't parse dimension");
             return;
         }
-
+        
         try {
             final String xMaxString = xMaxFld.getText();
             xMax = Double.parseDouble(xMaxString);
@@ -570,7 +569,7 @@ public class SystemConfiguration extends javax.swing.JFrame { //broken, need to 
             System.err.println("couldn't parse xMax");
             return;
         }
-
+        
         try {
             final String yMaxString = yMaxFld.getText();
             yMax = Double.parseDouble(yMaxString);
@@ -578,7 +577,7 @@ public class SystemConfiguration extends javax.swing.JFrame { //broken, need to 
             System.err.println("couldn't parse yMax");
             return;
         }
-
+        
         try {
             final String temperatureString = temperatureFld.getText();
             temperature = Double.parseDouble(temperatureString);
@@ -586,22 +585,22 @@ public class SystemConfiguration extends javax.swing.JFrame { //broken, need to 
             System.err.println("couldn't parse temperature");
             return;
         }
-
+        
         try {
             final String AAOverlapCoefficientString = AAOverlapCoefficientFld.getText();
             AAOverlapCoefficient = Double.parseDouble(AAOverlapCoefficientString);
         } catch (NumberFormatException e) {
-            System.err.println("couldn't parse similarOverlapCoefficient");
+            System.err.println("couldn't parse " + AACoefficientCaptionLbl.getText().replace(":", ""));
             return;
         }
         try {
             final String BBOverlapCoefficientString = BBOverlapCoefficientFld.getText();
             BBOverlapCoefficient = Double.parseDouble(BBOverlapCoefficientString);
         } catch (NumberFormatException e) {
-            System.err.println("couldn't parse similarOverlapCoefficient");
+            System.err.println("couldn't parse " + BBCoeffCaptionLbl.getText().replace(":", ""));
             return;
         }
-
+        
         try {
             final String ABOverlapCoefficientString = ABOverlapCoefficientFld.getText();
             ABOverlapCoefficient = Double.parseDouble(ABOverlapCoefficientString);
@@ -609,7 +608,7 @@ public class SystemConfiguration extends javax.swing.JFrame { //broken, need to 
             System.err.println("couldn't parse differentOverlapCoefficient");
             return;
         }
-
+        
         try {
             final String springConstantString = springConstantFld.getText();
             springConstant = Double.parseDouble(springConstantString);
@@ -617,7 +616,7 @@ public class SystemConfiguration extends javax.swing.JFrame { //broken, need to 
             System.err.println("couldn't parse spring constant");
             return;
         }
-
+        
         try {
             final String interactionLengthString = interactionLengthFld.getText();
             interactionLength = Double.parseDouble(interactionLengthString);
@@ -625,7 +624,7 @@ public class SystemConfiguration extends javax.swing.JFrame { //broken, need to 
             System.err.println("couldn't parse spring constant");
             return;
         }
-
+        
         try {
             final String numChainsString = numberOfChainsFld.getText();
             numChains = Integer.parseInt(numChainsString);
@@ -633,9 +632,9 @@ public class SystemConfiguration extends javax.swing.JFrame { //broken, need to 
             System.err.println("couldn't parse number of Chains");
             return;
         }
-
-
-
+        
+        
+        
         try {
             final String concentrationString = concentrationFld.getText();
             concentration = Double.parseDouble(concentrationString);
@@ -661,21 +660,21 @@ public class SystemConfiguration extends javax.swing.JFrame { //broken, need to 
         if (interactionLength < 0) {
             System.err.println("interaction Length must be non-negative");
         }
-
+        
         physicalConstantsBuilder.setTemperature(temperature);
-
+        
         physicalConstantsBuilder.setAAOverlapCoefficient(AAOverlapCoefficient);
-
+        
         physicalConstantsBuilder.setBBOverlapCoefficient(BBOverlapCoefficient);
-
+        
         physicalConstantsBuilder.setABOverlapCoefficient(ABOverlapCoefficient);
-
+        
         physicalConstantsBuilder.setSpringCoefficient(springConstant);
         PhysicalConstants physicalConstants = physicalConstantsBuilder.buildPhysicalConstants();
         PolymerChain polymerChain = makePolymerChain();
-
+        
         PolymerCluster polymerCluster = PolymerCluster.makeRepeatedChainCluster(polymerChain, numChains);
-
+        
         polymerCluster.setConcentrationInWater(concentration);
         simulationParameters = new SimulationParameters(physicalConstants.idealStepLength(), interactionLength);
 //        simulationParameters = PolymerSimulator.makeDefaultParameters(polymerCluster, xMax, dimension, physicalConstants);
@@ -687,14 +686,14 @@ public class SystemConfiguration extends javax.swing.JFrame { //broken, need to 
         System.out.println("Core Length: " + simulationParameters.getCoreLength());
         System.out.println("HardOverlap: " + physicalConstants.getHardOverlapCoefficient());
         System.out.println("Interaction Length: " + simulationParameters.getInteractionLength());
-
+        
         AbstractGeometryBuilder systemGeometryBuilder = new PeriodicGeometryBuilder();
         if (periodicRdo.isSelected()) {
             systemGeometryBuilder = new PeriodicGeometryBuilder();
         } else if (hardWallRdo.isSelected()) {
             systemGeometryBuilder = new HardWallGeometryBuilder();
         }
-
+        
         systemGeometryBuilder.setDimension(dimension);
         systemGeometryBuilder.makeConsistentWith(polymerCluster, simulationParameters);
 
@@ -708,11 +707,11 @@ public class SystemConfiguration extends javax.swing.JFrame { //broken, need to 
                 systemGeometryBuilder.buildGeometry(),
                 polymerCluster,
                 physicalConstants);
-
-
+        
+        
         gui.setSystem(polymerSystem);
     }//GEN-LAST:event_buildSystembtnActionPerformed
-
+    
     private PolymerChain makePolymerChain() {
         PolymerChain polymerChain = null;
         if (blockCopolymerRdo.isSelected()) {
@@ -722,10 +721,10 @@ public class SystemConfiguration extends javax.swing.JFrame { //broken, need to 
         }
         return polymerChain;
     }
-
+    
     private PolymerChain makeChainFromBlock() {
         int numABeadsPerChain, numBBeadsPerChain, numRepeats;
-
+        
         try {
             final String numABeadsString = numABeadsFld.getText();
             numABeadsPerChain = Integer.parseInt(numABeadsString);
@@ -733,58 +732,58 @@ public class SystemConfiguration extends javax.swing.JFrame { //broken, need to 
             System.err.println("couldn't parse number of A Beads");
             throw new NumberFormatException("couldn't parse number of A Beads");
         }
-
+        
         try {
             final String numBBeadsString = numBBeadsFld.getText();
             numBBeadsPerChain = Integer.parseInt(numBBeadsString);
         } catch (NumberFormatException e) {
             throw new NumberFormatException("couldn't parse number of B Beads.");
         }
-
+        
         try {
             final String numRepeatsString = numRepeatsFld.getText();
             numRepeats = Integer.parseInt(numRepeatsString);
         } catch (NumberFormatException e) {
             throw new NumberFormatException("couldn't parse number of repeats.");
         }
-
+        
         if (numRepeats < 1) {
             throw new IllegalArgumentException("number of repeats must be positive.");
         }
-
+        
         if (numABeadsPerChain < 0) {
             throw new IllegalArgumentException("number of A Beads must be non-negative.");
         }
-
+        
         if (numBBeadsPerChain < 0) {
             throw new IllegalArgumentException("number of B Beads must be non-negative.");
         }
-
+        
         if (numABeadsPerChain + numBBeadsPerChain < 1) {
             throw new IllegalArgumentException("There must be at least one bead per chain.");
         }
-
+        
         PolymerChain polymerChain = PolymerChain.makeChainStartingWithA(numABeadsPerChain, numBBeadsPerChain);
-
+        
         for (int i = 1;
                 i < numRepeats;
                 i++) {
             polymerChain.addBeads(true, numABeadsPerChain);
             polymerChain.addBeads(false, numBBeadsPerChain);
         }
-
+        
         return polymerChain;
     }
-
+    
     private PolymerChain makeChainFromArray() {
         int[] numBeadsAlternating;
         final String numBeadsAlternatingString = arrayOfLengthsTxt.getText();
         String[] numBeadsAlternatingStringArray =
                 numBeadsAlternatingString.replaceAll("[\\[\\]\\n {}()]", "")
                 .split(",");
-
+        
         numBeadsAlternating = new int[numBeadsAlternatingStringArray.length];
-
+        
         for (int i = 0; i < numBeadsAlternatingStringArray.length; i++) {
             try {
                 numBeadsAlternating[i] = Integer.parseInt(numBeadsAlternatingStringArray[i]);
@@ -792,10 +791,10 @@ public class SystemConfiguration extends javax.swing.JFrame { //broken, need to 
                 throw new NumberFormatException("unable to parse array of block lengths");
             }
         }
-
+        
         return PolymerChain.makeChainStartingWithA(numBeadsAlternating);
     }
-
+    
     private void lamellaeBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_lamellaeBtnActionPerformed
         dimensionFld.setText("2");
         xMaxFld.setText("20");
@@ -813,7 +812,7 @@ public class SystemConfiguration extends javax.swing.JFrame { //broken, need to 
         numRepeatsFld.setText("1");
         concentrationFld.setText("1");
     }//GEN-LAST:event_lamellaeBtnActionPerformed
-
+    
     private void disorderBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_disorderBtnActionPerformed
         dimensionFld.setText("2");
         xMaxFld.setText("20");
@@ -831,7 +830,7 @@ public class SystemConfiguration extends javax.swing.JFrame { //broken, need to 
         numRepeatsFld.setText("1");
         concentrationFld.setText("1");
     }//GEN-LAST:event_disorderBtnActionPerformed
-
+    
     private void micelleBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_micelleBtnActionPerformed
         dimensionFld.setText("2");
         xMaxFld.setText("20");
@@ -849,29 +848,29 @@ public class SystemConfiguration extends javax.swing.JFrame { //broken, need to 
         numRepeatsFld.setText("7");
         concentrationFld.setText(".02");
     }//GEN-LAST:event_micelleBtnActionPerformed
-
-    private void softMicelleBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_softMicelleBtnActionPerformed
+    
+    private void blueDropBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_blueDropBtnActionPerformed
         dimensionFld.setText("2");
-        xMaxFld.setText("20");
-        yMaxFld.setText("20");
         periodicRdo.setSelected(true);
         temperatureFld.setText("1");
-        AAOverlapCoefficientFld.setText(".5");
-        BBOverlapCoefficientFld.setText("-1");
-        ABOverlapCoefficientFld.setText(".5");
+        AAOverlapCoefficientFld.setText("0");
+        BBOverlapCoefficientFld.setText("-.1111");
+        ABOverlapCoefficientFld.setText("0");
         springConstantFld.setText("1");
-        numberOfChainsFld.setText("1");
+        interactionLengthFld.setText("3");
+        hardCoresChk.setSelected(true);
+        numberOfChainsFld.setText("30");
         blockCopolymerRdo.setSelected(true);
-        numABeadsFld.setText("6");
-        numBBeadsFld.setText("6");
-        numRepeatsFld.setText("12");
+        numABeadsFld.setText("0");
+        numBBeadsFld.setText("15");
+        numRepeatsFld.setText("1");
         concentrationFld.setText(".004");
-    }//GEN-LAST:event_softMicelleBtnActionPerformed
-
+    }//GEN-LAST:event_blueDropBtnActionPerformed
+    
     private void arrayOfLengthsRdoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_arrayOfLengthsRdoActionPerformed
         // TODO add your handling code here:
     }//GEN-LAST:event_arrayOfLengthsRdoActionPerformed
-
+    
     private void temperatureFocusGained(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_temperatureFocusGained
         // TODO add your handling code here:
     }//GEN-LAST:event_temperatureFocusGained
@@ -920,6 +919,7 @@ public class SystemConfiguration extends javax.swing.JFrame { //broken, need to 
     private javax.swing.JRadioButton arrayOfLengthsRdo;
     private javax.swing.JTextArea arrayOfLengthsTxt;
     private javax.swing.JRadioButton blockCopolymerRdo;
+    private javax.swing.JButton blueDropBtn;
     private javax.swing.ButtonGroup boundaryConditionBgp;
     private javax.swing.JLabel boundaryConditionsCaptionLbl;
     private javax.swing.JButton buildSystembtn;
@@ -949,7 +949,6 @@ public class SystemConfiguration extends javax.swing.JFrame { //broken, need to 
     private javax.swing.JRadioButton periodicRdo;
     private javax.swing.JPanel physicalConstantsPanel;
     private javax.swing.JPanel simulationParametersPnl;
-    private javax.swing.JButton softMicelleBtn;
     private javax.swing.JLabel springConstantCaptionLbl;
     private javax.swing.JTextField springConstantFld;
     private javax.swing.JLabel temperatureCaptionLbl;

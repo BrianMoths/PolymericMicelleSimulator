@@ -113,9 +113,13 @@ public final class PhysicalConstants {
     }
 
     private double hardOverlapCoefficientFromParameters(SimulationParameters parameters) {
-        double minCoefficientForBonding = - 3 * temperature / (parameters.getInteractionLength() * parameters.getInteractionLength());
-        double minAttraction = Math.min(Math.min(BBOverlapCoefficient, AAOverlapCoefficient), minCoefficientForBonding);
-        return (5 * temperature - parameters.getInteractionLength() * parameters.getInteractionLength() * minAttraction) / (parameters.getCoreLength() * parameters.getCoreLength());
+        if (parameters.getCoreLength() > 1e-10) {
+            double minCoefficientForBonding = -.5 * temperature / (parameters.getInteractionLength() * parameters.getInteractionLength());
+            double minAttraction = Math.min(Math.min(BBOverlapCoefficient, AAOverlapCoefficient), minCoefficientForBonding);
+            return (5 * temperature - parameters.getInteractionLength() * parameters.getInteractionLength() * minAttraction) / (parameters.getCoreLength() * parameters.getCoreLength());
+        } else {
+            return 0;
+        }
     }
 
     private PhysicalConstants(double temperature, double AAOverlapCoefficient, double BBOverlapCoefficient, double ABOverlapCoefficient, double hardOverlapCoefficient, double springCoefficient) {

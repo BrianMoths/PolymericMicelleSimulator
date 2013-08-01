@@ -48,7 +48,7 @@
           <Group type="102" alignment="0" attributes="0">
               <EmptySpace max="-2" attributes="0"/>
               <Component id="simulationParametersPnl" min="-2" max="-2" attributes="0"/>
-              <EmptySpace pref="8" max="32767" attributes="0"/>
+              <EmptySpace max="32767" attributes="0"/>
               <Group type="103" groupAlignment="0" max="-2" attributes="0">
                   <Component id="defaultParametersPnl" max="32767" attributes="0"/>
                   <Component id="buildSystembtn" min="-2" pref="179" max="-2" attributes="0"/>
@@ -399,7 +399,7 @@
             <Component class="javax.swing.JLabel" name="interactionLengthCaptionLbl">
               <Properties>
                 <Property name="horizontalAlignment" type="int" value="11"/>
-                <Property name="text" type="java.lang.String" value="Bead Size:"/>
+                <Property name="text" type="java.lang.String" value="Int. Length"/>
               </Properties>
             </Component>
             <Component class="javax.swing.JTextField" name="interactionLengthFld">
@@ -619,7 +619,7 @@
               <Group type="102" alignment="0" attributes="0">
                   <EmptySpace max="-2" attributes="0"/>
                   <Group type="103" groupAlignment="1" max="-2" attributes="0">
-                      <Component id="softMicelleBtn" pref="325" max="32767" attributes="0"/>
+                      <Component id="blueDropBtn" pref="325" max="32767" attributes="0"/>
                       <Component id="micelleBtn" alignment="0" max="32767" attributes="0"/>
                       <Component id="disorderBtn" alignment="0" max="32767" attributes="0"/>
                       <Component id="lamellaeBtn" alignment="0" pref="325" max="32767" attributes="0"/>
@@ -638,7 +638,7 @@
                   <EmptySpace max="-2" attributes="0"/>
                   <Component id="micelleBtn" min="-2" max="-2" attributes="0"/>
                   <EmptySpace max="-2" attributes="0"/>
-                  <Component id="softMicelleBtn" min="-2" max="-2" attributes="0"/>
+                  <Component id="blueDropBtn" min="-2" max="-2" attributes="0"/>
                   <EmptySpace max="32767" attributes="0"/>
               </Group>
           </Group>
@@ -669,12 +669,12 @@
             <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="micelleBtnActionPerformed"/>
           </Events>
         </Component>
-        <Component class="javax.swing.JButton" name="softMicelleBtn">
+        <Component class="javax.swing.JButton" name="blueDropBtn">
           <Properties>
-            <Property name="text" type="java.lang.String" value="Parameters for soft micelles"/>
+            <Property name="text" type="java.lang.String" value="Parameters for blue drop"/>
           </Properties>
           <Events>
-            <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="softMicelleBtnActionPerformed"/>
+            <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="blueDropBtnActionPerformed"/>
           </Events>
         </Component>
       </SubComponents>
