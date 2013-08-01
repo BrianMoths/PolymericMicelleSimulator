@@ -5,7 +5,6 @@
 package Gui;
 
 import Engine.PolymerSimulator;
-import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.concurrent.ArrayBlockingQueue;
@@ -14,7 +13,6 @@ import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import javax.swing.JTextField;
 
 /**
  *
@@ -40,6 +38,7 @@ public class MicelleGui extends javax.swing.JFrame {
         @Override
         public void run() {
             system.doIterations(numIterations);
+            System.out.println(system.toString());
         }
     }
     private PolymerSimulator system;

@@ -115,6 +115,17 @@ public class PolymerSimulator {
         energy = energy();
     }
 
+    @Override
+    public String toString() {
+        StringBuilder stringBuilder = new StringBuilder();
+        stringBuilder.append("Physical Constants: ").append(physicalConstants.toString()).append("\n");
+        stringBuilder.append("Polymer position: \n").append(polymerPosition.toString()).append("\n");
+        stringBuilder.append("Energy: ").append(Double.toString(energy)).append("\n");
+        stringBuilder.append("Total iterations performed: ").append(Integer.toString(iterationNumber)).append("\n");
+        stringBuilder.append("Number iterations accepted: ").append(Integer.toString(acceptedIterations)).append("\n");
+        return stringBuilder.toString();
+    }
+
     public synchronized void randomizePositions() {
         iterationNumber = 0;
         acceptedIterations = 0;

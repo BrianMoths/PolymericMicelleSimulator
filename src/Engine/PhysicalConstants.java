@@ -112,6 +112,18 @@ public final class PhysicalConstants {
         this.hardOverlapCoefficient = hardOverlapCoefficientFromParameters(parameters);
     }
 
+    @Override
+    public String toString() {
+        StringBuilder stringBuilder = new StringBuilder();
+        stringBuilder.append("Temperature: ").append(Double.toString(temperature)).append("\n");
+        stringBuilder.append("AA Overlap Coefficient: ").append(Double.toString(AAOverlapCoefficient)).append("\n");
+        stringBuilder.append("BB Overlap Coefficient: ").append(Double.toString(BBOverlapCoefficient)).append("\n");
+        stringBuilder.append("AB Overlap Coefficient: ").append(Double.toString(ABOverlapCoefficient)).append("\n");
+        stringBuilder.append("Hard Overlap Coefficient: ").append(Double.toString(hardOverlapCoefficient)).append("\n");
+        stringBuilder.append("Spring Coefficient: ").append(Double.toString(springCoefficient)).append("\n");
+        return stringBuilder.toString();
+    }
+
     private double hardOverlapCoefficientFromParameters(SimulationParameters parameters) {
         if (parameters.getCoreLength() > 1e-10) {
             double minCoefficientForBonding = -.5 * temperature / (parameters.getInteractionLength() * parameters.getInteractionLength());

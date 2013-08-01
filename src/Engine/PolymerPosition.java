@@ -9,6 +9,7 @@ import Engine.SystemGeometry.SystemGeometry;
 import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Point;
+import java.util.Arrays;
 import java.util.Iterator;
 import java.util.Random;
 
@@ -37,6 +38,35 @@ public class PolymerPosition {
         simulationStep = new SimulationStep();
 
         randomizePrivate();
+    }
+
+    @Override
+    public String toString() {
+        StringBuilder stringBuilder = new StringBuilder();
+        stringBuilder.append("Number of Beads: ").append(Integer.toString(numBeads)).append("\n");
+        stringBuilder.append("Number of A Beads: ").append(Integer.toString(numABeads)).append("\n");
+        stringBuilder.append("Number of B Beads: ").append(Integer.toString(numBeads - numABeads)).append("\n");
+        stringBuilder.append("List of bead positions: \n ").append(beadPositionString(beadPositions)).append("\n");
+        stringBuilder.append("Array specifying each beads backward and forward neighbor on the chain: \n ").append(neighborString(neighbors)).append("\n");
+        stringBuilder.append("Last step considered: \n").append(simulationStep.toString()).append("\n");
+        stringBuilder.append("Geometry: \n").append(systemGeometry.toString()).append("\n");
+        return stringBuilder.toString();
+    }
+
+    public String beadPositionString(double[][] beadPositions) {
+        StringBuilder stringBuilder = new StringBuilder();
+        for (int i = 0; i < beadPositions.length; i++) {
+            stringBuilder.append("Position of bead ").append(i).append(": ").append(Arrays.toString(beadPositions[i])).append("\n");
+        }
+        return stringBuilder.toString();
+    }
+
+    public String neighborString(int[][] neighbors) {
+        StringBuilder stringBuilder = new StringBuilder();
+        for (int i = 0; i < beadPositions.length; i++) {
+            stringBuilder.append("neighbors of bead ").append(i).append(": ").append(Arrays.toString(neighbors[i])).append("\n");
+        }
+        return stringBuilder.toString();
     }
 
     public void randomize() {

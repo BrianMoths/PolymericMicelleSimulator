@@ -6,6 +6,7 @@ package Engine.SystemGeometry;
 
 import Engine.PolymerCluster;
 import Engine.SimulationParameters;
+import java.util.Arrays;
 import java.util.Random;
 
 /**
@@ -95,6 +96,15 @@ public abstract class AbstractGeometry implements SystemGeometry {
         this.fullRMax = new double[dimension];
         System.arraycopy(fullRMax, 0, this.fullRMax, 0, dimension);
         this.parameters = parameters;
+    }
+
+    @Override
+    public String toString() {
+        StringBuilder stringBuilder = new StringBuilder();
+        stringBuilder.append("Dimension: ").append(Double.toString(dimension)).append("\n");
+        stringBuilder.append("R Max: ").append(Arrays.toString(fullRMax)).append("\n");
+        stringBuilder.append("Simulation Parameters: \n").append(parameters.toString()).append("\n");
+        return stringBuilder.toString();
     }
 
     @Override
