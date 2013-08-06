@@ -311,24 +311,6 @@ public class PolymerPosition {
     }
 
     public void setBeadPositions(double[][] beadPositions) {
-//        if (beadPositions.length != numBeads) {
-//            throw new IllegalArgumentException("Unable to set bead position. Wrong number of beads!");
-//        }
-//        for (int bead = 0; bead < numBeads; bead++) {
-//            if (beadPositions[bead].length != systemGeometry.getDimension()) {
-//                throw new IllegalArgumentException("Unable to set bead position. Each bead postion must have length equal to number of dimensions: " + systemGeometry.getDimension() + "!");
-//            }
-//            for (int j = 0; j < 10; j++) {
-//                if (!systemGeometry.isPositionValid(beadPositions[bead])) {
-//                    throw new IllegalArgumentException("One of the bead positions is not valid");
-//                }
-//            }
-//        }
-//
-//        for (int bead = 0; bead < numBeads; bead++) {
-//            System.arraycopy(beadPositions[bead], 0, this.beadPositions[bead], 0, systemGeometry.getDimension());
-//        }
-
         systemGeometry.checkedCopyPositions(beadPositions, this.beadPositions);
     }
 
