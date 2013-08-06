@@ -38,7 +38,7 @@ public class MicelleGui extends javax.swing.JFrame {
         @Override
         public void run() {
             system.doIterations(numIterations);
-            System.out.println(system.toString());
+//            System.out.println(system.toString());
         }
     }
     private PolymerSimulator system;
@@ -105,8 +105,12 @@ public class MicelleGui extends javax.swing.JFrame {
     public void setSystem(PolymerSimulator system) {
         this.system = system;
         registerGuiWithSystem();
-        system.randomizePositions();
+//        system.randomizePositions();
         updateDisplay();
+    }
+
+    public PolymerSimulator getPolymerSimulator() {
+        return new PolymerSimulator(system);
     }
 
     public void cancelComputation() {

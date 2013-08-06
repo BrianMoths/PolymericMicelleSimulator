@@ -40,6 +40,16 @@ public class PolymerPosition {
         randomizePrivate();
     }
 
+    public PolymerPosition(PolymerPosition polymerPosition) {
+        numBeads = polymerPosition.numBeads;
+        numABeads = polymerPosition.numABeads;
+        neighbors = polymerPosition.neighbors;
+        systemGeometry = polymerPosition.systemGeometry;
+        beadBinner = new BeadBinner(polymerPosition.beadBinner);
+        beadPositions = polymerPosition.getBeadPositions();
+        simulationStep = new SimulationStep(polymerPosition.simulationStep);
+    }
+
     @Override
     public String toString() {
         StringBuilder stringBuilder = new StringBuilder();
@@ -298,6 +308,36 @@ public class PolymerPosition {
 
     public int getNumBeads() {
         return numBeads;
+    }
+
+    public void setBeadPositions(double[][] beadPositions) {
+//        if (beadPositions.length != numBeads) {
+//            throw new IllegalArgumentException("Unable to set bead position. Wrong number of beads!");
+//        }
+//        for (int bead = 0; bead < numBeads; bead++) {
+//            if (beadPositions[bead].length != systemGeometry.getDimension()) {
+//                throw new IllegalArgumentException("Unable to set bead position. Each bead postion must have length equal to number of dimensions: " + systemGeometry.getDimension() + "!");
+//            }
+//            for (int j = 0; j < 10; j++) {
+//                if (!systemGeometry.isPositionValid(beadPositions[bead])) {
+//                    throw new IllegalArgumentException("One of the bead positions is not valid");
+//                }
+//            }
+//        }
+//
+//        for (int bead = 0; bead < numBeads; bead++) {
+//            System.arraycopy(beadPositions[bead], 0, this.beadPositions[bead], 0, systemGeometry.getDimension());
+//        }
+
+        systemGeometry.checkedCopyPositions(beadPositions, this.beadPositions);
+    }
+
+    public double[][] getBeadPositions() {
+        double[][] beadPositionsCopy = new double[numBeads][systemGeometry.getDimension()];
+        for (int bead = 0; bead < numBeads; bead++) {
+            System.arraycopy(beadPositions[bead], 0, beadPositionsCopy[bead], 0, systemGeometry.getDimension());
+        }
+        return beadPositionsCopy;
     }
 
     public boolean isTypeA(int bead) {

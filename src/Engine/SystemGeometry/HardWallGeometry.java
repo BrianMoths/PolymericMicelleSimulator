@@ -99,4 +99,12 @@ public final class HardWallGeometry extends AbstractGeometry {
             toStep[i] -= stepVector[i];
         }
     }
+
+    @Override
+    public void checkedCopyPosition(double[] src, double[] dest) {
+        if (!isPositionValid(src)) {
+            return;
+        }
+        System.arraycopy(src, 0, dest, 0, dimension);
+    }
 }

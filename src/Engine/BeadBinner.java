@@ -125,6 +125,31 @@ public class BeadBinner {
         binBeadsPrivate(beadPositions);
     }
 
+    public BeadBinner(BeadBinner beadBinner) {
+        dimension = beadBinner.dimension;
+        binSize = beadBinner.binSize;
+        numBins = beadBinner.numBins;
+        beadBins = copyBeadBins(beadBinner.beadBins);
+        simulationStep = new SimulationStep(beadBinner.simulationStep);
+        isStepDone = beadBinner.isStepDone;
+    }
+
+    private List<List<Set<Integer>>> copyBeadBins(List<List<Set<Integer>>> beadBins) {
+        List<List<Set<Integer>>> beadBinsCopy = new ArrayList<>(numBins[0]);
+        for (int i = 0; i < numBins[0]; i++) {
+            beadBinsCopy.add(copy1DBinList(beadBins.get(i)));
+        }
+        return beadBinsCopy;
+    }
+
+    private List<Set<Integer>> copy1DBinList(List<Set<Integer>> binList1D) {
+        List<Set<Integer>> binList1DCopy = new ArrayList<>();
+        for (int i = 0; i < numBins[1]; i++) {
+            binList1DCopy.add(new HashSet<>(binList1D.get(i))); //linkedHashSet is a better implementation?
+        }
+        return binList1DCopy;
+    }
+
     public void binBeads(double[][] beadPositions) {
         binBeadsPrivate(beadPositions);
     }

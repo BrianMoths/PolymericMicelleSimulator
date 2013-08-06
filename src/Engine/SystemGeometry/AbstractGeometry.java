@@ -143,6 +143,16 @@ public abstract class AbstractGeometry implements SystemGeometry {
         return volume;
     }
 
+    @Override
+    public void checkedCopyPositions(double[][] src, double[][] dest) {
+        if (src.length != dest.length) {
+            return;
+        }
+        for (int bead = 0; bead < src.length; bead++) {
+            checkedCopyPosition(src[bead], dest[bead]);
+        }
+    }
+
     //<editor-fold defaultstate="collapsed" desc="getters">
     @Override
     public int getDimension() {

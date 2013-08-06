@@ -40,4 +40,8 @@ public interface SystemGeometry {
     public void incrementFirstVector(double[] toStep, double[] stepVector);
 
     public void decrementFirstVector(double[] toStep, double[] stepVector);
+
+    public void checkedCopyPosition(double[] src, double[] dest);
+
+    public void checkedCopyPositions(double[][] src, double[][] dest);
 }

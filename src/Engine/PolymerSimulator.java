@@ -115,6 +115,15 @@ public class PolymerSimulator {
         energy = energy();
     }
 
+    public PolymerSimulator(PolymerSimulator polymerSimulator) {
+        geometry = polymerSimulator.geometry;
+        physicalConstants = polymerSimulator.physicalConstants;
+        polymerPosition = new PolymerPosition(polymerSimulator.polymerPosition);
+        energy = polymerSimulator.energy;
+        iterationNumber = polymerSimulator.iterationNumber;
+        acceptedIterations = polymerSimulator.acceptedIterations;
+    }
+
     @Override
     public String toString() {
         StringBuilder stringBuilder = new StringBuilder();
@@ -131,6 +140,14 @@ public class PolymerSimulator {
         acceptedIterations = 0;
         polymerPosition.randomize();
         energy = energy();
+    }
+
+    public synchronized double[][] getBeadPositions() {
+        return polymerPosition.getBeadPositions();
+    }
+
+    public synchronized void setBeadPositions(double[][] beadPositions) {
+        polymerPosition.setBeadPositions(beadPositions);
     }
 
     public synchronized void doIterations(int n) { //possibly optomize by unrolling loop and tracking pairwise interactions
