@@ -37,19 +37,6 @@ public class AreaOverlap {
             areaOverlap.BBOverlap = BOverlap.softOverlap;
         }
 
-        return areaOverlap;
-    }
-
-    public static AreaOverlap overlapOfBeadWithCore(boolean isTypeA, TwoBeadOverlap AOverlap, TwoBeadOverlap BOverlap) {
-        AreaOverlap areaOverlap = new AreaOverlap();
-        if (isTypeA) {
-            areaOverlap.AAOverlap = AOverlap.softOverlap;
-            areaOverlap.ABOverlap = BOverlap.softOverlap;
-        } else {
-            areaOverlap.ABOverlap = AOverlap.softOverlap;
-            areaOverlap.BBOverlap = BOverlap.softOverlap;
-        }
-
         areaOverlap.hardOverlap = AOverlap.hardOverlap + BOverlap.hardOverlap;
 
         return areaOverlap;

@@ -16,14 +16,15 @@ import java.util.Set;
  *
  * @author bmoths
  */
-public class BeadBinner {
+public class BeadBinner { //keep track of where beads are so bead moves require only bead number and new position
 
     private final int dimension;
     private final double[] binSize;
     private final int[] numBins;
     private List<List<Set<Integer>>> beadBins;
-    private SimulationStep simulationStep;
+//    private SimulationStep simulationStep;
     private boolean isStepDone = false;
+    private List<BinIndex> binIndices;
 
     static private class BinIndex {
 
@@ -126,11 +127,15 @@ public class BeadBinner {
     }
 
     public BeadBinner(BeadBinner beadBinner) {
+        binIndices = new ArrayList<>();
+        for (BinIndex binIndex : beadBinner.binIndices) {
+            binIndices.add(new BinIndex(binIndex));
+        }
         dimension = beadBinner.dimension;
         binSize = beadBinner.binSize;
         numBins = beadBinner.numBins;
         beadBins = copyBeadBins(beadBinner.beadBins);
-        simulationStep = new SimulationStep(beadBinner.simulationStep);
+//        simulationStep = new SimulationStep(beadBinner.simulationStep);
         isStepDone = beadBinner.isStepDone;
     }
 
@@ -156,6 +161,10 @@ public class BeadBinner {
 
     private void binBeadsPrivate(double[][] beadPositions) {
         allocateBeadBins();
+        binIndices = new ArrayList<>(beadPositions.length);
+        for (int i = 0; i < beadPositions.length; i++) {
+            binIndices.add(new BinIndex());
+        }
         for (int bead = 0; bead < beadPositions.length; bead++) {
             addBeadAt(bead, beadPositions[bead]);
         }
@@ -176,6 +185,11 @@ public class BeadBinner {
         return binList;
     }
 
+    public void updateBeadPosition(int stepBead, double[] newBeadPosition) {
+        removeBead(stepBead);
+        addBeadAt(stepBead, newBeadPosition);
+    }
+
     private void addBeadAt(int bead, double[] position) {
         final BinIndex index = getBinIndex(position);
         addBeadToBin(bead, index);
@@ -186,8 +200,14 @@ public class BeadBinner {
         removeBeadFromBin(bead, index);
     }
 
+    private void removeBead(int bead) {
+        BinIndex binIndex = binIndices.get(bead);
+        removeBeadFromBin(bead, binIndex);
+    }
+
     private void addBeadToBin(int bead, BinIndex binIndex) {
         getBin(binIndex).add(bead);
+        binIndices.set(bead, binIndex);
     }
 
     private void removeBeadFromBin(int bead, BinIndex binIndex) {
@@ -205,22 +225,21 @@ public class BeadBinner {
         return binIndex;
     }
 
-    public void setStep(SimulationStep simulationStep) {
-        this.simulationStep = simulationStep;
-    }
-
-    public void doStep() {
-        removeBeadAt(simulationStep.getStepBead(), simulationStep.getInitialPosition());
-        addBeadAt(simulationStep.getStepBead(), simulationStep.getFinalPosition());
-        isStepDone = true;
-    }
-
-    public void undoStep() {
-        removeBeadAt(simulationStep.getStepBead(), simulationStep.getFinalPosition());
-        addBeadAt(simulationStep.getStepBead(), simulationStep.getInitialPosition());
-        isStepDone = false;
-    }
-
+//    public void setStep(SimulationStep simulationStep) {
+//        this.simulationStep = simulationStep;
+//    }
+//
+//    public void doStep() {
+//        removeBeadAt(simulationStep.getStepBead(), simulationStep.getInitialPosition());
+//        addBeadAt(simulationStep.getStepBead(), simulationStep.getFinalPosition());
+//        isStepDone = true;
+//    }
+//
+//    public void undoStep() {
+//        removeBeadAt(simulationStep.getStepBead(), simulationStep.getFinalPosition());
+//        addBeadAt(simulationStep.getStepBead(), simulationStep.getInitialPosition());
+//        isStepDone = false;
+//    }
     private void projectBinIndex(BinIndex binIndex) {
         if (binIndex.x < 0) {
             binIndex.x += numBins[0];
@@ -235,9 +254,16 @@ public class BeadBinner {
         }
     }
 
-    public Iterator<Integer> getStepBeadNearbyBeadIterator() {
-        final double[] position = isStepDone ? simulationStep.getFinalPosition() : simulationStep.getInitialPosition();
-        return getNearbyBeadIterator(position);
+//    public Iterator<Integer> getStepBeadNearbyBeadIterator() {
+//        final double[] position = isStepDone ? simulationStep.getFinalPosition() : simulationStep.getInitialPosition();
+//        return getNearbyBeadIterator(position);
+//    }
+    public Iterator<Integer> getNearbyBeadIterator(int bead) {
+        BinIndex binIndex = binIndices.get(bead);
+
+        NearbyBeadIterator iterator = new NearbyBeadIterator(binIndex);
+
+        return iterator;
     }
 
     public Iterator<Integer> getNearbyBeadIterator(double[] position) {

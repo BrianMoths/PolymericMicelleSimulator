@@ -37,7 +37,7 @@ public interface SystemGeometry {
 
     public double[] randomGaussian();
 
-    public void incrementFirstVector(double[] toStep, double[] stepVector);
+    public boolean incrementFirstVector(double[] toStep, double[] stepVector);
 
     public void decrementFirstVector(double[] toStep, double[] stepVector);
 

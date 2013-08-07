@@ -46,11 +46,15 @@ public final class HardWallGeometry extends AbstractGeometry {
     @Override
     public boolean isPositionValid(double[] position) {
         for (int i = 0; i < dimension; i++) {
-            if (position[i] < 0 || position[i] > fullRMax[i]) {
+            if (!isComponentValid(position[i], i)) {
                 return false;
             }
         }
         return true;
+    }
+
+    private boolean isComponentValid(double component, int index) {
+        return component < 0 || component > fullRMax[index];
     }
 
     @Override
@@ -87,10 +91,17 @@ public final class HardWallGeometry extends AbstractGeometry {
     }
 
     @Override
-    public void incrementFirstVector(double[] toStep, double[] stepVector) {
+    public boolean incrementFirstVector(double[] toStep, double[] stepVector) {
         for (int i = 0; i < dimension; i++) {
             toStep[i] += stepVector[i];
+            if (!isComponentValid(toStep[i], i)) {
+                for (int j = i; j >= 0; j--) {
+                    toStep[j] -= stepVector[j];
+                }
+                return false;
+            }
         }
+        return true;
     }
 
     @Override
