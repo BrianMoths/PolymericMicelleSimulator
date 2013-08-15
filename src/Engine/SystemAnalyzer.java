@@ -6,10 +6,14 @@ package Engine;
 
 import Engine.SystemGeometry.AreaOverlap;
 import Engine.SystemGeometry.SystemGeometry;
+import SystemAnalysis.BeadRectangle;
+import SystemAnalysis.VolumeFinder;
 import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Point;
+import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.List;
 
 /**
  *
@@ -42,12 +46,24 @@ public class SystemAnalyzer {
         physicalConstants = systemAnalyzer.physicalConstants;
         numBeads = systemAnalyzer.numBeads;
         numABeads = systemAnalyzer.numABeads;
+        beadPositions = new double[systemAnalyzer.numBeads][systemGeometry.getDimension()];
         systemGeometry.checkedCopyPositions(systemAnalyzer.beadPositions, beadPositions);
         beadBinner = new BeadBinner(systemAnalyzer.beadBinner); //check this
     }
 
     private void rebinBeads() {
         beadBinner = new BeadBinner(beadPositions, systemGeometry);
+    }
+
+    public double findArea() {
+        List<BeadRectangle> beadRectangles = new ArrayList<>(numBeads);
+        for (int bead = 0; bead < numBeads; bead++) {
+            final double x = beadPositions[bead][0];
+            final double y = beadPositions[bead][0];
+            final double halfwidth = systemGeometry.getParameters().getInteractionLength() / 2;
+            beadRectangles.add(new BeadRectangle(x - halfwidth, x + halfwidth, y + halfwidth, y - halfwidth));
+        }
+        return VolumeFinder.findVolume(beadRectangles);
     }
 
     public double totalSpringStretching() {
@@ -99,22 +115,6 @@ public class SystemAnalyzer {
         return AreaOverlap.overlapOfBead(isTypeA(bead), AOverlap, BOverlap);
     }
 
-//    public AreaOverlap beadOverlap(int bead) {
-//        double AOverlap = 0, BOverlap = 0;
-//        final double[] beadPosition = beadPositions[bead];
-//        Iterator<Integer> nearbyBeadIterator = beadBinner.getNearbyBeadIterator(beadPosition);
-//        while (nearbyBeadIterator.hasNext()) {
-//            final int currentBead = nearbyBeadIterator.next();
-//            //System.out.println(String.valueOf(currentBead));
-//            if (currentBead < numABeads) {
-//                AOverlap += systemGeometry.areaOverlap(beadPosition, beadPositions[currentBead]);
-//            } else {
-//                BOverlap += systemGeometry.areaOverlap(beadPosition, beadPositions[currentBead]);
-//            }
-//        }
-//
-//        return AreaOverlap.overlapOfBead(isTypeA(bead), AOverlap, BOverlap);
-//    }
     public double energy() {
         return springEnergy() + densityEnergy();
     }

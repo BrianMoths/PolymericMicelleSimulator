@@ -5,7 +5,12 @@
 package Gui;
 
 import Engine.PolymerSimulator;
+import Engine.SystemAnalyzer;
+import SystemAnalysis.BeadRectangle;
+import SystemAnalysis.VolumeFinder;
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.FutureTask;
@@ -86,9 +91,13 @@ public class MicelleGui extends javax.swing.JFrame {
     }
 
     private void updateDisplay() {
-        energyLbl.setText(String.valueOf(system.getEnergy()));
+        SystemAnalyzer systemAnalyzer = system.getSystemAnalyzer();
+
+        energyLbl.setText(String.format("%.4f", system.getEnergy()));
         numIterationsLbl.setText(String.valueOf(system.getIterationNumber()));
         numAcceptedIterationsLbl.setText(String.valueOf(system.getAcceptedIterations()));
+        volumeLbl.setText(String.format("%.4f", systemAnalyzer.findArea()));
+
         AACoefficientLbl.setText(String.format("%.4f", system.getPhysicalConstants().getAAOverlapCoefficient()));
         BBCoefficientLbl.setText(String.format("%.4f", system.getPhysicalConstants().getBBOverlapCoefficient()));
         ABCoefficientLbl.setText(String.format("%.4f", system.getPhysicalConstants().getABOverlapCoefficient()));
@@ -154,6 +163,8 @@ public class MicelleGui extends javax.swing.JFrame {
         springConstantLbl = new javax.swing.JLabel();
         beadSizeLbl = new javax.swing.JLabel();
         hardCoresCaptionLbl = new javax.swing.JLabel();
+        volumeCaptionLbl = new javax.swing.JLabel();
+        volumeLbl = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle("Polymer Simulator");
@@ -326,6 +337,11 @@ public class MicelleGui extends javax.swing.JFrame {
                 .addContainerGap())
         );
 
+        volumeCaptionLbl.setHorizontalAlignment(javax.swing.SwingConstants.TRAILING);
+        volumeCaptionLbl.setText("Volume:");
+
+        volumeLbl.setText("0");
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
@@ -343,7 +359,11 @@ public class MicelleGui extends javax.swing.JFrame {
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                             .addComponent(energyLbl, javax.swing.GroupLayout.DEFAULT_SIZE, 134, Short.MAX_VALUE)
                             .addComponent(numIterationsLbl, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .addComponent(numAcceptedIterationsLbl, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))))
+                            .addComponent(numAcceptedIterationsLbl, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(volumeCaptionLbl, javax.swing.GroupLayout.PREFERRED_SIZE, 81, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(4, 4, 4)
+                        .addComponent(volumeLbl, javax.swing.GroupLayout.PREFERRED_SIZE, 82, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
                     .addComponent(numIterationsFld, javax.swing.GroupLayout.Alignment.LEADING)
@@ -363,7 +383,10 @@ public class MicelleGui extends javax.swing.JFrame {
                         .addComponent(displayPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(energyLbl, javax.swing.GroupLayout.PREFERRED_SIZE, 15, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                                .addComponent(energyLbl, javax.swing.GroupLayout.PREFERRED_SIZE, 15, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addComponent(volumeCaptionLbl)
+                                .addComponent(volumeLbl))
                             .addComponent(energyCaptionLbl))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
@@ -474,6 +497,16 @@ public class MicelleGui extends javax.swing.JFrame {
         }
         //</editor-fold>
 
+//        List<BeadRectangle> beadRectangles = new ArrayList<>();
+//        beadRectangles.add(new BeadRectangle(0, 1, 1, 0));
+//        beadRectangles.add(new BeadRectangle(.5, 1.5, 1.5, 0.5));
+//        beadRectangles.add(new BeadRectangle(.5, .75, .75, 0.5));
+//        beadRectangles.add(new BeadRectangle(5, 5, 5, 5));
+////        beadRectangles.add(new BeadRectangle(0, 2, 2, 0));
+//        beadRectangles.add(new BeadRectangle(0, 10, .5, 0)); //6.25
+//
+//        System.out.println(VolumeFinder.findVolume(beadRectangles));
+
         /* Create and display the form */
         java.awt.EventQueue.invokeLater(new Runnable() {
             @Override
@@ -513,5 +546,7 @@ public class MicelleGui extends javax.swing.JFrame {
     private javax.swing.JLabel springConstantLbl;
     private javax.swing.JLabel temperatureCaptionLbl;
     private javax.swing.JLabel temperatureLbl;
+    private javax.swing.JLabel volumeCaptionLbl;
+    private javax.swing.JLabel volumeLbl;
     // End of variables declaration//GEN-END:variables
 }

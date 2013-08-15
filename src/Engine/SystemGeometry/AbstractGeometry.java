@@ -146,6 +146,7 @@ public abstract class AbstractGeometry implements SystemGeometry {
     @Override
     public void checkedCopyPositions(double[][] src, double[][] dest) {
         if (src.length != dest.length) {
+            System.err.println("SystemGeometry::checkCopyPosition: position arrays not of same length");
             return;
         }
         for (int bead = 0; bead < src.length; bead++) {

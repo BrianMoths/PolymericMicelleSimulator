@@ -40,6 +40,10 @@
                           <Component id="numIterationsLbl" max="32767" attributes="0"/>
                           <Component id="numAcceptedIterationsLbl" alignment="0" max="32767" attributes="0"/>
                       </Group>
+                      <EmptySpace type="unrelated" max="-2" attributes="0"/>
+                      <Component id="volumeCaptionLbl" min="-2" pref="81" max="-2" attributes="0"/>
+                      <EmptySpace min="-2" pref="4" max="-2" attributes="0"/>
+                      <Component id="volumeLbl" min="-2" pref="82" max="-2" attributes="0"/>
                   </Group>
               </Group>
               <EmptySpace type="unrelated" max="-2" attributes="0"/>
@@ -64,7 +68,11 @@
                       <Component id="displayPanel1" min="-2" max="-2" attributes="0"/>
                       <EmptySpace type="unrelated" max="-2" attributes="0"/>
                       <Group type="103" groupAlignment="0" attributes="0">
-                          <Component id="energyLbl" alignment="0" min="-2" pref="15" max="-2" attributes="0"/>
+                          <Group type="103" alignment="0" groupAlignment="3" attributes="0">
+                              <Component id="energyLbl" alignment="3" min="-2" pref="15" max="-2" attributes="0"/>
+                              <Component id="volumeCaptionLbl" alignment="3" min="-2" max="-2" attributes="0"/>
+                              <Component id="volumeLbl" alignment="3" min="-2" max="-2" attributes="0"/>
+                          </Group>
                           <Component id="energyCaptionLbl" min="-2" max="-2" attributes="0"/>
                       </Group>
                       <EmptySpace max="-2" attributes="0"/>
@@ -411,5 +419,16 @@
         </Component>
       </SubComponents>
     </Container>
+    <Component class="javax.swing.JLabel" name="volumeCaptionLbl">
+      <Properties>
+        <Property name="horizontalAlignment" type="int" value="11"/>
+        <Property name="text" type="java.lang.String" value="Volume:"/>
+      </Properties>
+    </Component>
+    <Component class="javax.swing.JLabel" name="volumeLbl">
+      <Properties>
+        <Property name="text" type="java.lang.String" value="0"/>
+      </Properties>
+    </Component>
   </SubComponents>
 </Form>
