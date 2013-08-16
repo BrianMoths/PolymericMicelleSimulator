@@ -195,11 +195,6 @@ public class BeadBinner { //keep track of where beads are so bead moves require 
         addBeadToBin(bead, index);
     }
 
-    private void removeBeadAt(int bead, double[] position) {
-        final BinIndex index = getBinIndex(position);
-        removeBeadFromBin(bead, index);
-    }
-
     private void removeBead(int bead) {
         BinIndex binIndex = binIndices.get(bead);
         removeBeadFromBin(bead, binIndex);

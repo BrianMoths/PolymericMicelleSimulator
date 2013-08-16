@@ -41,9 +41,20 @@
                           <Component id="numAcceptedIterationsLbl" alignment="0" max="32767" attributes="0"/>
                       </Group>
                       <EmptySpace type="unrelated" max="-2" attributes="0"/>
-                      <Component id="volumeCaptionLbl" min="-2" pref="81" max="-2" attributes="0"/>
-                      <EmptySpace min="-2" pref="4" max="-2" attributes="0"/>
-                      <Component id="volumeLbl" min="-2" pref="82" max="-2" attributes="0"/>
+                      <Group type="103" groupAlignment="1" attributes="0">
+                          <Component id="volumeCaptionLbl" min="-2" pref="81" max="-2" attributes="0"/>
+                          <Component id="perimeterCaptionLbl" min="-2" max="-2" attributes="0"/>
+                      </Group>
+                      <Group type="103" groupAlignment="0" max="-2" attributes="0">
+                          <Group type="102" attributes="0">
+                              <EmptySpace min="-2" pref="4" max="-2" attributes="0"/>
+                              <Component id="volumeLbl" min="-2" pref="82" max="-2" attributes="0"/>
+                          </Group>
+                          <Group type="102" attributes="0">
+                              <EmptySpace max="-2" attributes="0"/>
+                              <Component id="perimeterLbl" max="32767" attributes="0"/>
+                          </Group>
+                      </Group>
                   </Group>
               </Group>
               <EmptySpace type="unrelated" max="-2" attributes="0"/>
@@ -78,7 +89,11 @@
                       <EmptySpace max="-2" attributes="0"/>
                       <Group type="103" groupAlignment="0" max="-2" attributes="0">
                           <Component id="numIterationsCaptionLbl" max="32767" attributes="0"/>
-                          <Component id="numIterationsLbl" min="-2" max="-2" attributes="0"/>
+                          <Group type="103" groupAlignment="3" attributes="0">
+                              <Component id="numIterationsLbl" alignment="3" min="-2" max="-2" attributes="0"/>
+                              <Component id="perimeterCaptionLbl" alignment="3" min="-2" max="-2" attributes="0"/>
+                              <Component id="perimeterLbl" alignment="3" min="-2" max="-2" attributes="0"/>
+                          </Group>
                       </Group>
                   </Group>
                   <Group type="102" attributes="0">
@@ -422,12 +437,32 @@
     <Component class="javax.swing.JLabel" name="volumeCaptionLbl">
       <Properties>
         <Property name="horizontalAlignment" type="int" value="11"/>
-        <Property name="text" type="java.lang.String" value="Volume:"/>
+        <Property name="text" type="java.lang.String" value="Area:"/>
       </Properties>
     </Component>
     <Component class="javax.swing.JLabel" name="volumeLbl">
       <Properties>
         <Property name="text" type="java.lang.String" value="0"/>
+        <Property name="border" type="javax.swing.border.Border" editor="org.netbeans.modules.form.editors2.BorderEditor">
+          <Border info="org.netbeans.modules.form.compat2.border.BevelBorderInfo">
+            <BevelBorder bevelType="1"/>
+          </Border>
+        </Property>
+      </Properties>
+    </Component>
+    <Component class="javax.swing.JLabel" name="perimeterCaptionLbl">
+      <Properties>
+        <Property name="text" type="java.lang.String" value="Perimeter:"/>
+      </Properties>
+    </Component>
+    <Component class="javax.swing.JLabel" name="perimeterLbl">
+      <Properties>
+        <Property name="text" type="java.lang.String" value="0"/>
+        <Property name="border" type="javax.swing.border.Border" editor="org.netbeans.modules.form.editors2.BorderEditor">
+          <Border info="org.netbeans.modules.form.compat2.border.BevelBorderInfo">
+            <BevelBorder bevelType="1"/>
+          </Border>
+        </Property>
       </Properties>
     </Component>
   </SubComponents>

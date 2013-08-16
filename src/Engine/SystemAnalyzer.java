@@ -7,7 +7,8 @@ package Engine;
 import Engine.SystemGeometry.AreaOverlap;
 import Engine.SystemGeometry.SystemGeometry;
 import SystemAnalysis.BeadRectangle;
-import SystemAnalysis.VolumeFinder;
+import SystemAnalysis.GeometryAnalyzer;
+import SystemAnalysis.GeometryAnalyzer.AreaPerimeter;
 import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Point;
@@ -56,6 +57,16 @@ public class SystemAnalyzer {
     }
 
     public double findArea() {
+        List<BeadRectangle> beadRectangles = makeBeadRectangles();
+        return GeometryAnalyzer.findArea(beadRectangles);
+    }
+
+    public AreaPerimeter findAreaAndPerimeter() {
+        List<BeadRectangle> beadRectangles = makeBeadRectangles();
+        return GeometryAnalyzer.findAreaAndPerimeter(beadRectangles);
+    }
+
+    private List<BeadRectangle> makeBeadRectangles() {
         List<BeadRectangle> beadRectangles = new ArrayList<>(numBeads);
         for (int bead = 0; bead < numBeads; bead++) {
             final double x = beadPositions[bead][0];
@@ -63,7 +74,7 @@ public class SystemAnalyzer {
             final double halfwidth = systemGeometry.getParameters().getInteractionLength() / 2;
             beadRectangles.add(new BeadRectangle(x - halfwidth, x + halfwidth, y + halfwidth, y - halfwidth));
         }
-        return VolumeFinder.findVolume(beadRectangles);
+        return beadRectangles;
     }
 
     public double totalSpringStretching() {

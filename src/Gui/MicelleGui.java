@@ -7,7 +7,8 @@ package Gui;
 import Engine.PolymerSimulator;
 import Engine.SystemAnalyzer;
 import SystemAnalysis.BeadRectangle;
-import SystemAnalysis.VolumeFinder;
+import SystemAnalysis.GeometryAnalyzer;
+import SystemAnalysis.GeometryAnalyzer.AreaPerimeter;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -96,7 +97,9 @@ public class MicelleGui extends javax.swing.JFrame {
         energyLbl.setText(String.format("%.4f", system.getEnergy()));
         numIterationsLbl.setText(String.valueOf(system.getIterationNumber()));
         numAcceptedIterationsLbl.setText(String.valueOf(system.getAcceptedIterations()));
-        volumeLbl.setText(String.format("%.4f", systemAnalyzer.findArea()));
+        AreaPerimeter areaPerimeter = systemAnalyzer.findAreaAndPerimeter();
+        volumeLbl.setText(String.format("%.4f", areaPerimeter.area));
+        perimeterLbl.setText(String.format("%.4f", areaPerimeter.perimeter));
 
         AACoefficientLbl.setText(String.format("%.4f", system.getPhysicalConstants().getAAOverlapCoefficient()));
         BBCoefficientLbl.setText(String.format("%.4f", system.getPhysicalConstants().getBBOverlapCoefficient()));
@@ -165,6 +168,8 @@ public class MicelleGui extends javax.swing.JFrame {
         hardCoresCaptionLbl = new javax.swing.JLabel();
         volumeCaptionLbl = new javax.swing.JLabel();
         volumeLbl = new javax.swing.JLabel();
+        perimeterCaptionLbl = new javax.swing.JLabel();
+        perimeterLbl = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle("Polymer Simulator");
@@ -338,9 +343,15 @@ public class MicelleGui extends javax.swing.JFrame {
         );
 
         volumeCaptionLbl.setHorizontalAlignment(javax.swing.SwingConstants.TRAILING);
-        volumeCaptionLbl.setText("Volume:");
+        volumeCaptionLbl.setText("Area:");
 
         volumeLbl.setText("0");
+        volumeLbl.setBorder(javax.swing.BorderFactory.createBevelBorder(javax.swing.border.BevelBorder.LOWERED));
+
+        perimeterCaptionLbl.setText("Perimeter:");
+
+        perimeterLbl.setText("0");
+        perimeterLbl.setBorder(javax.swing.BorderFactory.createBevelBorder(javax.swing.border.BevelBorder.LOWERED));
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -361,9 +372,16 @@ public class MicelleGui extends javax.swing.JFrame {
                             .addComponent(numIterationsLbl, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                             .addComponent(numAcceptedIterationsLbl, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addComponent(volumeCaptionLbl, javax.swing.GroupLayout.PREFERRED_SIZE, 81, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(4, 4, 4)
-                        .addComponent(volumeLbl, javax.swing.GroupLayout.PREFERRED_SIZE, 82, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                            .addComponent(volumeCaptionLbl, javax.swing.GroupLayout.PREFERRED_SIZE, 81, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(perimeterCaptionLbl))
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                            .addGroup(layout.createSequentialGroup()
+                                .addGap(4, 4, 4)
+                                .addComponent(volumeLbl, javax.swing.GroupLayout.PREFERRED_SIZE, 82, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addGroup(layout.createSequentialGroup()
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(perimeterLbl, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
                     .addComponent(numIterationsFld, javax.swing.GroupLayout.Alignment.LEADING)
@@ -391,7 +409,10 @@ public class MicelleGui extends javax.swing.JFrame {
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                             .addComponent(numIterationsCaptionLbl, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .addComponent(numIterationsLbl)))
+                            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                                .addComponent(numIterationsLbl)
+                                .addComponent(perimeterCaptionLbl)
+                                .addComponent(perimeterLbl))))
                     .addGroup(layout.createSequentialGroup()
                         .addContainerGap()
                         .addComponent(iterateBtn)
@@ -503,9 +524,10 @@ public class MicelleGui extends javax.swing.JFrame {
 //        beadRectangles.add(new BeadRectangle(.5, .75, .75, 0.5));
 //        beadRectangles.add(new BeadRectangle(5, 5, 5, 5));
 ////        beadRectangles.add(new BeadRectangle(0, 2, 2, 0));
-//        beadRectangles.add(new BeadRectangle(0, 10, .5, 0)); //6.25
+//        beadRectangles.add(new BeadRectangle(0, 10, .5, 0)); //6.25 and 23
 //
-//        System.out.println(VolumeFinder.findVolume(beadRectangles));
+//        AreaPerimeter areaPerimeter = GeometryAnalyzer.findAreaAndPerimeter(beadRectangles);
+//        System.out.println("area: " + areaPerimeter.area + ", perimeter: " + areaPerimeter.perimeter);
 
         /* Create and display the form */
         java.awt.EventQueue.invokeLater(new Runnable() {
@@ -540,6 +562,8 @@ public class MicelleGui extends javax.swing.JFrame {
     private javax.swing.JLabel numIterationsCaptionLbl;
     private javax.swing.JTextField numIterationsFld;
     private javax.swing.JLabel numIterationsLbl;
+    private javax.swing.JLabel perimeterCaptionLbl;
+    private javax.swing.JLabel perimeterLbl;
     private javax.swing.JPanel physicalConstantsPanel;
     private javax.swing.JButton randomizeBtn;
     private javax.swing.JLabel springConstantCaptionLbl;

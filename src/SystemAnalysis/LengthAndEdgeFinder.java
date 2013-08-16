@@ -13,14 +13,14 @@ import java.util.List;
  *
  * @author bmoths
  */
-public class OverlappingIntervalLengthFinder {
+public class LengthAndEdgeFinder {
 
-    CoveredWeightCalculator overlappingIntervalLengthCalculator;
+    CoveredWeightAndEdgeCalculator lengthAndEdgeCalculator;
     List<NodeInterval> nodeIntervals;
     int nextEdgeIndex;
 
-    static public OverlappingIntervalLengthFinder makeFromIntervals(List<Interval> intervals) { //only can add, no removing
-        OverlappingIntervalLengthFinder overlappingIntervalLengthFinder = new OverlappingIntervalLengthFinder();
+    static public LengthAndEdgeFinder makeFromIntervals(List<Interval> intervals) { //only can add, no removing
+        LengthAndEdgeFinder overlappingIntervalLengthFinder = new LengthAndEdgeFinder();
         final IntervalEndpoints intervalEndpoints = IntervalEndpoints.makeFromIntervals(intervals);
         List<Integer> permutation = getPermutation(intervalEndpoints);
         overlappingIntervalLengthFinder.makeOverlappingIntervalLengthCalculator(intervalEndpoints, permutation);
@@ -28,10 +28,10 @@ public class OverlappingIntervalLengthFinder {
         return overlappingIntervalLengthFinder;
     }
 
-    static public OverlappingIntervalLengthFinder makeFromBeadRectangles(List<BeadRectangle> beadRectangles, List<Integer> xPermutation) {
-        OverlappingIntervalLengthFinder overlappingIntervalLengthFinder = new OverlappingIntervalLengthFinder();
+    static public LengthAndEdgeFinder makeFromBeadRectangles(List<BeadRectangle> beadRectangles, List<Integer> xPermutation) {
+        LengthAndEdgeFinder overlappingIntervalLengthFinder = new LengthAndEdgeFinder();
         final IntervalEndpoints intervalEndpoints = IntervalEndpoints.makeFromBeadRectangles(beadRectangles);
-        List<Integer> permutation = getPermutation(intervalEndpoints);
+        List<Integer> permutation = getPermutation(intervalEndpoints); //todo move this and above line into one method
         overlappingIntervalLengthFinder.makeOverlappingIntervalLengthCalculator(intervalEndpoints, permutation);
         overlappingIntervalLengthFinder.makeNodeIntervalsWithBeadRectangles(permutation);
 
@@ -40,14 +40,14 @@ public class OverlappingIntervalLengthFinder {
         return overlappingIntervalLengthFinder;
     }
 
-    private OverlappingIntervalLengthFinder() {
+    private LengthAndEdgeFinder() {
         nextEdgeIndex = 0;
     }
 
     private void makeOverlappingIntervalLengthCalculator(IntervalEndpoints intervalEndpoints, List<Integer> permutation) {
         List<Double> endPointDifferences = calculateEndpointDifferences(intervalEndpoints, permutation);
 
-        overlappingIntervalLengthCalculator = new CoveredWeightCalculator(endPointDifferences);
+        lengthAndEdgeCalculator = new CoveredWeightAndEdgeCalculator(endPointDifferences);
     }
 
     private void makeNodeIntervals(List<Integer> permutation) {
@@ -130,15 +130,19 @@ public class OverlappingIntervalLengthFinder {
     }
 
     public double getLength() {
-        return overlappingIntervalLengthCalculator.getWeight();
+        return lengthAndEdgeCalculator.getWeight();
+    }
+
+    public int getNumEdges() {
+        return lengthAndEdgeCalculator.getNumEdges();
     }
 
     public void doNextStep() {
         NodeInterval nodeInterval = nodeIntervals.get(nextEdgeIndex);
         if (nodeInterval.isBeingAdded) {
-            overlappingIntervalLengthCalculator.addCover(nodeInterval.start, nodeInterval.end);
+            lengthAndEdgeCalculator.addCover(nodeInterval.start, nodeInterval.end);
         } else {
-            overlappingIntervalLengthCalculator.removeCover(nodeInterval.start, nodeInterval.end);
+            lengthAndEdgeCalculator.removeCover(nodeInterval.start, nodeInterval.end);
         }
         nextEdgeIndex++;
     }
