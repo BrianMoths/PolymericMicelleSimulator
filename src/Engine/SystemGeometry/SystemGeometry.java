@@ -6,6 +6,10 @@ package Engine.SystemGeometry;
 
 import Engine.SimulationParameters;
 import Engine.TwoBeadOverlap;
+import SystemAnalysis.BeadRectangle;
+import SystemAnalysis.GeometryAnalyzer.AreaPerimeter;
+import SystemAnalysis.RectanglesAndPerimeter;
+import java.util.List;
 
 /**
  *
@@ -44,4 +48,10 @@ public interface SystemGeometry {
     public void checkedCopyPosition(double[] src, double[] dest);
 
     public void checkedCopyPositions(double[][] src, double[][] dest);
+
+    public RectanglesAndPerimeter getRectanglesAndPerimeterFromPositions(double[][] beadPostions);
+
+    public BeadRectangle getRectangleFromPosition(double[] beadPosition);
+
+    public List<BeadRectangle> getRectanglesFromPositions(double[][] beadPositions);
 }

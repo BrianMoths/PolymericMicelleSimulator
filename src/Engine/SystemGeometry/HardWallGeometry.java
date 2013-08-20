@@ -6,6 +6,13 @@ package Engine.SystemGeometry;
 
 import Engine.SimulationParameters;
 import Engine.TwoBeadOverlap;
+import SystemAnalysis.BeadRectangle;
+import SystemAnalysis.Interval;
+import SystemAnalysis.OverlappingIntervalLengthFinder;
+import SystemAnalysis.RectanglesAndIntervals;
+import SystemAnalysis.RectanglesAndPerimeter;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  *
@@ -41,6 +48,18 @@ public final class HardWallGeometry extends AbstractGeometry {
 
     public HardWallGeometry(int dimension, double[] fullRMax, SimulationParameters parameters) {
         super(dimension, fullRMax, parameters);
+    }
+
+    @Override
+    public RectanglesAndPerimeter getRectanglesAndPerimeterFromPositions(double[][] beadPositions) {
+        List<BeadRectangle> beadRectangles = new ArrayList<>(beadPositions.length);
+        for (double[] beadPosition : beadPositions) {
+            beadRectangles.add(getRectangleFromPosition(beadPosition));
+        }
+        double gluedPerimeter = 0;
+        RectanglesAndPerimeter rectanglesAndPerimeter;
+        rectanglesAndPerimeter = new RectanglesAndPerimeter(beadRectangles, gluedPerimeter);
+        return rectanglesAndPerimeter;
     }
 
     @Override

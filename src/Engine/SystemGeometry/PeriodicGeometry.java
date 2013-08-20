@@ -6,6 +6,13 @@ package Engine.SystemGeometry;
 
 import Engine.SimulationParameters;
 import Engine.TwoBeadOverlap;
+import SystemAnalysis.BeadRectangle;
+import SystemAnalysis.Interval;
+import SystemAnalysis.OverlappingIntervalLengthFinder;
+import SystemAnalysis.RectanglesAndIntervals;
+import SystemAnalysis.RectanglesAndPerimeter;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  *
@@ -44,8 +51,27 @@ public final class PeriodicGeometry extends AbstractGeometry {
     }
 
     @Override
-    public boolean isPositionValid(double[] position) {
-        return true;
+    public RectanglesAndPerimeter getRectanglesAndPerimeterFromPositions(double[][] beadPositions) {
+        List<BeadRectangle> beadRectangles = new ArrayList<>(beadPositions.length);
+        for (double[] beadPosition : beadPositions) {
+            beadRectangles.add(getRectangleFromPosition(beadPosition));
+        }
+
+        List<Interval> verticalIntervals = new ArrayList<>();
+        List<Interval> horizontalIntervals = new ArrayList<>();
+        List<List<Interval>> intervals = new ArrayList<>();
+        intervals.add(verticalIntervals);
+        intervals.add(horizontalIntervals);
+
+        RectanglesAndIntervals rectanglesAndIntervals = new RectanglesAndIntervals(beadRectangles, intervals);
+        rectanglesAndIntervals.splitOverVerticalPeriodicBoundaries(0, fullRMax[0]);
+        rectanglesAndIntervals.splitOverHorizontalPeriodicBoundaries(0, fullRMax[1]);
+        double gluedPerimeter = 0;
+        gluedPerimeter += OverlappingIntervalLengthFinder.getCoveredLengthOfIntervals(rectanglesAndIntervals.intervals.get(1));
+        gluedPerimeter += OverlappingIntervalLengthFinder.getCoveredLengthOfIntervals(rectanglesAndIntervals.intervals.get(0));
+        RectanglesAndPerimeter rectanglesAndPerimeter;
+        rectanglesAndPerimeter = new RectanglesAndPerimeter(rectanglesAndIntervals.rectangles, gluedPerimeter);
+        return rectanglesAndPerimeter;
     }
 
     @Override
@@ -123,6 +149,11 @@ public final class PeriodicGeometry extends AbstractGeometry {
         }
         System.arraycopy(src, 0, dest, 0, dimension);
         projectVector(dest);
+    }
+
+    @Override
+    public boolean isPositionValid(double[] position) {
+        return true;
     }
 
     private void projectVector(double[] position) {

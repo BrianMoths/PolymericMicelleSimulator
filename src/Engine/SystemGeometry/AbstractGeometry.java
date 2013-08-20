@@ -6,7 +6,10 @@ package Engine.SystemGeometry;
 
 import Engine.PolymerCluster;
 import Engine.SimulationParameters;
+import SystemAnalysis.BeadRectangle;
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 import java.util.Random;
 
 /**
@@ -141,6 +144,28 @@ public abstract class AbstractGeometry implements SystemGeometry {
             volume *= fullRMax[i];
         }
         return volume;
+    }
+
+    @Override
+    public BeadRectangle getRectangleFromPosition(double[] beadPosition) {
+        double left, right, top, bottom, halfWidth;
+        halfWidth = parameters.getInteractionLength() / 2;
+        left = beadPosition[0] - halfWidth;
+        right = beadPosition[0] + halfWidth;
+        top = beadPosition[1] + halfWidth;
+        bottom = beadPosition[1] - halfWidth;
+        BeadRectangle rectangle = new BeadRectangle(left, right, top, bottom);
+
+        return rectangle;
+    }
+
+    @Override
+    public List<BeadRectangle> getRectanglesFromPositions(double[][] beadPositions) {
+        List<BeadRectangle> beadRectangles = new ArrayList<>(beadPositions.length);
+        for (int bead = 0; bead < beadPositions.length; bead++) {
+            beadRectangles.add(getRectangleFromPosition(beadPositions[bead]));
+        }
+        return beadRectangles;
     }
 
     @Override

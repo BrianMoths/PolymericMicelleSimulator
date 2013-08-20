@@ -58,7 +58,8 @@ public class MicelleGui extends javax.swing.JFrame {
     public MicelleGui() {
         initComponents();
         this.getRootPane().setDefaultButton(doIterationsBtn);
-        system = new PolymerSimulator();
+        setSystem(new PolymerSimulator());
+        updateConstantLabels();
         updaterThread = new Thread(new Runnable() {
             @Override
             public void run() {
@@ -83,7 +84,6 @@ public class MicelleGui extends javax.swing.JFrame {
     public void initialize() {
         registerGuiWithSystem();
         system.randomizePositions();
-        //updateDisplay();
         updaterThread.start();
     }
 
@@ -101,23 +101,27 @@ public class MicelleGui extends javax.swing.JFrame {
         volumeLbl.setText(String.format("%.4f", areaPerimeter.area));
         perimeterLbl.setText(String.format("%.4f", areaPerimeter.perimeter));
 
+
+
+        //System.out.println(String.valueOf(system.springEnergy() / system.getNumBeads()));
+        repaint();
+    }
+
+    private void updateConstantLabels() {
         AACoefficientLbl.setText(String.format("%.4f", system.getPhysicalConstants().getAAOverlapCoefficient()));
         BBCoefficientLbl.setText(String.format("%.4f", system.getPhysicalConstants().getBBOverlapCoefficient()));
         ABCoefficientLbl.setText(String.format("%.4f", system.getPhysicalConstants().getABOverlapCoefficient()));
         temperatureLbl.setText(String.format("%.4f", system.getPhysicalConstants().getTemperature()));
         springConstantLbl.setText(String.format("%.4f", system.getPhysicalConstants().getSpringCoefficient()));
         beadSizeLbl.setText(String.format("%.4f", system.getSimulationParameters().getInteractionLength()));
+        systemSizeLbl.setText(String.format("%.4f", system.getGeometry().getRMax()[0]));
         hardCoresChk.setSelected(system.getSimulationParameters().getCoreLength() != 0);
-//        hardCoresChk.setSelected(system.getPhysicalConstants().getHardOverlapCoefficient() != 0);
-
-        //System.out.println(String.valueOf(system.springEnergy() / system.getNumBeads()));
-        repaint();
     }
 
     public void setSystem(PolymerSimulator system) {
         this.system = system;
         registerGuiWithSystem();
-//        system.randomizePositions();
+        updateConstantLabels();
         updateDisplay();
     }
 
@@ -127,6 +131,7 @@ public class MicelleGui extends javax.swing.JFrame {
 
     public void cancelComputation() {
         cancelBtnActionPerformed(null);
+        updateDisplay();
     }
 
     /**
@@ -166,6 +171,8 @@ public class MicelleGui extends javax.swing.JFrame {
         springConstantLbl = new javax.swing.JLabel();
         beadSizeLbl = new javax.swing.JLabel();
         hardCoresCaptionLbl = new javax.swing.JLabel();
+        systemSizeCaptionLbl = new javax.swing.JLabel();
+        systemSizeLbl = new javax.swing.JLabel();
         volumeCaptionLbl = new javax.swing.JLabel();
         volumeLbl = new javax.swing.JLabel();
         perimeterCaptionLbl = new javax.swing.JLabel();
@@ -280,6 +287,12 @@ public class MicelleGui extends javax.swing.JFrame {
 
         hardCoresCaptionLbl.setText("Give Beads Hard Cores");
 
+        systemSizeCaptionLbl.setHorizontalAlignment(javax.swing.SwingConstants.TRAILING);
+        systemSizeCaptionLbl.setText("System Size:");
+
+        systemSizeLbl.setText("jLabel1");
+        systemSizeLbl.setBorder(javax.swing.BorderFactory.createBevelBorder(javax.swing.border.BevelBorder.LOWERED));
+
         javax.swing.GroupLayout physicalConstantsPanelLayout = new javax.swing.GroupLayout(physicalConstantsPanel);
         physicalConstantsPanel.setLayout(physicalConstantsPanelLayout);
         physicalConstantsPanelLayout.setHorizontalGroup(
@@ -287,6 +300,10 @@ public class MicelleGui extends javax.swing.JFrame {
             .addGroup(physicalConstantsPanelLayout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(physicalConstantsPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(physicalConstantsPanelLayout.createSequentialGroup()
+                        .addComponent(systemSizeCaptionLbl, javax.swing.GroupLayout.PREFERRED_SIZE, 97, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(systemSizeLbl, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                     .addGroup(physicalConstantsPanelLayout.createSequentialGroup()
                         .addComponent(hardCoresChk)
                         .addGap(2, 2, 2)
@@ -335,7 +352,11 @@ public class MicelleGui extends javax.swing.JFrame {
                 .addGroup(physicalConstantsPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(interactionLengthCaptionLbl)
                     .addComponent(beadSizeLbl))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 11, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(physicalConstantsPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(systemSizeCaptionLbl)
+                    .addComponent(systemSizeLbl))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 38, Short.MAX_VALUE)
                 .addGroup(physicalConstantsPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(hardCoresChk)
                     .addComponent(hardCoresCaptionLbl))
@@ -396,7 +417,7 @@ public class MicelleGui extends javax.swing.JFrame {
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                     .addGroup(layout.createSequentialGroup()
                         .addComponent(displayPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
@@ -422,15 +443,12 @@ public class MicelleGui extends javax.swing.JFrame {
                         .addComponent(doIterationsBtn)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(cancelBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 50, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addGroup(layout.createSequentialGroup()
-                                .addGap(62, 62, 62)
-                                .addComponent(randomizeBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 50, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addGap(56, 56, 56)
-                                .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 49, javax.swing.GroupLayout.PREFERRED_SIZE))
-                            .addGroup(layout.createSequentialGroup()
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                .addComponent(physicalConstantsPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(randomizeBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 50, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 49, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(physicalConstantsPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(numAcceptedIterationsCaptionLbl)
@@ -568,6 +586,8 @@ public class MicelleGui extends javax.swing.JFrame {
     private javax.swing.JButton randomizeBtn;
     private javax.swing.JLabel springConstantCaptionLbl;
     private javax.swing.JLabel springConstantLbl;
+    private javax.swing.JLabel systemSizeCaptionLbl;
+    private javax.swing.JLabel systemSizeLbl;
     private javax.swing.JLabel temperatureCaptionLbl;
     private javax.swing.JLabel temperatureLbl;
     private javax.swing.JLabel volumeCaptionLbl;

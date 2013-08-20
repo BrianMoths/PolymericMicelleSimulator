@@ -40,8 +40,35 @@ public class OverlappingIntervalLengthFinder {
         return overlappingIntervalLengthFinder;
     }
 
+    static public double getCoveredLengthOfIntervals(List<Interval> intervals) {
+        OverlappingIntervalLengthFinder overlappingIntervalLengthFinder;
+        overlappingIntervalLengthFinder = OverlappingIntervalLengthFinder.makeFromIntervals(intervals);
+        overlappingIntervalLengthFinder.doAllSteps();
+        return overlappingIntervalLengthFinder.getLength();
+    }
+
     private OverlappingIntervalLengthFinder() {
         nextEdgeIndex = 0;
+    }
+
+    public double getLength() {
+        return overlappingIntervalLengthCalculator.getWeight();
+    }
+
+    public void doNextStep() {
+        NodeInterval nodeInterval = nodeIntervals.get(nextEdgeIndex);
+        if (nodeInterval.isBeingAdded) {
+            overlappingIntervalLengthCalculator.addCover(nodeInterval.start, nodeInterval.end);
+        } else {
+            overlappingIntervalLengthCalculator.removeCover(nodeInterval.start, nodeInterval.end);
+        }
+        nextEdgeIndex++;
+    }
+
+    public void doAllSteps() {
+        while (nextEdgeIndex < nodeIntervals.size()) {
+            doNextStep();
+        }
     }
 
     private void makeOverlappingIntervalLengthCalculator(IntervalEndpoints intervalEndpoints, List<Integer> permutation) {
@@ -118,6 +145,9 @@ public class OverlappingIntervalLengthFinder {
     }
 
     private List<Double> calculateEndpointDifferences(IntervalEndpoints intervalEndpoints, List<Integer> permutation) {
+        if (intervalEndpoints.size() == 0) {
+            return new ArrayList<>();
+        }
         List<Double> endpointDifferences = new ArrayList<>(intervalEndpoints.size() - 1);
         int largeEndpointIndex = permutation.get(0);
         int smallEndpointIndex;
@@ -127,19 +157,5 @@ public class OverlappingIntervalLengthFinder {
             endpointDifferences.add(intervalEndpoints.getFromLinearIndex(largeEndpointIndex) - intervalEndpoints.getFromLinearIndex(smallEndpointIndex));
         }
         return endpointDifferences;
-    }
-
-    public double getLength() {
-        return overlappingIntervalLengthCalculator.getWeight();
-    }
-
-    public void doNextStep() {
-        NodeInterval nodeInterval = nodeIntervals.get(nextEdgeIndex);
-        if (nodeInterval.isBeingAdded) {
-            overlappingIntervalLengthCalculator.addCover(nodeInterval.start, nodeInterval.end);
-        } else {
-            overlappingIntervalLengthCalculator.removeCover(nodeInterval.start, nodeInterval.end);
-        }
-        nextEdgeIndex++;
     }
 }

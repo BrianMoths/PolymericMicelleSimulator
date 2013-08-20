@@ -4,6 +4,7 @@
  */
 package SystemAnalysis;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -110,8 +111,13 @@ public class CoveredWeightCalculator {
     WeightedNode rootNode;
 
     public CoveredWeightCalculator(List<Double> weights) {
-        this.weights = weights;
-        final int numLeaves = weights.size();
+        if (weights.isEmpty()) {
+            this.weights = new ArrayList<>();
+            this.weights.add(0.);
+        } else {
+            this.weights = weights;
+        }
+        final int numLeaves = this.weights.size();
         rootNode = new WeightedNode(0, numLeaves - 1);
     }
 

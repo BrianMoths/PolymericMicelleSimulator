@@ -9,6 +9,7 @@ import Engine.SystemGeometry.SystemGeometry;
 import SystemAnalysis.BeadRectangle;
 import SystemAnalysis.GeometryAnalyzer;
 import SystemAnalysis.GeometryAnalyzer.AreaPerimeter;
+import SystemAnalysis.RectanglesAndPerimeter;
 import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Point;
@@ -62,8 +63,12 @@ public class SystemAnalyzer {
     }
 
     public AreaPerimeter findAreaAndPerimeter() {
-        List<BeadRectangle> beadRectangles = makeBeadRectangles();
-        return GeometryAnalyzer.findAreaAndPerimeter(beadRectangles);
+        RectanglesAndPerimeter rectanglesAndPerimeter;
+        rectanglesAndPerimeter = systemGeometry.getRectanglesAndPerimeterFromPositions(beadPositions);
+        AreaPerimeter areaPerimeter;
+        areaPerimeter = GeometryAnalyzer.findAreaAndPerimeter(rectanglesAndPerimeter.beadRectangles);
+        areaPerimeter.perimeter -= rectanglesAndPerimeter.gluedPerimeter * 2;
+        return areaPerimeter;
     }
 
     private List<BeadRectangle> makeBeadRectangles() {

@@ -191,6 +191,10 @@ public class PolymerSimulator {
         return polymerPosition.getNumBeads();
     }
 
+    public SystemGeometry getGeometry() {
+        return geometry;
+    }
+
     public double getEnergy() {
         return energy;
     }
