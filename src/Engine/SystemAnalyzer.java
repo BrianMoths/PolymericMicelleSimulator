@@ -9,8 +9,6 @@ import Engine.SystemGeometry.SystemGeometry;
 import SystemAnalysis.BeadRectangle;
 import SystemAnalysis.GeometryAnalyzer;
 import SystemAnalysis.GeometryAnalyzer.AreaPerimeter;
-import SystemAnalysis.MechanicalProperties;
-import SystemAnalysis.MechanicalPropertiesFinder;
 import SystemAnalysis.RectanglesAndPerimeter;
 import SystemAnalysis.SimulationHistory;
 import SystemAnalysis.SimulationHistory.TrackedVariable;
@@ -100,11 +98,6 @@ public class SystemAnalyzer {
 
     public double getAverage(TrackedVariable trackedVariable) {
         return simulationHistory.getAverage(trackedVariable);
-    }
-
-    public MechanicalProperties getMechanicalProperties() {
-        MechanicalPropertiesFinder mechanicalPropertiesFinder = new MechanicalPropertiesFinder();
-        return mechanicalPropertiesFinder.findMechanicalProperties(simulationHistory);
     }
 
     public double totalSpringStretching() {
