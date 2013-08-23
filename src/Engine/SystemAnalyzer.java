@@ -9,7 +9,11 @@ import Engine.SystemGeometry.SystemGeometry;
 import SystemAnalysis.BeadRectangle;
 import SystemAnalysis.GeometryAnalyzer;
 import SystemAnalysis.GeometryAnalyzer.AreaPerimeter;
+import SystemAnalysis.MechanicalProperties;
+import SystemAnalysis.MechanicalPropertiesFinder;
 import SystemAnalysis.RectanglesAndPerimeter;
+import SystemAnalysis.SimulationHistory;
+import SystemAnalysis.SimulationHistory.TrackedVariable;
 import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Point;
@@ -23,12 +27,17 @@ import java.util.List;
  */
 public class SystemAnalyzer {
 
+    //create a multivariate function whose arguments are the fit parameters and whose outputs are the function values
+    //use apache leastSquaresConverter and this vector valued function to a scalar function giving residuals
+    //minimize this function using one of the optimization routines.
+    static private final int statisticsWindow = 1000;
     private final int[][] neighbors;
     private final SystemGeometry systemGeometry;
     private final PhysicalConstants physicalConstants;
     private final int numBeads, numABeads;
     private BeadBinner beadBinner;
     private double[][] beadPositions;
+    private SimulationHistory simulationHistory;
 
     public SystemAnalyzer(SystemGeometry systemGeometry,
             PolymerCluster polymerCluster,
@@ -40,6 +49,7 @@ public class SystemAnalyzer {
         numABeads = polymerCluster.getNumABeads();
         beadPositions = new double[numBeads][systemGeometry.getDimension()];
         beadBinner = new BeadBinner(beadPositions, systemGeometry);
+        simulationHistory = new SimulationHistory(statisticsWindow);
     }
 
     public SystemAnalyzer(SystemAnalyzer systemAnalyzer) {
@@ -80,6 +90,21 @@ public class SystemAnalyzer {
             beadRectangles.add(new BeadRectangle(x - halfwidth, x + halfwidth, y + halfwidth, y - halfwidth));
         }
         return beadRectangles;
+    }
+
+    public void addPerimeterAreaEnergySnapshot(double perimeter, double area, double energy) {
+        simulationHistory.addValue(SimulationHistory.TrackedVariable.PERIMETER, perimeter);
+        simulationHistory.addValue(SimulationHistory.TrackedVariable.AREA, area);
+        simulationHistory.addValue(SimulationHistory.TrackedVariable.ENERGY, energy);
+    }
+
+    public double getAverage(TrackedVariable trackedVariable) {
+        return simulationHistory.getAverage(trackedVariable);
+    }
+
+    public MechanicalProperties getMechanicalProperties() {
+        MechanicalPropertiesFinder mechanicalPropertiesFinder = new MechanicalPropertiesFinder();
+        return mechanicalPropertiesFinder.findMechanicalProperties(simulationHistory);
     }
 
     public double totalSpringStretching() {
@@ -165,6 +190,10 @@ public class SystemAnalyzer {
 
     public boolean isTypeA(int bead) {
         return bead < numABeads;
+    }
+
+    public SimulationHistory getSimulationHistory() {
+        return simulationHistory;
     }
 
     public void setBeadPositions(double[][] beadPositions) {

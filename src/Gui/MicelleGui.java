@@ -9,6 +9,11 @@ import Engine.SystemAnalyzer;
 import SystemAnalysis.BeadRectangle;
 import SystemAnalysis.GeometryAnalyzer;
 import SystemAnalysis.GeometryAnalyzer.AreaPerimeter;
+import SystemAnalysis.MechanicalProperties;
+import SystemAnalysis.SimulationHistory;
+import java.io.FileNotFoundException;
+import java.io.PrintWriter;
+import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -48,6 +53,7 @@ public class MicelleGui extends javax.swing.JFrame {
         }
     }
     private PolymerSimulator system;
+    private int frameNumber;
     private final Thread updaterThread;
     private final ThreadPoolExecutor simulationExecutor;
     private final Set<SimulationTask> simulationTasks;
@@ -74,6 +80,7 @@ public class MicelleGui extends javax.swing.JFrame {
             }
         });
 
+        frameNumber = 0;
         int numThreadsAlwaysPresent = 1;
         int maxThreads = 1;
         long keepAliveTime = 1;
@@ -92,8 +99,8 @@ public class MicelleGui extends javax.swing.JFrame {
     }
 
     private void updateDisplay() {
+        frameNumber++;
         SystemAnalyzer systemAnalyzer = system.getSystemAnalyzer();
-
         energyLbl.setText(String.format("%.4f", system.getEnergy()));
         numIterationsLbl.setText(String.valueOf(system.getIterationNumber()));
         numAcceptedIterationsLbl.setText(String.valueOf(system.getAcceptedIterations()));
@@ -101,8 +108,36 @@ public class MicelleGui extends javax.swing.JFrame {
         volumeLbl.setText(String.format("%.4f", areaPerimeter.area));
         perimeterLbl.setText(String.format("%.4f", areaPerimeter.perimeter));
 
+        systemAnalyzer.addPerimeterAreaEnergySnapshot(
+                areaPerimeter.perimeter,
+                areaPerimeter.area,
+                system.getEnergy());
 
+        if (frameNumber == 100) {
+            MechanicalProperties mechanicalProperties = systemAnalyzer.getMechanicalProperties();
+            System.out.println("surface tension: " + mechanicalProperties.surfaceTension);
+            System.out.println("pressure: " + mechanicalProperties.pressure);
+            System.out.println("compressiblity: " + mechanicalProperties.compressibility);
 
+            PrintWriter outputWriter;
+            try {
+                outputWriter = new PrintWriter("/home/bmoths/Desktop/myData.txt", "UTF-8");
+
+                double[] perimeters = systemAnalyzer.getSimulationHistory().getStoredValues(SimulationHistory.TrackedVariable.PERIMETER);
+                double[] areas = systemAnalyzer.getSimulationHistory().getStoredValues(SimulationHistory.TrackedVariable.AREA);
+                double[] energies = systemAnalyzer.getSimulationHistory().getStoredValues(SimulationHistory.TrackedVariable.ENERGY);
+
+                outputWriter.println(perimeters);
+                outputWriter.println(areas);
+                outputWriter.println(energies);
+                outputWriter.close();
+
+            } catch (FileNotFoundException ex) {
+                Logger.getLogger(MicelleGui.class.getName()).log(Level.SEVERE, null, ex);
+            } catch (UnsupportedEncodingException ex) {
+                Logger.getLogger(MicelleGui.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }
         //System.out.println(String.valueOf(system.springEnergy() / system.getNumBeads()));
         repaint();
     }

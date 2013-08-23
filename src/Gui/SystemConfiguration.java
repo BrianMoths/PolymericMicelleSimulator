@@ -687,9 +687,8 @@ public class SystemConfiguration extends javax.swing.JFrame { //broken, need to 
 
         polymerCluster.setConcentrationInWater(concentration);
         simulationParameters = new SimulationParameters(physicalConstants.idealStepLength(), interactionLength);
-//        simulationParameters = PolymerSimulator.makeDefaultParameters(polymerCluster, xMax, dimension, physicalConstants);
 
-        if (hardCoresChk.isSelected()) { //just added by brian to avoid clustering. Let's see if it works
+        if (hardCoresChk.isSelected()) {
             simulationParameters = simulationParameters.makeParametersFromPhysicalConstants(physicalConstants);
             physicalConstants = physicalConstants.getPhysicalConstantsFromParameters(simulationParameters);
         }
@@ -707,10 +706,6 @@ public class SystemConfiguration extends javax.swing.JFrame { //broken, need to 
         systemGeometryBuilder.setDimension(dimension);
         systemGeometryBuilder.makeConsistentWith(polymerCluster, simulationParameters);
 
-//        systemGeometryBuilder.setDimensionSize(0, xMax);
-//        systemGeometryBuilder.setDimensionSize(1, yMax);
-//        systemGeometryBuilder.setDimensionSize(2, zMax);
-//        systemGeometryBuilder.setParameters(simulationParameters);
         System.out.println("Box Length: " + systemGeometryBuilder.getFullRMax()[0]);
         PolymerSimulator polymerSystem;
         polymerSystem = new PolymerSimulator(
