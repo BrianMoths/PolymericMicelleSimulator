@@ -66,6 +66,7 @@
                   <Component id="jButton1" alignment="0" max="32767" attributes="0"/>
                   <Component id="physicalConstantsPanel" alignment="0" max="32767" attributes="0"/>
                   <Component id="iterateBtn" max="32767" attributes="0"/>
+                  <Component id="randomColumnBtn" max="32767" attributes="0"/>
               </Group>
               <EmptySpace max="32767" attributes="0"/>
           </Group>
@@ -107,9 +108,11 @@
                       <Component id="cancelBtn" min="-2" pref="50" max="-2" attributes="0"/>
                       <EmptySpace type="unrelated" max="-2" attributes="0"/>
                       <Component id="randomizeBtn" min="-2" pref="50" max="-2" attributes="0"/>
-                      <EmptySpace type="unrelated" max="-2" attributes="0"/>
+                      <EmptySpace max="-2" attributes="0"/>
+                      <Component id="randomColumnBtn" pref="53" max="32767" attributes="0"/>
+                      <EmptySpace max="-2" attributes="0"/>
                       <Component id="jButton1" min="-2" pref="49" max="-2" attributes="0"/>
-                      <EmptySpace max="32767" attributes="0"/>
+                      <EmptySpace min="-2" pref="44" max="-2" attributes="0"/>
                       <Component id="physicalConstantsPanel" min="-2" max="-2" attributes="0"/>
                   </Group>
               </Group>
@@ -484,6 +487,14 @@
           </Border>
         </Property>
       </Properties>
+    </Component>
+    <Component class="javax.swing.JButton" name="randomColumnBtn">
+      <Properties>
+        <Property name="text" type="java.lang.String" value="Random Column"/>
+      </Properties>
+      <Events>
+        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="randomColumnBtnActionPerformed"/>
+      </Events>
     </Component>
   </SubComponents>
 </Form>

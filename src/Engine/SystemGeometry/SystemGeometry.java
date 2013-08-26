@@ -39,6 +39,10 @@ public interface SystemGeometry {
 
     public double[][] randomPositions(int numPositions);
 
+    public double[] randomColumnPosition();
+
+    public double[][] randomColumnPositions(int numPositions);
+
     public double[] randomGaussian();
 
     public boolean incrementFirstVector(double[] toStep, double[] stepVector);

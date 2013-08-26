@@ -149,6 +149,13 @@ public class PolymerSimulator {
         energy = systemAnalyzer.energy();
     }
 
+    public synchronized void columnRandomizePositions() {
+        iterationNumber = 0;
+        acceptedIterations = 0;
+        polymerPosition.columnRandomize();
+        energy = systemAnalyzer.energy();
+    }
+
     public synchronized double[][] getBeadPositions() {
         return polymerPosition.getBeadPositions();
     }

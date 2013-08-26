@@ -221,6 +221,7 @@ public class MicelleGui extends javax.swing.JFrame {
         volumeLbl = new javax.swing.JLabel();
         perimeterCaptionLbl = new javax.swing.JLabel();
         perimeterLbl = new javax.swing.JLabel();
+        randomColumnBtn = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle("Polymer Simulator");
@@ -418,6 +419,13 @@ public class MicelleGui extends javax.swing.JFrame {
         perimeterLbl.setText("0");
         perimeterLbl.setBorder(javax.swing.BorderFactory.createBevelBorder(javax.swing.border.BevelBorder.LOWERED));
 
+        randomColumnBtn.setText("Random Column");
+        randomColumnBtn.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                randomColumnBtnActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
@@ -455,7 +463,8 @@ public class MicelleGui extends javax.swing.JFrame {
                     .addComponent(randomizeBtn, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(jButton1, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(physicalConstantsPanel, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(iterateBtn, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                    .addComponent(iterateBtn, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(randomColumnBtn, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
@@ -489,9 +498,11 @@ public class MicelleGui extends javax.swing.JFrame {
                         .addComponent(cancelBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 50, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                         .addComponent(randomizeBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 50, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(randomColumnBtn, javax.swing.GroupLayout.DEFAULT_SIZE, 53, Short.MAX_VALUE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 49, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addGap(44, 44, 44)
                         .addComponent(physicalConstantsPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
@@ -538,6 +549,12 @@ public class MicelleGui extends javax.swing.JFrame {
         simulationExecutor.purge();
         simulationTasks.removeAll(simulationTasks);
     }//GEN-LAST:event_cancelBtnActionPerformed
+
+    private void randomColumnBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_randomColumnBtnActionPerformed
+        cancelComputation();
+        system.columnRandomizePositions();
+        updateDisplay();
+    }//GEN-LAST:event_randomColumnBtnActionPerformed
 
     /**
      * @param args the command line arguments
@@ -627,6 +644,7 @@ public class MicelleGui extends javax.swing.JFrame {
     private javax.swing.JLabel perimeterCaptionLbl;
     private javax.swing.JLabel perimeterLbl;
     private javax.swing.JPanel physicalConstantsPanel;
+    private javax.swing.JButton randomColumnBtn;
     private javax.swing.JButton randomizeBtn;
     private javax.swing.JLabel springConstantCaptionLbl;
     private javax.swing.JLabel springConstantLbl;

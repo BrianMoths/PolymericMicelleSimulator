@@ -129,6 +129,23 @@ public abstract class AbstractGeometry implements SystemGeometry {
     }
 
     @Override
+    public double[][] randomColumnPositions(int numPositions) {
+        double[][] randomColumnPositions = new double[numPositions][];
+        for (int i = 0; i < numPositions; i++) {
+            randomColumnPositions[i] = randomColumnPosition();
+        }
+        return randomColumnPositions;
+    }
+
+    @Override
+    public double[] randomColumnPosition() {
+        double[] position = new double[dimension];
+        position[0] = (randomNumberGenerator.nextDouble() / 3 + 1. / 3) * fullRMax[0];
+        position[1] = randomNumberGenerator.nextDouble() * fullRMax[1];
+        return position;
+    }
+
+    @Override
     public double[] randomGaussian() {
         double[] randomVector = new double[dimension];
         for (int i = 0; i < dimension; i++) {

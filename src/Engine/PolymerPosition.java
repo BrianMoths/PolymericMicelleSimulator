@@ -65,9 +65,17 @@ public class PolymerPosition {
         randomizePrivate();
     }
 
-    private void randomizePrivate() {
-        beadPositions = systemGeometry.randomPositions(numBeads);
+    public void columnRandomize() {
+        setBeadPositionsPrivate(systemGeometry.randomColumnPositions(numBeads));
+    }
+
+    private void setBeadPositionsPrivate(double[][] newBeadPositions) {
+        beadPositions = newBeadPositions;
         syncAnalyzers();
+    }
+
+    private void randomizePrivate() {
+        setBeadPositionsPrivate(systemGeometry.randomPositions(numBeads));
     }
 
     public int randomBeadIndex() {

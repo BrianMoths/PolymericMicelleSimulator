@@ -51,7 +51,7 @@ public class SystemConfiguration extends javax.swing.JFrame { //broken, need to 
                 }
             });
         }
-        this.getRootPane().setDefaultButton(buildSystemSamebtn);
+        this.getRootPane().setDefaultButton(buildSystemRandombtn);
         this.gui = gui;
     }
 
@@ -113,7 +113,7 @@ public class SystemConfiguration extends javax.swing.JFrame { //broken, need to 
         disorderBtn = new javax.swing.JButton();
         micelleBtn = new javax.swing.JButton();
         blueDropBtn = new javax.swing.JButton();
-        buildSystemRandombtn1 = new javax.swing.JButton();
+        buildSystemRandombtn = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         setTitle("Simulator Configuration");
@@ -508,10 +508,10 @@ public class SystemConfiguration extends javax.swing.JFrame { //broken, need to 
                 .addContainerGap(13, Short.MAX_VALUE))
         );
 
-        buildSystemRandombtn1.setText("Build System (random positions)");
-        buildSystemRandombtn1.addActionListener(new java.awt.event.ActionListener() {
+        buildSystemRandombtn.setText("Build System (random positions)");
+        buildSystemRandombtn.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                buildSystemRandombtn1ActionPerformed(evt);
+                buildSystemRandombtnActionPerformed(evt);
             }
         });
 
@@ -524,9 +524,9 @@ public class SystemConfiguration extends javax.swing.JFrame { //broken, need to 
                     .addGroup(layout.createSequentialGroup()
                         .addComponent(defaultParametersPnl, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                            .addComponent(buildSystemRandombtn1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .addComponent(buildSystemSamebtn, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(buildSystemSamebtn, javax.swing.GroupLayout.PREFERRED_SIZE, 232, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(buildSystemRandombtn))
                         .addGap(0, 1, Short.MAX_VALUE))
                     .addGroup(layout.createSequentialGroup()
                         .addContainerGap()
@@ -538,12 +538,14 @@ public class SystemConfiguration extends javax.swing.JFrame { //broken, need to 
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
                 .addComponent(simulationParametersPnl, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(buildSystemSamebtn, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 89, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                        .addComponent(defaultParametersPnl, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addComponent(buildSystemRandombtn1, javax.swing.GroupLayout.PREFERRED_SIZE, 84, javax.swing.GroupLayout.PREFERRED_SIZE))))
+                .addGap(18, 18, Short.MAX_VALUE)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                    .addComponent(defaultParametersPnl, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addGroup(layout.createSequentialGroup()
+                        .addComponent(buildSystemSamebtn, javax.swing.GroupLayout.PREFERRED_SIZE, 89, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(buildSystemRandombtn, javax.swing.GroupLayout.PREFERRED_SIZE, 84, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addContainerGap())
         );
 
         bindingGroup.bind();
@@ -886,7 +888,7 @@ public class SystemConfiguration extends javax.swing.JFrame { //broken, need to 
         // TODO add your handling code here:
     }//GEN-LAST:event_temperatureFocusGained
 
-    private void buildSystemRandombtn1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_buildSystemRandombtn1ActionPerformed
+    private void buildSystemRandombtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_buildSystemRandombtnActionPerformed
         gui.cancelComputation();
 
         PhysicalConstantsBuilder physicalConstantsBuilder = new PhysicalConstantsBuilder();
@@ -1050,7 +1052,7 @@ public class SystemConfiguration extends javax.swing.JFrame { //broken, need to 
                 physicalConstants);
 
         gui.setSystem(polymerSystem);
-    }//GEN-LAST:event_buildSystemRandombtn1ActionPerformed
+    }//GEN-LAST:event_buildSystemRandombtnActionPerformed
 //    /**
 //     * @param args the command line arguments
 //     */
@@ -1099,7 +1101,7 @@ public class SystemConfiguration extends javax.swing.JFrame { //broken, need to 
     private javax.swing.JButton blueDropBtn;
     private javax.swing.ButtonGroup boundaryConditionBgp;
     private javax.swing.JLabel boundaryConditionsCaptionLbl;
-    private javax.swing.JButton buildSystemRandombtn1;
+    private javax.swing.JButton buildSystemRandombtn;
     private javax.swing.JButton buildSystemSamebtn;
     private javax.swing.JLabel concentrationCaptionLbl;
     private javax.swing.JTextField concentrationFld;
