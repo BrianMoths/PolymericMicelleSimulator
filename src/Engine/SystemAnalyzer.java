@@ -12,9 +12,11 @@ import SystemAnalysis.GeometryAnalyzer.AreaPerimeter;
 import SystemAnalysis.RectanglesAndPerimeter;
 import SystemAnalysis.SimulationHistory;
 import SystemAnalysis.SimulationHistory.TrackedVariable;
+import SystemAnalysis.SurfaceTensionFinder;
 import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Point;
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -23,7 +25,7 @@ import java.util.List;
  *
  * @author bmoths
  */
-public class SystemAnalyzer {
+public class SystemAnalyzer implements Serializable {
 
     //create a multivariate function whose arguments are the fit parameters and whose outputs are the function values
     //use apache leastSquaresConverter and this vector valued function to a scalar function giving residuals
@@ -36,6 +38,7 @@ public class SystemAnalyzer {
     private BeadBinner beadBinner;
     private double[][] beadPositions;
     private SimulationHistory simulationHistory;
+    private SurfaceTensionFinder surfaceTensionFinder;
 
     public SystemAnalyzer(SystemGeometry systemGeometry,
             PolymerCluster polymerCluster,
@@ -48,6 +51,7 @@ public class SystemAnalyzer {
         beadPositions = new double[numBeads][systemGeometry.getDimension()];
         beadBinner = new BeadBinner(beadPositions, systemGeometry);
         simulationHistory = new SimulationHistory(statisticsWindow);
+        surfaceTensionFinder = new SurfaceTensionFinder(this);
     }
 
     public SystemAnalyzer(SystemAnalyzer systemAnalyzer) {
@@ -59,6 +63,7 @@ public class SystemAnalyzer {
         beadPositions = new double[systemAnalyzer.numBeads][systemGeometry.getDimension()];
         systemGeometry.checkedCopyPositions(systemAnalyzer.beadPositions, beadPositions);
         beadBinner = new BeadBinner(systemAnalyzer.beadBinner); //check this
+        surfaceTensionFinder = new SurfaceTensionFinder(systemAnalyzer.surfaceTensionFinder);
     }
 
     private void rebinBeads() {
@@ -68,6 +73,31 @@ public class SystemAnalyzer {
     public double findArea() {
         List<BeadRectangle> beadRectangles = makeBeadRectangles();
         return GeometryAnalyzer.findArea(beadRectangles);
+    }
+
+    public void recordSurface() {
+        surfaceTensionFinder.recordSurfaceTension();
+    }
+
+    public double estimateSurfaceTension() {
+        return surfaceTensionFinder.findSurfaceTension();
+    }
+
+    public double findRightEdge(double yValue) {
+        final double halfWidth = systemGeometry.getParameters().getInteractionLength() / 2;
+        final double lowerCutoff = yValue - halfWidth;
+        final double upperCutoff = yValue + halfWidth;
+        double rightEdge = 0;
+        for (int bead = 0; bead < numBeads; bead++) {
+            final double beadY = beadPositions[bead][1];
+            if (beadY > lowerCutoff && beadY < upperCutoff) {
+                final double beadX = beadPositions[bead][0];
+                if (beadX > rightEdge) {
+                    rightEdge = beadX;
+                }
+            }
+        }
+        return rightEdge;
     }
 
     public AreaPerimeter findAreaAndPerimeter() {
@@ -276,9 +306,20 @@ public class SystemAnalyzer {
 
         Drawer drawer = new Drawer();
         drawer.draw();
+        if (surfaceTensionFinder != null) {
+            surfaceTensionFinder.drawDots(graphics);
+        }
     }
 
     void updateBinWithMove(int stepBead) {
         beadBinner.updateBeadPosition(stepBead, beadPositions[stepBead]);
+    }
+
+    public SystemGeometry getSystemGeometry() {
+        return systemGeometry;
+    }
+
+    public PhysicalConstants getPhysicalConstants() {
+        return physicalConstants;
     }
 }

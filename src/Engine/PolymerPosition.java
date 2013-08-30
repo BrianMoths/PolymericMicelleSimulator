@@ -5,6 +5,7 @@
 package Engine;
 
 import Engine.SystemGeometry.SystemGeometry;
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -14,7 +15,7 @@ import java.util.Random;
  *
  * @author bmoths
  */
-public class PolymerPosition {
+public class PolymerPosition implements Serializable {
 
     private static final Random randomNumberGenerator = new Random();
     private final int numBeads;

@@ -6,16 +6,14 @@ package Gui;
 
 import Engine.PolymerSimulator;
 import Engine.SystemAnalyzer;
-import SystemAnalysis.BeadRectangle;
-import SystemAnalysis.GeometryAnalyzer;
 import SystemAnalysis.GeometryAnalyzer.AreaPerimeter;
-import SystemAnalysis.SimulationHistory;
-import java.io.FileNotFoundException;
-import java.io.PrintWriter;
-import java.io.UnsupportedEncodingException;
-import java.util.ArrayList;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.FutureTask;
@@ -23,6 +21,7 @@ import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.swing.JFileChooser;
 
 /**
  *
@@ -48,7 +47,6 @@ public class MicelleGui extends javax.swing.JFrame {
         @Override
         public void run() {
             system.doIterations(numIterations);
-//            System.out.println(system.toString());
         }
     }
     private PolymerSimulator system;
@@ -112,26 +110,11 @@ public class MicelleGui extends javax.swing.JFrame {
                 areaPerimeter.perimeter,
                 areaPerimeter.area,
                 system.getEnergy());
-        if (frameNumber == 1000) {
-            PrintWriter outputWriter;
-            try {
-                outputWriter = new PrintWriter("/home/bmoths/Desktop/myData.txt", "UTF-8");
-
-                double[] perimeters = systemAnalyzer.getSimulationHistory().getStoredValues(SimulationHistory.TrackedVariable.PERIMETER);
-                double[] areas = systemAnalyzer.getSimulationHistory().getStoredValues(SimulationHistory.TrackedVariable.AREA);
-                double[] energies = systemAnalyzer.getSimulationHistory().getStoredValues(SimulationHistory.TrackedVariable.ENERGY);
-
-                outputWriter.println(doubleArrayToString(perimeters));
-                outputWriter.println(doubleArrayToString(areas));
-                outputWriter.println(doubleArrayToString(energies));
-                outputWriter.close();
-                System.out.println("Done saving!");
-
-            } catch (FileNotFoundException ex) {
-                Logger.getLogger(MicelleGui.class.getName()).log(Level.SEVERE, null, ex);
-            } catch (UnsupportedEncodingException ex) {
-                Logger.getLogger(MicelleGui.class.getName()).log(Level.SEVERE, null, ex);
-            }
+        if (frameNumber > 300) {
+            systemAnalyzer.recordSurface();
+        }
+        if (frameNumber > 300 && frameNumber % 100 == 50) {
+            System.out.println(systemAnalyzer.estimateSurfaceTension());
         }
 
         //System.out.println(String.valueOf(system.springEnergy() / system.getNumBeads()));
@@ -222,6 +205,8 @@ public class MicelleGui extends javax.swing.JFrame {
         perimeterCaptionLbl = new javax.swing.JLabel();
         perimeterLbl = new javax.swing.JLabel();
         randomColumnBtn = new javax.swing.JButton();
+        saveBtn = new javax.swing.JButton();
+        loadBtn = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle("Polymer Simulator");
@@ -240,7 +225,7 @@ public class MicelleGui extends javax.swing.JFrame {
             }
         });
 
-        numIterationsFld.setText("1");
+        numIterationsFld.setText("1000000000");
 
         randomizeBtn.setText("Randomize");
         randomizeBtn.addActionListener(new java.awt.event.ActionListener() {
@@ -426,6 +411,20 @@ public class MicelleGui extends javax.swing.JFrame {
             }
         });
 
+        saveBtn.setText("Save");
+        saveBtn.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                saveBtnActionPerformed(evt);
+            }
+        });
+
+        loadBtn.setText("Load");
+        loadBtn.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                loadBtnActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
@@ -464,29 +463,15 @@ public class MicelleGui extends javax.swing.JFrame {
                     .addComponent(jButton1, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(physicalConstantsPanel, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(iterateBtn, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(randomColumnBtn, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                    .addComponent(randomColumnBtn, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(saveBtn, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(loadBtn, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addGroup(layout.createSequentialGroup()
-                        .addComponent(displayPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                                .addComponent(energyLbl, javax.swing.GroupLayout.PREFERRED_SIZE, 15, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addComponent(volumeCaptionLbl)
-                                .addComponent(volumeLbl))
-                            .addComponent(energyCaptionLbl))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                            .addComponent(numIterationsCaptionLbl, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                                .addComponent(numIterationsLbl)
-                                .addComponent(perimeterCaptionLbl)
-                                .addComponent(perimeterLbl))))
                     .addGroup(layout.createSequentialGroup()
                         .addContainerGap()
                         .addComponent(iterateBtn)
@@ -499,16 +484,36 @@ public class MicelleGui extends javax.swing.JFrame {
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                         .addComponent(randomizeBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 50, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(randomColumnBtn, javax.swing.GroupLayout.DEFAULT_SIZE, 53, Short.MAX_VALUE)
+                        .addComponent(randomColumnBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 50, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 49, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(44, 44, 44)
-                        .addComponent(physicalConstantsPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(physicalConstantsPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(displayPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                        .addComponent(energyLbl, javax.swing.GroupLayout.PREFERRED_SIZE, 15, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(volumeCaptionLbl)
+                        .addComponent(volumeLbl)
+                        .addComponent(saveBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 43, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(energyCaptionLbl))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(numAcceptedIterationsCaptionLbl)
-                    .addComponent(numAcceptedIterationsLbl))
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(layout.createSequentialGroup()
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                            .addComponent(numIterationsCaptionLbl, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                                .addComponent(numIterationsLbl)
+                                .addComponent(perimeterCaptionLbl)
+                                .addComponent(perimeterLbl)))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(numAcceptedIterationsCaptionLbl)
+                            .addComponent(numAcceptedIterationsLbl))
+                        .addGap(0, 0, Short.MAX_VALUE))
+                    .addComponent(loadBtn, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addContainerGap())
         );
 
         pack();
@@ -555,6 +560,44 @@ public class MicelleGui extends javax.swing.JFrame {
         system.columnRandomizePositions();
         updateDisplay();
     }//GEN-LAST:event_randomColumnBtnActionPerformed
+
+    private void saveBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_saveBtnActionPerformed
+        String toBeSaved = "hello";
+        String path = System.getProperty("user.dir");
+        try {
+            JFileChooser fileChooser = new JFileChooser(path, null);
+            int returnVal = fileChooser.showOpenDialog(this);
+            if (returnVal == JFileChooser.APPROVE_OPTION) {
+                File file = fileChooser.getSelectedFile();
+                ObjectOutputStream objectOutputStream = new ObjectOutputStream(
+                        new FileOutputStream(file));
+                objectOutputStream.writeObject(system);//also save frameNumber
+                objectOutputStream.flush();
+                objectOutputStream.close();
+                System.out.println("Save successful");
+            }
+        } catch (IOException ex) {
+            Logger.getLogger(MicelleGui.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }//GEN-LAST:event_saveBtnActionPerformed
+
+    private void loadBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_loadBtnActionPerformed
+        String path = System.getProperty("user.dir");
+        try {
+            JFileChooser fileChooser = new JFileChooser(path, null);
+            int returnVal = fileChooser.showOpenDialog(this);
+            if (returnVal == JFileChooser.APPROVE_OPTION) {
+                File file = fileChooser.getSelectedFile();
+                ObjectInputStream objectInputStream = new ObjectInputStream(
+                        new FileInputStream(file));
+                setSystem((PolymerSimulator) objectInputStream.readObject());
+                System.out.println("Load successful");
+                objectInputStream.close();
+            }
+        } catch (IOException | ClassNotFoundException ex) {
+            Logger.getLogger(MicelleGui.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }//GEN-LAST:event_loadBtnActionPerformed
 
     /**
      * @param args the command line arguments
@@ -636,6 +679,7 @@ public class MicelleGui extends javax.swing.JFrame {
     private javax.swing.JLabel interactionLengthCaptionLbl;
     private javax.swing.JButton iterateBtn;
     private javax.swing.JButton jButton1;
+    private javax.swing.JButton loadBtn;
     private javax.swing.JLabel numAcceptedIterationsCaptionLbl;
     private javax.swing.JLabel numAcceptedIterationsLbl;
     private javax.swing.JLabel numIterationsCaptionLbl;
@@ -646,6 +690,7 @@ public class MicelleGui extends javax.swing.JFrame {
     private javax.swing.JPanel physicalConstantsPanel;
     private javax.swing.JButton randomColumnBtn;
     private javax.swing.JButton randomizeBtn;
+    private javax.swing.JButton saveBtn;
     private javax.swing.JLabel springConstantCaptionLbl;
     private javax.swing.JLabel springConstantLbl;
     private javax.swing.JLabel systemSizeCaptionLbl;

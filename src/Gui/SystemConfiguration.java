@@ -13,6 +13,7 @@ import Engine.SimulationParameters;
 import Engine.SystemGeometry.HardWallGeometry.HardWallGeometryBuilder;
 import Engine.SystemGeometry.PeriodicGeometry.PeriodicGeometryBuilder;
 import Engine.SystemGeometry.AbstractGeometry.AbstractGeometryBuilder;
+import Engine.SystemGeometry.SystemGeometry;
 import java.awt.event.FocusAdapter;
 import java.util.ArrayList;
 import java.util.List;
@@ -24,6 +25,14 @@ import javax.swing.JTextField;
  */
 public class SystemConfiguration extends javax.swing.JFrame { //broken, need to initialize simulation parameters
 
+    static private class InputVariables {
+
+        int dimension, numChains;
+        double xMax, yMax, temperature, AAOverlapCoefficient, BBOverlapCoefficient, ABOverlapCoefficient, springConstant, interactionLength, concentration;
+
+        InputVariables() {
+        }
+    }
     private final MicelleGui gui;
 
     /**
@@ -560,170 +569,194 @@ public class SystemConfiguration extends javax.swing.JFrame { //broken, need to 
     private void buildSystemSamebtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_buildSystemSamebtnActionPerformed
         gui.cancelComputation();
 
-        PhysicalConstantsBuilder physicalConstantsBuilder = new PhysicalConstantsBuilder();
+        PolymerSimulator polymerSystem;
+        try {
+            polymerSystem = makePolymerSystem();
+        } catch (NumberFormatException e) {
+            return;
+        } catch (IllegalArgumentException e) {
+            return;
+        }
+        polymerSystem.setBeadPositions(gui.getPolymerSimulator().getBeadPositions());
+
+        gui.setSystem(polymerSystem);
+    }//GEN-LAST:event_buildSystemSamebtnActionPerformed
+
+    private PolymerSimulator makePolymerSystem() {
         SimulationParameters simulationParameters;
+        InputVariables inputVariables;
 
-        int dimension, numChains, numABeadsPerChain, numBBeadsPerChain, numRepeats;
-        double xMax = 0, yMax = 0, zMax = 0;
-        double temperature, AAOverlapCoefficient, BBOverlapCoefficient,
-                ABOverlapCoefficient, springConstant, concentration, interactionLength;
+        inputVariables = readInputFromGui();
 
-        try {
-            final String dimensionString = dimensionFld.getText();
-            dimension = Integer.parseInt(dimensionString);
-        } catch (NumberFormatException e) {
-            System.err.println("couldn't parse dimension");
-            return;
+        if (!isInputValid(inputVariables)) {
+            throw new IllegalArgumentException();
         }
 
-        try {
-            final String xMaxString = xMaxFld.getText();
-            xMax = Double.parseDouble(xMaxString);
-        } catch (NumberFormatException e) {
-            System.err.println("couldn't parse xMax");
-            return;
-        }
+        PolymerCluster polymerCluster = makePolymerCluster(inputVariables);
 
-        try {
-            final String yMaxString = yMaxFld.getText();
-            yMax = Double.parseDouble(yMaxString);
-        } catch (NumberFormatException e) {
-            System.err.println("couldn't parse yMax");
-            return;
-        }
+        PhysicalConstants physicalConstants = makePhysicalConstants(inputVariables);
 
-        try {
-            final String temperatureString = temperatureFld.getText();
-            temperature = Double.parseDouble(temperatureString);
-        } catch (NumberFormatException e) {
-            System.err.println("couldn't parse temperature");
-            return;
-        }
-
-        try {
-            final String AAOverlapCoefficientString = AAOverlapCoefficientFld.getText();
-            AAOverlapCoefficient = Double.parseDouble(AAOverlapCoefficientString);
-        } catch (NumberFormatException e) {
-            System.err.println("couldn't parse " + AACoefficientCaptionLbl.getText().replace(":", ""));
-            return;
-        }
-        try {
-            final String BBOverlapCoefficientString = BBOverlapCoefficientFld.getText();
-            BBOverlapCoefficient = Double.parseDouble(BBOverlapCoefficientString);
-        } catch (NumberFormatException e) {
-            System.err.println("couldn't parse " + BBCoeffCaptionLbl.getText().replace(":", ""));
-            return;
-        }
-
-        try {
-            final String ABOverlapCoefficientString = ABOverlapCoefficientFld.getText();
-            ABOverlapCoefficient = Double.parseDouble(ABOverlapCoefficientString);
-        } catch (NumberFormatException e) {
-            System.err.println("couldn't parse differentOverlapCoefficient");
-            return;
-        }
-
-        try {
-            final String springConstantString = springConstantFld.getText();
-            springConstant = Double.parseDouble(springConstantString);
-        } catch (NumberFormatException e) {
-            System.err.println("couldn't parse spring constant");
-            return;
-        }
-
-        try {
-            final String interactionLengthString = interactionLengthFld.getText();
-            interactionLength = Double.parseDouble(interactionLengthString);
-        } catch (NumberFormatException e) {
-            System.err.println("couldn't parse spring constant");
-            return;
-        }
-
-        try {
-            final String numChainsString = numberOfChainsFld.getText();
-            numChains = Integer.parseInt(numChainsString);
-        } catch (NumberFormatException e) {
-            System.err.println("couldn't parse number of Chains");
-            return;
-        }
-
-        try {
-            final String concentrationString = concentrationFld.getText();
-            concentration = Double.parseDouble(concentrationString);
-        } catch (NumberFormatException e) {
-            System.err.println("couldn't concentration.");
-            return;
-        }
-        if (dimension
-                < 1) {
-            System.err.println("dimension must be greater than 0.");
-            return;
-        }
-        if (numChains
-                < 1) {
-            System.err.println("must have at least one chain.");
-            return;
-        }
-        if (concentration
-                <= 0) {
-            System.err.println("Concentration must have a positive value");
-            return;
-        }
-        if (interactionLength < 0) {
-            System.err.println("interaction Length must be non-negative");
-        }
-
-        physicalConstantsBuilder.setTemperature(temperature);
-
-        physicalConstantsBuilder.setAAOverlapCoefficient(AAOverlapCoefficient);
-
-        physicalConstantsBuilder.setBBOverlapCoefficient(BBOverlapCoefficient);
-
-        physicalConstantsBuilder.setABOverlapCoefficient(ABOverlapCoefficient);
-
-        physicalConstantsBuilder.setSpringCoefficient(springConstant);
-        PhysicalConstants physicalConstants = physicalConstantsBuilder.buildPhysicalConstants();
-        PolymerChain polymerChain = makePolymerChain();
-
-        PolymerCluster polymerCluster = PolymerCluster.makeRepeatedChainCluster(polymerChain, numChains);
-
-        polymerCluster.setConcentrationInWater(concentration);
-        simulationParameters = new SimulationParameters(physicalConstants.idealStepLength(), interactionLength);
-//        simulationParameters = PolymerSimulator.makeDefaultParameters(polymerCluster, xMax, dimension, physicalConstants);
+        simulationParameters = new SimulationParameters(physicalConstants.idealStepLength(), inputVariables.interactionLength);
 
         if (hardCoresChk.isSelected()) { //just added by brian to avoid clustering. Let's see if it works
             simulationParameters = simulationParameters.makeParametersFromPhysicalConstants(physicalConstants);
             physicalConstants = physicalConstants.getPhysicalConstantsFromParameters(simulationParameters);
         }
+
         System.out.println("Core Length: " + simulationParameters.getCoreLength());
         System.out.println("HardOverlap: " + physicalConstants.getHardOverlapCoefficient());
         System.out.println("Interaction Length: " + simulationParameters.getInteractionLength());
 
-        AbstractGeometryBuilder systemGeometryBuilder = new PeriodicGeometryBuilder();
-        if (periodicRdo.isSelected()) {
-            systemGeometryBuilder = new PeriodicGeometryBuilder();
-        } else if (hardWallRdo.isSelected()) {
-            systemGeometryBuilder = new HardWallGeometryBuilder();
-        }
+        SystemGeometry systemGeometry = makeSystemGeometry(inputVariables, polymerCluster, simulationParameters);
 
-        systemGeometryBuilder.setDimension(dimension);
-        systemGeometryBuilder.makeConsistentWith(polymerCluster, simulationParameters);
-
-//        systemGeometryBuilder.setDimensionSize(0, xMax);
-//        systemGeometryBuilder.setDimensionSize(1, yMax);
-//        systemGeometryBuilder.setDimensionSize(2, zMax);
-//        systemGeometryBuilder.setParameters(simulationParameters);
-        System.out.println("Box Length: " + systemGeometryBuilder.getFullRMax()[0]);
         PolymerSimulator polymerSystem;
         polymerSystem = new PolymerSimulator(
-                systemGeometryBuilder.buildGeometry(),
+                systemGeometry,
                 polymerCluster,
                 physicalConstants);
 
-        polymerSystem.setBeadPositions(gui.getPolymerSimulator().getBeadPositions());
+        return polymerSystem;
+    }
 
-        gui.setSystem(polymerSystem);
-    }//GEN-LAST:event_buildSystemSamebtnActionPerformed
+    private InputVariables readInputFromGui() {
+        InputVariables inputVariables = new InputVariables();
+
+        boolean isErrorEncountered = false;
+
+        try {
+            final String dimensionString = dimensionFld.getText();
+            inputVariables.dimension = Integer.parseInt(dimensionString);
+        } catch (NumberFormatException e) {
+            System.err.println("couldn't parse dimension");
+            isErrorEncountered = true;
+        }
+
+        try {
+            final String xMaxString = xMaxFld.getText();
+            inputVariables.xMax = Double.parseDouble(xMaxString);
+        } catch (NumberFormatException e) {
+            System.err.println("couldn't parse xMax");
+            isErrorEncountered = true;
+        }
+
+        try {
+            final String yMaxString = yMaxFld.getText();
+            inputVariables.yMax = Double.parseDouble(yMaxString);
+        } catch (NumberFormatException e) {
+            System.err.println("couldn't parse yMax");
+            isErrorEncountered = true;
+        }
+
+        try {
+            final String temperatureString = temperatureFld.getText();
+            inputVariables.temperature = Double.parseDouble(temperatureString);
+        } catch (NumberFormatException e) {
+            System.err.println("couldn't parse temperature");
+            isErrorEncountered = true;
+        }
+
+        try {
+            final String AAOverlapCoefficientString = AAOverlapCoefficientFld.getText();
+            inputVariables.AAOverlapCoefficient = Double.parseDouble(AAOverlapCoefficientString);
+        } catch (NumberFormatException e) {
+            System.err.println("couldn't parse " + AACoefficientCaptionLbl.getText().replace(":", ""));
+            isErrorEncountered = true;
+        }
+        try {
+            final String BBOverlapCoefficientString = BBOverlapCoefficientFld.getText();
+            inputVariables.BBOverlapCoefficient = Double.parseDouble(BBOverlapCoefficientString);
+        } catch (NumberFormatException e) {
+            System.err.println("couldn't parse " + BBCoeffCaptionLbl.getText().replace(":", ""));
+            isErrorEncountered = true;
+        }
+
+        try {
+            final String ABOverlapCoefficientString = ABOverlapCoefficientFld.getText();
+            inputVariables.ABOverlapCoefficient = Double.parseDouble(ABOverlapCoefficientString);
+        } catch (NumberFormatException e) {
+            System.err.println("couldn't parse differentOverlapCoefficient");
+            isErrorEncountered = true;
+        }
+
+        try {
+            final String springConstantString = springConstantFld.getText();
+            inputVariables.springConstant = Double.parseDouble(springConstantString);
+        } catch (NumberFormatException e) {
+            System.err.println("couldn't parse spring constant");
+            isErrorEncountered = true;
+        }
+
+        try {
+            final String interactionLengthString = interactionLengthFld.getText();
+            inputVariables.interactionLength = Double.parseDouble(interactionLengthString);
+        } catch (NumberFormatException e) {
+            System.err.println("couldn't parse spring constant");
+            isErrorEncountered = true;
+        }
+
+        try {
+            final String numChainsString = numberOfChainsFld.getText();
+            inputVariables.numChains = Integer.parseInt(numChainsString);
+        } catch (NumberFormatException e) {
+            System.err.println("couldn't parse number of Chains");
+            isErrorEncountered = true;
+        }
+
+        try {
+            final String concentrationString = concentrationFld.getText();
+            inputVariables.concentration = Double.parseDouble(concentrationString);
+        } catch (NumberFormatException e) {
+            System.err.println("couldn't concentration.");
+            isErrorEncountered = true;
+        }
+
+        if (isErrorEncountered) {
+            throw new NumberFormatException();
+        }
+        return inputVariables;
+    }
+
+    static private boolean isInputValid(InputVariables inputVariables) {
+        boolean isInputValid = true;
+        if (inputVariables.dimension < 1) {
+            System.err.println("dimension must be greater than 0.");
+            isInputValid = false;
+        }
+        if (inputVariables.numChains < 1) {
+            System.err.println("must have at least one chain.");
+            isInputValid = false;
+        }
+        if (inputVariables.concentration <= 0) {
+            System.err.println("Concentration must have a positive value");
+            isInputValid = false;
+        }
+        if (inputVariables.interactionLength < 0) {
+            System.err.println("interaction Length must be non-negative");
+            isInputValid = false;
+        }
+        return isInputValid;
+    }
+
+    static private PhysicalConstants makePhysicalConstants(InputVariables inputVariables) {
+        PhysicalConstantsBuilder physicalConstantsBuilder = new PhysicalConstantsBuilder();
+
+        physicalConstantsBuilder.setTemperature(inputVariables.temperature);
+        physicalConstantsBuilder.setAAOverlapCoefficient(inputVariables.AAOverlapCoefficient);
+        physicalConstantsBuilder.setBBOverlapCoefficient(inputVariables.BBOverlapCoefficient);
+        physicalConstantsBuilder.setABOverlapCoefficient(inputVariables.ABOverlapCoefficient);
+        physicalConstantsBuilder.setSpringCoefficient(inputVariables.springConstant);
+
+        return physicalConstantsBuilder.buildPhysicalConstants();
+    }
+
+    private PolymerCluster makePolymerCluster(InputVariables inputVariables) {
+        PolymerChain polymerChain = makePolymerChain();
+
+        PolymerCluster polymerCluster = PolymerCluster.makeRepeatedChainCluster(polymerChain, inputVariables.numChains);
+        polymerCluster.setConcentrationInWater(inputVariables.concentration);
+
+        return polymerCluster;
+    }
 
     private PolymerChain makePolymerChain() {
         PolymerChain polymerChain = null;
@@ -808,6 +841,18 @@ public class SystemConfiguration extends javax.swing.JFrame { //broken, need to 
         return PolymerChain.makeChainStartingWithA(numBeadsAlternating);
     }
 
+    private SystemGeometry makeSystemGeometry(InputVariables inputVariables, PolymerCluster polymerCluster, SimulationParameters simulationParameters) {
+        AbstractGeometryBuilder systemGeometryBuilder = new PeriodicGeometryBuilder();
+        if (periodicRdo.isSelected()) {
+            systemGeometryBuilder = new PeriodicGeometryBuilder();
+        } else if (hardWallRdo.isSelected()) {
+            systemGeometryBuilder = new HardWallGeometryBuilder();
+        }
+
+        systemGeometryBuilder.setDimension(inputVariables.dimension);
+        systemGeometryBuilder.makeConsistentWith(polymerCluster, simulationParameters);
+        return systemGeometryBuilder.buildGeometry();
+    }
     private void lamellaeBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_lamellaeBtnActionPerformed
         dimensionFld.setText("2");
         xMaxFld.setText("20");
@@ -867,17 +912,17 @@ public class SystemConfiguration extends javax.swing.JFrame { //broken, need to 
         periodicRdo.setSelected(true);
         temperatureFld.setText("1");
         AAOverlapCoefficientFld.setText("0");
-        BBOverlapCoefficientFld.setText("-.1111");
+        BBOverlapCoefficientFld.setText("-.06"); //-.1111
         ABOverlapCoefficientFld.setText("0");
         springConstantFld.setText("1");
-        interactionLengthFld.setText("3");
+        interactionLengthFld.setText("4"); //3
         hardCoresChk.setSelected(true);
-        numberOfChainsFld.setText("30");
+        numberOfChainsFld.setText("100");//30 //200
         blockCopolymerRdo.setSelected(true);
         numABeadsFld.setText("0");
         numBBeadsFld.setText("15");
         numRepeatsFld.setText("1");
-        concentrationFld.setText(".004");
+        concentrationFld.setText(".15");//.004
     }//GEN-LAST:event_blueDropBtnActionPerformed
 
     private void arrayOfLengthsRdoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_arrayOfLengthsRdoActionPerformed
@@ -891,166 +936,14 @@ public class SystemConfiguration extends javax.swing.JFrame { //broken, need to 
     private void buildSystemRandombtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_buildSystemRandombtnActionPerformed
         gui.cancelComputation();
 
-        PhysicalConstantsBuilder physicalConstantsBuilder = new PhysicalConstantsBuilder();
-        SimulationParameters simulationParameters;
-
-        int dimension, numChains, numABeadsPerChain, numBBeadsPerChain, numRepeats;
-        double xMax = 0, yMax = 0, zMax = 0;
-        double temperature, AAOverlapCoefficient, BBOverlapCoefficient,
-                ABOverlapCoefficient, springConstant, concentration, interactionLength;
-
-        try {
-            final String dimensionString = dimensionFld.getText();
-            dimension = Integer.parseInt(dimensionString);
-        } catch (NumberFormatException e) {
-            System.err.println("couldn't parse dimension");
-            return;
-        }
-
-        try {
-            final String xMaxString = xMaxFld.getText();
-            xMax = Double.parseDouble(xMaxString);
-        } catch (NumberFormatException e) {
-            System.err.println("couldn't parse xMax");
-            return;
-        }
-
-        try {
-            final String yMaxString = yMaxFld.getText();
-            yMax = Double.parseDouble(yMaxString);
-        } catch (NumberFormatException e) {
-            System.err.println("couldn't parse yMax");
-            return;
-        }
-
-        try {
-            final String temperatureString = temperatureFld.getText();
-            temperature = Double.parseDouble(temperatureString);
-        } catch (NumberFormatException e) {
-            System.err.println("couldn't parse temperature");
-            return;
-        }
-
-        try {
-            final String AAOverlapCoefficientString = AAOverlapCoefficientFld.getText();
-            AAOverlapCoefficient = Double.parseDouble(AAOverlapCoefficientString);
-        } catch (NumberFormatException e) {
-            System.err.println("couldn't parse " + AACoefficientCaptionLbl.getText().replace(":", ""));
-            return;
-        }
-        try {
-            final String BBOverlapCoefficientString = BBOverlapCoefficientFld.getText();
-            BBOverlapCoefficient = Double.parseDouble(BBOverlapCoefficientString);
-        } catch (NumberFormatException e) {
-            System.err.println("couldn't parse " + BBCoeffCaptionLbl.getText().replace(":", ""));
-            return;
-        }
-
-        try {
-            final String ABOverlapCoefficientString = ABOverlapCoefficientFld.getText();
-            ABOverlapCoefficient = Double.parseDouble(ABOverlapCoefficientString);
-        } catch (NumberFormatException e) {
-            System.err.println("couldn't parse differentOverlapCoefficient");
-            return;
-        }
-
-        try {
-            final String springConstantString = springConstantFld.getText();
-            springConstant = Double.parseDouble(springConstantString);
-        } catch (NumberFormatException e) {
-            System.err.println("couldn't parse spring constant");
-            return;
-        }
-
-        try {
-            final String interactionLengthString = interactionLengthFld.getText();
-            interactionLength = Double.parseDouble(interactionLengthString);
-        } catch (NumberFormatException e) {
-            System.err.println("couldn't parse spring constant");
-            return;
-        }
-
-        try {
-            final String numChainsString = numberOfChainsFld.getText();
-            numChains = Integer.parseInt(numChainsString);
-        } catch (NumberFormatException e) {
-            System.err.println("couldn't parse number of Chains");
-            return;
-        }
-
-        try {
-            final String concentrationString = concentrationFld.getText();
-            concentration = Double.parseDouble(concentrationString);
-        } catch (NumberFormatException e) {
-            System.err.println("couldn't concentration.");
-            return;
-        }
-        if (dimension
-                < 1) {
-            System.err.println("dimension must be greater than 0.");
-            return;
-        }
-        if (numChains
-                < 1) {
-            System.err.println("must have at least one chain.");
-            return;
-        }
-        if (concentration
-                <= 0) {
-            System.err.println("Concentration must have a positive value");
-            return;
-        }
-        if (interactionLength < 0) {
-            System.err.println("interaction Length must be non-negative");
-        }
-
-        physicalConstantsBuilder.setTemperature(temperature);
-
-        physicalConstantsBuilder.setAAOverlapCoefficient(AAOverlapCoefficient);
-
-        physicalConstantsBuilder.setBBOverlapCoefficient(BBOverlapCoefficient);
-
-        physicalConstantsBuilder.setABOverlapCoefficient(ABOverlapCoefficient);
-
-        physicalConstantsBuilder.setSpringCoefficient(springConstant);
-        PhysicalConstants physicalConstants = physicalConstantsBuilder.buildPhysicalConstants();
-        PolymerChain polymerChain = makePolymerChain();
-
-        PolymerCluster polymerCluster = PolymerCluster.makeRepeatedChainCluster(polymerChain, numChains);
-
-        polymerCluster.setConcentrationInWater(concentration);
-        simulationParameters = new SimulationParameters(physicalConstants.idealStepLength(), interactionLength);
-//        simulationParameters = PolymerSimulator.makeDefaultParameters(polymerCluster, xMax, dimension, physicalConstants);
-
-        if (hardCoresChk.isSelected()) { //just added by brian to avoid clustering. Let's see if it works
-            simulationParameters = simulationParameters.makeParametersFromPhysicalConstants(physicalConstants);
-            physicalConstants = physicalConstants.getPhysicalConstantsFromParameters(simulationParameters);
-        }
-        System.out.println("Core Length: " + simulationParameters.getCoreLength());
-        System.out.println("HardOverlap: " + physicalConstants.getHardOverlapCoefficient());
-        System.out.println("Interaction Length: " + simulationParameters.getInteractionLength());
-
-        AbstractGeometryBuilder systemGeometryBuilder = new PeriodicGeometryBuilder();
-        if (periodicRdo.isSelected()) {
-            systemGeometryBuilder = new PeriodicGeometryBuilder();
-        } else if (hardWallRdo.isSelected()) {
-            systemGeometryBuilder = new HardWallGeometryBuilder();
-        }
-
-        systemGeometryBuilder.setDimension(dimension);
-        systemGeometryBuilder.makeConsistentWith(polymerCluster, simulationParameters);
-
-//        systemGeometryBuilder.setDimensionSize(0, xMax);
-//        systemGeometryBuilder.setDimensionSize(1, yMax);
-//        systemGeometryBuilder.setDimensionSize(2, zMax);
-//        systemGeometryBuilder.setParameters(simulationParameters);
-        System.out.println("Box Length: " + systemGeometryBuilder.getFullRMax()[0]);
         PolymerSimulator polymerSystem;
-        polymerSystem = new PolymerSimulator(
-                systemGeometryBuilder.buildGeometry(),
-                polymerCluster,
-                physicalConstants);
-
+        try {
+            polymerSystem = makePolymerSystem();
+        } catch (NumberFormatException e) {
+            return;
+        } catch (IllegalArgumentException e) {
+            return;
+        }
         gui.setSystem(polymerSystem);
     }//GEN-LAST:event_buildSystemRandombtnActionPerformed
 //    /**

@@ -67,6 +67,8 @@
                   <Component id="physicalConstantsPanel" alignment="0" max="32767" attributes="0"/>
                   <Component id="iterateBtn" max="32767" attributes="0"/>
                   <Component id="randomColumnBtn" max="32767" attributes="0"/>
+                  <Component id="saveBtn" max="32767" attributes="0"/>
+                  <Component id="loadBtn" max="32767" attributes="0"/>
               </Group>
               <EmptySpace max="32767" attributes="0"/>
           </Group>
@@ -76,27 +78,6 @@
       <Group type="103" groupAlignment="0" attributes="0">
           <Group type="102" alignment="0" attributes="0">
               <Group type="103" groupAlignment="0" max="-2" attributes="0">
-                  <Group type="102" attributes="0">
-                      <Component id="displayPanel1" min="-2" max="-2" attributes="0"/>
-                      <EmptySpace type="unrelated" max="-2" attributes="0"/>
-                      <Group type="103" groupAlignment="0" attributes="0">
-                          <Group type="103" alignment="0" groupAlignment="3" attributes="0">
-                              <Component id="energyLbl" alignment="3" min="-2" pref="15" max="-2" attributes="0"/>
-                              <Component id="volumeCaptionLbl" alignment="3" min="-2" max="-2" attributes="0"/>
-                              <Component id="volumeLbl" alignment="3" min="-2" max="-2" attributes="0"/>
-                          </Group>
-                          <Component id="energyCaptionLbl" min="-2" max="-2" attributes="0"/>
-                      </Group>
-                      <EmptySpace max="-2" attributes="0"/>
-                      <Group type="103" groupAlignment="0" max="-2" attributes="0">
-                          <Component id="numIterationsCaptionLbl" max="32767" attributes="0"/>
-                          <Group type="103" groupAlignment="3" attributes="0">
-                              <Component id="numIterationsLbl" alignment="3" min="-2" max="-2" attributes="0"/>
-                              <Component id="perimeterCaptionLbl" alignment="3" min="-2" max="-2" attributes="0"/>
-                              <Component id="perimeterLbl" alignment="3" min="-2" max="-2" attributes="0"/>
-                          </Group>
-                      </Group>
-                  </Group>
                   <Group type="102" attributes="0">
                       <EmptySpace max="-2" attributes="0"/>
                       <Component id="iterateBtn" min="-2" max="-2" attributes="0"/>
@@ -109,19 +90,45 @@
                       <EmptySpace type="unrelated" max="-2" attributes="0"/>
                       <Component id="randomizeBtn" min="-2" pref="50" max="-2" attributes="0"/>
                       <EmptySpace max="-2" attributes="0"/>
-                      <Component id="randomColumnBtn" pref="53" max="32767" attributes="0"/>
+                      <Component id="randomColumnBtn" min="-2" pref="50" max="-2" attributes="0"/>
                       <EmptySpace max="-2" attributes="0"/>
                       <Component id="jButton1" min="-2" pref="49" max="-2" attributes="0"/>
-                      <EmptySpace min="-2" pref="44" max="-2" attributes="0"/>
+                      <EmptySpace max="32767" attributes="0"/>
                       <Component id="physicalConstantsPanel" min="-2" max="-2" attributes="0"/>
                   </Group>
+                  <Component id="displayPanel1" min="-2" max="-2" attributes="0"/>
+              </Group>
+              <EmptySpace type="unrelated" max="-2" attributes="0"/>
+              <Group type="103" groupAlignment="0" attributes="0">
+                  <Group type="103" alignment="0" groupAlignment="3" attributes="0">
+                      <Component id="energyLbl" alignment="3" min="-2" pref="15" max="-2" attributes="0"/>
+                      <Component id="volumeCaptionLbl" alignment="3" min="-2" max="-2" attributes="0"/>
+                      <Component id="volumeLbl" alignment="3" min="-2" max="-2" attributes="0"/>
+                      <Component id="saveBtn" alignment="3" min="-2" pref="43" max="-2" attributes="0"/>
+                  </Group>
+                  <Component id="energyCaptionLbl" min="-2" max="-2" attributes="0"/>
               </Group>
               <EmptySpace max="-2" attributes="0"/>
-              <Group type="103" groupAlignment="3" attributes="0">
-                  <Component id="numAcceptedIterationsCaptionLbl" alignment="3" min="-2" max="-2" attributes="0"/>
-                  <Component id="numAcceptedIterationsLbl" alignment="3" min="-2" max="-2" attributes="0"/>
+              <Group type="103" groupAlignment="0" attributes="0">
+                  <Group type="102" attributes="0">
+                      <Group type="103" groupAlignment="0" max="-2" attributes="0">
+                          <Component id="numIterationsCaptionLbl" max="32767" attributes="0"/>
+                          <Group type="103" groupAlignment="3" attributes="0">
+                              <Component id="numIterationsLbl" alignment="3" min="-2" max="-2" attributes="0"/>
+                              <Component id="perimeterCaptionLbl" alignment="3" min="-2" max="-2" attributes="0"/>
+                              <Component id="perimeterLbl" alignment="3" min="-2" max="-2" attributes="0"/>
+                          </Group>
+                      </Group>
+                      <EmptySpace max="-2" attributes="0"/>
+                      <Group type="103" groupAlignment="3" attributes="0">
+                          <Component id="numAcceptedIterationsCaptionLbl" alignment="3" min="-2" max="-2" attributes="0"/>
+                          <Component id="numAcceptedIterationsLbl" alignment="3" min="-2" max="-2" attributes="0"/>
+                      </Group>
+                      <EmptySpace min="0" pref="0" max="32767" attributes="0"/>
+                  </Group>
+                  <Component id="loadBtn" max="32767" attributes="0"/>
               </Group>
-              <EmptySpace max="32767" attributes="0"/>
+              <EmptySpace max="-2" attributes="0"/>
           </Group>
       </Group>
     </DimensionLayout>
@@ -145,7 +152,7 @@
     </Component>
     <Component class="javax.swing.JTextField" name="numIterationsFld">
       <Properties>
-        <Property name="text" type="java.lang.String" value="1"/>
+        <Property name="text" type="java.lang.String" value="1000000000"/>
       </Properties>
     </Component>
     <Component class="javax.swing.JButton" name="randomizeBtn">
@@ -494,6 +501,22 @@
       </Properties>
       <Events>
         <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="randomColumnBtnActionPerformed"/>
+      </Events>
+    </Component>
+    <Component class="javax.swing.JButton" name="saveBtn">
+      <Properties>
+        <Property name="text" type="java.lang.String" value="Save"/>
+      </Properties>
+      <Events>
+        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="saveBtnActionPerformed"/>
+      </Events>
+    </Component>
+    <Component class="javax.swing.JButton" name="loadBtn">
+      <Properties>
+        <Property name="text" type="java.lang.String" value="Load"/>
+      </Properties>
+      <Events>
+        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="loadBtnActionPerformed"/>
       </Events>
     </Component>
   </SubComponents>

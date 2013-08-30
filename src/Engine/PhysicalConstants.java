@@ -5,13 +5,14 @@
 package Engine;
 
 import Engine.SystemGeometry.AreaOverlap;
+import java.io.Serializable;
 import java.util.Random;
 
 /**
  *
  * @author bmoths
  */
-public final class PhysicalConstants {
+public final class PhysicalConstants implements Serializable {
 
     //<editor-fold defaultstate="collapsed" desc="builder class">
     static public class PhysicalConstantsBuilder {
@@ -112,23 +113,13 @@ public final class PhysicalConstants {
         this.hardOverlapCoefficient = hardOverlapCoefficientFromParameters(parameters);
     }
 
-    @Override
-    public String toString() {
-        StringBuilder stringBuilder = new StringBuilder();
-        stringBuilder.append("Temperature: ").append(Double.toString(temperature)).append("\n");
-        stringBuilder.append("AA Overlap Coefficient: ").append(Double.toString(AAOverlapCoefficient)).append("\n");
-        stringBuilder.append("BB Overlap Coefficient: ").append(Double.toString(BBOverlapCoefficient)).append("\n");
-        stringBuilder.append("AB Overlap Coefficient: ").append(Double.toString(ABOverlapCoefficient)).append("\n");
-        stringBuilder.append("Hard Overlap Coefficient: ").append(Double.toString(hardOverlapCoefficient)).append("\n");
-        stringBuilder.append("Spring Coefficient: ").append(Double.toString(springCoefficient)).append("\n");
-        return stringBuilder.toString();
-    }
-
     private double hardOverlapCoefficientFromParameters(SimulationParameters parameters) {
         if (parameters.getCoreLength() > 1e-10) {
-            double minCoefficientForBonding = -.5 * temperature / (parameters.getInteractionLength() * parameters.getInteractionLength());
+            final double bondingEnergyInT = .5;
+            final double coreRepulsionInT = 5; //5
+            double minCoefficientForBonding = -bondingEnergyInT * temperature / (parameters.getInteractionLength() * parameters.getInteractionLength());
             double minAttraction = Math.min(Math.min(BBOverlapCoefficient, AAOverlapCoefficient), minCoefficientForBonding);
-            return (5 * temperature - parameters.getInteractionLength() * parameters.getInteractionLength() * minAttraction) / (parameters.getCoreLength() * parameters.getCoreLength());
+            return (coreRepulsionInT * temperature - parameters.getInteractionLength() * parameters.getInteractionLength() * minAttraction) / (parameters.getCoreLength() * parameters.getCoreLength());
         } else {
             return 0;
         }
@@ -171,6 +162,18 @@ public final class PhysicalConstants {
 
     public double idealStepLength() {
         return Math.sqrt(getTemperature() / getSpringCoefficient());
+    }
+
+    @Override
+    public String toString() {
+        StringBuilder stringBuilder = new StringBuilder();
+        stringBuilder.append("Temperature: ").append(Double.toString(temperature)).append("\n");
+        stringBuilder.append("AA Overlap Coefficient: ").append(Double.toString(AAOverlapCoefficient)).append("\n");
+        stringBuilder.append("BB Overlap Coefficient: ").append(Double.toString(BBOverlapCoefficient)).append("\n");
+        stringBuilder.append("AB Overlap Coefficient: ").append(Double.toString(ABOverlapCoefficient)).append("\n");
+        stringBuilder.append("Hard Overlap Coefficient: ").append(Double.toString(hardOverlapCoefficient)).append("\n");
+        stringBuilder.append("Spring Coefficient: ").append(Double.toString(springCoefficient)).append("\n");
+        return stringBuilder.toString();
     }
 
     //<editor-fold defaultstate="collapsed" desc="getters">

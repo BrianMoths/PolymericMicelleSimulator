@@ -4,11 +4,13 @@
  */
 package Engine;
 
+import java.io.Serializable;
+
 /**
  *
  * @author bmoths
  */
-public final class SimulationParameters {
+public final class SimulationParameters implements Serializable {
 
     private final double interactionLength, coreLength, stepLength;
 
@@ -47,17 +49,9 @@ public final class SimulationParameters {
         coreLength = coreLengthFromPhysicalConstants(physicalConstants);
     }
 
-    @Override
-    public String toString() {
-        StringBuilder stringBuilder = new StringBuilder();
-        stringBuilder.append("Interaction Length: ").append(Double.toString(interactionLength)).append("\n");
-        stringBuilder.append("Core Length: ").append(Double.toString(coreLength)).append("\n");
-        stringBuilder.append("Step Length: ").append(Double.toString(stepLength)).append("\n");
-        return stringBuilder.toString();
-    }
-
     private double coreLengthFromPhysicalConstants(PhysicalConstants physicalConstants) {
-        double thermalForce = .5 * physicalConstants.getTemperature() / interactionLength;
+        final double attractionInT = .5; //.5
+        double thermalForce = attractionInT * physicalConstants.getTemperature() / interactionLength;
         double minCoefficientForBonding = -thermalForce / interactionLength;
         System.out.println(minCoefficientForBonding);
         double minAttraction = Math.min(Math.min(physicalConstants.getBBOverlapCoefficient(), physicalConstants.getAAOverlapCoefficient()), minCoefficientForBonding);
@@ -74,5 +68,14 @@ public final class SimulationParameters {
 
     public double getCoreLength() {
         return coreLength;
+    }
+
+    @Override
+    public String toString() {
+        StringBuilder stringBuilder = new StringBuilder();
+        stringBuilder.append("Interaction Length: ").append(Double.toString(interactionLength)).append("\n");
+        stringBuilder.append("Core Length: ").append(Double.toString(coreLength)).append("\n");
+        stringBuilder.append("Step Length: ").append(Double.toString(stepLength)).append("\n");
+        return stringBuilder.toString();
     }
 }

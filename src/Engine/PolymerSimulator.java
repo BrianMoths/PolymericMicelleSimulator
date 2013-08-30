@@ -10,12 +10,13 @@ import Engine.SystemGeometry.HardWallGeometry.HardWallGeometryBuilder;
 import Engine.SystemGeometry.PeriodicGeometry.PeriodicGeometryBuilder;
 import Engine.SystemGeometry.SystemGeometry;
 import java.awt.Graphics;
+import java.io.Serializable;
 
 /**
  *
  * @author brian
  */
-public class PolymerSimulator {
+public class PolymerSimulator implements Serializable {
 
     private final SystemGeometry geometry;
     private final PhysicalConstants physicalConstants;
@@ -177,10 +178,8 @@ public class PolymerSimulator {
         iterationNumber++;
         final int stepBead = polymerPosition.randomBeadIndex();
         final double[] stepVector = geometry.randomGaussian();
-//        polymerPosition.setStep(stepBead, stepVector);
 
         final double oldBeadEnergy = systemAnalyzer.beadEnergy(stepBead);
-//        if (polymerPosition.isStepInBounds()) {
         if (polymerPosition.moveBead(stepBead, stepVector)) {
             final double energyChange = systemAnalyzer.beadEnergy(stepBead) - oldBeadEnergy;
             if (physicalConstants.isEnergeticallyAllowed(energyChange)) {
@@ -190,7 +189,6 @@ public class PolymerSimulator {
                 polymerPosition.undoStep(stepBead, stepVector);
             }
         }
-
     }
 
 // <editor-fold defaultstate="collapsed" desc="getters">

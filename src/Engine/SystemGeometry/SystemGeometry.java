@@ -7,15 +7,15 @@ package Engine.SystemGeometry;
 import Engine.SimulationParameters;
 import Engine.TwoBeadOverlap;
 import SystemAnalysis.BeadRectangle;
-import SystemAnalysis.GeometryAnalyzer.AreaPerimeter;
 import SystemAnalysis.RectanglesAndPerimeter;
+import java.io.Serializable;
 import java.util.List;
 
 /**
  *
  * @author bmoths
  */
-public interface SystemGeometry {
+public interface SystemGeometry extends Serializable {
 
     public GeometryBuilder toBuilder();
 

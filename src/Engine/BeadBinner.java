@@ -5,6 +5,7 @@
 package Engine;
 
 import Engine.SystemGeometry.SystemGeometry;
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -16,7 +17,7 @@ import java.util.Set;
  *
  * @author bmoths
  */
-public class BeadBinner { //keep track of where beads are so bead moves require only bead number and new position
+public class BeadBinner implements Serializable{ //keep track of where beads are so bead moves require only bead number and new position
 
     private final int dimension;
     private final double[] binSize;
@@ -26,7 +27,7 @@ public class BeadBinner { //keep track of where beads are so bead moves require 
     private boolean isStepDone = false;
     private List<BinIndex> binIndices;
 
-    static private class BinIndex {
+    static private class BinIndex implements Serializable{
 
         public int x, y;
 
