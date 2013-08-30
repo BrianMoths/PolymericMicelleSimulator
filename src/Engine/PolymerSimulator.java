@@ -5,6 +5,8 @@
 package Engine;
 
 import Engine.PhysicalConstants.PhysicalConstantsBuilder;
+import Engine.SimulationStepping.SimulationStep;
+import Engine.SimulationStepping.StepGenerator;
 import Engine.SystemGeometry.AreaOverlap;
 import Engine.SystemGeometry.HardWallGeometry.HardWallGeometryBuilder;
 import Engine.SystemGeometry.PeriodicGeometry.PeriodicGeometryBuilder;
@@ -176,17 +178,15 @@ public class PolymerSimulator implements Serializable {
 
     public synchronized void doIteration() { //todo: cache bead energies
         iterationNumber++;
-        final int stepBead = polymerPosition.randomBeadIndex();
-        final double[] stepVector = geometry.randomGaussian();
+        SimulationStep simulationStep = StepGenerator.generateStep(systemAnalyzer);
 
-        final double oldBeadEnergy = systemAnalyzer.beadEnergy(stepBead);
-        if (polymerPosition.moveBead(stepBead, stepVector)) {
-            final double energyChange = systemAnalyzer.beadEnergy(stepBead) - oldBeadEnergy;
+        if (simulationStep.doStep(polymerPosition, systemAnalyzer)) {
+            final double energyChange = simulationStep.getEnergyChange();
             if (physicalConstants.isEnergeticallyAllowed(energyChange)) {
                 energy += energyChange;
                 acceptedIterations++;
             } else {
-                polymerPosition.undoStep(stepBead, stepVector);
+                simulationStep.undoStep(polymerPosition);
             }
         }
     }

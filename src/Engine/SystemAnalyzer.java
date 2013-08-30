@@ -315,11 +315,48 @@ public class SystemAnalyzer implements Serializable {
         beadBinner.updateBeadPosition(stepBead, beadPositions[stepBead]);
     }
 
+    public List<Integer> getChainOfBead(int bead) {
+        List<Integer> chain = new ArrayList<>();
+        chain.add(bead);
+        addBeadsLeftToChain(bead, chain);
+        addBeadsRightToChain(bead, chain);
+
+        return chain;
+    }
+
+    private void addBeadsLeftToChain(int bead, List<Integer> chain) {
+        int nextBead = getBeadToLeft(bead);
+        while (nextBead != -1) {
+            chain.add(nextBead);
+            nextBead = getBeadToLeft(nextBead);
+        }
+    }
+
+    private int getBeadToLeft(int bead) {
+        return neighbors[bead][0];
+    }
+
+    private void addBeadsRightToChain(int bead, List<Integer> chain) {
+        int nextBead = getBeadToRight(bead);
+        while (nextBead != -1) {
+            chain.add(nextBead);
+            nextBead = getBeadToRight(nextBead);
+        }
+    }
+
+    private int getBeadToRight(int bead) {
+        return neighbors[bead][1];
+    }
+
     public SystemGeometry getSystemGeometry() {
         return systemGeometry;
     }
 
     public PhysicalConstants getPhysicalConstants() {
         return physicalConstants;
+    }
+
+    public int getNumBeads() {
+        return numBeads;
     }
 }
