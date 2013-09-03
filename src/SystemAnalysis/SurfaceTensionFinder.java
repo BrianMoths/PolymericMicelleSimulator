@@ -8,17 +8,14 @@ import Engine.SystemAnalyzer;
 import java.awt.Color;
 import java.awt.Graphics;
 import java.io.Serializable;
-import org.apache.commons.math3.exception.MathIllegalArgumentException;
-import org.apache.commons.math3.stat.descriptive.AbstractUnivariateStatistic;
 import org.apache.commons.math3.stat.descriptive.DescriptiveStatistics;
-import org.apache.commons.math3.stat.descriptive.UnivariateStatistic;
 import org.apache.commons.math3.stat.descriptive.moment.Mean;
 
 /**
  *
  * @author bmoths
  */
-public class SurfaceTensionFinder implements Serializable{
+public class SurfaceTensionFinder implements Serializable {
 
     static private final int windowSize = 1000000;
     static private final int numSamples = 100;

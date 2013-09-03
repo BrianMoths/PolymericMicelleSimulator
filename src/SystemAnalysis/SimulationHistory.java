@@ -4,13 +4,14 @@
  */
 package SystemAnalysis;
 
+import java.io.Serializable;
 import org.apache.commons.math3.stat.descriptive.DescriptiveStatistics;
 
 /**
  *
  * @author bmoths
  */
-public class SimulationHistory {
+public class SimulationHistory implements Serializable{
 
     public static enum TrackedVariable {
 
@@ -53,8 +54,8 @@ public class SimulationHistory {
         energyStatistics = new DescriptiveStatistics(simulationHistory.energyStatistics);
     }
 
-    public void addValue(TrackedVariable trackedVariable, double perimeter) {
-        getStatisticsFor(trackedVariable).addValue(perimeter);
+    public void addValue(TrackedVariable trackedVariable, double value) {
+        getStatisticsFor(trackedVariable).addValue(value);
     }
 
     public double getAverage(TrackedVariable trackedVariable) {
@@ -65,12 +66,12 @@ public class SimulationHistory {
         return getStatisticsFor(trackedVariable).getStandardDeviation();
     }
 
-    public void clearStatistics(TrackedVariable trackedVariable) {
-        getStatisticsFor(trackedVariable).clear();
-    }
-
     public double[] getStoredValues(TrackedVariable trackedVariable) {
         return getStatisticsFor(trackedVariable).getValues();
+    }
+
+    public void clearStatistics(TrackedVariable trackedVariable) {
+        getStatisticsFor(trackedVariable).clear();
     }
 
     public void clearAll() {

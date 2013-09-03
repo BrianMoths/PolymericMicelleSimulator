@@ -37,17 +37,21 @@ public class SingleChainStep implements SimulationStep {
     @Override
     public boolean doStep(PolymerPosition polymerPosition, SystemAnalyzer systemAnalyzer) {
         boolean isSuccessful = true;
-        int currentBead = -1;
+        energyChange = 0;
+        int currentBeadInChain = 0;
         final int numBeads = beads.size();
-        while (currentBead < numBeads && isSuccessful) {
-            currentBead++;
+        while (currentBeadInChain < numBeads && isSuccessful) {
+            final int currentBead = beads.get(currentBeadInChain);
             final SingleBeadStep beadStep = new SingleBeadStep(currentBead, stepVector);
             isSuccessful = beadStep.doStep(polymerPosition, systemAnalyzer);
             energyChange += beadStep.getEnergyChange();
+            currentBeadInChain++;
         }
         if (!isSuccessful) {
             energyChange = 0;
-            for (; currentBead >= 0; currentBead--) {
+            currentBeadInChain--;
+            for (; currentBeadInChain >= 0; currentBeadInChain--) {
+                final int currentBead = beads.get(currentBeadInChain);
                 final SingleBeadStep beadStep = new SingleBeadStep(currentBead, stepVector);
                 beadStep.undoStep(polymerPosition);
             }
@@ -58,7 +62,8 @@ public class SingleChainStep implements SimulationStep {
     @Override
     public void undoStep(PolymerPosition polymerPosition) {
         final int numBeads = beads.size();
-        for (int currentBead = 0; currentBead < numBeads; currentBead++) {
+        for (int currentBeadInChain = 0; currentBeadInChain < numBeads; currentBeadInChain++) {
+            final int currentBead = beads.get(currentBeadInChain);
             final SingleBeadStep beadStep = new SingleBeadStep(currentBead, stepVector);
             beadStep.undoStep(polymerPosition);
         }

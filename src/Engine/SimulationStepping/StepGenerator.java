@@ -16,7 +16,7 @@ import java.util.Random;
 public class StepGenerator {
 
     static private Random random;
-    static final private double chainMoveChance = .1;
+    static final private double chainMoveChance = .01;
 
     static {
         random = new Random();
@@ -30,9 +30,24 @@ public class StepGenerator {
         }
     }
 
+    static public SimulationStep generateStep(SystemAnalyzer systemAnalyzer, double chainMoveChance) {
+        if (random.nextDouble() < chainMoveChance) {
+            return getChainMove(systemAnalyzer);
+        } else {
+            return getBeadMove(systemAnalyzer);
+        }
+    }
+
     static private SimulationStep getChainMove(SystemAnalyzer systemAnalyzer) {
         List<Integer> chain = getChain(systemAnalyzer);
         final double[] stepVector = getStepVector(systemAnalyzer); //need to make this bigger
+
+        stepVector[0] *= 1;
+        stepVector[1] *= 100;
+
+//        for (int i = 0; i < stepVector.length; i++) {
+//            stepVector[i] *= 10;
+//        }
 
         return new SingleChainStep(chain, stepVector);
     }
