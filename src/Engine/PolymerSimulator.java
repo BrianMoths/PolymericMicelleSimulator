@@ -224,8 +224,4 @@ public class PolymerSimulator implements Serializable {
         return systemAnalyzer;
     }
     // </editor-fold>
-
-    public void draw(Graphics graphics) {
-        systemAnalyzer.draw(graphics);
-    }
 }

@@ -26,7 +26,7 @@
       <Group type="103" groupAlignment="0" attributes="0">
           <Group type="102" attributes="0">
               <Group type="103" groupAlignment="0" attributes="0">
-                  <Component id="displayPanel1" alignment="0" min="-2" max="-2" attributes="0"/>
+                  <Component id="displayPanel" alignment="0" min="-2" max="-2" attributes="0"/>
                   <Group type="102" alignment="0" attributes="0">
                       <EmptySpace max="-2" attributes="0"/>
                       <Group type="103" groupAlignment="1" max="-2" attributes="0">
@@ -96,7 +96,7 @@
                       <EmptySpace max="32767" attributes="0"/>
                       <Component id="physicalConstantsPanel" min="-2" max="-2" attributes="0"/>
                   </Group>
-                  <Component id="displayPanel1" min="-2" max="-2" attributes="0"/>
+                  <Component id="displayPanel" min="-2" max="-2" attributes="0"/>
               </Group>
               <EmptySpace type="unrelated" max="-2" attributes="0"/>
               <Group type="103" groupAlignment="0" attributes="0">
@@ -217,7 +217,7 @@
         </Property>
       </Properties>
     </Component>
-    <Container class="Gui.DisplayPanel" name="displayPanel1">
+    <Container class="Gui.DisplayPanel" name="displayPanel">
       <Properties>
         <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
           <Dimension value="[600, 600]"/>

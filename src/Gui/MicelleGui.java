@@ -92,7 +92,7 @@ public class MicelleGui extends javax.swing.JFrame {
     }
 
     private void registerGuiWithSystem() {
-        displayPanel1.setPolymerSimulator(system);
+        displayPanel.setPolymerSimulator(system);
     }
 
     private void updateDisplay() {
@@ -181,7 +181,7 @@ public class MicelleGui extends javax.swing.JFrame {
         jButton1 = new javax.swing.JButton();
         numAcceptedIterationsCaptionLbl = new javax.swing.JLabel();
         numAcceptedIterationsLbl = new javax.swing.JLabel();
-        displayPanel1 = new Gui.DisplayPanel();
+        displayPanel = new Gui.DisplayPanel();
         cancelBtn = new javax.swing.JButton();
         physicalConstantsPanel = new javax.swing.JPanel();
         temperatureCaptionLbl = new javax.swing.JLabel();
@@ -257,16 +257,16 @@ public class MicelleGui extends javax.swing.JFrame {
         numAcceptedIterationsLbl.setText("0");
         numAcceptedIterationsLbl.setBorder(javax.swing.BorderFactory.createBevelBorder(javax.swing.border.BevelBorder.LOWERED));
 
-        displayPanel1.setPreferredSize(new java.awt.Dimension(600, 600));
+        displayPanel.setPreferredSize(new java.awt.Dimension(600, 600));
 
-        javax.swing.GroupLayout displayPanel1Layout = new javax.swing.GroupLayout(displayPanel1);
-        displayPanel1.setLayout(displayPanel1Layout);
-        displayPanel1Layout.setHorizontalGroup(
-            displayPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+        javax.swing.GroupLayout displayPanelLayout = new javax.swing.GroupLayout(displayPanel);
+        displayPanel.setLayout(displayPanelLayout);
+        displayPanelLayout.setHorizontalGroup(
+            displayPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGap(0, 600, Short.MAX_VALUE)
         );
-        displayPanel1Layout.setVerticalGroup(
-            displayPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+        displayPanelLayout.setVerticalGroup(
+            displayPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGap(0, 600, Short.MAX_VALUE)
         );
 
@@ -431,7 +431,7 @@ public class MicelleGui extends javax.swing.JFrame {
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(displayPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(displayPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addGroup(layout.createSequentialGroup()
                         .addContainerGap()
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
@@ -489,7 +489,7 @@ public class MicelleGui extends javax.swing.JFrame {
                         .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 49, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                         .addComponent(physicalConstantsPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addComponent(displayPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(displayPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
@@ -670,7 +670,7 @@ public class MicelleGui extends javax.swing.JFrame {
     private javax.swing.JLabel BBCoefficientLbl;
     private javax.swing.JLabel beadSizeLbl;
     private javax.swing.JButton cancelBtn;
-    private Gui.DisplayPanel displayPanel1;
+    private Gui.DisplayPanel displayPanel;
     private javax.swing.JButton doIterationsBtn;
     private javax.swing.JLabel energyCaptionLbl;
     private javax.swing.JLabel energyLbl;

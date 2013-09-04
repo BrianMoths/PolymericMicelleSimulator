@@ -13,24 +13,26 @@ import java.awt.Graphics;
  */
 public class DisplayPanel extends javax.swing.JPanel {
 
-    private PolymerSimulator polymerSimulator;
+    private SystemDrawer systemDrawer;
 
     /**
      * Creates new form DisplayPanel
      */
     public DisplayPanel() {
         initComponents();
+        systemDrawer = new SystemDrawer();
     }
 
     public void setPolymerSimulator(PolymerSimulator polymerSimulator) {
-        this.polymerSimulator = polymerSimulator;
+        systemDrawer.registerSystemAnalyzer(polymerSimulator.getSystemAnalyzer());
     }
 
     @Override
     protected void paintComponent(Graphics graphics) {
         super.paintComponent(graphics);
-        if (polymerSimulator != null) {
-            polymerSimulator.draw(graphics);
+        if (systemDrawer != null) {
+            systemDrawer.setGraphics(graphics);
+            systemDrawer.draw();
         }
     }
 
