@@ -284,4 +284,8 @@ public class SystemAnalyzer implements Serializable {
     public double getBeadPositionComponent(int bead, int component) {
         return beadPositions[bead][component];
     }
+
+    public SurfaceTensionFinder getSurfaceTensionFinder() {
+        return surfaceTensionFinder;
+    }
 }

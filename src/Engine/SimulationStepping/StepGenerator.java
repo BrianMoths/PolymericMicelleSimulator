@@ -43,7 +43,7 @@ public class StepGenerator {
         final double[] stepVector = getStepVector(systemAnalyzer); //need to make this bigger
 
         stepVector[0] *= 1;
-        stepVector[1] *= 100;
+        stepVector[1] *= 1;
 
 //        for (int i = 0; i < stepVector.length; i++) {
 //            stepVector[i] *= 10;
