@@ -13,9 +13,6 @@ import java.util.List;
  */
 public class PolymerChain {
 
-    private final List<Boolean> types;
-    private int numABeads;
-
     static public PolymerChain makeSingletChainOfType(boolean isTypeA) {
         PolymerChain polymerChain = new PolymerChain();
         polymerChain.addBead(isTypeA);
@@ -34,16 +31,19 @@ public class PolymerChain {
         return polymerChain;
     }
 
-    private PolymerChain() {
-        types = new ArrayList<>();
-        numABeads = 0;
-    }
-
     static public PolymerChain copy(PolymerChain polymerChain) {
         PolymerChain chainCopy = new PolymerChain();
         chainCopy.numABeads = polymerChain.numABeads;
         chainCopy.types.addAll(polymerChain.types); //ok does perform deep copy
         return chainCopy;
+    }
+
+    private final List<Boolean> types;
+    private int numABeads;
+
+    private PolymerChain() {
+        types = new ArrayList<>();
+        numABeads = 0;
     }
 
     public void addBead(boolean isTypeA) {
@@ -78,4 +78,5 @@ public class PolymerChain {
     public boolean isTypeA(int index) {
         return types.get(index);
     }
+
 }

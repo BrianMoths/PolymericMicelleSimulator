@@ -19,22 +19,11 @@ import java.io.Serializable;
  */
 public class PolymerSimulator implements Serializable {
 
-    private final SystemGeometry geometry;
-    private final PhysicalConstants physicalConstants;
-    private final PolymerPosition polymerPosition;
-    private final SystemAnalyzer systemAnalyzer;
-    private double energy;
-    private int iterationNumber;
-    private int acceptedIterations;
-    private int numChainMoves;
-    private int acceptedChainMoves;
-
-    //public static SystemGeometry makeDefaultSystemGeometry(SystemGeometry systemGeometry, PolymerCluster polymerCluster)
     public static SimulationParameters makeDefaultParameters(PolymerCluster polymerCluster, double boxLength, int dimension, PhysicalConstants physicalConstants) {
         return makeDefaultParametersPrivate(polymerCluster, boxLength, dimension, physicalConstants);
     }
 
-    private static SimulationParameters makeDefaultParametersPrivate(PolymerCluster polymerCluster, double boxLength, int dimension, PhysicalConstants physicalConstants) {
+    static private SimulationParameters makeDefaultParametersPrivate(PolymerCluster polymerCluster, double boxLength, int dimension, PhysicalConstants physicalConstants) {
         SimulationParameters simulationParameters;
 //        int averageNumberOfNeighbors = 14
         int averageNumberOfNeighbors = 14;
@@ -46,26 +35,6 @@ public class PolymerSimulator implements Serializable {
         return simulationParameters;
     }
 
-    static public PolymerCluster makeDefaultPolymerCluster() {
-        PolymerChain polymerChain = PolymerChain.makeChainStartingWithA(6, 6);
-        PolymerCluster polymerCluster = PolymerCluster.makeRepeatedChainCluster(polymerChain, 100);
-        return polymerCluster;
-    }
-
-    public PolymerSimulator() {
-        resetCounters();
-
-        PolymerCluster polymerCluster = makeDefaultPolymerCluster();
-        physicalConstants = makeDefaultPhysicalConstants();
-
-        geometry = makeGeometry(polymerCluster, physicalConstants);
-        polymerPosition = makePolymerPosition(polymerCluster, geometry);
-        systemAnalyzer = new SystemAnalyzer(geometry, polymerCluster, physicalConstants);
-        polymerPosition.registerAnalyzer(systemAnalyzer);
-        energy = systemAnalyzer.energy();
-    }
-
-    // <editor-fold defaultstate="collapsed" desc="default constructor helpers">
     static private SystemGeometry makeGeometry(PolymerCluster polymerCluster, PhysicalConstants physicalConstants) {
         final int dimension = 2;
         final double boxLength = 20;
@@ -81,34 +50,30 @@ public class PolymerSimulator implements Serializable {
         return geometryBuilder.buildGeometry();
     }
 
-    static public PhysicalConstants makeDefaultPhysicalConstants() {
-        double temperature, similarOverlapCoefficient, differentOverlapCoefficient, springCoefficient;
-        PhysicalConstantsBuilder defaultPhysicalConstantsBuilder = new PhysicalConstantsBuilder();
-        temperature = 120;
-        similarOverlapCoefficient = 5;
-        differentOverlapCoefficient = 15;
-        springCoefficient = 40;
+    private final SystemGeometry geometry;
+    private final PhysicalConstants physicalConstants;
+    private final PolymerPosition polymerPosition;
+    private final SystemAnalyzer systemAnalyzer;
+    private double energy;
+    private int iterationNumber;
+    private int acceptedIterations;
+    private int numChainMoves;
+    private int acceptedChainMoves;
 
-        defaultPhysicalConstantsBuilder
-                .setTemperature(temperature)
-                .setABOverlapCoefficient(differentOverlapCoefficient)
-                .setAAOverlapCoefficient(similarOverlapCoefficient)
-                .setBBOverlapCoefficient(similarOverlapCoefficient)
-                .setSpringCoefficient(springCoefficient);
+    public PolymerSimulator() {
 
-        return defaultPhysicalConstantsBuilder.buildPhysicalConstants();
+        PolymerCluster polymerCluster = PolymerCluster.makeDefaultPolymerCluster();
+        physicalConstants = PhysicalConstants.defaultPhysicalConstants();
+        geometry = makeGeometry(polymerCluster, physicalConstants);
+
+        resetCounters();
+        polymerPosition = makePolymerPosition(polymerCluster, geometry);
+        systemAnalyzer = new SystemAnalyzer(geometry, polymerCluster, physicalConstants);
+        polymerPosition.registerAnalyzer(systemAnalyzer);
+        energy = systemAnalyzer.energy();
     }
 
-    private PolymerPosition makePolymerPosition(PolymerCluster polymerCluster, SystemGeometry geometry) {
-        PolymerPosition defaultPolymerPosition = new PolymerPosition(polymerCluster, geometry);
-        defaultPolymerPosition.randomize();
-        return defaultPolymerPosition;
-    }
-// </editor-fold>
-
-    public PolymerSimulator(SystemGeometry systemGeometry,
-            PolymerCluster polymerCluster,
-            PhysicalConstants physicalConstants) {
+    public PolymerSimulator(SystemGeometry systemGeometry, PolymerCluster polymerCluster, PhysicalConstants physicalConstants) {
 
         this.geometry = systemGeometry;
 
@@ -132,6 +97,12 @@ public class PolymerSimulator implements Serializable {
         acceptedIterations = polymerSimulator.acceptedIterations;
         systemAnalyzer = new SystemAnalyzer(polymerSimulator.systemAnalyzer);
         polymerPosition.registerAnalyzer(systemAnalyzer);
+    }
+
+    private PolymerPosition makePolymerPosition(PolymerCluster polymerCluster, SystemGeometry geometry) {
+        PolymerPosition defaultPolymerPosition = new PolymerPosition(polymerCluster, geometry);
+        defaultPolymerPosition.randomize();
+        return defaultPolymerPosition;
     }
 
     @Override
@@ -201,7 +172,7 @@ public class PolymerSimulator implements Serializable {
         }
     }
 
-// <editor-fold defaultstate="collapsed" desc="getters">
+    // <editor-fold defaultstate="collapsed" desc="getters">
     public int getNumBeads() {
         return polymerPosition.getNumBeads();
     }
@@ -233,5 +204,14 @@ public class PolymerSimulator implements Serializable {
     public SystemAnalyzer getSystemAnalyzer() {
         return systemAnalyzer;
     }
+
+    public int getNumChainMoves() {
+        return numChainMoves;
+    }
+
+    public int getAcceptedChainMoves() {
+        return acceptedChainMoves;
+    }
     // </editor-fold>
+
 }

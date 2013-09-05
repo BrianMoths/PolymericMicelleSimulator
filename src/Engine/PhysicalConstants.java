@@ -17,11 +17,11 @@ public final class PhysicalConstants implements Serializable {
     //<editor-fold defaultstate="collapsed" desc="builder class">
     static public class PhysicalConstantsBuilder {
 
-        private double temperature = 300,
-                AAOverlapCoefficient = 1,
-                BBOverlapCoefficient = 1,
-                ABOverlapCoefficient = 4,
-                springCoefficient = 40;
+        private double temperature = 1,
+                AAOverlapCoefficient = 5. / 120.,
+                BBOverlapCoefficient = 5. / 120.,
+                ABOverlapCoefficient = .1,
+                springCoefficient = 1. / 3.;
 
         public PhysicalConstants buildPhysicalConstants() {
             return new PhysicalConstants(temperature,
@@ -86,23 +86,22 @@ public final class PhysicalConstants implements Serializable {
                     Math.abs(BBOverlapCoefficient)),
                     Math.abs(ABOverlapCoefficient));
         }
+
     }
     //</editor-fold>
+
     static private Random randomNumberGenerator = new Random();
+
+    static public PhysicalConstants defaultPhysicalConstants() {
+        return new PhysicalConstantsBuilder().buildPhysicalConstants();
+    }
+
     private final double temperature,
             AAOverlapCoefficient,
             BBOverlapCoefficient,
             ABOverlapCoefficient,
             hardOverlapCoefficient,
             springCoefficient;
-
-    static public PhysicalConstants defaultPhysicalConstants() {
-        return new PhysicalConstantsBuilder().buildPhysicalConstants();
-    }
-
-    public PhysicalConstants getPhysicalConstantsFromParameters(SimulationParameters parameters) {
-        return new PhysicalConstants(this, parameters);
-    }
 
     private PhysicalConstants(PhysicalConstants physicalConstants, SimulationParameters parameters) {
         this.temperature = physicalConstants.temperature;
@@ -111,6 +110,19 @@ public final class PhysicalConstants implements Serializable {
         this.ABOverlapCoefficient = physicalConstants.ABOverlapCoefficient;
         this.springCoefficient = physicalConstants.springCoefficient;
         this.hardOverlapCoefficient = hardOverlapCoefficientFromParameters(parameters);
+    }
+
+    private PhysicalConstants(double temperature, double AAOverlapCoefficient, double BBOverlapCoefficient, double ABOverlapCoefficient, double hardOverlapCoefficient, double springCoefficient) {
+        this.temperature = temperature;
+        this.AAOverlapCoefficient = AAOverlapCoefficient;
+        this.BBOverlapCoefficient = BBOverlapCoefficient;
+        this.ABOverlapCoefficient = ABOverlapCoefficient;
+        this.hardOverlapCoefficient = hardOverlapCoefficient;
+        this.springCoefficient = springCoefficient;
+    }
+
+    public PhysicalConstants getPhysicalConstantsFromParameters(SimulationParameters parameters) {
+        return new PhysicalConstants(this, parameters);
     }
 
     private double hardOverlapCoefficientFromParameters(SimulationParameters parameters) {
@@ -123,15 +135,6 @@ public final class PhysicalConstants implements Serializable {
         } else {
             return 0;
         }
-    }
-
-    private PhysicalConstants(double temperature, double AAOverlapCoefficient, double BBOverlapCoefficient, double ABOverlapCoefficient, double hardOverlapCoefficient, double springCoefficient) {
-        this.temperature = temperature;
-        this.AAOverlapCoefficient = AAOverlapCoefficient;
-        this.BBOverlapCoefficient = BBOverlapCoefficient;
-        this.ABOverlapCoefficient = ABOverlapCoefficient;
-        this.hardOverlapCoefficient = hardOverlapCoefficient;
-        this.springCoefficient = springCoefficient;
     }
 
     public double springEnergy(double squareLength) {
@@ -201,4 +204,5 @@ public final class PhysicalConstants implements Serializable {
         return springCoefficient;
     }
     //</editor-fold>
+
 }

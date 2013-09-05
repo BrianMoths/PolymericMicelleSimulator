@@ -55,6 +55,16 @@
                               <Component id="perimeterLbl" max="32767" attributes="0"/>
                           </Group>
                       </Group>
+                      <EmptySpace type="unrelated" max="-2" attributes="0"/>
+                      <Group type="103" groupAlignment="0" attributes="0">
+                          <Component id="chainMovesCaptionLbl" alignment="0" min="-2" max="-2" attributes="0"/>
+                          <Component id="acceptedChainMovesCaptionLbl" alignment="0" min="-2" max="-2" attributes="0"/>
+                      </Group>
+                      <EmptySpace type="unrelated" max="-2" attributes="0"/>
+                      <Group type="103" groupAlignment="0" max="-2" attributes="0">
+                          <Component id="acceptChainMovesLbl" max="32767" attributes="0"/>
+                          <Component id="chainMovesLbl" pref="44" max="32767" attributes="0"/>
+                      </Group>
                   </Group>
               </Group>
               <EmptySpace type="unrelated" max="-2" attributes="0"/>
@@ -98,25 +108,26 @@
                   </Group>
                   <Component id="displayPanel" min="-2" max="-2" attributes="0"/>
               </Group>
-              <EmptySpace type="unrelated" max="-2" attributes="0"/>
-              <Group type="103" groupAlignment="0" attributes="0">
-                  <Group type="103" alignment="0" groupAlignment="3" attributes="0">
-                      <Component id="energyLbl" alignment="3" min="-2" pref="15" max="-2" attributes="0"/>
-                      <Component id="volumeCaptionLbl" alignment="3" min="-2" max="-2" attributes="0"/>
-                      <Component id="volumeLbl" alignment="3" min="-2" max="-2" attributes="0"/>
-                      <Component id="saveBtn" alignment="3" min="-2" pref="43" max="-2" attributes="0"/>
-                  </Group>
-                  <Component id="energyCaptionLbl" min="-2" max="-2" attributes="0"/>
-              </Group>
-              <EmptySpace max="-2" attributes="0"/>
               <Group type="103" groupAlignment="0" attributes="0">
                   <Group type="102" attributes="0">
+                      <EmptySpace pref="7" max="32767" attributes="0"/>
+                      <Group type="103" groupAlignment="3" attributes="0">
+                          <Component id="energyCaptionLbl" alignment="3" min="-2" max="-2" attributes="0"/>
+                          <Component id="energyLbl" alignment="3" min="-2" pref="15" max="-2" attributes="0"/>
+                          <Component id="volumeCaptionLbl" alignment="3" min="-2" max="-2" attributes="0"/>
+                          <Component id="volumeLbl" alignment="3" min="-2" max="-2" attributes="0"/>
+                          <Component id="chainMovesCaptionLbl" alignment="3" min="-2" max="-2" attributes="0"/>
+                          <Component id="chainMovesLbl" alignment="3" min="-2" max="-2" attributes="0"/>
+                      </Group>
+                      <EmptySpace max="-2" attributes="0"/>
                       <Group type="103" groupAlignment="0" max="-2" attributes="0">
-                          <Component id="numIterationsCaptionLbl" max="32767" attributes="0"/>
+                          <Component id="numIterationsCaptionLbl" pref="28" max="32767" attributes="0"/>
                           <Group type="103" groupAlignment="3" attributes="0">
                               <Component id="numIterationsLbl" alignment="3" min="-2" max="-2" attributes="0"/>
                               <Component id="perimeterCaptionLbl" alignment="3" min="-2" max="-2" attributes="0"/>
                               <Component id="perimeterLbl" alignment="3" min="-2" max="-2" attributes="0"/>
+                              <Component id="acceptedChainMovesCaptionLbl" alignment="3" min="-2" max="-2" attributes="0"/>
+                              <Component id="acceptChainMovesLbl" alignment="3" min="-2" max="-2" attributes="0"/>
                           </Group>
                       </Group>
                       <EmptySpace max="-2" attributes="0"/>
@@ -124,11 +135,16 @@
                           <Component id="numAcceptedIterationsCaptionLbl" alignment="3" min="-2" max="-2" attributes="0"/>
                           <Component id="numAcceptedIterationsLbl" alignment="3" min="-2" max="-2" attributes="0"/>
                       </Group>
-                      <EmptySpace min="0" pref="0" max="32767" attributes="0"/>
+                      <EmptySpace min="-2" pref="20" max="-2" attributes="0"/>
                   </Group>
-                  <Component id="loadBtn" max="32767" attributes="0"/>
+                  <Group type="102" alignment="0" attributes="0">
+                      <EmptySpace max="-2" attributes="0"/>
+                      <Component id="saveBtn" min="-2" pref="43" max="-2" attributes="0"/>
+                      <EmptySpace max="-2" attributes="0"/>
+                      <Component id="loadBtn" min="-2" max="-2" attributes="0"/>
+                      <EmptySpace max="32767" attributes="0"/>
+                  </Group>
               </Group>
-              <EmptySpace max="-2" attributes="0"/>
           </Group>
       </Group>
     </DimensionLayout>
@@ -331,7 +347,7 @@
                       <Component id="systemSizeCaptionLbl" alignment="3" min="-2" max="-2" attributes="0"/>
                       <Component id="systemSizeLbl" alignment="3" min="-2" max="-2" attributes="0"/>
                   </Group>
-                  <EmptySpace pref="38" max="32767" attributes="0"/>
+                  <EmptySpace pref="35" max="32767" attributes="0"/>
                   <Group type="103" groupAlignment="0" attributes="0">
                       <Component id="hardCoresChk" min="-2" max="-2" attributes="0"/>
                       <Component id="hardCoresCaptionLbl" min="-2" max="-2" attributes="0"/>
@@ -518,6 +534,36 @@
       <Events>
         <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="loadBtnActionPerformed"/>
       </Events>
+    </Component>
+    <Component class="javax.swing.JLabel" name="chainMovesCaptionLbl">
+      <Properties>
+        <Property name="text" type="java.lang.String" value="cm:"/>
+      </Properties>
+    </Component>
+    <Component class="javax.swing.JLabel" name="acceptedChainMovesCaptionLbl">
+      <Properties>
+        <Property name="text" type="java.lang.String" value="acm:"/>
+      </Properties>
+    </Component>
+    <Component class="javax.swing.JLabel" name="chainMovesLbl">
+      <Properties>
+        <Property name="text" type="java.lang.String" value="0"/>
+        <Property name="border" type="javax.swing.border.Border" editor="org.netbeans.modules.form.editors2.BorderEditor">
+          <Border info="org.netbeans.modules.form.compat2.border.BevelBorderInfo">
+            <BevelBorder bevelType="1"/>
+          </Border>
+        </Property>
+      </Properties>
+    </Component>
+    <Component class="javax.swing.JLabel" name="acceptChainMovesLbl">
+      <Properties>
+        <Property name="text" type="java.lang.String" value="0"/>
+        <Property name="border" type="javax.swing.border.Border" editor="org.netbeans.modules.form.editors2.BorderEditor">
+          <Border info="org.netbeans.modules.form.compat2.border.BevelBorderInfo">
+            <BevelBorder bevelType="1"/>
+          </Border>
+        </Property>
+      </Properties>
     </Component>
   </SubComponents>
 </Form>

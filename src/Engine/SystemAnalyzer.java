@@ -24,11 +24,8 @@ import java.util.List;
  */
 public class SystemAnalyzer implements Serializable {
 
-    //create a multivariate function whose arguments are the fit parameters and whose outputs are the function values
-    //use apache leastSquaresConverter and this vector valued function to a scalar function giving residuals
-    //minimize this function using one of the optimization routines.
     static private final int statisticsWindow = 1000;
-//    static public SystemAnalyzer defaultSystemAnalyzer(){
+//    static public SystemAnalyzer defaultSystemAnalyzer() {
 //        return new SystemAnalyzer(, PolymerCluster.makeDefaultPolymerCluster(), null)
 //    }
     private final int[][] neighbors;
@@ -288,4 +285,5 @@ public class SystemAnalyzer implements Serializable {
     public SurfaceTensionFinder getSurfaceTensionFinder() {
         return surfaceTensionFinder;
     }
+
 }
