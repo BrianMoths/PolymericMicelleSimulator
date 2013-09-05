@@ -13,6 +13,11 @@ import java.util.List;
  */
 public class PolymerCluster {
 
+    static public PolymerCluster makeDefaultPolymerCluster() {
+        PolymerChain polymerChain = PolymerChain.makeChainStartingWithA(6, 6);
+        PolymerCluster polymerCluster = PolymerCluster.makeRepeatedChainCluster(polymerChain, 100);
+        return polymerCluster;
+    }
     private final List<PolymerChain> polymerChainList;
     private int numBeads, numABeads;
     private double concentrationInWater = 1;

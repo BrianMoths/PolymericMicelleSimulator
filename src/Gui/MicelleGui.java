@@ -78,14 +78,21 @@ public class MicelleGui extends javax.swing.JFrame {
         });
 
         frameNumber = 0;
-        int numThreadsAlwaysPresent = 1;
-        int maxThreads = 1;
-        long keepAliveTime = 1;
+        final int numThreadsAlwaysPresent = 1;
+        final int maxThreads = 1;
+        final long keepAliveTime = 1;
         simulationExecutor = new ThreadPoolExecutor(numThreadsAlwaysPresent, maxThreads, keepAliveTime, TimeUnit.SECONDS, new ArrayBlockingQueue<Runnable>(5));
         simulationTasks = new HashSet<>();
+        initializePrivate();
     }
 
     public void initialize() {
+        registerGuiWithSystem();
+        system.randomizePositions();
+        updaterThread.start();
+    }
+
+    private void initializePrivate() {
         registerGuiWithSystem();
         system.randomizePositions();
         updaterThread.start();
@@ -119,19 +126,6 @@ public class MicelleGui extends javax.swing.JFrame {
 
         //System.out.println(String.valueOf(system.springEnergy() / system.getNumBeads()));
         repaint();
-    }
-
-    private String doubleArrayToString(double[] array) {
-        if (array == null || array.length == 0) {
-            return "";
-        }
-        int arrayLengthm1 = array.length - 1;
-        StringBuilder arrayStringBuilder = new StringBuilder();
-        for (int i = 0; i < arrayLengthm1; i++) {
-            arrayStringBuilder.append(array[i]).append(", ");
-        }
-        arrayStringBuilder.append(array[arrayLengthm1]);
-        return arrayStringBuilder.toString();
     }
 
     private void updateConstantLabels() {
@@ -588,11 +582,11 @@ public class MicelleGui extends javax.swing.JFrame {
             int returnVal = fileChooser.showOpenDialog(this);
             if (returnVal == JFileChooser.APPROVE_OPTION) {
                 File file = fileChooser.getSelectedFile();
-                ObjectInputStream objectInputStream = new ObjectInputStream(
-                        new FileInputStream(file));
-                setSystem((PolymerSimulator) objectInputStream.readObject());
-                System.out.println("Load successful");
-                objectInputStream.close();
+                try (ObjectInputStream objectInputStream = new ObjectInputStream(
+                        new FileInputStream(file))) {
+                    setSystem((PolymerSimulator) objectInputStream.readObject());
+                    System.out.println("Load successful");
+                }
             }
         } catch (IOException | ClassNotFoundException ex) {
             Logger.getLogger(MicelleGui.class.getName()).log(Level.SEVERE, null, ex);
@@ -657,7 +651,7 @@ public class MicelleGui extends javax.swing.JFrame {
             public void run() {
                 MicelleGui gui = new MicelleGui();
                 gui.setVisible(true);
-                gui.initialize();
+//                gui.initialize();
             }
         });
     }

@@ -22,9 +22,9 @@ public class SystemDrawer {
     private int radius, diameter;
     private double scaleFactor;
 
-    public SystemDrawer() {
-    }
-
+//    public SystemDrawer() {
+//        systemAnalyzer = new SystemAnalyzer()
+//    }
     public SystemDrawer(Graphics graphics, SystemAnalyzer systemAnalyzer) {
         this.graphics = graphics;
         registerSystemAnalyzerPrivate(systemAnalyzer);

@@ -18,4 +18,6 @@ public interface SimulationStep {
     public void undoStep(PolymerPosition polymerPosition);
 
     public double getEnergyChange();
+
+    public MoveType getMoveType();
 }

@@ -13,9 +13,6 @@ import SystemAnalysis.RectanglesAndPerimeter;
 import SystemAnalysis.SimulationHistory;
 import SystemAnalysis.SimulationHistory.TrackedVariable;
 import SystemAnalysis.SurfaceTensionFinder;
-import java.awt.Color;
-import java.awt.Graphics;
-import java.awt.Point;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -31,6 +28,9 @@ public class SystemAnalyzer implements Serializable {
     //use apache leastSquaresConverter and this vector valued function to a scalar function giving residuals
     //minimize this function using one of the optimization routines.
     static private final int statisticsWindow = 1000;
+//    static public SystemAnalyzer defaultSystemAnalyzer(){
+//        return new SystemAnalyzer(, PolymerCluster.makeDefaultPolymerCluster(), null)
+//    }
     private final int[][] neighbors;
     private final SystemGeometry systemGeometry;
     private final PhysicalConstants physicalConstants;
