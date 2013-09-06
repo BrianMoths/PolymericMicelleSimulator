@@ -176,7 +176,7 @@ public class SystemAnalyzer implements Serializable {
         return AreaOverlap.overlapOfBead(isTypeA(bead), AOverlap, BOverlap);
     }
 
-    public double energy() {
+    public double computeEnergy() {
         return springEnergy() + densityEnergy();
     }
 

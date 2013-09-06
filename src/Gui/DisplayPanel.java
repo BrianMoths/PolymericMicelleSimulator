@@ -20,7 +20,6 @@ public class DisplayPanel extends javax.swing.JPanel {
      */
     public DisplayPanel() {
         initComponents();
-        systemDrawer = new SystemDrawer();
     }
 
     public void setPolymerSimulator(PolymerSimulator polymerSimulator) {

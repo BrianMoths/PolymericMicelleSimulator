@@ -4,7 +4,6 @@
  */
 package Engine;
 
-import Engine.PhysicalConstants.PhysicalConstantsBuilder;
 import Engine.SimulationStepping.MoveType;
 import Engine.SimulationStepping.SimulationStep;
 import Engine.SimulationStepping.StepGenerator;
@@ -70,7 +69,7 @@ public class PolymerSimulator implements Serializable {
         polymerPosition = makePolymerPosition(polymerCluster, geometry);
         systemAnalyzer = new SystemAnalyzer(geometry, polymerCluster, physicalConstants);
         polymerPosition.registerAnalyzer(systemAnalyzer);
-        energy = systemAnalyzer.energy();
+        energy = systemAnalyzer.computeEnergy();
     }
 
     public PolymerSimulator(SystemGeometry systemGeometry, PolymerCluster polymerCluster, PhysicalConstants physicalConstants) {
@@ -85,7 +84,7 @@ public class PolymerSimulator implements Serializable {
 
         systemAnalyzer = new SystemAnalyzer(geometry, polymerCluster, physicalConstants);
         polymerPosition.registerAnalyzer(systemAnalyzer);
-        energy = systemAnalyzer.energy();
+        energy = systemAnalyzer.computeEnergy();
     }
 
     public PolymerSimulator(PolymerSimulator polymerSimulator) {
@@ -119,13 +118,13 @@ public class PolymerSimulator implements Serializable {
     public synchronized void randomizePositions() {
         resetCounters();
         polymerPosition.randomize();
-        energy = systemAnalyzer.energy();
+        energy = systemAnalyzer.computeEnergy();
     }
 
     public synchronized void columnRandomizePositions() {
         resetCounters();
         polymerPosition.columnRandomize();
-        energy = systemAnalyzer.energy();
+        energy = systemAnalyzer.computeEnergy();
     }
 
     private void resetCounters() {
