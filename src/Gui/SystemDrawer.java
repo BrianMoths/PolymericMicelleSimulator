@@ -23,6 +23,9 @@ public class SystemDrawer {
     private int radius, diameter;
     private double scaleFactor;
 
+    public SystemDrawer() {
+    }
+
     public SystemDrawer(Graphics graphics, SystemAnalyzer systemAnalyzer) {
         this.graphics = graphics;
         registerSystemAnalyzerPrivate(systemAnalyzer);
@@ -55,7 +58,7 @@ public class SystemDrawer {
             clear();
             drawBeads();
             drawBonds();
-            drawSurfaceTensionFinder();
+//            drawSurfaceTensionFinder();
         }
     }
 

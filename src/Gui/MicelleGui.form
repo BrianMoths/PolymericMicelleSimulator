@@ -25,46 +25,21 @@
     <DimensionLayout dim="0">
       <Group type="103" groupAlignment="0" attributes="0">
           <Group type="102" attributes="0">
-              <Group type="103" groupAlignment="0" attributes="0">
-                  <Component id="displayPanel" alignment="0" min="-2" max="-2" attributes="0"/>
-                  <Group type="102" alignment="0" attributes="0">
+              <Group type="103" groupAlignment="0" max="-2" attributes="0">
+                  <Component id="displayPanel" min="-2" max="-2" attributes="0"/>
+                  <Group type="102" attributes="0">
                       <EmptySpace max="-2" attributes="0"/>
-                      <Group type="103" groupAlignment="1" max="-2" attributes="0">
-                          <Component id="numAcceptedIterationsCaptionLbl" alignment="0" max="32767" attributes="0"/>
-                          <Component id="numIterationsCaptionLbl" alignment="0" max="32767" attributes="0"/>
+                      <Group type="103" groupAlignment="1" attributes="0">
+                          <Component id="numIterationsCaptionLbl" alignment="0" min="-2" max="-2" attributes="0"/>
                           <Component id="energyCaptionLbl" min="-2" max="-2" attributes="0"/>
                       </Group>
                       <EmptySpace max="-2" attributes="0"/>
                       <Group type="103" groupAlignment="0" max="-2" attributes="0">
                           <Component id="energyLbl" pref="134" max="32767" attributes="0"/>
                           <Component id="numIterationsLbl" max="32767" attributes="0"/>
-                          <Component id="numAcceptedIterationsLbl" alignment="0" max="32767" attributes="0"/>
                       </Group>
-                      <EmptySpace type="unrelated" max="-2" attributes="0"/>
-                      <Group type="103" groupAlignment="1" attributes="0">
-                          <Component id="volumeCaptionLbl" min="-2" pref="81" max="-2" attributes="0"/>
-                          <Component id="perimeterCaptionLbl" min="-2" max="-2" attributes="0"/>
-                      </Group>
-                      <Group type="103" groupAlignment="0" max="-2" attributes="0">
-                          <Group type="102" attributes="0">
-                              <EmptySpace min="-2" pref="4" max="-2" attributes="0"/>
-                              <Component id="volumeLbl" min="-2" pref="82" max="-2" attributes="0"/>
-                          </Group>
-                          <Group type="102" attributes="0">
-                              <EmptySpace max="-2" attributes="0"/>
-                              <Component id="perimeterLbl" max="32767" attributes="0"/>
-                          </Group>
-                      </Group>
-                      <EmptySpace type="unrelated" max="-2" attributes="0"/>
-                      <Group type="103" groupAlignment="0" attributes="0">
-                          <Component id="chainMovesCaptionLbl" alignment="0" min="-2" max="-2" attributes="0"/>
-                          <Component id="acceptedChainMovesCaptionLbl" alignment="0" min="-2" max="-2" attributes="0"/>
-                      </Group>
-                      <EmptySpace type="unrelated" max="-2" attributes="0"/>
-                      <Group type="103" groupAlignment="0" max="-2" attributes="0">
-                          <Component id="acceptChainMovesLbl" max="32767" attributes="0"/>
-                          <Component id="chainMovesLbl" pref="44" max="32767" attributes="0"/>
-                      </Group>
+                      <EmptySpace max="32767" attributes="0"/>
+                      <Component id="analysisWindowBtn" min="-2" max="-2" attributes="0"/>
                   </Group>
               </Group>
               <EmptySpace type="unrelated" max="-2" attributes="0"/>
@@ -109,36 +84,24 @@
               </Group>
               <Group type="103" groupAlignment="0" attributes="0">
                   <Group type="102" attributes="0">
-                      <EmptySpace pref="13" max="32767" attributes="0"/>
+                      <EmptySpace pref="18" max="32767" attributes="0"/>
                       <Group type="103" groupAlignment="3" attributes="0">
                           <Component id="energyCaptionLbl" alignment="3" min="-2" max="-2" attributes="0"/>
                           <Component id="energyLbl" alignment="3" min="-2" pref="15" max="-2" attributes="0"/>
-                          <Component id="volumeCaptionLbl" alignment="3" min="-2" max="-2" attributes="0"/>
-                          <Component id="volumeLbl" alignment="3" min="-2" max="-2" attributes="0"/>
-                          <Component id="chainMovesCaptionLbl" alignment="3" min="-2" max="-2" attributes="0"/>
-                          <Component id="chainMovesLbl" alignment="3" min="-2" max="-2" attributes="0"/>
                       </Group>
                       <EmptySpace max="-2" attributes="0"/>
                       <Group type="103" groupAlignment="0" max="-2" attributes="0">
                           <Component id="numIterationsCaptionLbl" pref="28" max="32767" attributes="0"/>
-                          <Group type="103" groupAlignment="3" attributes="0">
-                              <Component id="numIterationsLbl" alignment="3" min="-2" max="-2" attributes="0"/>
-                              <Component id="perimeterCaptionLbl" alignment="3" min="-2" max="-2" attributes="0"/>
-                              <Component id="perimeterLbl" alignment="3" min="-2" max="-2" attributes="0"/>
-                              <Component id="acceptedChainMovesCaptionLbl" alignment="3" min="-2" max="-2" attributes="0"/>
-                              <Component id="acceptChainMovesLbl" alignment="3" min="-2" max="-2" attributes="0"/>
-                          </Group>
+                          <Component id="numIterationsLbl" min="-2" max="-2" attributes="0"/>
                       </Group>
-                      <EmptySpace max="-2" attributes="0"/>
-                      <Group type="103" groupAlignment="3" attributes="0">
-                          <Component id="numAcceptedIterationsCaptionLbl" alignment="3" min="-2" max="-2" attributes="0"/>
-                          <Component id="numAcceptedIterationsLbl" alignment="3" min="-2" max="-2" attributes="0"/>
-                      </Group>
-                      <EmptySpace min="-2" pref="20" max="-2" attributes="0"/>
+                      <EmptySpace min="-2" pref="44" max="-2" attributes="0"/>
                   </Group>
                   <Group type="102" alignment="0" attributes="0">
                       <EmptySpace max="-2" attributes="0"/>
-                      <Component id="saveBtn" min="-2" pref="43" max="-2" attributes="0"/>
+                      <Group type="103" groupAlignment="0" max="-2" attributes="0">
+                          <Component id="analysisWindowBtn" max="32767" attributes="0"/>
+                          <Component id="saveBtn" pref="43" max="32767" attributes="0"/>
+                      </Group>
                       <EmptySpace max="-2" attributes="0"/>
                       <Component id="loadBtn" max="32767" attributes="0"/>
                       <EmptySpace max="-2" attributes="0"/>
@@ -207,22 +170,6 @@
       <Events>
         <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="jButton1ActionPerformed"/>
       </Events>
-    </Component>
-    <Component class="javax.swing.JLabel" name="numAcceptedIterationsCaptionLbl">
-      <Properties>
-        <Property name="horizontalAlignment" type="int" value="4"/>
-        <Property name="text" type="java.lang.String" value="Accepted Iterations:"/>
-      </Properties>
-    </Component>
-    <Component class="javax.swing.JLabel" name="numAcceptedIterationsLbl">
-      <Properties>
-        <Property name="text" type="java.lang.String" value="0"/>
-        <Property name="border" type="javax.swing.border.Border" editor="org.netbeans.modules.form.editors2.BorderEditor">
-          <Border info="org.netbeans.modules.form.compat2.border.BevelBorderInfo">
-            <BevelBorder bevelType="1"/>
-          </Border>
-        </Property>
-      </Properties>
     </Component>
     <Container class="Gui.DisplayPanel" name="displayPanel">
       <Properties>
@@ -471,37 +418,6 @@
         </Component>
       </SubComponents>
     </Container>
-    <Component class="javax.swing.JLabel" name="volumeCaptionLbl">
-      <Properties>
-        <Property name="horizontalAlignment" type="int" value="11"/>
-        <Property name="text" type="java.lang.String" value="Area:"/>
-      </Properties>
-    </Component>
-    <Component class="javax.swing.JLabel" name="volumeLbl">
-      <Properties>
-        <Property name="text" type="java.lang.String" value="0"/>
-        <Property name="border" type="javax.swing.border.Border" editor="org.netbeans.modules.form.editors2.BorderEditor">
-          <Border info="org.netbeans.modules.form.compat2.border.BevelBorderInfo">
-            <BevelBorder bevelType="1"/>
-          </Border>
-        </Property>
-      </Properties>
-    </Component>
-    <Component class="javax.swing.JLabel" name="perimeterCaptionLbl">
-      <Properties>
-        <Property name="text" type="java.lang.String" value="Perimeter:"/>
-      </Properties>
-    </Component>
-    <Component class="javax.swing.JLabel" name="perimeterLbl">
-      <Properties>
-        <Property name="text" type="java.lang.String" value="0"/>
-        <Property name="border" type="javax.swing.border.Border" editor="org.netbeans.modules.form.editors2.BorderEditor">
-          <Border info="org.netbeans.modules.form.compat2.border.BevelBorderInfo">
-            <BevelBorder bevelType="1"/>
-          </Border>
-        </Property>
-      </Properties>
-    </Component>
     <Component class="javax.swing.JButton" name="randomColumnBtn">
       <Properties>
         <Property name="text" type="java.lang.String" value="Random Column"/>
@@ -526,40 +442,18 @@
         <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="loadBtnActionPerformed"/>
       </Events>
     </Component>
-    <Component class="javax.swing.JLabel" name="chainMovesCaptionLbl">
-      <Properties>
-        <Property name="text" type="java.lang.String" value="cm:"/>
-      </Properties>
-    </Component>
-    <Component class="javax.swing.JLabel" name="acceptedChainMovesCaptionLbl">
-      <Properties>
-        <Property name="text" type="java.lang.String" value="acm:"/>
-      </Properties>
-    </Component>
-    <Component class="javax.swing.JLabel" name="chainMovesLbl">
-      <Properties>
-        <Property name="text" type="java.lang.String" value="0"/>
-        <Property name="border" type="javax.swing.border.Border" editor="org.netbeans.modules.form.editors2.BorderEditor">
-          <Border info="org.netbeans.modules.form.compat2.border.BevelBorderInfo">
-            <BevelBorder bevelType="1"/>
-          </Border>
-        </Property>
-      </Properties>
-    </Component>
-    <Component class="javax.swing.JLabel" name="acceptChainMovesLbl">
-      <Properties>
-        <Property name="text" type="java.lang.String" value="0"/>
-        <Property name="border" type="javax.swing.border.Border" editor="org.netbeans.modules.form.editors2.BorderEditor">
-          <Border info="org.netbeans.modules.form.compat2.border.BevelBorderInfo">
-            <BevelBorder bevelType="1"/>
-          </Border>
-        </Property>
-      </Properties>
-    </Component>
     <Component class="javax.swing.JLabel" name="iterationsToBeDoneCaptionLbl">
       <Properties>
         <Property name="text" type="java.lang.String" value="Iterations to be done:"/>
       </Properties>
+    </Component>
+    <Component class="javax.swing.JButton" name="analysisWindowBtn">
+      <Properties>
+        <Property name="text" type="java.lang.String" value="Show Analysis Window"/>
+      </Properties>
+      <Events>
+        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="analysisWindowBtnActionPerformed"/>
+      </Events>
     </Component>
   </SubComponents>
 </Form>

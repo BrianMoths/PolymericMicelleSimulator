@@ -8,6 +8,7 @@ import Engine.PolymerSimulator;
 import Engine.SystemAnalyzer;
 import SystemAnalysis.GeometryAnalyzer;
 import SystemAnalysis.GeometryAnalyzer.AreaPerimeter;
+import SystemAnalysis.SimulationHistory;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -21,7 +22,7 @@ public class AnalysisWindow extends javax.swing.JFrame {
 
         @Override
         public void run() {
-            while (AnalysisWindow.this.isShowing()) {
+            while (true) {
                 updateDisplay();
                 sleepUntilNextFrame();
             }
@@ -48,6 +49,7 @@ public class AnalysisWindow extends javax.swing.JFrame {
     private PolymerSimulator polymerSimulator;
     private SystemAnalyzer systemAnalyzer;
     private Thread updaterThread;
+//    private SimulationHistory simulationHistory;
 
     /**
      * Creates new form AnalysisWindow
@@ -57,15 +59,26 @@ public class AnalysisWindow extends javax.swing.JFrame {
         this.polymerSimulator = polymerSimulator;
         systemAnalyzer = polymerSimulator.getSystemAnalyzer();
 
-        updaterThread = new UpdaterThread();
-        initialize();
+        createCharts();
+//        initialize();
+    }
+
+    private void createCharts() {
+        energyChart.displayNewChart("energy");
+        areaChart.displayNewChart("area");
+        perimeterChart.displayNewChart("perimeter");
     }
 
     private void initialize() {
-        updaterThread.start();
+//        updaterThread.start();
     }
 
-    private void updateDisplay() {
+    public void setPolymerSimulator(PolymerSimulator polymerSimulator) {
+        this.polymerSimulator = polymerSimulator;
+        systemAnalyzer = polymerSimulator.getSystemAnalyzer();
+    }
+
+    public void updateDisplay() {
         updateIterationStatisticsDisplay();
         updatePhysicalPropertiesDisplay();
     }
@@ -75,6 +88,7 @@ public class AnalysisWindow extends javax.swing.JFrame {
         updateChainIterationsDisplay();
     }
 
+    //<editor-fold defaultstate="collapsed" desc="update Statistics Display">
     private void updateTotalIterationsDisplay() {
         final int numIterations = polymerSimulator.getIterationNumber();
         final int acceptedIterations = polymerSimulator.getAcceptedIterations();
@@ -94,6 +108,7 @@ public class AnalysisWindow extends javax.swing.JFrame {
         acceptChainMovesLbl.setText(Integer.toString(acceptedIterations));
         chainMoveAcceptanceRateLbl.setText(doubleToString(acceptanceRate));
     }
+    //</editor-fold>
 
     private void updatePhysicalPropertiesDisplay() {
         final AreaPerimeter areaPerimeter = systemAnalyzer.findAreaAndPerimeter();
@@ -105,27 +120,34 @@ public class AnalysisWindow extends javax.swing.JFrame {
         updatePerimeterDisplay(perimeter);
     }
 
+    //<editor-fold defaultstate="collapsed" desc="update phyical properties display">
     private void updateEnergyDisplay() {
         final double energy = polymerSimulator.getEnergy();
 
         energyLbl.setText(doubleToString(energy));
-        energyChart.add(energy);
+        energyChart.addValue((int)energy);
     }
 
     private void updateAreaDisplay(final double area) {
         areaLbl.setText(doubleToString(area));
-        areaChart.add(area);
+        areaChart.addValue((int)area);
     }
 
     private void updatePerimeterDisplay(final double perimeter) {
         perimeterLbl.setText(doubleToString(perimeter));
-        perimeterChart.add(perimeter);
+        perimeterChart.addValue((int)perimeter);
     }
+    //</editor-fold>
 
     private String doubleToString(double number) {
         return String.format("%.4f", number);
     }
 
+//    private void addSnapshot(){
+//        addEnergySnapshot();
+//        addAreaSnapshot();
+//        addPerimeterSnapshot();
+//    }
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -152,15 +174,15 @@ public class AnalysisWindow extends javax.swing.JFrame {
         jPanel1 = new javax.swing.JPanel();
         volumeCaptionLbl = new javax.swing.JLabel();
         areaLbl = new javax.swing.JLabel();
-        areaChart = new Gui.JStripChart();
-        perimeterChart = new Gui.JStripChart();
         perimeterCaptionLbl = new javax.swing.JLabel();
         perimeterLbl = new javax.swing.JLabel();
         energyCaptionLbl = new javax.swing.JLabel();
         energyLbl = new javax.swing.JLabel();
-        energyChart = new Gui.JStripChart();
+        areaChart = new Gui.StripChart();
+        perimeterChart = new Gui.StripChart();
+        energyChart = new Gui.StripChart();
 
-        setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
 
         iterationStatisticsLbl.setBorder(javax.swing.BorderFactory.createTitledBorder("Iteration Statistics"));
 
@@ -265,28 +287,6 @@ public class AnalysisWindow extends javax.swing.JFrame {
         areaLbl.setText("0");
         areaLbl.setBorder(javax.swing.BorderFactory.createBevelBorder(javax.swing.border.BevelBorder.LOWERED));
 
-        javax.swing.GroupLayout areaChartLayout = new javax.swing.GroupLayout(areaChart);
-        areaChart.setLayout(areaChartLayout);
-        areaChartLayout.setHorizontalGroup(
-            areaChartLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 0, Short.MAX_VALUE)
-        );
-        areaChartLayout.setVerticalGroup(
-            areaChartLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 0, Short.MAX_VALUE)
-        );
-
-        javax.swing.GroupLayout perimeterChartLayout = new javax.swing.GroupLayout(perimeterChart);
-        perimeterChart.setLayout(perimeterChartLayout);
-        perimeterChartLayout.setHorizontalGroup(
-            perimeterChartLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 0, Short.MAX_VALUE)
-        );
-        perimeterChartLayout.setVerticalGroup(
-            perimeterChartLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 0, Short.MAX_VALUE)
-        );
-
         perimeterCaptionLbl.setText("Perimeter:");
 
         perimeterLbl.setText("0");
@@ -297,17 +297,6 @@ public class AnalysisWindow extends javax.swing.JFrame {
         energyLbl.setText("1");
         energyLbl.setBorder(new javax.swing.border.SoftBevelBorder(javax.swing.border.BevelBorder.LOWERED));
 
-        javax.swing.GroupLayout energyChartLayout = new javax.swing.GroupLayout(energyChart);
-        energyChart.setLayout(energyChartLayout);
-        energyChartLayout.setHorizontalGroup(
-            energyChartLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 0, Short.MAX_VALUE)
-        );
-        energyChartLayout.setVerticalGroup(
-            energyChartLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 0, Short.MAX_VALUE)
-        );
-
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
         jPanel1Layout.setHorizontalGroup(
@@ -315,50 +304,39 @@ public class AnalysisWindow extends javax.swing.JFrame {
             .addGroup(jPanel1Layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(areaChart, javax.swing.GroupLayout.PREFERRED_SIZE, 376, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addGap(12, 12, 12)
+                        .addComponent(volumeCaptionLbl, javax.swing.GroupLayout.PREFERRED_SIZE, 47, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(areaLbl, javax.swing.GroupLayout.PREFERRED_SIZE, 80, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(perimeterChart, javax.swing.GroupLayout.PREFERRED_SIZE, 376, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(energyChart, javax.swing.GroupLayout.PREFERRED_SIZE, 376, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addGroup(jPanel1Layout.createSequentialGroup()
+                        .addComponent(energyCaptionLbl)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(energyLbl, javax.swing.GroupLayout.PREFERRED_SIZE, 80, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(jPanel1Layout.createSequentialGroup()
                         .addComponent(perimeterCaptionLbl)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(perimeterLbl, javax.swing.GroupLayout.PREFERRED_SIZE, 80, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(126, 126, 126))
-                    .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addComponent(volumeCaptionLbl, javax.swing.GroupLayout.PREFERRED_SIZE, 81, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(areaLbl, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addGap(56, 56, 56))
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
-                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                            .addComponent(areaChart, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 281, Short.MAX_VALUE)
-                            .addComponent(perimeterChart, javax.swing.GroupLayout.DEFAULT_SIZE, 281, Short.MAX_VALUE))
-                        .addContainerGap())))
-            .addGroup(jPanel1Layout.createSequentialGroup()
-                .addGap(49, 49, 49)
-                .addComponent(energyCaptionLbl)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(energyLbl, javax.swing.GroupLayout.PREFERRED_SIZE, 80, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(0, 0, Short.MAX_VALUE))
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(energyChart, javax.swing.GroupLayout.DEFAULT_SIZE, 281, Short.MAX_VALUE)
-                .addContainerGap())
+                        .addComponent(perimeterLbl, javax.swing.GroupLayout.PREFERRED_SIZE, 80, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel1Layout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(energyChart, javax.swing.GroupLayout.PREFERRED_SIZE, 33, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(energyChart, javax.swing.GroupLayout.PREFERRED_SIZE, 95, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(energyCaptionLbl)
                     .addComponent(energyLbl, javax.swing.GroupLayout.PREFERRED_SIZE, 15, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(18, 18, 18)
-                .addComponent(areaChart, javax.swing.GroupLayout.PREFERRED_SIZE, 33, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(volumeCaptionLbl)
+                .addComponent(areaChart, javax.swing.GroupLayout.PREFERRED_SIZE, 95, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(volumeCaptionLbl, javax.swing.GroupLayout.PREFERRED_SIZE, 20, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(areaLbl))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(perimeterChart, javax.swing.GroupLayout.PREFERRED_SIZE, 33, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(perimeterChart, javax.swing.GroupLayout.PREFERRED_SIZE, 95, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(perimeterCaptionLbl)
@@ -372,30 +350,34 @@ public class AnalysisWindow extends javax.swing.JFrame {
             mainPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(mainPanelLayout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(iterationStatisticsLbl, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(18, 18, 18)
-                .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addContainerGap())
+                .addGroup(mainPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(iterationStatisticsLbl, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         mainPanelLayout.setVerticalGroup(
             mainPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(mainPanelLayout.createSequentialGroup()
                 .addContainerGap()
-                .addGroup(mainPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(iterationStatisticsLbl, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap(145, Short.MAX_VALUE))
+                .addComponent(iterationStatisticsLbl, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(42, Short.MAX_VALUE))
         );
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(mainPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+            .addGroup(layout.createSequentialGroup()
+                .addComponent(mainPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(0, 0, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(mainPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+            .addGroup(layout.createSequentialGroup()
+                .addComponent(mainPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(0, 0, Short.MAX_VALUE))
         );
 
         pack();
@@ -404,14 +386,14 @@ public class AnalysisWindow extends javax.swing.JFrame {
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JLabel acceptChainMovesLbl;
     private javax.swing.JLabel acceptedChainMovesCaptionLbl;
-    private Gui.JStripChart areaChart;
+    private Gui.StripChart areaChart;
     private javax.swing.JLabel areaLbl;
     private javax.swing.JLabel chainMoveAcceptanceRateCaptionLbl;
     private javax.swing.JLabel chainMoveAcceptanceRateLbl;
     private javax.swing.JLabel chainMovesCaptionLbl;
     private javax.swing.JLabel chainMovesLbl;
     private javax.swing.JLabel energyCaptionLbl;
-    private Gui.JStripChart energyChart;
+    private Gui.StripChart energyChart;
     private javax.swing.JLabel energyLbl;
     private javax.swing.JLabel iterationAcceptanceRateCaptionLbl;
     private javax.swing.JLabel iterationAcceptanceRateLbl;
@@ -423,7 +405,7 @@ public class AnalysisWindow extends javax.swing.JFrame {
     private javax.swing.JLabel numIterationsCaptionLbl;
     private javax.swing.JLabel numIterationsLbl;
     private javax.swing.JLabel perimeterCaptionLbl;
-    private Gui.JStripChart perimeterChart;
+    private Gui.StripChart perimeterChart;
     private javax.swing.JLabel perimeterLbl;
     private javax.swing.JLabel volumeCaptionLbl;
     // End of variables declaration//GEN-END:variables

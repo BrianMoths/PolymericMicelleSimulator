@@ -7,6 +7,7 @@ package Gui;
 import Engine.PolymerSimulator;
 import Engine.SystemAnalyzer;
 import SystemAnalysis.GeometryAnalyzer.AreaPerimeter;
+import SystemAnalysis.SimulationHistory;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
@@ -52,11 +53,53 @@ public class MicelleGui extends javax.swing.JFrame {
 
     }
 
+    private class UpdaterRunnable implements Runnable {
+
+        int lastIteration = -1;
+
+        @Override
+        public void run() {
+            while (true) {
+                if (isUpdateNecessary()) {
+                    updateLastIteration();
+                    updateDisplay();
+                }
+                sleepUntilNextFrame();
+            }
+        }
+
+        private boolean isUpdateNecessary() {
+            return system.getIterationNumber() != lastIteration;
+        }
+
+        private void updateLastIteration() {
+            lastIteration = system.getIterationNumber();
+        }
+
+        private void sleepUntilNextFrame() {
+            try {
+                Thread.sleep(100);
+            } catch (InterruptedException ex) {
+                Logger.getLogger(MicelleGui.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }
+
+    }
+
+    private class UpdaterThread extends Thread {
+
+        public UpdaterThread() {
+            super(new UpdaterRunnable());
+        }
+
+    }
+
     private PolymerSimulator system;
     private int frameNumber;
     private final Thread updaterThread;
     private final ThreadPoolExecutor simulationExecutor;
     private final Set<SimulationTask> simulationTasks;
+    private AnalysisWindow analysisWindow;
 
     /**
      * Creates new form MicelleGui
@@ -66,21 +109,7 @@ public class MicelleGui extends javax.swing.JFrame {
         this.getRootPane().setDefaultButton(doIterationsBtn);
         setSystem(new PolymerSimulator());
         updateConstantLabels();
-        updaterThread = new Thread(
-                new Runnable() {
-            @Override
-            public void run() {
-                while (true) {
-                    updateDisplay();
-                    try {
-                        Thread.sleep(100);
-                    } catch (InterruptedException ex) {
-                        Logger.getLogger(MicelleGui.class.getName()).log(Level.SEVERE, null, ex);
-                    }
-                }
-            }
-
-        });
+        updaterThread = new UpdaterThread();
 
         frameNumber = 0;
         final int numThreadsAlwaysPresent = 1;
@@ -105,6 +134,9 @@ public class MicelleGui extends javax.swing.JFrame {
 
     private void registerGuiWithSystem() {
         displayPanel.setPolymerSimulator(system);
+        if (analysisWindow != null) {
+            analysisWindow.setPolymerSimulator(system);
+        }
     }
 
     private void updateDisplay() {
@@ -113,23 +145,15 @@ public class MicelleGui extends javax.swing.JFrame {
 
         energyLbl.setText(String.format("%.4f", system.getEnergy()));
         numIterationsLbl.setText(String.valueOf(system.getIterationNumber()));
-        numAcceptedIterationsLbl.setText(String.valueOf(system.getAcceptedIterations()));
-        AreaPerimeter areaPerimeter = systemAnalyzer.findAreaAndPerimeter();
-        volumeLbl.setText(String.format("%.4f", areaPerimeter.area));
-        perimeterLbl.setText(String.format("%.4f", areaPerimeter.perimeter));
-        chainMovesLbl.setText(Integer.toString(system.getNumChainMoves()));
-        acceptChainMovesLbl.setText(Integer.toString(system.getAcceptedChainMoves()));
-
-        systemAnalyzer.addPerimeterAreaEnergySnapshot(
-                areaPerimeter.perimeter,
-                areaPerimeter.area,
-                system.getEnergy());
-        if (frameNumber > 300) {
-            systemAnalyzer.recordSurface();
+        if (analysisWindow != null) {
+            analysisWindow.updateDisplay();
         }
-        if (frameNumber > 300 && frameNumber % 100 == 50) {
-            System.out.println(systemAnalyzer.estimateSurfaceTension());
-        }
+//        if (frameNumber > 300) {
+//            systemAnalyzer.recordSurface();
+//        }
+//        if (frameNumber > 300 && frameNumber % 100 == 50) {
+//            System.out.println(systemAnalyzer.estimateSurfaceTension());
+//        }
 
         //System.out.println(String.valueOf(system.springEnergy() / system.getNumBeads()));
         repaint();
@@ -179,8 +203,6 @@ public class MicelleGui extends javax.swing.JFrame {
         numIterationsCaptionLbl = new javax.swing.JLabel();
         numIterationsLbl = new javax.swing.JLabel();
         jButton1 = new javax.swing.JButton();
-        numAcceptedIterationsCaptionLbl = new javax.swing.JLabel();
-        numAcceptedIterationsLbl = new javax.swing.JLabel();
         displayPanel = new Gui.DisplayPanel();
         cancelBtn = new javax.swing.JButton();
         physicalConstantsPanel = new javax.swing.JPanel();
@@ -200,18 +222,11 @@ public class MicelleGui extends javax.swing.JFrame {
         hardCoresCaptionLbl = new javax.swing.JLabel();
         systemSizeCaptionLbl = new javax.swing.JLabel();
         systemSizeLbl = new javax.swing.JLabel();
-        volumeCaptionLbl = new javax.swing.JLabel();
-        volumeLbl = new javax.swing.JLabel();
-        perimeterCaptionLbl = new javax.swing.JLabel();
-        perimeterLbl = new javax.swing.JLabel();
         randomColumnBtn = new javax.swing.JButton();
         saveBtn = new javax.swing.JButton();
         loadBtn = new javax.swing.JButton();
-        chainMovesCaptionLbl = new javax.swing.JLabel();
-        acceptedChainMovesCaptionLbl = new javax.swing.JLabel();
-        chainMovesLbl = new javax.swing.JLabel();
-        acceptChainMovesLbl = new javax.swing.JLabel();
         iterationsToBeDoneCaptionLbl = new javax.swing.JLabel();
+        analysisWindowBtn = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle("Polymer Simulator");
@@ -248,12 +263,6 @@ public class MicelleGui extends javax.swing.JFrame {
                 jButton1ActionPerformed(evt);
             }
         });
-
-        numAcceptedIterationsCaptionLbl.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
-        numAcceptedIterationsCaptionLbl.setText("Accepted Iterations:");
-
-        numAcceptedIterationsLbl.setText("0");
-        numAcceptedIterationsLbl.setBorder(javax.swing.BorderFactory.createBevelBorder(javax.swing.border.BevelBorder.LOWERED));
 
         displayPanel.setPreferredSize(new java.awt.Dimension(600, 600));
 
@@ -391,17 +400,6 @@ public class MicelleGui extends javax.swing.JFrame {
                 .addContainerGap())
         );
 
-        volumeCaptionLbl.setHorizontalAlignment(javax.swing.SwingConstants.TRAILING);
-        volumeCaptionLbl.setText("Area:");
-
-        volumeLbl.setText("0");
-        volumeLbl.setBorder(javax.swing.BorderFactory.createBevelBorder(javax.swing.border.BevelBorder.LOWERED));
-
-        perimeterCaptionLbl.setText("Perimeter:");
-
-        perimeterLbl.setText("0");
-        perimeterLbl.setBorder(javax.swing.BorderFactory.createBevelBorder(javax.swing.border.BevelBorder.LOWERED));
-
         randomColumnBtn.setText("Random Column");
         randomColumnBtn.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -423,55 +421,33 @@ public class MicelleGui extends javax.swing.JFrame {
             }
         });
 
-        chainMovesCaptionLbl.setText("cm:");
-
-        acceptedChainMovesCaptionLbl.setText("acm:");
-
-        chainMovesLbl.setText("0");
-        chainMovesLbl.setBorder(javax.swing.BorderFactory.createBevelBorder(javax.swing.border.BevelBorder.LOWERED));
-
-        acceptChainMovesLbl.setText("0");
-        acceptChainMovesLbl.setBorder(javax.swing.BorderFactory.createBevelBorder(javax.swing.border.BevelBorder.LOWERED));
-
         iterationsToBeDoneCaptionLbl.setText("Iterations to be done:");
+
+        analysisWindowBtn.setText("Show Analysis Window");
+        analysisWindowBtn.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                analysisWindowBtnActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                     .addComponent(displayPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addGroup(layout.createSequentialGroup()
                         .addContainerGap()
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
-                            .addComponent(numAcceptedIterationsCaptionLbl, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .addComponent(numIterationsCaptionLbl, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                            .addComponent(numIterationsCaptionLbl, javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(energyCaptionLbl))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                             .addComponent(energyLbl, javax.swing.GroupLayout.DEFAULT_SIZE, 134, Short.MAX_VALUE)
-                            .addComponent(numIterationsLbl, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .addComponent(numAcceptedIterationsLbl, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                            .addComponent(volumeCaptionLbl, javax.swing.GroupLayout.PREFERRED_SIZE, 81, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(perimeterCaptionLbl))
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                            .addGroup(layout.createSequentialGroup()
-                                .addGap(4, 4, 4)
-                                .addComponent(volumeLbl, javax.swing.GroupLayout.PREFERRED_SIZE, 82, javax.swing.GroupLayout.PREFERRED_SIZE))
-                            .addGroup(layout.createSequentialGroup()
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(perimeterLbl, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(chainMovesCaptionLbl)
-                            .addComponent(acceptedChainMovesCaptionLbl))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                            .addComponent(acceptChainMovesLbl, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .addComponent(chainMovesLbl, javax.swing.GroupLayout.DEFAULT_SIZE, 44, Short.MAX_VALUE))))
+                            .addComponent(numIterationsLbl, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(analysisWindowBtn)))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
                     .addComponent(numIterationsFld, javax.swing.GroupLayout.Alignment.LEADING)
@@ -509,31 +485,20 @@ public class MicelleGui extends javax.swing.JFrame {
                     .addComponent(displayPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createSequentialGroup()
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 13, Short.MAX_VALUE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 19, Short.MAX_VALUE)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                             .addComponent(energyCaptionLbl)
-                            .addComponent(energyLbl, javax.swing.GroupLayout.PREFERRED_SIZE, 15, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(volumeCaptionLbl)
-                            .addComponent(volumeLbl)
-                            .addComponent(chainMovesCaptionLbl)
-                            .addComponent(chainMovesLbl))
+                            .addComponent(energyLbl, javax.swing.GroupLayout.PREFERRED_SIZE, 15, javax.swing.GroupLayout.PREFERRED_SIZE))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                             .addComponent(numIterationsCaptionLbl, javax.swing.GroupLayout.DEFAULT_SIZE, 28, Short.MAX_VALUE)
-                            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                                .addComponent(numIterationsLbl)
-                                .addComponent(perimeterCaptionLbl)
-                                .addComponent(perimeterLbl)
-                                .addComponent(acceptedChainMovesCaptionLbl)
-                                .addComponent(acceptChainMovesLbl)))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(numAcceptedIterationsCaptionLbl)
-                            .addComponent(numAcceptedIterationsLbl))
-                        .addGap(20, 20, 20))
+                            .addComponent(numIterationsLbl))
+                        .addGap(44, 44, 44))
                     .addGroup(layout.createSequentialGroup()
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(saveBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 43, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                            .addComponent(analysisWindowBtn, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(saveBtn, javax.swing.GroupLayout.DEFAULT_SIZE, 43, Short.MAX_VALUE))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(loadBtn, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                         .addContainerGap())))
@@ -617,6 +582,11 @@ public class MicelleGui extends javax.swing.JFrame {
         }
     }//GEN-LAST:event_loadBtnActionPerformed
 
+    private void analysisWindowBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_analysisWindowBtnActionPerformed
+        analysisWindow = new AnalysisWindow(system);
+        analysisWindow.setVisible(true);
+    }//GEN-LAST:event_analysisWindowBtnActionPerformed
+
     /**
      * @param args the command line arguments
      */
@@ -687,12 +657,9 @@ public class MicelleGui extends javax.swing.JFrame {
     private javax.swing.JLabel ABCoefficientLbl;
     private javax.swing.JLabel BBCoeffCaptionLbl;
     private javax.swing.JLabel BBCoefficientLbl;
-    private javax.swing.JLabel acceptChainMovesLbl;
-    private javax.swing.JLabel acceptedChainMovesCaptionLbl;
+    private javax.swing.JButton analysisWindowBtn;
     private javax.swing.JLabel beadSizeLbl;
     private javax.swing.JButton cancelBtn;
-    private javax.swing.JLabel chainMovesCaptionLbl;
-    private javax.swing.JLabel chainMovesLbl;
     private Gui.DisplayPanel displayPanel;
     private javax.swing.JButton doIterationsBtn;
     private javax.swing.JLabel energyCaptionLbl;
@@ -703,13 +670,9 @@ public class MicelleGui extends javax.swing.JFrame {
     private javax.swing.JLabel iterationsToBeDoneCaptionLbl;
     private javax.swing.JButton jButton1;
     private javax.swing.JButton loadBtn;
-    private javax.swing.JLabel numAcceptedIterationsCaptionLbl;
-    private javax.swing.JLabel numAcceptedIterationsLbl;
     private javax.swing.JLabel numIterationsCaptionLbl;
     private javax.swing.JTextField numIterationsFld;
     private javax.swing.JLabel numIterationsLbl;
-    private javax.swing.JLabel perimeterCaptionLbl;
-    private javax.swing.JLabel perimeterLbl;
     private javax.swing.JPanel physicalConstantsPanel;
     private javax.swing.JButton randomColumnBtn;
     private javax.swing.JButton randomizeBtn;
@@ -720,7 +683,5 @@ public class MicelleGui extends javax.swing.JFrame {
     private javax.swing.JLabel systemSizeLbl;
     private javax.swing.JLabel temperatureCaptionLbl;
     private javax.swing.JLabel temperatureLbl;
-    private javax.swing.JLabel volumeCaptionLbl;
-    private javax.swing.JLabel volumeLbl;
     // End of variables declaration//GEN-END:variables
 }

@@ -9,7 +9,6 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.Random;
 
 /**
  *
@@ -17,7 +16,6 @@ import java.util.Random;
  */
 public class PolymerPosition implements Serializable {
 
-    private static final Random randomNumberGenerator = new Random();
     private final int numBeads;
     private List<SystemAnalyzer> registeredSystemAnalyzers;
     private final SystemGeometry systemGeometry;
@@ -36,6 +34,7 @@ public class PolymerPosition implements Serializable {
         systemGeometry = polymerPosition.systemGeometry;
         beadPositions = polymerPosition.getBeadPositions();
     }
+    //<editor-fold defaultstate="collapsed" desc="toString">
 
     @Override
     public String toString() {
@@ -61,7 +60,9 @@ public class PolymerPosition implements Serializable {
         }
         return stringBuilder.toString();
     }
+    //</editor-fold>
 
+    //<editor-fold defaultstate="collapsed" desc="randomizePositions">
     public void randomize() {
         randomizePrivate();
     }
@@ -70,19 +71,12 @@ public class PolymerPosition implements Serializable {
         setBeadPositionsPrivate(systemGeometry.randomColumnPositions(numBeads));
     }
 
-    private void setBeadPositionsPrivate(double[][] newBeadPositions) {
-        beadPositions = newBeadPositions;
-        syncAnalyzers();
-    }
-
     private void randomizePrivate() {
         setBeadPositionsPrivate(systemGeometry.randomPositions(numBeads));
     }
+    //</editor-fold>
 
-    public int randomBeadIndex() {
-        return randomNumberGenerator.nextInt(numBeads);
-    }
-
+    //<editor-fold defaultstate="collapsed" desc="deal with analyzers">
     public void registerAnalyzer(SystemAnalyzer systemAnalyzer) {
         registeredSystemAnalyzers.add(systemAnalyzer);
         systemAnalyzer.setBeadPositions(beadPositions);
@@ -94,6 +88,14 @@ public class PolymerPosition implements Serializable {
         }
     }
 
+    private void signalMoveToAnalyzers(int stepBead) {
+        for (SystemAnalyzer systemAnalyzer : registeredSystemAnalyzers) {
+            systemAnalyzer.updateBinWithMove(stepBead);
+        }
+    }
+//</editor-fold>
+
+    //<editor-fold defaultstate="collapsed" desc="move beads">
     public boolean moveBead(int stepBead, double[] stepVector) {
         final boolean isSuccessful = systemGeometry.incrementFirstVector(beadPositions[stepBead], stepVector);
         if (isSuccessful) {
@@ -102,24 +104,27 @@ public class PolymerPosition implements Serializable {
         return isSuccessful;
     }
 
-    private void signalMoveToAnalyzers(int stepBead) {
-        for (SystemAnalyzer systemAnalyzer : registeredSystemAnalyzers) {
-            systemAnalyzer.updateBinWithMove(stepBead);
-        }
-    }
-
     public void undoStep(int stepBead, double[] stepVector) {
         systemGeometry.decrementFirstVector(beadPositions[stepBead], stepVector);
         signalMoveToAnalyzers(stepBead);
     }
+    //</editor-fold>
 
-    public int getNumBeads() {
-        return numBeads;
-    }
-
+    //<editor-fold defaultstate="collapsed" desc="setters">
     public void setBeadPositions(double[][] beadPositions) {
         systemGeometry.checkedCopyPositions(beadPositions, this.beadPositions);
         syncAnalyzers();
+    }
+
+    private void setBeadPositionsPrivate(double[][] newBeadPositions) {
+        beadPositions = newBeadPositions;
+        syncAnalyzers();
+    }
+    //</editor-fold>
+
+    //<editor-fold defaultstate="collapsed" desc="getters">
+    public int getNumBeads() {
+        return numBeads;
     }
 
     public double[][] getBeadPositions() {
@@ -129,4 +134,6 @@ public class PolymerPosition implements Serializable {
         }
         return beadPositionsCopy;
     }
+    //</editor-fold>
+
 }
