@@ -20,11 +20,6 @@ import java.util.List;
  */
 public final class PeriodicGeometry extends AbstractGeometry {
 
-    @Override
-    public GeometryBuilder toBuilder() {
-        return new PeriodicGeometryBuilder(this);
-    }
-
     public static class PeriodicGeometryBuilder extends AbstractGeometryBuilder {
 
         private PeriodicGeometryBuilder(PeriodicGeometry geometry) {
@@ -39,15 +34,21 @@ public final class PeriodicGeometry extends AbstractGeometry {
         public PeriodicGeometry buildGeometry() {
             return new PeriodicGeometry(dimension, fullRMax, parameters);
         }
+
     }
 
-    static public PeriodicGeometry defaultGeometry() {
+    public static PeriodicGeometry defaultGeometry() {
         PeriodicGeometryBuilder builder = new PeriodicGeometryBuilder();
         return builder.buildGeometry();
     }
 
     public PeriodicGeometry(int dimension, double[] fullRMax, SimulationParameters parameters) {
         super(dimension, fullRMax, parameters);
+    }
+
+    @Override
+    public GeometryBuilder toBuilder() {
+        return new PeriodicGeometryBuilder(this);
     }
 
     @Override
@@ -161,4 +162,5 @@ public final class PeriodicGeometry extends AbstractGeometry {
             position[i] = projectComponent(position[i], i);
         }
     }
+
 }

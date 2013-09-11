@@ -32,7 +32,9 @@ public class SystemConfiguration extends javax.swing.JFrame { //broken, need to 
 
         InputVariables() {
         }
+
     }
+
     private final MicelleGui gui;
 
     /**
@@ -58,6 +60,7 @@ public class SystemConfiguration extends javax.swing.JFrame { //broken, need to 
                 public void focusGained(java.awt.event.FocusEvent evt) {
                     thisTextField.selectAll();
                 }
+
             });
         }
         this.getRootPane().setDefaultButton(buildSystemRandombtn);
@@ -150,7 +153,7 @@ public class SystemConfiguration extends javax.swing.JFrame { //broken, need to 
         dimensionFld.setFocusable(false);
 
         xMaxFld.setEditable(false);
-        xMaxFld.setText("20");
+        xMaxFld.setText("-");
         xMaxFld.setEnabled(false);
         xMaxFld.setFocusable(false);
 

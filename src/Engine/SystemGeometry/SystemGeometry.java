@@ -25,6 +25,8 @@ public interface SystemGeometry extends Serializable {
 
     public double[] getRMax();
 
+    public void setRMax(int index, double rMax);
+
     public double getVolume();
 
     public SimulationParameters getParameters();
@@ -58,4 +60,5 @@ public interface SystemGeometry extends Serializable {
     public BeadRectangle getRectangleFromPosition(double[] beadPosition);
 
     public List<BeadRectangle> getRectanglesFromPositions(double[][] beadPositions);
+
 }

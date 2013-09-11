@@ -87,8 +87,10 @@ public abstract class AbstractGeometry implements SystemGeometry {
             double fractionInteracting = 14 / polymerCluster.getNumBeadsIncludingWater();
             return simulationParameters.getInteractionLength() * Math.pow(1 / fractionInteracting, 1. / dimension);
         }
+
     }
     //</editor-fold>
+
     public static final Random randomNumberGenerator = new Random();
     protected final int dimension;
     protected final double[] fullRMax; //try to make this constant
@@ -194,6 +196,11 @@ public abstract class AbstractGeometry implements SystemGeometry {
         for (int bead = 0; bead < src.length; bead++) {
             checkedCopyPosition(src[bead], dest[bead]);
         }
+    }
+
+    @Override
+    public void setRMax(int index, double rMax) {
+        this.fullRMax[index] = rMax;
     }
 
     //<editor-fold defaultstate="collapsed" desc="getters">
