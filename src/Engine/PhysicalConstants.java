@@ -5,6 +5,7 @@
 package Engine;
 
 import Engine.SystemGeometry.AreaOverlap;
+import Engine.SystemGeometry.SystemGeometry;
 import java.io.Serializable;
 import java.util.Random;
 
@@ -21,15 +22,13 @@ public final class PhysicalConstants implements Serializable {
                 AAOverlapCoefficient = 5. / 120.,
                 BBOverlapCoefficient = 5. / 120.,
                 ABOverlapCoefficient = .1,
-                springCoefficient = 1. / 3.;
+                springCoefficient = 1. / 3.,
+                hardOverlapCoefficient = 0;
+        private ExternalEnergyCalculator externalEnergyCalculator = new ExternalEnergyCalculator();
 
         public PhysicalConstants buildPhysicalConstants() {
-            return new PhysicalConstants(temperature,
-                    AAOverlapCoefficient,
-                    BBOverlapCoefficient,
-                    ABOverlapCoefficient,
-                    calculateHardOverlapCoefficient(),
-                    springCoefficient);
+            hardOverlapCoefficient = calculateHardOverlapCoefficient();
+            return new PhysicalConstants(this);
         }
 
         public double getTemperature() {
@@ -79,12 +78,29 @@ public final class PhysicalConstants implements Serializable {
             return this;
         }
 
+        public double getHardOverlapCoefficient() {
+            return hardOverlapCoefficient;
+        }
+
+        public PhysicalConstantsBuilder setHardOverlapCoefficient(double hardOverlapCoefficient) {
+            this.hardOverlapCoefficient = hardOverlapCoefficient;
+            return this;
+        }
+
         private double calculateHardOverlapCoefficient() {
             return 3 * Math.max(
                     Math.max(
                     Math.abs(AAOverlapCoefficient),
                     Math.abs(BBOverlapCoefficient)),
                     Math.abs(ABOverlapCoefficient));
+        }
+
+        public ExternalEnergyCalculator getExternalEnergyCalculator() {
+            return externalEnergyCalculator;
+        }
+
+        public void setExternalEnergyCalculator(ExternalEnergyCalculator externalEnergyCalculator) {
+            this.externalEnergyCalculator = externalEnergyCalculator;
         }
 
     }
@@ -102,23 +118,27 @@ public final class PhysicalConstants implements Serializable {
             ABOverlapCoefficient,
             hardOverlapCoefficient,
             springCoefficient;
+    private final ExternalEnergyCalculator externalEnergyCalculator;
 
     private PhysicalConstants(PhysicalConstants physicalConstants, SimulationParameters parameters) {
-        this.temperature = physicalConstants.temperature;
-        this.AAOverlapCoefficient = physicalConstants.AAOverlapCoefficient;
-        this.BBOverlapCoefficient = physicalConstants.BBOverlapCoefficient;
-        this.ABOverlapCoefficient = physicalConstants.ABOverlapCoefficient;
-        this.springCoefficient = physicalConstants.springCoefficient;
-        this.hardOverlapCoefficient = hardOverlapCoefficientFromParameters(parameters);
+        temperature = physicalConstants.temperature;
+        AAOverlapCoefficient = physicalConstants.AAOverlapCoefficient;
+        BBOverlapCoefficient = physicalConstants.BBOverlapCoefficient;
+        ABOverlapCoefficient = physicalConstants.ABOverlapCoefficient;
+        springCoefficient = physicalConstants.springCoefficient;
+        hardOverlapCoefficient = hardOverlapCoefficientFromParameters(parameters);
+        externalEnergyCalculator = new ExternalEnergyCalculator();
     }
 
-    private PhysicalConstants(double temperature, double AAOverlapCoefficient, double BBOverlapCoefficient, double ABOverlapCoefficient, double hardOverlapCoefficient, double springCoefficient) {
-        this.temperature = temperature;
-        this.AAOverlapCoefficient = AAOverlapCoefficient;
-        this.BBOverlapCoefficient = BBOverlapCoefficient;
-        this.ABOverlapCoefficient = ABOverlapCoefficient;
-        this.hardOverlapCoefficient = hardOverlapCoefficient;
-        this.springCoefficient = springCoefficient;
+    private PhysicalConstants(PhysicalConstantsBuilder physicalConstantsBuilder) {
+        temperature = physicalConstantsBuilder.temperature;
+        AAOverlapCoefficient = physicalConstantsBuilder.AAOverlapCoefficient;
+        BBOverlapCoefficient = physicalConstantsBuilder.BBOverlapCoefficient;
+        ABOverlapCoefficient = physicalConstantsBuilder.ABOverlapCoefficient;
+        hardOverlapCoefficient = physicalConstantsBuilder.hardOverlapCoefficient;
+        springCoefficient = physicalConstantsBuilder.springCoefficient;
+        externalEnergyCalculator = physicalConstantsBuilder.externalEnergyCalculator;
+
     }
 
     public PhysicalConstants getPhysicalConstantsFromParameters(SimulationParameters parameters) {
@@ -141,21 +161,15 @@ public final class PhysicalConstants implements Serializable {
         return springCoefficient * squareLength;
     }
 
-    public double densityEnergy(double similarOverlap, double differentOverlap) {
-        return 2 * ((AAOverlapCoefficient + BBOverlapCoefficient) / 2 * similarOverlap + ABOverlapCoefficient * differentOverlap);
-    }
-
     public double densityEnergy(AreaOverlap areaOverlap) {
-        return 2 * (AAOverlapCoefficient * areaOverlap.AAOverlap
-                + BBOverlapCoefficient * areaOverlap.BBOverlap
-                + ABOverlapCoefficient * areaOverlap.ABOverlap);
-    }
-
-    public double densityEnergyWithCore(AreaOverlap areaOverlap) {
         return 2 * (AAOverlapCoefficient * areaOverlap.AAOverlap
                 + BBOverlapCoefficient * areaOverlap.BBOverlap
                 + ABOverlapCoefficient * areaOverlap.ABOverlap
                 + hardOverlapCoefficient * areaOverlap.hardOverlap);
+    }
+
+    public double externalEnergy(SystemGeometry systemGeometry) {
+        return externalEnergyCalculator.calculateExternalEnergy(systemGeometry.getRMax());
     }
 
     public boolean isEnergeticallyAllowed(double energyChange) {

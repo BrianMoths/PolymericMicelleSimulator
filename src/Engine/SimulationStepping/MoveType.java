@@ -11,5 +11,6 @@ package Engine.SimulationStepping;
 public enum MoveType {
 
     SINGLE_BEAD,
-    SINGLE_CHAIN
+    SINGLE_CHAIN,
+    SINGLE_WALL_RESIZE
 }

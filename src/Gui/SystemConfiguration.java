@@ -28,7 +28,7 @@ public class SystemConfiguration extends javax.swing.JFrame { //broken, need to 
     static private class InputVariables {
 
         int dimension, numChains;
-        double xMax, yMax, temperature, AAOverlapCoefficient, BBOverlapCoefficient, ABOverlapCoefficient, springConstant, interactionLength, concentration;
+        double temperature, AAOverlapCoefficient, BBOverlapCoefficient, ABOverlapCoefficient, springConstant, interactionLength, concentration;
 
         InputVariables() {
         }
@@ -631,22 +631,6 @@ public class SystemConfiguration extends javax.swing.JFrame { //broken, need to 
             inputVariables.dimension = Integer.parseInt(dimensionString);
         } catch (NumberFormatException e) {
             System.err.println("couldn't parse dimension");
-            isErrorEncountered = true;
-        }
-
-        try {
-            final String xMaxString = xMaxFld.getText();
-            inputVariables.xMax = Double.parseDouble(xMaxString);
-        } catch (NumberFormatException e) {
-            System.err.println("couldn't parse xMax");
-            isErrorEncountered = true;
-        }
-
-        try {
-            final String yMaxString = yMaxFld.getText();
-            inputVariables.yMax = Double.parseDouble(yMaxString);
-        } catch (NumberFormatException e) {
-            System.err.println("couldn't parse yMax");
             isErrorEncountered = true;
         }
 

@@ -177,7 +177,7 @@ public class SystemAnalyzer implements Serializable {
     }
 
     public double computeEnergy() {
-        return springEnergy() + densityEnergy();
+        return springEnergy() + densityEnergy() + externalEnergy();
     }
 
     public double springEnergy() {
@@ -189,7 +189,11 @@ public class SystemAnalyzer implements Serializable {
     public double densityEnergy() {
         AreaOverlap overlap = totalOverlap();
 
-        return physicalConstants.densityEnergyWithCore(overlap);
+        return physicalConstants.densityEnergy(overlap);
+    }
+
+    public double externalEnergy() {
+        return physicalConstants.externalEnergy(systemGeometry);
     }
 
     public double beadEnergy(int bead) {
@@ -205,7 +209,7 @@ public class SystemAnalyzer implements Serializable {
     public double beadDensityEnergy(int bead) {
         final AreaOverlap overlap = beadOverlap(bead);
 
-        return physicalConstants.densityEnergyWithCore(overlap);
+        return physicalConstants.densityEnergy(overlap);
     }
 
     public boolean isTypeA(int bead) {

@@ -6,6 +6,7 @@ package Engine;
 
 import Engine.SimulationStepping.MoveType;
 import Engine.SimulationStepping.SimulationStep;
+import Engine.SimulationStepping.ChainMoveStepGenerator;
 import Engine.SimulationStepping.StepGenerator;
 import Engine.SystemGeometry.HardWallGeometry.HardWallGeometryBuilder;
 import Engine.SystemGeometry.PeriodicGeometry.PeriodicGeometryBuilder;
@@ -53,6 +54,7 @@ public class PolymerSimulator implements Serializable {
     private final PhysicalConstants physicalConstants;
     private final PolymerPosition polymerPosition;
     private final SystemAnalyzer systemAnalyzer;
+    private final StepGenerator stepGenerator = new ChainMoveStepGenerator(0.);
     private double energy;
     private int iterationNumber;
     private int acceptedIterations;
@@ -153,7 +155,7 @@ public class PolymerSimulator implements Serializable {
 
     public synchronized void doIteration() { //todo: cache bead energies
         iterationNumber++;
-        SimulationStep simulationStep = StepGenerator.generateStep(systemAnalyzer);
+        SimulationStep simulationStep = stepGenerator.generateStep(systemAnalyzer);
         if (simulationStep.getMoveType() == MoveType.SINGLE_CHAIN) {
             numChainMoves++;
         }
