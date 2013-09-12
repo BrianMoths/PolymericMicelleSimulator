@@ -2,8 +2,11 @@
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
-package Engine.SimulationStepping;
+package Engine.SimulationStepping.StepGenerators;
 
+import Engine.SimulationStepping.StepTypes.SimulationStep;
+import Engine.SimulationStepping.StepTypes.SingleChainStep;
+import Engine.SimulationStepping.StepTypes.SingleBeadStep;
 import Engine.SystemAnalyzer;
 import Engine.SystemGeometry.SystemGeometry;
 import java.util.List;
@@ -35,13 +38,6 @@ public class ChainMoveStepGenerator implements StepGenerator {
         return new SingleChainStep(chain, stepVector);
     }
 
-    static private SimulationStep getBeadMove(SystemAnalyzer systemAnalyzer) {
-        final int bead = getBeadNumber(systemAnalyzer);
-        final double[] stepVector = getStepVector(systemAnalyzer);
-
-        return new SingleBeadStep(bead, stepVector);
-    }
-
     static private int getBeadNumber(SystemAnalyzer systemAnalyzer) {
         return random.nextInt(systemAnalyzer.getNumBeads());
     }
@@ -71,7 +67,7 @@ public class ChainMoveStepGenerator implements StepGenerator {
         if (random.nextDouble() < chainMoveChance) {
             return getChainMove(systemAnalyzer);
         } else {
-            return getBeadMove(systemAnalyzer);
+            return BeadMoveGenerator.getBeadMove(systemAnalyzer);
         }
     }
 

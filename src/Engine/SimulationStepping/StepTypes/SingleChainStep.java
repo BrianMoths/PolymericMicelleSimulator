@@ -2,7 +2,7 @@
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
-package Engine.SimulationStepping;
+package Engine.SimulationStepping.StepTypes;
 
 import Engine.PolymerPosition;
 import Engine.SystemAnalyzer;
@@ -54,19 +54,19 @@ public class SingleChainStep implements SimulationStep {
             for (; currentBeadInChain >= 0; currentBeadInChain--) {
                 final int currentBead = beads.get(currentBeadInChain);
                 final SingleBeadStep beadStep = new SingleBeadStep(currentBead, stepVector);
-                beadStep.undoStep(polymerPosition);
+                beadStep.undoStep(polymerPosition, systemAnalyzer);
             }
         }
         return isSuccessful;
     }
 
     @Override
-    public void undoStep(PolymerPosition polymerPosition) {
+    public void undoStep(PolymerPosition polymerPosition, SystemAnalyzer systemAnalyzer) {
         final int numBeads = beads.size();
         for (int currentBeadInChain = 0; currentBeadInChain < numBeads; currentBeadInChain++) {
             final int currentBead = beads.get(currentBeadInChain);
             final SingleBeadStep beadStep = new SingleBeadStep(currentBead, stepVector);
-            beadStep.undoStep(polymerPosition);
+            beadStep.undoStep(polymerPosition, systemAnalyzer);
         }
     }
 
@@ -90,4 +90,5 @@ public class SingleChainStep implements SimulationStep {
     public MoveType getMoveType() {
         return moveType;
     }
+
 }

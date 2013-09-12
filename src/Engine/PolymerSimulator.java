@@ -4,10 +4,11 @@
  */
 package Engine;
 
-import Engine.SimulationStepping.MoveType;
-import Engine.SimulationStepping.SimulationStep;
-import Engine.SimulationStepping.ChainMoveStepGenerator;
-import Engine.SimulationStepping.StepGenerator;
+import Engine.SimulationStepping.StepTypes.MoveType;
+import Engine.SimulationStepping.StepTypes.SimulationStep;
+import Engine.SimulationStepping.StepGenerators.ChainMoveStepGenerator;
+import Engine.SimulationStepping.StepGenerators.ResizeStepGenerator;
+import Engine.SimulationStepping.StepGenerators.StepGenerator;
 import Engine.SystemGeometry.HardWallGeometry.HardWallGeometryBuilder;
 import Engine.SystemGeometry.PeriodicGeometry.PeriodicGeometryBuilder;
 import Engine.SystemGeometry.SystemGeometry;
@@ -54,7 +55,7 @@ public class PolymerSimulator implements Serializable {
     private final PhysicalConstants physicalConstants;
     private final PolymerPosition polymerPosition;
     private final SystemAnalyzer systemAnalyzer;
-    private final StepGenerator stepGenerator = new ChainMoveStepGenerator(0.);
+    private final StepGenerator stepGenerator = new ResizeStepGenerator();
     private double energy;
     private int iterationNumber;
     private int acceptedIterations;
@@ -168,7 +169,7 @@ public class PolymerSimulator implements Serializable {
                     acceptedChainMoves++;
                 }
             } else {
-                simulationStep.undoStep(polymerPosition);
+                simulationStep.undoStep(polymerPosition, systemAnalyzer);
             }
         }
     }

@@ -2,7 +2,7 @@
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
-package Engine.SimulationStepping;
+package Engine.SimulationStepping.StepTypes;
 
 import Engine.PolymerPosition;
 import Engine.SystemAnalyzer;
@@ -64,8 +64,19 @@ public class SingleWallResizeStep implements SimulationStep {
     //</editor-fold>
 
     @Override
-    public void undoStep(PolymerPosition polymerPosition) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    public void undoStep(PolymerPosition polymerPosition, SystemAnalyzer systemAnalyzer) {
+        SystemGeometry systemGeometry = systemAnalyzer.getSystemGeometry();
+        final double oldSize = getSizeOfDimension(systemGeometry);
+        changeGeometryBack(systemGeometry);
+        final double newSize = getSizeOfDimension(systemGeometry);
+        final double scaleFactor = newSize / oldSize;
+        scalePositions(polymerPosition, scaleFactor);
+    }
+
+    private void changeGeometryBack(SystemGeometry systemGeometry) {
+        final double oldSize = systemGeometry.getRMax()[dimension];
+        final double newSize = oldSize - sizeChange;
+        systemGeometry.setRMax(dimension, newSize);
     }
 
     @Override

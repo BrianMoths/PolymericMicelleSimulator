@@ -2,7 +2,7 @@
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
-package Engine.SimulationStepping;
+package Engine.SimulationStepping.StepTypes;
 
 import Engine.PolymerPosition;
 import Engine.SystemAnalyzer;
@@ -47,7 +47,7 @@ public class SingleBeadStep implements SimulationStep {
     }
 
     @Override
-    public void undoStep(PolymerPosition polymerPosition) {
+    public void undoStep(PolymerPosition polymerPosition, SystemAnalyzer systemAnalyzer) {
         polymerPosition.undoStep(bead, stepVector);
     }
 
@@ -71,4 +71,5 @@ public class SingleBeadStep implements SimulationStep {
     public MoveType getMoveType() {
         return moveType;
     }
+
 }

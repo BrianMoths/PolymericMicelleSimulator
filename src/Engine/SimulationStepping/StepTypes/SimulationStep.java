@@ -2,7 +2,7 @@
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
-package Engine.SimulationStepping;
+package Engine.SimulationStepping.StepTypes;
 
 import Engine.PolymerPosition;
 import Engine.SystemAnalyzer;
@@ -15,9 +15,10 @@ public interface SimulationStep {
 
     public boolean doStep(PolymerPosition polymerPosition, SystemAnalyzer systemAnalyzer);
 
-    public void undoStep(PolymerPosition polymerPosition);
+    public void undoStep(PolymerPosition polymerPosition, SystemAnalyzer systemAnalyzer);
 
     public double getEnergyChange();
 
     public MoveType getMoveType();
+
 }
