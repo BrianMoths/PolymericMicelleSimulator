@@ -22,15 +22,14 @@ public class ResizeStepGenerator implements StepGenerator {
         random = new Random();
     }
 
-    private final double maxScalingFactor, resizeStepChance;
+    private final double resizeStepChance;
     private final double lowerRandom, randomRange;
 
     public ResizeStepGenerator() {
-        this(.01, .001);
+        this(.01, .0001);
     }
 
     public ResizeStepGenerator(double maxScalingFactor, double resizeStepChance) {
-        this.maxScalingFactor = maxScalingFactor;
         this.resizeStepChance = resizeStepChance;
 
         lowerRandom = Math.sqrt(1 / (1 + maxScalingFactor));

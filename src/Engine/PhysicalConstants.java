@@ -4,6 +4,7 @@
  */
 package Engine;
 
+import Engine.ExternalEnergyCalculator.ExternalEnergyCalculatorBuilder;
 import Engine.SystemGeometry.AreaOverlap;
 import Engine.SystemGeometry.SystemGeometry;
 import java.io.Serializable;
@@ -127,7 +128,11 @@ public final class PhysicalConstants implements Serializable {
         ABOverlapCoefficient = physicalConstants.ABOverlapCoefficient;
         springCoefficient = physicalConstants.springCoefficient;
         hardOverlapCoefficient = hardOverlapCoefficientFromParameters(parameters);
-        externalEnergyCalculator = new ExternalEnergyCalculator();
+        ExternalEnergyCalculatorBuilder externalEnergyCalculatorBuilder = new ExternalEnergyCalculatorBuilder();
+        externalEnergyCalculatorBuilder.xTension = -50.;
+        externalEnergyCalculatorBuilder.xQuadratic = .2;
+
+        externalEnergyCalculator = externalEnergyCalculatorBuilder.build();
     }
 
     private PhysicalConstants(PhysicalConstantsBuilder physicalConstantsBuilder) {
