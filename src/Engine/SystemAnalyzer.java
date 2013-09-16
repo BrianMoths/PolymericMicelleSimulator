@@ -127,6 +127,10 @@ public class SystemAnalyzer implements Serializable {
         return simulationHistory.getAverage(trackedVariable);
     }
 
+    public boolean isEquilibrated() {
+        return simulationHistory.isEquilibrated();
+    }
+
     public double totalSpringStretching() {
         double sqLength = 0;
 

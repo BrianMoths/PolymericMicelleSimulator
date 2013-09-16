@@ -143,7 +143,12 @@ public class MicelleGui extends javax.swing.JFrame {
         frameNumber++;
         SystemAnalyzer systemAnalyzer = system.getSystemAnalyzer();
 
-        energyLbl.setText(String.format("%.4f", system.getEnergy()));
+        final double energy = system.getEnergy();
+
+        AreaPerimeter areaPerimeter = systemAnalyzer.findAreaAndPerimeter();
+        systemAnalyzer.addPerimeterAreaEnergySnapshot(areaPerimeter.perimeter, areaPerimeter.area, energy);
+
+        energyLbl.setText(String.format("%.4f", energy));
         numIterationsLbl.setText(String.valueOf(system.getIterationNumber()));
         if (analysisWindow != null) {
             analysisWindow.updateDisplay();
@@ -155,7 +160,9 @@ public class MicelleGui extends javax.swing.JFrame {
 //            System.out.println(systemAnalyzer.estimateSurfaceTension());
 //        }
 
-        //System.out.println(String.valueOf(system.springEnergy() / system.getNumBeads()));
+        if (frameNumber % 100 == 0) {
+            System.out.println("Is equilibrated: " + Boolean.toString(systemAnalyzer.isEquilibrated()));
+        }
         repaint();
     }
 

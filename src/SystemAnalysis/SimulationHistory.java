@@ -11,7 +11,7 @@ import org.apache.commons.math3.stat.descriptive.DescriptiveStatistics;
  *
  * @author bmoths
  */
-public class SimulationHistory implements Serializable{
+public class SimulationHistory implements Serializable {
 
     public static enum TrackedVariable {
 
@@ -20,24 +20,29 @@ public class SimulationHistory implements Serializable{
             public DescriptiveStatistics getStatistics(SimulationHistory simulationHistory) {
                 return simulationHistory.perimeterStatistics;
             }
+
         },
         AREA() {
             @Override
             public DescriptiveStatistics getStatistics(SimulationHistory simulationHistory) {
                 return simulationHistory.areaStatistics;
             }
+
         },
         ENERGY() {
             @Override
             public DescriptiveStatistics getStatistics(SimulationHistory simulationHistory) {
                 return simulationHistory.energyStatistics;
             }
+
         };
 
         public DescriptiveStatistics getStatistics(SimulationHistory simulationHistory) {
             throw new AssertionError();
         }
+
     }
+
     private DescriptiveStatistics perimeterStatistics;
     private DescriptiveStatistics areaStatistics;
     private DescriptiveStatistics energyStatistics;
@@ -80,7 +85,60 @@ public class SimulationHistory implements Serializable{
         }
     }
 
+    public boolean isEquilibrated() {
+        if (energyStatistics.getN() < 100) {
+            return false;
+        }
+        boolean isEquilibrated;
+//        boolean isEquilibrated = true;
+//        for (TrackedVariable trackedVariable : TrackedVariable.values()) {
+//            isEquilibrated &= isVariableEquilibrated(trackedVariable);
+//        }
+        isEquilibrated = isVariableEquilibrated(TrackedVariable.ENERGY);
+        return isEquilibrated;
+    }
+
+    public boolean isVariableEquilibrated(TrackedVariable trackedVariable) {
+        final DescriptiveStatistics descriptiveStatistics = getStatisticsFor(trackedVariable);
+        final double slope = getSlope(descriptiveStatistics);
+        final double slopeLimit = getSlopeLimit(descriptiveStatistics);
+        final boolean isVariableEquilibrated;
+        isVariableEquilibrated = Math.abs(slope) < slopeLimit;
+        return isVariableEquilibrated;
+    }
+
+    private double getSlope(DescriptiveStatistics descriptiveStatistics) {
+        final double[] points = descriptiveStatistics.getValues();
+        final int numPoints = points.length;
+
+        final double f0 = numPoints * descriptiveStatistics.getMean();
+        final double f1 = getF1(points);
+
+        final double slope;
+        slope = 6 * (double)(numPoints - 1) / (double)(numPoints * (numPoints + 1)) * (2 * f1 - f0);
+        return slope;
+    }
+
+    private double getF1(double[] points) {
+        final int numPoints = points.length;
+        double f1 = 0;
+        final double step = 1. / (numPoints - 1);
+        double currentX = 0;
+        for (int i = 0; i < numPoints; i++) {
+            f1 += currentX * points[i];
+            currentX += step;
+        }
+        return f1;
+    }
+
+    private double getSlopeLimit(DescriptiveStatistics descriptiveStatistics) {
+        final double standardDeviation = descriptiveStatistics.getStandardDeviation();
+        final double numPoints = (double)descriptiveStatistics.getN();
+        return standardDeviation * 24. / Math.sqrt(numPoints);
+    }
+
     private DescriptiveStatistics getStatisticsFor(TrackedVariable trackedVariable) {
         return trackedVariable.getStatistics(this);
     }
+
 }
