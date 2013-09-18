@@ -35,8 +35,8 @@ public class SystemAnalyzer implements Serializable {
     private BeadBinner beadBinner;
     private double[][] beadPositions;
     private SimulationHistory simulationHistory;
-    private SurfaceTensionFinder surfaceTensionFinder;
 
+    //<editor-fold defaultstate="collapsed" desc="constructors">
     public SystemAnalyzer(SystemGeometry systemGeometry,
             PolymerCluster polymerCluster,
             PhysicalConstants physicalConstants) {
@@ -48,7 +48,6 @@ public class SystemAnalyzer implements Serializable {
         beadPositions = new double[numBeads][systemGeometry.getDimension()];
         beadBinner = new BeadBinner(beadPositions, systemGeometry);
         simulationHistory = new SimulationHistory(statisticsWindow);
-        surfaceTensionFinder = new SurfaceTensionFinder(this);
     }
 
     public SystemAnalyzer(SystemAnalyzer systemAnalyzer) {
@@ -60,41 +59,13 @@ public class SystemAnalyzer implements Serializable {
         beadPositions = new double[systemAnalyzer.numBeads][systemGeometry.getDimension()];
         systemGeometry.checkedCopyPositions(systemAnalyzer.beadPositions, beadPositions);
         beadBinner = new BeadBinner(systemAnalyzer.beadBinner); //check this
-        surfaceTensionFinder = new SurfaceTensionFinder(systemAnalyzer.surfaceTensionFinder);
     }
+    //</editor-fold>
 
-    private void rebinBeads() {
-        beadBinner = new BeadBinner(beadPositions, systemGeometry);
-    }
-
+    //<editor-fold defaultstate="collapsed" desc="area and perimeter">
     public double findArea() {
         List<BeadRectangle> beadRectangles = makeBeadRectangles();
         return GeometryAnalyzer.findArea(beadRectangles);
-    }
-
-    public void recordSurface() {
-        surfaceTensionFinder.recordSurfaceTension();
-    }
-
-    public double estimateSurfaceTension() {
-        return surfaceTensionFinder.findSurfaceTension();
-    }
-
-    public double findRightEdge(double yValue) {
-        final double halfWidth = systemGeometry.getParameters().getInteractionLength() / 2;
-        final double lowerCutoff = yValue - halfWidth;
-        final double upperCutoff = yValue + halfWidth;
-        double rightEdge = 0;
-        for (int bead = 0; bead < numBeads; bead++) {
-            final double beadY = beadPositions[bead][1];
-            if (beadY > lowerCutoff && beadY < upperCutoff) {
-                final double beadX = beadPositions[bead][0];
-                if (beadX > rightEdge) {
-                    rightEdge = beadX;
-                }
-            }
-        }
-        return rightEdge;
     }
 
     public AreaPerimeter findAreaAndPerimeter() {
@@ -116,7 +87,9 @@ public class SystemAnalyzer implements Serializable {
         }
         return beadRectangles;
     }
+    //</editor-fold>
 
+    //<editor-fold defaultstate="collapsed" desc="simulation history">
     public void addPerimeterAreaEnergySnapshot(double perimeter, double area, double energy) {
         simulationHistory.addValue(SimulationHistory.TrackedVariable.PERIMETER, perimeter);
         simulationHistory.addValue(SimulationHistory.TrackedVariable.AREA, area);
@@ -127,10 +100,12 @@ public class SystemAnalyzer implements Serializable {
         return simulationHistory.getAverage(trackedVariable);
     }
 
-    public boolean isEquilibrated() {
-        return simulationHistory.isEquilibrated();
+    public void resetHistory() {
+        simulationHistory.clearAll();
     }
+    //</editor-fold>
 
+    //<editor-fold defaultstate="collapsed" desc="overlap and stretching">
     public double totalSpringStretching() {
         double sqLength = 0;
 
@@ -179,7 +154,10 @@ public class SystemAnalyzer implements Serializable {
 
         return AreaOverlap.overlapOfBead(isTypeA(bead), AOverlap, BOverlap);
     }
+    //</editor-fold>
 
+    //<editor-fold defaultstate="collapsed" desc="computing energy">
+    //<editor-fold defaultstate="collapsed" desc="total Energy">
     public double computeEnergy() {
         return springEnergy() + densityEnergy() + externalEnergy();
     }
@@ -199,7 +177,9 @@ public class SystemAnalyzer implements Serializable {
     public double externalEnergy() {
         return physicalConstants.externalEnergy(systemGeometry);
     }
+    //</editor-fold>
 
+    //<editor-fold defaultstate="collapsed" desc="bead Energy">
     public double beadEnergy(int bead) {
         return beadSpringEnergy(bead) + beadDensityEnergy(bead);
     }
@@ -215,21 +195,10 @@ public class SystemAnalyzer implements Serializable {
 
         return physicalConstants.densityEnergy(overlap);
     }
+    //</editor-fold>
+    //</editor-fold>
 
-    public boolean isTypeA(int bead) {
-        return bead < numABeads;
-    }
-
-    public SimulationHistory getSimulationHistory() {
-        return simulationHistory;
-    }
-
-    public void setBeadPositions(double[][] beadPositions) {
-        this.beadPositions = beadPositions;
-        rebinBeads();
-    }
-
-    void updateBinWithMove(int stepBead) {
+    void updateBinOfBead(int stepBead) {
         beadBinner.updateBeadPosition(stepBead, beadPositions[stepBead]);
     }
 
@@ -242,6 +211,7 @@ public class SystemAnalyzer implements Serializable {
         return chain;
     }
 
+    //<editor-fold defaultstate="collapsed" desc="getChainOfBead helpers">
     private void addBeadsLeftToChain(int bead, List<Integer> chain) {
         int nextBead = getBeadToLeft(bead);
         while (nextBead != -1) {
@@ -264,6 +234,25 @@ public class SystemAnalyzer implements Serializable {
 
     private int getBeadToRight(int bead) {
         return neighbors[bead][1];
+    }
+//</editor-fold>
+
+    //<editor-fold defaultstate="collapsed" desc="setters">
+    public void setBeadPositions(double[][] beadPositions) {
+        this.beadPositions = beadPositions;
+        rebinBeads();
+    }
+
+    //<editor-fold defaultstate="collapsed" desc="setBeadPositions Helper">
+    private void rebinBeads() {
+        beadBinner = new BeadBinner(beadPositions, systemGeometry);
+    }
+    //</editor-fold>
+//</editor-fold>
+
+    //<editor-fold defaultstate="collapsed" desc="getters">
+    public boolean isEquilibrated() {
+        return simulationHistory.isEquilibrated();
     }
 
     public SystemGeometry getSystemGeometry() {
@@ -290,8 +279,12 @@ public class SystemAnalyzer implements Serializable {
         return beadPositions[bead][component];
     }
 
-    public SurfaceTensionFinder getSurfaceTensionFinder() {
-        return surfaceTensionFinder;
+    public SimulationHistory getSimulationHistory() {
+        return simulationHistory;
     }
 
+    public boolean isTypeA(int bead) {
+        return bead < numABeads;
+    }
+    //</editor-fold>
 }

@@ -45,7 +45,20 @@ public interface SystemGeometry extends Serializable {
 
     public double[][] randomColumnPositions(int numPositions);
 
+    /**
+     *
+     * @return a random vector whose components are normally distributed with
+     * standard deviation of step length
+     */
     public double[] randomGaussian();
+
+    /**
+     *
+     * @param scaleFactor factor by which to scale the Gaussian
+     * @return a random vector whose components are normally distributed with
+     * standard deviation of step length times the scale factor.
+     */
+    public double[] randomGaussian(double scaleFactor);
 
     public boolean incrementFirstVector(double[] toStep, double[] stepVector);
 

@@ -66,13 +66,7 @@ public class SystemDrawer {
             clear();
             drawBeads();
             drawBonds();
-//            drawSurfaceTensionFinder();
         }
-    }
-
-    private void drawSurfaceTensionFinder() {
-        SurfaceTensionFinder surfaceTensionFinder = systemAnalyzer.getSurfaceTensionFinder();
-        surfaceTensionFinder.drawDots(graphics);
     }
 
     public void draw(Graphics graphics) {

@@ -86,7 +86,7 @@ public class SimulationHistory implements Serializable {
     }
 
     public boolean isEquilibrated() {
-        if (energyStatistics.getN() < 100) {
+        if (energyStatistics.getN() < 500) {
             return false;
         }
         boolean isEquilibrated;
@@ -102,6 +102,10 @@ public class SimulationHistory implements Serializable {
         final DescriptiveStatistics descriptiveStatistics = getStatisticsFor(trackedVariable);
         final double slope = getSlope(descriptiveStatistics);
         final double slopeLimit = getSlopeLimit(descriptiveStatistics);
+
+//        System.out.println("Slope: " + Double.toString(slope));
+//        System.out.println("Slope Limit: " + Double.toString(slopeLimit));
+
         final boolean isVariableEquilibrated;
         isVariableEquilibrated = Math.abs(slope) < slopeLimit;
         return isVariableEquilibrated;

@@ -130,19 +130,17 @@ public class PolymerSimulator implements Serializable {
         energy = systemAnalyzer.computeEnergy();
     }
 
+    public synchronized void anneal() {
+        resetCounters();
+        polymerPosition.anneal();
+        energy = systemAnalyzer.computeEnergy();
+    }
+
     private void resetCounters() {
         iterationNumber = 0;
         acceptedIterations = 0;
         acceptedChainMoves = 0;
         numChainMoves = 0;
-    }
-
-    public synchronized double[][] getBeadPositions() {
-        return polymerPosition.getBeadPositions();
-    }
-
-    public synchronized void setBeadPositions(double[][] beadPositions) {
-        polymerPosition.setBeadPositions(beadPositions);
     }
 
     public synchronized void doIterations(int n) { //possibly optomize by unrolling loop and tracking pairwise interactions
@@ -174,7 +172,15 @@ public class PolymerSimulator implements Serializable {
         }
     }
 
+    public synchronized void setBeadPositions(double[][] beadPositions) {
+        polymerPosition.setBeadPositions(beadPositions);
+    }
+
     // <editor-fold defaultstate="collapsed" desc="getters">
+    public synchronized double[][] getBeadPositions() {
+        return polymerPosition.getBeadPositions();
+    }
+
     public int getNumBeads() {
         return polymerPosition.getNumBeads();
     }

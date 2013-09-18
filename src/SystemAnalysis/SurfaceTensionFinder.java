@@ -37,6 +37,7 @@ public class SurfaceTensionFinder implements Serializable {
             doubleArray[i] -= mean;
         }
     }
+
     private SystemAnalyzer systemAnalyzer;
     private DescriptiveStatistics surfaceTensionStatistics;
     private final double[] sampledYs;
@@ -111,7 +112,7 @@ public class SurfaceTensionFinder implements Serializable {
     private double[] getRightXs() {
         double[] rightXs = new double[numSamples];
         for (int i = 0; i < numSamples; i++) {
-            rightXs[i] = systemAnalyzer.findRightEdge(sampledYs[i]);
+//            rightXs[i] = systemAnalyzer.findRightEdge(sampledYs[i]); needs to be fixed later
         }
         return rightXs;
     }
@@ -129,12 +130,13 @@ public class SurfaceTensionFinder implements Serializable {
         double amplitude = getFundamentalAmplitude(rightXs);
         graphics.setColor(Color.red);
         for (int i = 0; i < numSamples; i++) {
-            graphics.fillOval((int) Math.round(rightXs[i] / systemAnalyzer.getSystemGeometry().getRMax()[0] * 600), (int) Math.round(sampledYs[i] / systemAnalyzer.getSystemGeometry().getRMax()[0] * 600), radius, radius);
+            graphics.fillOval((int)Math.round(rightXs[i] / systemAnalyzer.getSystemGeometry().getRMax()[0] * 600), (int)Math.round(sampledYs[i] / systemAnalyzer.getSystemGeometry().getRMax()[0] * 600), radius, radius);
         }
         graphics.setColor(Color.green);
         for (int i = 0; i < numSamples; i++) {
-            graphics.fillOval((int) Math.round((amplitude * modelXs[i] + meanX) / systemAnalyzer.getSystemGeometry().getRMax()[0] * 600), (int) Math.round(sampledYs[i] / systemAnalyzer.getSystemGeometry().getRMax()[0] * 600), radius, radius);
+            graphics.fillOval((int)Math.round((amplitude * modelXs[i] + meanX) / systemAnalyzer.getSystemGeometry().getRMax()[0] * 600), (int)Math.round(sampledYs[i] / systemAnalyzer.getSystemGeometry().getRMax()[0] * 600), radius, radius);
         }
 
     }
+
 }

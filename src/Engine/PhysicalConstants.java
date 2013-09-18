@@ -222,6 +222,10 @@ public final class PhysicalConstants implements Serializable {
     public double getSpringCoefficient() {
         return springCoefficient;
     }
-    //</editor-fold>
 
+    public ExternalEnergyCalculator getExternalEnergyCalculator() {
+        return externalEnergyCalculator;
+    }
+
+    //</editor-fold>
 }

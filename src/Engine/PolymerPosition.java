@@ -4,6 +4,8 @@
  */
 package Engine;
 
+import Engine.SimulationStepping.StepTypes.SimulationStep;
+import Engine.SimulationStepping.StepTypes.SingleBeadStep;
 import Engine.SystemGeometry.SystemGeometry;
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -69,10 +71,22 @@ public class PolymerPosition implements Serializable {
 
     public void columnRandomize() {
         setBeadPositionsPrivate(systemGeometry.randomColumnPositions(numBeads));
+        resetAnalyzersHistory();
     }
 
     private void randomizePrivate() {
         setBeadPositionsPrivate(systemGeometry.randomPositions(numBeads));
+        resetAnalyzersHistory();
+    }
+
+    public void anneal() {
+        for (int bead = 0; bead < numBeads; bead++) {
+            double[] beadPosition = beadPositions[bead];
+            double[] stepVector = systemGeometry.randomGaussian(3);
+            systemGeometry.incrementFirstVector(beadPosition, stepVector);
+        }
+        resetAnalyzersHistory();
+        syncAnalyzers();
     }
     //</editor-fold>
 
@@ -90,11 +104,17 @@ public class PolymerPosition implements Serializable {
 
     private void signalMoveToAnalyzers(int stepBead) {
         for (SystemAnalyzer systemAnalyzer : registeredSystemAnalyzers) {
-            systemAnalyzer.updateBinWithMove(stepBead);
+            systemAnalyzer.updateBinOfBead(stepBead);
         }
     }
-//</editor-fold>
 
+    private void resetAnalyzersHistory() {
+        for (SystemAnalyzer systemAnalyzer : registeredSystemAnalyzers) {
+            systemAnalyzer.resetHistory();
+        }
+    }
+
+//</editor-fold>
     //<editor-fold defaultstate="collapsed" desc="move beads">
     public boolean moveBead(int stepBead, double[] stepVector) {
         final boolean isSuccessful = systemGeometry.incrementFirstVector(beadPositions[stepBead], stepVector);

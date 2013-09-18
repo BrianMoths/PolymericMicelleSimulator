@@ -157,6 +157,15 @@ public abstract class AbstractGeometry implements SystemGeometry {
     }
 
     @Override
+    public double[] randomGaussian(double scaleFactor) {
+        double[] randomVector = new double[dimension];
+        for (int i = 0; i < dimension; i++) {
+            randomVector[i] = randomNumberGenerator.nextGaussian() * parameters.getStepLength() * scaleFactor;
+        }
+        return randomVector;
+    }
+
+    @Override
     public double getVolume() {
         double volume = 1;
         for (int i = 0; i < dimension; i++) {
