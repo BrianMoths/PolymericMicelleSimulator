@@ -12,6 +12,7 @@ import Engine.SimulationStepping.StepGenerators.StepGenerator;
 import Engine.SystemGeometry.HardWallGeometry.HardWallGeometryBuilder;
 import Engine.SystemGeometry.PeriodicGeometry.PeriodicGeometryBuilder;
 import Engine.SystemGeometry.SystemGeometry;
+import SystemAnalysis.GeometryAnalyzer;
 import java.io.Serializable;
 
 /**
@@ -169,6 +170,14 @@ public class PolymerSimulator implements Serializable {
             } else {
                 simulationStep.undoStep(polymerPosition, systemAnalyzer);
             }
+        }
+    }
+
+    public void equilibrateSystem() {
+        while (!systemAnalyzer.isEquilibrated()) {
+            doIterations(10000);
+            final GeometryAnalyzer.AreaPerimeter areaPerimeter = systemAnalyzer.findAreaAndPerimeter();
+            systemAnalyzer.addPerimeterAreaEnergySnapshot(areaPerimeter.perimeter, areaPerimeter.area, energy);
         }
     }
 
