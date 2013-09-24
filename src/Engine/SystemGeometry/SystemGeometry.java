@@ -6,8 +6,8 @@ package Engine.SystemGeometry;
 
 import Engine.SimulationParameters;
 import Engine.TwoBeadOverlap;
-import SystemAnalysis.BeadRectangle;
-import SystemAnalysis.RectanglesAndPerimeter;
+import SystemAnalysis.AreaPerimeter.BeadRectangle;
+import SystemAnalysis.AreaPerimeter.RectanglesAndBoundaryPerimeter;
 import java.io.Serializable;
 import java.util.List;
 
@@ -68,7 +68,7 @@ public interface SystemGeometry extends Serializable {
 
     public void checkedCopyPositions(double[][] src, double[][] dest);
 
-    public RectanglesAndPerimeter getRectanglesAndPerimeterFromPositions(double[][] beadPostions);
+    public RectanglesAndBoundaryPerimeter getRectanglesAndPerimeterFromPositions(double[][] beadPostions);
 
     public BeadRectangle getRectangleFromPosition(double[] beadPosition);
 

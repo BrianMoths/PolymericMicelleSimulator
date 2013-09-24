@@ -2,7 +2,7 @@
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
-package SystemAnalysis;
+package SystemAnalysis.AreaPerimeter;
 
 import java.util.List;
 
@@ -10,13 +10,14 @@ import java.util.List;
  *
  * @author bmoths
  */
-public class RectanglesAndPerimeter {
+public class RectanglesAndBoundaryPerimeter {
 
     public List<BeadRectangle> beadRectangles;
     public double gluedPerimeter;
 
-    public RectanglesAndPerimeter(List<BeadRectangle> beadRectangles, double gluedPerimeter) {
+    public RectanglesAndBoundaryPerimeter(List<BeadRectangle> beadRectangles, double gluedPerimeter) {
         this.beadRectangles = beadRectangles;
         this.gluedPerimeter = gluedPerimeter;
     }
+
 }

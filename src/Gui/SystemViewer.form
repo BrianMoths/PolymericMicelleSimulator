@@ -23,11 +23,15 @@
   <Layout>
     <DimensionLayout dim="0">
       <Group type="103" groupAlignment="0" attributes="0">
-          <Group type="102" attributes="0">
-              <EmptySpace max="-2" attributes="0"/>
+          <Group type="102" alignment="0" attributes="0">
+              <EmptySpace max="32767" attributes="0"/>
               <Group type="103" groupAlignment="0" attributes="0">
-                  <Component id="displayPanel" min="-2" max="-2" attributes="0"/>
-                  <Group type="102" alignment="0" attributes="0">
+                  <Group type="102" attributes="0">
+                      <Component id="displayPanel" min="-2" max="-2" attributes="0"/>
+                      <EmptySpace type="unrelated" max="-2" attributes="0"/>
+                      <Component id="physicalConstantsPanel" min="-2" max="-2" attributes="0"/>
+                  </Group>
+                  <Group type="102" attributes="0">
                       <Group type="103" groupAlignment="1" attributes="0">
                           <Component id="numIterationsCaptionLbl" alignment="0" min="-2" max="-2" attributes="0"/>
                           <Component id="energyCaptionLbl" alignment="1" min="-2" max="-2" attributes="0"/>
@@ -39,29 +43,41 @@
                       </Group>
                       <EmptySpace max="-2" attributes="0"/>
                       <Component id="analysisWindowBtn" min="-2" max="-2" attributes="0"/>
+                      <EmptySpace min="-2" pref="53" max="-2" attributes="0"/>
+                      <Component id="externalEnergyCaptionLbl" min="-2" max="-2" attributes="0"/>
+                      <EmptySpace max="-2" attributes="0"/>
+                      <Component id="externalEnergyLbl" min="-2" pref="113" max="-2" attributes="0"/>
                   </Group>
               </Group>
-              <EmptySpace pref="153" max="32767" attributes="0"/>
           </Group>
       </Group>
     </DimensionLayout>
     <DimensionLayout dim="1">
       <Group type="103" groupAlignment="0" attributes="0">
           <Group type="102" alignment="0" attributes="0">
+              <Group type="103" groupAlignment="0" attributes="0">
+                  <Group type="102" attributes="0">
+                      <EmptySpace max="-2" attributes="0"/>
+                      <Component id="displayPanel" min="-2" max="-2" attributes="0"/>
+                  </Group>
+                  <Group type="102" alignment="0" attributes="0">
+                      <EmptySpace min="-2" pref="196" max="-2" attributes="0"/>
+                      <Component id="physicalConstantsPanel" min="-2" max="-2" attributes="0"/>
+                  </Group>
+              </Group>
               <EmptySpace max="-2" attributes="0"/>
-              <Component id="displayPanel" min="-2" max="-2" attributes="0"/>
-              <EmptySpace type="unrelated" max="-2" attributes="0"/>
               <Group type="103" groupAlignment="3" attributes="0">
                   <Component id="energyCaptionLbl" alignment="3" min="-2" max="-2" attributes="0"/>
                   <Component id="energyLbl" alignment="3" min="-2" pref="15" max="-2" attributes="0"/>
                   <Component id="analysisWindowBtn" alignment="3" max="32767" attributes="0"/>
+                  <Component id="externalEnergyCaptionLbl" alignment="3" min="-2" max="-2" attributes="0"/>
+                  <Component id="externalEnergyLbl" alignment="3" min="-2" max="-2" attributes="0"/>
               </Group>
               <EmptySpace max="-2" attributes="0"/>
               <Group type="103" groupAlignment="0" max="-2" attributes="0">
                   <Component id="numIterationsCaptionLbl" alignment="0" pref="28" max="32767" attributes="0"/>
                   <Component id="numIterationsLbl" alignment="0" min="-2" max="-2" attributes="0"/>
               </Group>
-              <EmptySpace min="-2" pref="26" max="-2" attributes="0"/>
           </Group>
       </Group>
     </DimensionLayout>
@@ -119,6 +135,240 @@
       <Events>
         <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="analysisWindowBtnActionPerformed"/>
       </Events>
+    </Component>
+    <Container class="javax.swing.JPanel" name="physicalConstantsPanel">
+      <Properties>
+        <Property name="border" type="javax.swing.border.Border" editor="org.netbeans.modules.form.editors2.BorderEditor">
+          <Border info="org.netbeans.modules.form.compat2.border.TitledBorderInfo">
+            <TitledBorder title="Physical Constants"/>
+          </Border>
+        </Property>
+      </Properties>
+
+      <Layout>
+        <DimensionLayout dim="0">
+          <Group type="103" groupAlignment="0" attributes="0">
+              <Group type="102" alignment="0" attributes="0">
+                  <EmptySpace max="-2" attributes="0"/>
+                  <Group type="103" groupAlignment="0" attributes="0">
+                      <Group type="102" alignment="0" attributes="0">
+                          <Component id="systemSizeCaptionLbl" min="-2" pref="97" max="-2" attributes="0"/>
+                          <EmptySpace max="-2" attributes="0"/>
+                          <Component id="systemSizeLbl" max="32767" attributes="0"/>
+                      </Group>
+                      <Group type="102" alignment="0" attributes="0">
+                          <Component id="hardCoresChk" min="-2" max="-2" attributes="0"/>
+                          <EmptySpace min="-2" pref="2" max="-2" attributes="0"/>
+                          <Component id="hardCoresCaptionLbl" max="32767" attributes="0"/>
+                      </Group>
+                      <Group type="102" alignment="0" attributes="0">
+                          <Group type="103" groupAlignment="1" max="-2" attributes="0">
+                              <Component id="interactionLengthCaptionLbl" alignment="0" max="32767" attributes="0"/>
+                              <Component id="BBCoeffCaptionLbl" alignment="0" max="32767" attributes="0"/>
+                              <Component id="springConstantCaptionLbl" alignment="1" max="32767" attributes="0"/>
+                              <Component id="ABCoefficientCaptionLbl" alignment="1" max="32767" attributes="0"/>
+                              <Component id="AACoefficientCaptionLbl" alignment="1" max="32767" attributes="0"/>
+                              <Component id="temperatureCaptionLbl" alignment="1" max="32767" attributes="0"/>
+                          </Group>
+                          <EmptySpace max="-2" attributes="0"/>
+                          <Group type="103" groupAlignment="0" attributes="0">
+                              <Component id="temperatureLbl" alignment="0" max="32767" attributes="0"/>
+                              <Component id="AACoefficientLbl" alignment="0" max="32767" attributes="0"/>
+                              <Component id="BBCoefficientLbl" alignment="0" max="32767" attributes="0"/>
+                              <Component id="ABCoefficientLbl" alignment="0" max="32767" attributes="0"/>
+                              <Component id="springConstantLbl" alignment="0" max="32767" attributes="0"/>
+                              <Component id="beadSizeLbl" alignment="0" max="32767" attributes="0"/>
+                          </Group>
+                      </Group>
+                  </Group>
+                  <EmptySpace max="-2" attributes="0"/>
+              </Group>
+          </Group>
+        </DimensionLayout>
+        <DimensionLayout dim="1">
+          <Group type="103" groupAlignment="0" attributes="0">
+              <Group type="102" alignment="0" attributes="0">
+                  <Group type="103" groupAlignment="3" attributes="0">
+                      <Component id="temperatureCaptionLbl" alignment="3" min="-2" max="-2" attributes="0"/>
+                      <Component id="temperatureLbl" alignment="3" min="-2" max="-2" attributes="0"/>
+                  </Group>
+                  <EmptySpace max="-2" attributes="0"/>
+                  <Group type="103" groupAlignment="3" attributes="0">
+                      <Component id="AACoefficientCaptionLbl" alignment="3" min="-2" max="-2" attributes="0"/>
+                      <Component id="AACoefficientLbl" alignment="3" min="-2" max="-2" attributes="0"/>
+                  </Group>
+                  <EmptySpace max="-2" attributes="0"/>
+                  <Group type="103" groupAlignment="3" attributes="0">
+                      <Component id="BBCoeffCaptionLbl" alignment="3" min="-2" pref="15" max="-2" attributes="0"/>
+                      <Component id="BBCoefficientLbl" alignment="3" min="-2" max="-2" attributes="0"/>
+                  </Group>
+                  <EmptySpace max="-2" attributes="0"/>
+                  <Group type="103" groupAlignment="3" attributes="0">
+                      <Component id="ABCoefficientCaptionLbl" alignment="3" min="-2" max="-2" attributes="0"/>
+                      <Component id="ABCoefficientLbl" alignment="3" min="-2" max="-2" attributes="0"/>
+                  </Group>
+                  <EmptySpace max="-2" attributes="0"/>
+                  <Group type="103" groupAlignment="3" attributes="0">
+                      <Component id="springConstantCaptionLbl" alignment="3" min="-2" max="-2" attributes="0"/>
+                      <Component id="springConstantLbl" alignment="3" min="-2" max="-2" attributes="0"/>
+                  </Group>
+                  <EmptySpace max="-2" attributes="0"/>
+                  <Group type="103" groupAlignment="3" attributes="0">
+                      <Component id="interactionLengthCaptionLbl" alignment="3" min="-2" max="-2" attributes="0"/>
+                      <Component id="beadSizeLbl" alignment="3" min="-2" max="-2" attributes="0"/>
+                  </Group>
+                  <EmptySpace max="-2" attributes="0"/>
+                  <Group type="103" groupAlignment="3" attributes="0">
+                      <Component id="systemSizeCaptionLbl" alignment="3" min="-2" max="-2" attributes="0"/>
+                      <Component id="systemSizeLbl" alignment="3" min="-2" max="-2" attributes="0"/>
+                  </Group>
+                  <EmptySpace pref="33" max="32767" attributes="0"/>
+                  <Group type="103" groupAlignment="0" attributes="0">
+                      <Component id="hardCoresChk" alignment="0" min="-2" max="-2" attributes="0"/>
+                      <Component id="hardCoresCaptionLbl" alignment="0" min="-2" max="-2" attributes="0"/>
+                  </Group>
+                  <EmptySpace max="-2" attributes="0"/>
+              </Group>
+          </Group>
+        </DimensionLayout>
+      </Layout>
+      <SubComponents>
+        <Component class="javax.swing.JLabel" name="temperatureCaptionLbl">
+          <Properties>
+            <Property name="text" type="java.lang.String" value="Temperature:"/>
+          </Properties>
+        </Component>
+        <Component class="javax.swing.JLabel" name="AACoefficientCaptionLbl">
+          <Properties>
+            <Property name="horizontalAlignment" type="int" value="4"/>
+            <Property name="text" type="java.lang.String" value="AACoeff.:"/>
+          </Properties>
+        </Component>
+        <Component class="javax.swing.JLabel" name="ABCoefficientCaptionLbl">
+          <Properties>
+            <Property name="horizontalAlignment" type="int" value="4"/>
+            <Property name="text" type="java.lang.String" value="AB Coeff.:"/>
+          </Properties>
+        </Component>
+        <Component class="javax.swing.JLabel" name="springConstantCaptionLbl">
+          <Properties>
+            <Property name="text" type="java.lang.String" value="Spring Const:"/>
+          </Properties>
+        </Component>
+        <Component class="javax.swing.JLabel" name="BBCoeffCaptionLbl">
+          <Properties>
+            <Property name="horizontalAlignment" type="int" value="4"/>
+            <Property name="text" type="java.lang.String" value="BB Coeff.:"/>
+          </Properties>
+        </Component>
+        <Component class="javax.swing.JCheckBox" name="hardCoresChk">
+          <Properties>
+            <Property name="enabled" type="boolean" value="false"/>
+          </Properties>
+        </Component>
+        <Component class="javax.swing.JLabel" name="interactionLengthCaptionLbl">
+          <Properties>
+            <Property name="horizontalAlignment" type="int" value="11"/>
+            <Property name="text" type="java.lang.String" value="Bead Size:"/>
+          </Properties>
+        </Component>
+        <Component class="javax.swing.JLabel" name="temperatureLbl">
+          <Properties>
+            <Property name="text" type="java.lang.String" value="jLabel1"/>
+            <Property name="border" type="javax.swing.border.Border" editor="org.netbeans.modules.form.editors2.BorderEditor">
+              <Border info="org.netbeans.modules.form.compat2.border.BevelBorderInfo">
+                <BevelBorder bevelType="1"/>
+              </Border>
+            </Property>
+          </Properties>
+        </Component>
+        <Component class="javax.swing.JLabel" name="AACoefficientLbl">
+          <Properties>
+            <Property name="text" type="java.lang.String" value="jLabel2"/>
+            <Property name="border" type="javax.swing.border.Border" editor="org.netbeans.modules.form.editors2.BorderEditor">
+              <Border info="org.netbeans.modules.form.compat2.border.BevelBorderInfo">
+                <BevelBorder bevelType="1"/>
+              </Border>
+            </Property>
+          </Properties>
+        </Component>
+        <Component class="javax.swing.JLabel" name="BBCoefficientLbl">
+          <Properties>
+            <Property name="text" type="java.lang.String" value="jLabel3"/>
+            <Property name="border" type="javax.swing.border.Border" editor="org.netbeans.modules.form.editors2.BorderEditor">
+              <Border info="org.netbeans.modules.form.compat2.border.BevelBorderInfo">
+                <BevelBorder bevelType="1"/>
+              </Border>
+            </Property>
+          </Properties>
+        </Component>
+        <Component class="javax.swing.JLabel" name="ABCoefficientLbl">
+          <Properties>
+            <Property name="text" type="java.lang.String" value="jLabel4"/>
+            <Property name="border" type="javax.swing.border.Border" editor="org.netbeans.modules.form.editors2.BorderEditor">
+              <Border info="org.netbeans.modules.form.compat2.border.BevelBorderInfo">
+                <BevelBorder bevelType="1"/>
+              </Border>
+            </Property>
+          </Properties>
+        </Component>
+        <Component class="javax.swing.JLabel" name="springConstantLbl">
+          <Properties>
+            <Property name="text" type="java.lang.String" value="jLabel5"/>
+            <Property name="border" type="javax.swing.border.Border" editor="org.netbeans.modules.form.editors2.BorderEditor">
+              <Border info="org.netbeans.modules.form.compat2.border.BevelBorderInfo">
+                <BevelBorder bevelType="1"/>
+              </Border>
+            </Property>
+          </Properties>
+        </Component>
+        <Component class="javax.swing.JLabel" name="beadSizeLbl">
+          <Properties>
+            <Property name="text" type="java.lang.String" value="jLabel6"/>
+            <Property name="border" type="javax.swing.border.Border" editor="org.netbeans.modules.form.editors2.BorderEditor">
+              <Border info="org.netbeans.modules.form.compat2.border.BevelBorderInfo">
+                <BevelBorder bevelType="1"/>
+              </Border>
+            </Property>
+          </Properties>
+        </Component>
+        <Component class="javax.swing.JLabel" name="hardCoresCaptionLbl">
+          <Properties>
+            <Property name="text" type="java.lang.String" value="Give Beads Hard Cores"/>
+          </Properties>
+        </Component>
+        <Component class="javax.swing.JLabel" name="systemSizeCaptionLbl">
+          <Properties>
+            <Property name="horizontalAlignment" type="int" value="11"/>
+            <Property name="text" type="java.lang.String" value="System Size:"/>
+          </Properties>
+        </Component>
+        <Component class="javax.swing.JLabel" name="systemSizeLbl">
+          <Properties>
+            <Property name="text" type="java.lang.String" value="jLabel1"/>
+            <Property name="border" type="javax.swing.border.Border" editor="org.netbeans.modules.form.editors2.BorderEditor">
+              <Border info="org.netbeans.modules.form.compat2.border.BevelBorderInfo">
+                <BevelBorder bevelType="1"/>
+              </Border>
+            </Property>
+          </Properties>
+        </Component>
+      </SubComponents>
+    </Container>
+    <Component class="javax.swing.JLabel" name="externalEnergyCaptionLbl">
+      <Properties>
+        <Property name="text" type="java.lang.String" value="External Energy:"/>
+      </Properties>
+    </Component>
+    <Component class="javax.swing.JLabel" name="externalEnergyLbl">
+      <Properties>
+        <Property name="text" type="java.lang.String" value="0"/>
+        <Property name="border" type="javax.swing.border.Border" editor="org.netbeans.modules.form.editors2.BorderEditor">
+          <Border info="org.netbeans.modules.form.compat2.border.BevelBorderInfo">
+            <BevelBorder bevelType="1"/>
+          </Border>
+        </Property>
+      </Properties>
     </Component>
   </SubComponents>
 </Form>

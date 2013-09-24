@@ -26,6 +26,7 @@ public class ResizeStepGenerator implements StepGenerator {
     private final double lowerRandom, randomRange;
 
     public ResizeStepGenerator() {
+//        this(maxScalingFactor, resizeStepChance);
         this(.01, .0001);
     }
 

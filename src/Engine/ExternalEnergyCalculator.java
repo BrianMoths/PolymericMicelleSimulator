@@ -23,7 +23,7 @@ public class ExternalEnergyCalculator {
             pressure = 0;
         }
 
-        ExternalEnergyCalculator build() {
+        public ExternalEnergyCalculator build() {
             return new ExternalEnergyCalculator(this);
         }
 

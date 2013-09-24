@@ -6,8 +6,8 @@ package Engine.SystemGeometry;
 
 import Engine.SimulationParameters;
 import Engine.TwoBeadOverlap;
-import SystemAnalysis.BeadRectangle;
-import SystemAnalysis.RectanglesAndPerimeter;
+import SystemAnalysis.AreaPerimeter.BeadRectangle;
+import SystemAnalysis.AreaPerimeter.RectanglesAndBoundaryPerimeter;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -48,14 +48,14 @@ public final class HardWallGeometry extends AbstractGeometry {
     }
 
     @Override
-    public RectanglesAndPerimeter getRectanglesAndPerimeterFromPositions(double[][] beadPositions) {
+    public RectanglesAndBoundaryPerimeter getRectanglesAndPerimeterFromPositions(double[][] beadPositions) {
         List<BeadRectangle> beadRectangles = new ArrayList<>(beadPositions.length);
         for (double[] beadPosition : beadPositions) {
             beadRectangles.add(getRectangleFromPosition(beadPosition));
         }
         double gluedPerimeter = 0;
-        RectanglesAndPerimeter rectanglesAndPerimeter;
-        rectanglesAndPerimeter = new RectanglesAndPerimeter(beadRectangles, gluedPerimeter);
+        RectanglesAndBoundaryPerimeter rectanglesAndPerimeter;
+        rectanglesAndPerimeter = new RectanglesAndBoundaryPerimeter(beadRectangles, gluedPerimeter);
         return rectanglesAndPerimeter;
     }
 

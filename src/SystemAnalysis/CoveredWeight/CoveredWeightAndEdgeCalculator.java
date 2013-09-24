@@ -2,20 +2,21 @@
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
-package SystemAnalysis;
+package SystemAnalysis.CoveredWeight;
 
-import java.util.ArrayList;
 import java.util.List;
 
 /**
  *
  * @author bmoths
  */
-public class CoveredWeightCalculator {
+public class CoveredWeightAndEdgeCalculator {
 
     private class WeightedNode {
 
         private int leftEnd, rightEnd, middle, timesCovered;
+        private int numInternalEdges;
+        private boolean isLeftEdgeCovered, isRightEdgeCovered;
         private double totalWeight, coveredWeight;
         private WeightedNode leftChild, rightChild;
 
@@ -25,6 +26,9 @@ public class CoveredWeightCalculator {
             middle = (leftEnd + rightEnd) / 2;
             timesCovered = 0;
             coveredWeight = 0;
+            numInternalEdges = 0;
+            isLeftEdgeCovered = false;
+            isRightEdgeCovered = false;
 
             if (leftEnd == rightEnd) {
                 totalWeight = weights.get(leftEnd);
@@ -40,6 +44,9 @@ public class CoveredWeightCalculator {
                 addCoverToMe();
                 if (timesCovered == 1) {
                     coveredWeight = totalWeight;
+                    numInternalEdges = 0;
+                    isLeftEdgeCovered = true;
+                    isRightEdgeCovered = true;
                 }
             } else {
                 addCoverToChildren(start, end);
@@ -66,8 +73,13 @@ public class CoveredWeightCalculator {
                 if (timesCovered == 0) {
                     if (isLeafNode()) {
                         coveredWeight = 0;
+                        isLeftEdgeCovered = false;
+                        isRightEdgeCovered = false;
                     } else {
                         coveredWeight = leftChild.coveredWeight + rightChild.coveredWeight;
+                        isLeftEdgeCovered = leftChild.isLeftEdgeCovered;
+                        isRightEdgeCovered = rightChild.isRightEdgeCovered;
+                        numInternalEdges = leftChild.numInternalEdges + rightChild.numInternalEdges + (leftChild.isRightEdgeCovered ^ rightChild.isLeftEdgeCovered ? 1 : 0);
                     }
                 }
             } else {
@@ -92,6 +104,9 @@ public class CoveredWeightCalculator {
         private void registerChildrensCover() {
             if (timesCovered <= 0) {
                 coveredWeight = leftChild.coveredWeight + rightChild.coveredWeight;
+                isLeftEdgeCovered = leftChild.isLeftEdgeCovered;
+                isRightEdgeCovered = rightChild.isRightEdgeCovered;
+                numInternalEdges = leftChild.numInternalEdges + rightChild.numInternalEdges + (leftChild.isRightEdgeCovered ^ rightChild.isLeftEdgeCovered ? 1 : 0);
             }
         }
 
@@ -106,18 +121,25 @@ public class CoveredWeightCalculator {
         public double getCoveredWeight() {
             return coveredWeight;
         }
+
+        public int getNumInternalEdges() {
+            return numInternalEdges;
+        }
+
+        public boolean isLeftEdgeCovered() {
+            return isLeftEdgeCovered;
+        }
+
+        public boolean isRightEdgeCovered() {
+            return isRightEdgeCovered;
+        }
     }
     private List<Double> weights; //nodes are private inner class so have acces to this variable
     WeightedNode rootNode;
 
-    public CoveredWeightCalculator(List<Double> weights) {
-        if (weights.isEmpty()) {
-            this.weights = new ArrayList<>();
-            this.weights.add(0.);
-        } else {
-            this.weights = weights;
-        }
-        final int numLeaves = this.weights.size();
+    public CoveredWeightAndEdgeCalculator(List<Double> weights) {
+        this.weights = weights;
+        final int numLeaves = weights.size();
         rootNode = new WeightedNode(0, numLeaves - 1);
     }
 
@@ -131,5 +153,9 @@ public class CoveredWeightCalculator {
 
     public double getWeight() {
         return rootNode.getCoveredWeight();
+    }
+
+    public int getNumEdges() {
+        return rootNode.getNumInternalEdges() + (rootNode.isLeftEdgeCovered() ? 1 : 0) + (rootNode.isRightEdgeCovered() ? 1 : 0);
     }
 }

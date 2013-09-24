@@ -128,11 +128,12 @@ public final class PhysicalConstants implements Serializable {
         ABOverlapCoefficient = physicalConstants.ABOverlapCoefficient;
         springCoefficient = physicalConstants.springCoefficient;
         hardOverlapCoefficient = hardOverlapCoefficientFromParameters(parameters);
-        ExternalEnergyCalculatorBuilder externalEnergyCalculatorBuilder = new ExternalEnergyCalculatorBuilder();
-        externalEnergyCalculatorBuilder.xTension = -50.;
-        externalEnergyCalculatorBuilder.xQuadratic = .2;
-
-        externalEnergyCalculator = externalEnergyCalculatorBuilder.build();
+        externalEnergyCalculator = physicalConstants.externalEnergyCalculator;
+//        ExternalEnergyCalculatorBuilder externalEnergyCalculatorBuilder = new ExternalEnergyCalculatorBuilder();
+//        externalEnergyCalculatorBuilder.xTension = -50.;
+//        externalEnergyCalculatorBuilder.xQuadratic = .2;
+//
+//        externalEnergyCalculator = externalEnergyCalculatorBuilder.build();
     }
 
     private PhysicalConstants(PhysicalConstantsBuilder physicalConstantsBuilder) {

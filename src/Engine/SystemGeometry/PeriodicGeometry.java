@@ -6,11 +6,11 @@ package Engine.SystemGeometry;
 
 import Engine.SimulationParameters;
 import Engine.TwoBeadOverlap;
-import SystemAnalysis.BeadRectangle;
-import SystemAnalysis.Interval;
-import SystemAnalysis.OverlappingIntervalLengthFinder;
-import SystemAnalysis.RectanglesAndIntervals;
-import SystemAnalysis.RectanglesAndPerimeter;
+import SystemAnalysis.AreaPerimeter.BeadRectangle;
+import SystemAnalysis.AreaPerimeter.Interval;
+import SystemAnalysis.AreaPerimeter.OverlappingIntervalLengthFinder;
+import SystemAnalysis.AreaPerimeter.RectanglesAndBoundaryIntervals;
+import SystemAnalysis.AreaPerimeter.RectanglesAndBoundaryPerimeter;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -52,26 +52,20 @@ public final class PeriodicGeometry extends AbstractGeometry {
     }
 
     @Override
-    public RectanglesAndPerimeter getRectanglesAndPerimeterFromPositions(double[][] beadPositions) {
+    public RectanglesAndBoundaryPerimeter getRectanglesAndPerimeterFromPositions(double[][] beadPositions) {
         List<BeadRectangle> beadRectangles = new ArrayList<>(beadPositions.length);
         for (double[] beadPosition : beadPositions) {
             beadRectangles.add(getRectangleFromPosition(beadPosition));
         }
 
-        List<Interval> verticalIntervals = new ArrayList<>();
-        List<Interval> horizontalIntervals = new ArrayList<>();
-        List<List<Interval>> intervals = new ArrayList<>();
-        intervals.add(verticalIntervals);
-        intervals.add(horizontalIntervals);
-
-        RectanglesAndIntervals rectanglesAndIntervals = new RectanglesAndIntervals(beadRectangles, intervals);
-        rectanglesAndIntervals.splitOverVerticalPeriodicBoundaries(0, fullRMax[0]);
-        rectanglesAndIntervals.splitOverHorizontalPeriodicBoundaries(0, fullRMax[1]);
+        RectanglesAndBoundaryIntervals rectanglesBoundaryAndIntervals = new RectanglesAndBoundaryIntervals(beadRectangles);
+        rectanglesBoundaryAndIntervals.splitOverVerticalPeriodicBoundaries(0, fullRMax[0]);
+        rectanglesBoundaryAndIntervals.splitOverHorizontalPeriodicBoundaries(0, fullRMax[1]);
         double gluedPerimeter = 0;
-        gluedPerimeter += OverlappingIntervalLengthFinder.getCoveredLengthOfIntervals(rectanglesAndIntervals.intervals.get(1));
-        gluedPerimeter += OverlappingIntervalLengthFinder.getCoveredLengthOfIntervals(rectanglesAndIntervals.intervals.get(0));
-        RectanglesAndPerimeter rectanglesAndPerimeter;
-        rectanglesAndPerimeter = new RectanglesAndPerimeter(rectanglesAndIntervals.rectangles, gluedPerimeter);
+        gluedPerimeter += OverlappingIntervalLengthFinder.getCoveredLengthOfIntervals(rectanglesBoundaryAndIntervals.intervals.get(1));
+        gluedPerimeter += OverlappingIntervalLengthFinder.getCoveredLengthOfIntervals(rectanglesBoundaryAndIntervals.intervals.get(0));
+        RectanglesAndBoundaryPerimeter rectanglesAndPerimeter;
+        rectanglesAndPerimeter = new RectanglesAndBoundaryPerimeter(rectanglesBoundaryAndIntervals.rectangles, gluedPerimeter);
         return rectanglesAndPerimeter;
     }
 

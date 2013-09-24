@@ -6,7 +6,7 @@ package Engine.SystemGeometry;
 
 import Engine.PolymerCluster;
 import Engine.SimulationParameters;
-import SystemAnalysis.BeadRectangle;
+import SystemAnalysis.AreaPerimeter.BeadRectangle;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;

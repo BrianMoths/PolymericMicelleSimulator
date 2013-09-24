@@ -2,7 +2,7 @@
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
-package SystemAnalysis;
+package SystemAnalysis.AreaPerimeter;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -11,12 +11,21 @@ import java.util.List;
  *
  * @author bmoths
  */
-public class RectanglesAndIntervals {
+public class RectanglesAndBoundaryIntervals {
 
     public List<BeadRectangle> rectangles;
     public List<List<Interval>> intervals;
 
-    public RectanglesAndIntervals(List<BeadRectangle> rectangles, List<List<Interval>> intervals) {
+    public RectanglesAndBoundaryIntervals(List<BeadRectangle> beadRectangles) {
+        this.rectangles = beadRectangles;
+
+        List<Interval> verticalIntervals = new ArrayList<>();
+        List<Interval> horizontalIntervals = new ArrayList<>();
+        intervals.add(verticalIntervals);
+        intervals.add(horizontalIntervals);
+    }
+
+    public RectanglesAndBoundaryIntervals(List<BeadRectangle> rectangles, List<List<Interval>> intervals) {
         this.rectangles = rectangles;
         this.intervals = intervals;
     }
@@ -88,4 +97,5 @@ public class RectanglesAndIntervals {
         }
         intervals.set(0, newVerticalIntervals);
     }
+
 }

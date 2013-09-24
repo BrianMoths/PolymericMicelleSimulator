@@ -4,6 +4,10 @@
  */
 package SystemAnalysis;
 
+import SystemAnalysis.AreaPerimeter.OverlappingIntervalLengthFinder;
+import SystemAnalysis.AreaPerimeter.IntervalListEndpoints;
+import SystemAnalysis.AreaPerimeter.LengthAndEdgeFinder;
+import SystemAnalysis.AreaPerimeter.BeadRectangle;
 import java.util.List;
 
 /**
@@ -21,12 +25,13 @@ public class GeometryAnalyzer {
             this.area = area;
             this.perimeter = perimeter;
         }
+
     }
 
     static public double findArea(List<BeadRectangle> beadRectangles) {
 
-        final IntervalEndpoints xs = IntervalEndpoints.makeFromBeadRectanglesHorizontal(beadRectangles);
-        List<Integer> xPermutation = OverlappingIntervalLengthFinder.getPermutation(xs);
+        final IntervalListEndpoints horizontalEndpoints = IntervalListEndpoints.endpointsOfHorizontalRectangleEdges(beadRectangles);
+        List<Integer> xPermutation = horizontalEndpoints.getPermutation();
         OverlappingIntervalLengthFinder overlappingIntervalLengthFinder = OverlappingIntervalLengthFinder.makeFromBeadRectangles(beadRectangles, xPermutation);
 
         double area = 0;
@@ -46,9 +51,9 @@ public class GeometryAnalyzer {
     }
 
     static public AreaPerimeter findAreaAndPerimeter(List<BeadRectangle> beadRectangles) {
-        final IntervalEndpoints xs = IntervalEndpoints.makeFromBeadRectanglesHorizontal(beadRectangles);
-        List<Integer> xPermutation = OverlappingIntervalLengthFinder.getPermutation(xs);
-        LengthAndEdgeFinder lengthAndEdgeFinder = LengthAndEdgeFinder.makeFromBeadRectangles(beadRectangles, xPermutation);
+        final IntervalListEndpoints horizontalEndpoints = IntervalListEndpoints.endpointsOfHorizontalRectangleEdges(beadRectangles);
+        List<Integer> xPermutation = horizontalEndpoints.getPermutation();
+        LengthAndEdgeFinder lengthAndEdgeFinder = LengthAndEdgeFinder.makeForBeadRectangles(beadRectangles, xPermutation);
 
         double area = 0;
         double oldCoveredLength = 0;
@@ -75,8 +80,9 @@ public class GeometryAnalyzer {
     }
 
     private static double getNewX(List<BeadRectangle> beadRectangles, int linearIndex) {
-        final int beadIndex = IntervalEndpoints.getIntervalFromLinearIndex(linearIndex);
+        final int beadIndex = IntervalListEndpoints.getIntervalFromLinearIndex(linearIndex);
         final BeadRectangle beadRectangle = beadRectangles.get(beadIndex);
-        return IntervalEndpoints.getIsStartFromLinearIndex(linearIndex) ? beadRectangle.left : beadRectangle.right;
+        return IntervalListEndpoints.getIsStartFromLinearIndex(linearIndex) ? beadRectangle.left : beadRectangle.right;
     }
+
 }

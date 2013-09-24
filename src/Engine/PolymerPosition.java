@@ -82,7 +82,7 @@ public class PolymerPosition implements Serializable {
     public void anneal() {
         for (int bead = 0; bead < numBeads; bead++) {
             double[] beadPosition = beadPositions[bead];
-            double[] stepVector = systemGeometry.randomGaussian(3);
+            double[] stepVector = systemGeometry.randomGaussian(5);
             systemGeometry.incrementFirstVector(beadPosition, stepVector);
         }
         resetAnalyzersHistory();

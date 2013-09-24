@@ -6,7 +6,6 @@ package Gui;
 
 import Engine.SystemAnalyzer;
 import Engine.SystemGeometry.SystemGeometry;
-import SystemAnalysis.SurfaceTensionFinder;
 import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Point;

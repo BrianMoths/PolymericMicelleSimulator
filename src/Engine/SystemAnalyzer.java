@@ -6,10 +6,10 @@ package Engine;
 
 import Engine.SystemGeometry.AreaOverlap;
 import Engine.SystemGeometry.SystemGeometry;
-import SystemAnalysis.BeadRectangle;
+import SystemAnalysis.AreaPerimeter.BeadRectangle;
 import SystemAnalysis.GeometryAnalyzer;
 import SystemAnalysis.GeometryAnalyzer.AreaPerimeter;
-import SystemAnalysis.RectanglesAndPerimeter;
+import SystemAnalysis.AreaPerimeter.RectanglesAndBoundaryPerimeter;
 import SystemAnalysis.SimulationHistory;
 import SystemAnalysis.SimulationHistory.TrackedVariable;
 import SystemAnalysis.SurfaceTensionFinder;
@@ -69,7 +69,7 @@ public class SystemAnalyzer implements Serializable {
     }
 
     public AreaPerimeter findAreaAndPerimeter() {
-        RectanglesAndPerimeter rectanglesAndPerimeter;
+        RectanglesAndBoundaryPerimeter rectanglesAndPerimeter;
         rectanglesAndPerimeter = systemGeometry.getRectanglesAndPerimeterFromPositions(beadPositions);
         AreaPerimeter areaPerimeter;
         areaPerimeter = GeometryAnalyzer.findAreaAndPerimeter(rectanglesAndPerimeter.beadRectangles);
