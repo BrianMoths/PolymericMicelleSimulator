@@ -81,7 +81,7 @@ public class SystemAnalyzer implements Serializable {
         List<BeadRectangle> beadRectangles = new ArrayList<>(numBeads);
         for (int bead = 0; bead < numBeads; bead++) {
             final double x = beadPositions[bead][0];
-            final double y = beadPositions[bead][0];
+            final double y = beadPositions[bead][1];
             final double halfwidth = systemGeometry.getParameters().getInteractionLength() / 2;
             beadRectangles.add(new BeadRectangle(x - halfwidth, x + halfwidth, y + halfwidth, y - halfwidth));
         }

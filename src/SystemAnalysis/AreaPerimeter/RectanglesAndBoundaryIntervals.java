@@ -19,6 +19,7 @@ public class RectanglesAndBoundaryIntervals {
     public RectanglesAndBoundaryIntervals(List<BeadRectangle> beadRectangles) {
         this.rectangles = beadRectangles;
 
+        intervals = new ArrayList<>();
         List<Interval> verticalIntervals = new ArrayList<>();
         List<Interval> horizontalIntervals = new ArrayList<>();
         intervals.add(verticalIntervals);

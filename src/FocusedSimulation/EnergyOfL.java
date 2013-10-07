@@ -13,55 +13,40 @@ import Engine.SimulationParameters;
 import Engine.SystemGeometry.AbstractGeometry;
 import Engine.SystemGeometry.PeriodicGeometry;
 import Engine.SystemGeometry.SystemGeometry;
-import static FocusedSimulation.SurfaceTensionFinder.generateLengthStatistics;
-import static FocusedSimulation.SurfaceTensionFinder.outputSurfaceTension;
 import Gui.SystemViewer;
 import org.apache.commons.math3.stat.descriptive.DescriptiveStatistics;
 
 /**
  *
- * @author bmoths
+ * @author brian
  */
-public class CompressibilityFinder {
+public class EnergyOfL {
 
     public static void main(String[] args) {
-        System.out.println("Finding compressibility");
+        System.out.println("Finding energies for different lengths.");
 
-        PolymerSimulator polymerSimulator = makePolymerSimulator();
-        polymerSimulator.randomizePositions();
-        SystemViewer systemViewer = new SystemViewer(polymerSimulator);
-        systemViewer.setVisible(true);
+        for (double concentration = .1; concentration < .25; concentration += .01) {
 
-        System.out.println("System is initialized.");
+            PolymerSimulator polymerSimulator = makePolymerSimulator(concentration);
+            polymerSimulator.columnRandomizePositions();
+            SystemViewer systemViewer = new SystemViewer(polymerSimulator);
+            systemViewer.setVisible(true);
 
-//        for (int i = 0; i < 20; i++) {
-        System.out.println("Equilibrating System");
-
-        polymerSimulator.equilibrate();
-        while (polymerSimulator.getSystemAnalyzer().findArea() < .95 * polymerSimulator.getGeometry().getVolume()) {
+            System.out.println("System is initialized.");
             polymerSimulator.equilibrate();
-            System.out.println("Area occupied by beads: " + String.format("%.4f", polymerSimulator.getSystemAnalyzer().findArea()));
-            System.out.println("Total area available: " + String.format("%.4f", polymerSimulator.getGeometry().getVolume()));
-            polymerSimulator.anneal();
+
+            System.out.println("System equilibrated.");
+            System.out.println("Gathering statistics to find equilibrium length.");
+
+            final int numSamples = 100;
+            DescriptiveStatistics energyStatistics = generateEnergyStatistics(numSamples, polymerSimulator);
+            outputAverageEnergy(energyStatistics, polymerSimulator);
         }
-
-//        while (true) {
-//            polymerSimulator.doIterations(1000000);
-//        }
-
-//        System.out.println("System equilibrated.");
-//        System.out.println("Gathering statistics to find equilibrium length.");
-//        
-//        final int numSamples = 100;
-//        DescriptiveStatistics lengthStatistics = generateLengthStatistics(numSamples, polymerSimulator);
-//        outputSurfaceTension(lengthStatistics, polymerSimulator);
-//        polymerSimulator.anneal();
-//        }
     }
 
     //<editor-fold defaultstate="collapsed" desc="makePolymerSimulator">
-    static private PolymerSimulator makePolymerSimulator() {
-        PolymerCluster polymerCluster = makePolymerCluster();
+    static private PolymerSimulator makePolymerSimulator(double concentration) {
+        PolymerCluster polymerCluster = makePolymerCluster(concentration);
         PhysicalConstants physicalConstants = makePhysicalConstants();
 
         SimulationParameters simulationParameters = new SimulationParameters(physicalConstants.idealStepLength(), 4);
@@ -77,10 +62,10 @@ public class CompressibilityFinder {
                 physicalConstants);
     }
 
-    static private PolymerCluster makePolymerCluster() {
+    static private PolymerCluster makePolymerCluster(double concentration) {
         PolymerChain polymerChain = PolymerChain.makeChainStartingWithA(0, 15);
         PolymerCluster polymerCluster = PolymerCluster.makeRepeatedChainCluster(polymerChain, 100);// originally 100
-        polymerCluster.setConcentrationInWater(.3);//originally .15
+        polymerCluster.setConcentrationInWater(concentration);//originally .15
         return polymerCluster;
     }
 
@@ -100,8 +85,8 @@ public class CompressibilityFinder {
 
     static private ExternalEnergyCalculator makeExternalEnergyCalculator() {
         final ExternalEnergyCalculator.ExternalEnergyCalculatorBuilder externalEnergyCalculatorBuilder = new ExternalEnergyCalculator.ExternalEnergyCalculatorBuilder();
-        externalEnergyCalculatorBuilder.setxTension(-50.);
-        externalEnergyCalculatorBuilder.setxQuadratic(.2);
+        externalEnergyCalculatorBuilder.setxTension(0.); //was -50
+        externalEnergyCalculatorBuilder.setxQuadratic(.0); //was .2
         return externalEnergyCalculatorBuilder.build();
     }
 
@@ -113,5 +98,25 @@ public class CompressibilityFinder {
         return systemGeometryBuilder.buildGeometry();
     }
 //</editor-fold>
+
+    static public DescriptiveStatistics generateEnergyStatistics(int numSamples, PolymerSimulator polymerSimulator) {
+        final int iterationsPerSample = 100;//10000
+        int numSamplesTaken = 0;
+
+        DescriptiveStatistics energyStatistics = new DescriptiveStatistics(numSamples);
+        while (numSamplesTaken < numSamples) {
+            polymerSimulator.doIterations(iterationsPerSample);
+            energyStatistics.addValue(polymerSimulator.getEnergy());
+            numSamplesTaken++;
+        }
+
+        return energyStatistics;
+    }
+
+    static public void outputAverageEnergy(DescriptiveStatistics energyStatistics, PolymerSimulator polymerSimulator) {
+        final double averageEnergy = energyStatistics.getMean();
+        System.out.println("Average Energy found: " + Double.toString(averageEnergy));
+        System.out.println("Length of System:  " + Double.toString(polymerSimulator.getGeometry().getRMax()[0]));
+    }
 
 }

@@ -27,17 +27,31 @@ public class SurfaceTensionFinder {
     public static void main(String[] args) {
         System.out.println("Finding surface tension.");
 
-        PolymerSimulator polymerSimulator = makePolymerSimulator();
+        final int numChains = 150;//100
+        final ExternalEnergyCalculatorBuilder externalEnergyCalculatorBuilder = new ExternalEnergyCalculatorBuilder();
+        externalEnergyCalculatorBuilder.setxTension(-50.); //was -50
+        externalEnergyCalculatorBuilder.setxQuadratic(.1); //was .2
+        final ExternalEnergyCalculator externalEnergyCalculator = externalEnergyCalculatorBuilder.build();
+        final double density = .15; //.15
+
+        PolymerSimulator polymerSimulator = makePolymerSimulator(numChains, externalEnergyCalculator, density);
         polymerSimulator.columnRandomizePositions();
         SystemViewer systemViewer = new SystemViewer(polymerSimulator);
         systemViewer.setVisible(true);
 
         System.out.println("System is initialized.");
 
-        for (int i = 0; i < 20; i++) {
+        for (int i = 0; i < 50; i++) {
+            polymerSimulator.doIterations(3000000);
+            polymerSimulator.anneal();
+            System.out.println("First equilibrate anneal iteration done.");
+        }
+
+        for (int i = 0; i < 70; i++) {
             System.out.println("Equilibrating System");
 
-            polymerSimulator.equilibrateSystem();
+            polymerSimulator.anneal();
+            polymerSimulator.equilibrate();
 
             System.out.println("System equilibrated.");
             System.out.println("Gathering statistics to find equilibrium length.");
@@ -45,7 +59,6 @@ public class SurfaceTensionFinder {
             final int numSamples = 100;
             DescriptiveStatistics lengthStatistics = generateLengthStatistics(numSamples, polymerSimulator);
             outputSurfaceTension(lengthStatistics, polymerSimulator);
-            polymerSimulator.anneal();
         }
     }
 
@@ -69,8 +82,8 @@ public class SurfaceTensionFinder {
 
     static private PolymerCluster makePolymerCluster() {
         PolymerChain polymerChain = PolymerChain.makeChainStartingWithA(0, 15);
-        PolymerCluster polymerCluster = PolymerCluster.makeRepeatedChainCluster(polymerChain, 200);// originally 100
-        polymerCluster.setConcentrationInWater(.03);//originally .15
+        PolymerCluster polymerCluster = PolymerCluster.makeRepeatedChainCluster(polymerChain, 150);// originally 100
+        polymerCluster.setConcentrationInWater(.15);//originally .15
         return polymerCluster;
     }
 
@@ -90,8 +103,8 @@ public class SurfaceTensionFinder {
 
     static private ExternalEnergyCalculator makeExternalEnergyCalculator() {
         final ExternalEnergyCalculatorBuilder externalEnergyCalculatorBuilder = new ExternalEnergyCalculatorBuilder();
-        externalEnergyCalculatorBuilder.setxTension(50.);
-        externalEnergyCalculatorBuilder.setxQuadratic(.2);
+        externalEnergyCalculatorBuilder.setxTension(-50.); //was -50
+        externalEnergyCalculatorBuilder.setxQuadratic(.1); //was .2
         return externalEnergyCalculatorBuilder.build();
     }
 
@@ -126,18 +139,6 @@ public class SurfaceTensionFinder {
 
         System.out.println("numSamples: " + Double.toString(numSamples));
 
-//        double[] lengths = lengthStatistics.getValues();
-//        double average = 0;
-//        int numSample = lengths.length;
-//        for (int i = 0; i < lengths.length; i++) {
-//            double length = lengths[i];
-//            average += length;            
-//        }        
-//        average /= numSample;
-//        
-//        System.out.println("numSample: " + Integer.toString(numSample));
-//        System.out.println("average: " + Double.toString(average));
-
         final double averageLength = lengthStatistics.getMean();
         final double lengthStandardDeviation = lengthStatistics.getStandardDeviation();
 
@@ -150,5 +151,72 @@ public class SurfaceTensionFinder {
         final double surfaceTensionStandardError = surfaceTensionStandardDeviation / Math.sqrt(numSamples - 1);
         System.out.println("Surface Tension found: " + Double.toString(surfaceTension) + "+/-" + Double.toString(surfaceTensionStandardError));
     }
+
+    static public void findSurfaceTensionWithParamters(int numChains, ExternalEnergyCalculator externalEnergyCalculator, double density) {
+        PolymerSimulator polymerSimulator = makePolymerSimulator(numChains, externalEnergyCalculator, density);
+        polymerSimulator.columnRandomizePositions();
+        SystemViewer systemViewer = new SystemViewer(polymerSimulator);
+        systemViewer.setVisible(true);
+
+        System.out.println("System is initialized.");
+
+        for (int i = 0; i < 10; i++) {
+            polymerSimulator.doIterations(3000000);
+            polymerSimulator.anneal();
+            System.out.println("First equilibrate anneal iteration done.");
+        }
+
+        for (int i = 0; i < 7; i++) {
+            System.out.println("Equilibrating System");
+
+            polymerSimulator.anneal();
+            polymerSimulator.equilibrate();
+
+            System.out.println("System equilibrated.");
+            System.out.println("Gathering statistics to find equilibrium length.");
+
+            final int numSamples = 100;
+            DescriptiveStatistics lengthStatistics = generateLengthStatistics(numSamples, polymerSimulator);
+            outputSurfaceTension(lengthStatistics, polymerSimulator);
+        }
+    }
+
+    //<editor-fold defaultstate="collapsed" desc="makePolymerSimulator">
+    static private PolymerSimulator makePolymerSimulator(int numChains, ExternalEnergyCalculator externalEnergyCalculator, double density) {
+
+        PolymerCluster polymerCluster = makePolymerCluster(numChains, density);
+        PhysicalConstants physicalConstants = makePhysicalConstants(externalEnergyCalculator);
+        SimulationParameters simulationParameters = new SimulationParameters(physicalConstants.idealStepLength(), 4);
+        simulationParameters = simulationParameters.makeParametersFromPhysicalConstants(physicalConstants);
+        physicalConstants = physicalConstants.getPhysicalConstantsFromParameters(simulationParameters);
+        SystemGeometry systemGeometry = makeSystemGeometry(polymerCluster, simulationParameters);
+
+        return new PolymerSimulator(
+                systemGeometry,
+                polymerCluster,
+                physicalConstants);
+
+    }
+
+    static private PolymerCluster makePolymerCluster(int numChains, double density) {
+        PolymerChain polymerChain = PolymerChain.makeChainStartingWithA(0, 15);
+        PolymerCluster polymerCluster = PolymerCluster.makeRepeatedChainCluster(polymerChain, numChains);// originally 100
+        polymerCluster.setConcentrationInWater(density);//originally .15
+        return polymerCluster;
+    }
+
+    static private PhysicalConstants makePhysicalConstants(ExternalEnergyCalculator externalEnergyCalculator) {
+        PhysicalConstants.PhysicalConstantsBuilder physicalConstantsBuilder = new PhysicalConstants.PhysicalConstantsBuilder();
+
+        physicalConstantsBuilder.setTemperature(1);
+        physicalConstantsBuilder.setAAOverlapCoefficient(0);
+        physicalConstantsBuilder.setBBOverlapCoefficient(-.06);
+        physicalConstantsBuilder.setSpringCoefficient(1);
+
+        physicalConstantsBuilder.setExternalEnergyCalculator(externalEnergyCalculator);
+
+        return physicalConstantsBuilder.buildPhysicalConstants();
+    }
+//</editor-fold>
 
 }

@@ -27,7 +27,7 @@ public class ResizeStepGenerator implements StepGenerator {
 
     public ResizeStepGenerator() {
 //        this(maxScalingFactor, resizeStepChance);
-        this(.01, .0001);
+        this(.01, .0001);//.0001
     }
 
     public ResizeStepGenerator(double maxScalingFactor, double resizeStepChance) {

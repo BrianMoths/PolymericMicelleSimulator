@@ -18,9 +18,9 @@ public class SystemViewer extends javax.swing.JFrame {
 
     //<editor-fold defaultstate="collapsed" desc="updater thread classes">
     private class UpdaterRunnable implements Runnable {
-        
+
         int lastIteration = -1;
-        
+
         @Override
         public void run() {
             while (true) {
@@ -31,15 +31,15 @@ public class SystemViewer extends javax.swing.JFrame {
                 sleepUntilNextFrame();
             }
         }
-        
+
         private boolean isUpdateNecessary() {
             return polymerSimulator.getIterationNumber() != lastIteration;
         }
-        
+
         private void updateLastIteration() {
             lastIteration = polymerSimulator.getIterationNumber();
         }
-        
+
         private void sleepUntilNextFrame() {
             try {
                 Thread.sleep(100);
@@ -47,15 +47,15 @@ public class SystemViewer extends javax.swing.JFrame {
                 Logger.getLogger(MicelleGui.class.getName()).log(Level.SEVERE, null, ex);
             }
         }
-        
+
     }
-    
+
     private class UpdaterThread extends Thread {
-        
+
         public UpdaterThread() {
             super(new UpdaterRunnable());
         }
-        
+
     }
 //</editor-fold>
 
@@ -72,20 +72,20 @@ public class SystemViewer extends javax.swing.JFrame {
         updaterThread = new UpdaterThread();
         initialize();
     }
-    
+
     private void initialize() {
         registerGuiWithSystem();
         updateConstantLabels();
         updaterThread.start();
     }
-    
+
     private void registerGuiWithSystem() {
         displayPanel.setPolymerSimulator(polymerSimulator);
         if (analysisWindow != null) {
             analysisWindow.setPolymerSimulator(polymerSimulator);
         }
     }
-    
+
     private void updateConstantLabels() {
         AACoefficientLbl.setText(String.format("%.4f", polymerSimulator.getPhysicalConstants().getAAOverlapCoefficient()));
         BBCoefficientLbl.setText(String.format("%.4f", polymerSimulator.getPhysicalConstants().getBBOverlapCoefficient()));
@@ -96,15 +96,15 @@ public class SystemViewer extends javax.swing.JFrame {
         systemSizeLbl.setText(String.format("%.4f", polymerSimulator.getGeometry().getRMax()[0]));
         hardCoresChk.setSelected(polymerSimulator.getSimulationParameters().getCoreLength() != 0);
     }
-    
+
     private void updateDisplay() {
         SystemAnalyzer systemAnalyzer = polymerSimulator.getSystemAnalyzer();
-        
+
         final double energy = polymerSimulator.getEnergy();
-        
+
         GeometryAnalyzer.AreaPerimeter areaPerimeter = systemAnalyzer.findAreaAndPerimeter();
         systemAnalyzer.addPerimeterAreaEnergySnapshot(areaPerimeter.perimeter, areaPerimeter.area, energy);
-        
+
         energyLbl.setText(String.format("%.4f", energy));
         numIterationsLbl.setText(String.valueOf(polymerSimulator.getIterationNumber()));
         externalEnergyLbl.setText(String.format("%.4f", systemAnalyzer.externalEnergy()));

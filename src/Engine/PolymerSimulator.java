@@ -173,7 +173,7 @@ public class PolymerSimulator implements Serializable {
         }
     }
 
-    public void equilibrateSystem() {
+    public void equilibrate() {
         while (!systemAnalyzer.isEquilibrated()) {
             doIterations(10000);
             final GeometryAnalyzer.AreaPerimeter areaPerimeter = systemAnalyzer.findAreaAndPerimeter();
