@@ -53,7 +53,6 @@ public final class SimulationParameters implements Serializable {
         final double attractionInT = .5; //.5
         double thermalForce = attractionInT * physicalConstants.getTemperature() / interactionLength;
         double minCoefficientForBonding = -thermalForce / interactionLength;
-        System.out.println(minCoefficientForBonding);
         double minAttraction = Math.min(Math.min(physicalConstants.getBBOverlapCoefficient(), physicalConstants.getAAOverlapCoefficient()), minCoefficientForBonding);
         return interactionLength + thermalForce / minAttraction;
     }
@@ -78,4 +77,5 @@ public final class SimulationParameters implements Serializable {
         stringBuilder.append("Step Length: ").append(Double.toString(stepLength)).append("\n");
         return stringBuilder.toString();
     }
+
 }
