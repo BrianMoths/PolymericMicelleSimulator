@@ -5,11 +5,11 @@
 package FocusedSimulation;
 
 import Engine.ExternalEnergyCalculator;
-import Engine.PhysicalConstants;
+import Engine.EnergeticsConstants;
 import Engine.PolymerChain;
 import Engine.PolymerCluster;
 import Engine.PolymerSimulator;
-import Engine.SimulationParameters;
+import Engine.SystemGeometry.GeometricalParameters;
 import Engine.SystemGeometry.AbstractGeometry;
 import Engine.SystemGeometry.PeriodicGeometry;
 import Engine.SystemGeometry.SystemGeometry;
@@ -62,9 +62,9 @@ public class CompressibilityFinder {
     //<editor-fold defaultstate="collapsed" desc="makePolymerSimulator">
     static private PolymerSimulator makePolymerSimulator() {
         PolymerCluster polymerCluster = makePolymerCluster();
-        PhysicalConstants physicalConstants = makePhysicalConstants();
+        EnergeticsConstants physicalConstants = makePhysicalConstants();
 
-        SimulationParameters simulationParameters = new SimulationParameters(physicalConstants.idealStepLength(), 4);
+        GeometricalParameters simulationParameters = new GeometricalParameters(physicalConstants.idealStepLength(), 4);
 
         simulationParameters = simulationParameters.makeParametersFromPhysicalConstants(physicalConstants);
         physicalConstants = physicalConstants.getPhysicalConstantsFromParameters(simulationParameters);
@@ -84,8 +84,8 @@ public class CompressibilityFinder {
         return polymerCluster;
     }
 
-    static private PhysicalConstants makePhysicalConstants() {
-        PhysicalConstants.PhysicalConstantsBuilder physicalConstantsBuilder = new PhysicalConstants.PhysicalConstantsBuilder();
+    static private EnergeticsConstants makePhysicalConstants() {
+        EnergeticsConstants.PhysicalConstantsBuilder physicalConstantsBuilder = new EnergeticsConstants.PhysicalConstantsBuilder();
 
         physicalConstantsBuilder.setTemperature(1);
         physicalConstantsBuilder.setAAOverlapCoefficient(0);
@@ -105,7 +105,7 @@ public class CompressibilityFinder {
         return externalEnergyCalculatorBuilder.build();
     }
 
-    static private SystemGeometry makeSystemGeometry(PolymerCluster polymerCluster, SimulationParameters simulationParameters) {
+    static private SystemGeometry makeSystemGeometry(PolymerCluster polymerCluster, GeometricalParameters simulationParameters) {
         AbstractGeometry.AbstractGeometryBuilder systemGeometryBuilder = new PeriodicGeometry.PeriodicGeometryBuilder();
 
         systemGeometryBuilder.setDimension(2);

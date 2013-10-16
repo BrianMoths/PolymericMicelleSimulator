@@ -5,7 +5,6 @@
 package Engine.SystemGeometry;
 
 import Engine.PolymerCluster;
-import Engine.SimulationParameters;
 
 /**
  *
@@ -21,11 +20,11 @@ public interface GeometryBuilder {
 
     public GeometryBuilder setDimensionSize(int dimension, double size);
 
-    public SimulationParameters getParameters();
+    public GeometricalParameters getParameters();
 
-    public GeometryBuilder setParameters(SimulationParameters parameters);
+    public GeometryBuilder setParameters(GeometricalParameters parameters);
 
-    public void makeConsistentWith(PolymerCluster polymerCluster, SimulationParameters simulationParameters);
+    public void makeConsistentWith(PolymerCluster polymerCluster, GeometricalParameters simulationParameters);
 
     public SystemGeometry buildGeometry();
 }

@@ -4,7 +4,6 @@
  */
 package Engine.SystemGeometry;
 
-import Engine.SimulationParameters;
 import Engine.TwoBeadOverlap;
 import SystemAnalysis.AreaPerimeter.BeadRectangle;
 import SystemAnalysis.AreaPerimeter.Interval;
@@ -42,7 +41,7 @@ public final class PeriodicGeometry extends AbstractGeometry {
         return builder.buildGeometry();
     }
 
-    public PeriodicGeometry(int dimension, double[] fullRMax, SimulationParameters parameters) {
+    public PeriodicGeometry(int dimension, double[] fullRMax, GeometricalParameters parameters) {
         super(dimension, fullRMax, parameters);
     }
 

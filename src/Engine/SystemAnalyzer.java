@@ -30,7 +30,7 @@ public class SystemAnalyzer implements Serializable {
 //    }
     private final int[][] neighbors;
     private final SystemGeometry systemGeometry;
-    private final PhysicalConstants physicalConstants;
+    private final EnergeticsConstants physicalConstants;
     private final int numBeads, numABeads;
     private BeadBinner beadBinner;
     private double[][] beadPositions;
@@ -39,7 +39,7 @@ public class SystemAnalyzer implements Serializable {
     //<editor-fold defaultstate="collapsed" desc="constructors">
     public SystemAnalyzer(SystemGeometry systemGeometry,
             PolymerCluster polymerCluster,
-            PhysicalConstants physicalConstants) {
+            EnergeticsConstants physicalConstants) {
         this.systemGeometry = systemGeometry;
         this.physicalConstants = physicalConstants;
         neighbors = polymerCluster.makeNeighbors();
@@ -145,7 +145,7 @@ public class SystemAnalyzer implements Serializable {
         Iterator<Integer> nearbyBeadIterator = beadBinner.getNearbyBeadIterator(beadPosition);
         while (nearbyBeadIterator.hasNext()) {
             final int currentBead = nearbyBeadIterator.next();
-            if (currentBead < numABeads) {
+            if (isTypeA(currentBead)) {
                 AOverlap.increment(systemGeometry.twoBeadOverlap(beadPosition, beadPositions[currentBead]));
             } else {
                 BOverlap.increment(systemGeometry.twoBeadOverlap(beadPosition, beadPositions[currentBead]));
@@ -259,7 +259,7 @@ public class SystemAnalyzer implements Serializable {
         return systemGeometry;
     }
 
-    public PhysicalConstants getPhysicalConstants() {
+    public EnergeticsConstants getPhysicalConstants() {
         return physicalConstants;
     }
 

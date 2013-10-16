@@ -4,6 +4,7 @@
  */
 package Engine;
 
+import Engine.SystemGeometry.GeometricalParameters;
 import Engine.SimulationStepping.StepTypes.MoveType;
 import Engine.SimulationStepping.StepTypes.SimulationStep;
 import Engine.SimulationStepping.StepGenerators.ChainMoveStepGenerator;
@@ -21,23 +22,8 @@ import java.io.Serializable;
  */
 public class PolymerSimulator implements Serializable {
 
-    public static SimulationParameters makeDefaultParameters(PolymerCluster polymerCluster, double boxLength, int dimension, PhysicalConstants physicalConstants) {
-        return makeDefaultParametersPrivate(polymerCluster, boxLength, dimension, physicalConstants);
-    }
-
-    static private SimulationParameters makeDefaultParametersPrivate(PolymerCluster polymerCluster, double boxLength, int dimension, PhysicalConstants physicalConstants) {
-        SimulationParameters simulationParameters;
-//        int averageNumberOfNeighbors = 14
-        int averageNumberOfNeighbors = 14;
-        double interactionLength;
-        interactionLength = Math.pow(averageNumberOfNeighbors * Math.pow(boxLength, dimension) / polymerCluster.getNumBeadsIncludingWater(), 1.0 / dimension);
-        double stepLength;
-        stepLength = Math.sqrt(physicalConstants.getTemperature() / physicalConstants.getSpringCoefficient());
-        simulationParameters = new SimulationParameters(stepLength, interactionLength);
-        return simulationParameters;
-    }
-
-    static private SystemGeometry makeGeometry(PolymerCluster polymerCluster, PhysicalConstants physicalConstants) {
+    //<editor-fold defaultstate="collapsed" desc="default constructor helpers">
+    static private SystemGeometry makeDefaultGeometry(PolymerCluster polymerCluster, EnergeticsConstants physicalConstants) {
         final int dimension = 2;
         final double boxLength = 20;
 //        HardWallGeometryBuilder geometryBuilder = new HardWallGeometryBuilder();
@@ -52,8 +38,20 @@ public class PolymerSimulator implements Serializable {
         return geometryBuilder.buildGeometry();
     }
 
+    static private GeometricalParameters makeDefaultParametersPrivate(PolymerCluster polymerCluster, double boxLength, int dimension, EnergeticsConstants physicalConstants) {
+        GeometricalParameters simulationParameters;
+        int averageNumberOfNeighbors = 14; //14
+        double interactionLength;
+        interactionLength = Math.pow(averageNumberOfNeighbors * Math.pow(boxLength, dimension) / polymerCluster.getNumBeadsIncludingWater(), 1.0 / dimension);
+        double stepLength;
+        stepLength = Math.sqrt(physicalConstants.getTemperature() / physicalConstants.getSpringCoefficient());
+        simulationParameters = new GeometricalParameters(stepLength, interactionLength);
+        return simulationParameters;
+    }
+    //</editor-fold>
+
     private final SystemGeometry geometry;
-    private final PhysicalConstants physicalConstants;
+    private final EnergeticsConstants physicalConstants;
     private final PolymerPosition polymerPosition;
     private final SystemAnalyzer systemAnalyzer;
     private final StepGenerator stepGenerator = new ResizeStepGenerator();
@@ -66,8 +64,8 @@ public class PolymerSimulator implements Serializable {
     public PolymerSimulator() {
 
         PolymerCluster polymerCluster = PolymerCluster.makeDefaultPolymerCluster();
-        physicalConstants = PhysicalConstants.defaultPhysicalConstants();
-        geometry = makeGeometry(polymerCluster, physicalConstants);
+        physicalConstants = EnergeticsConstants.defaultPhysicalConstants();
+        geometry = makeDefaultGeometry(polymerCluster, physicalConstants);
 
         resetCounters();
         polymerPosition = makePolymerPosition(polymerCluster, geometry);
@@ -76,7 +74,7 @@ public class PolymerSimulator implements Serializable {
         energy = systemAnalyzer.computeEnergy();
     }
 
-    public PolymerSimulator(SystemGeometry systemGeometry, PolymerCluster polymerCluster, PhysicalConstants physicalConstants) {
+    public PolymerSimulator(SystemGeometry systemGeometry, PolymerCluster polymerCluster, EnergeticsConstants physicalConstants) {
 
         this.geometry = systemGeometry;
 
@@ -137,13 +135,6 @@ public class PolymerSimulator implements Serializable {
         energy = systemAnalyzer.computeEnergy();
     }
 
-    private void resetCounters() {
-        iterationNumber = 0;
-        acceptedIterations = 0;
-        acceptedChainMoves = 0;
-        numChainMoves = 0;
-    }
-
     public synchronized void doIterations(int n) { //possibly optomize by unrolling loop and tracking pairwise interactions
         for (int i = 0; i < n; i++) {
             doIteration();
@@ -154,24 +145,41 @@ public class PolymerSimulator implements Serializable {
     }
 
     public synchronized void doIteration() { //todo: cache bead energies
-        iterationNumber++;
         SimulationStep simulationStep = stepGenerator.generateStep(systemAnalyzer);
-        if (simulationStep.getMoveType() == MoveType.SINGLE_CHAIN) {
-            numChainMoves++;
-        }
+        iterateAttemptCounters(simulationStep.getMoveType());
         if (simulationStep.doStep(polymerPosition, systemAnalyzer)) {
             final double energyChange = simulationStep.getEnergyChange();
             if (physicalConstants.isEnergeticallyAllowed(energyChange)) {
                 energy += energyChange;
-                acceptedIterations++;
-                if (simulationStep.getMoveType() == MoveType.SINGLE_CHAIN) {
-                    acceptedChainMoves++;
-                }
+                iterateAcceptedCounters(simulationStep.getMoveType());
             } else {
                 simulationStep.undoStep(polymerPosition, systemAnalyzer);
             }
         }
     }
+
+    //<editor-fold defaultstate="collapsed" desc="manage counters">
+    private void resetCounters() {
+        iterationNumber = 0;
+        acceptedIterations = 0;
+        acceptedChainMoves = 0;
+        numChainMoves = 0;
+    }
+
+    private void iterateAttemptCounters(MoveType moveType) {
+        iterationNumber++;
+        if (moveType == MoveType.SINGLE_CHAIN) {
+            numChainMoves++;
+        }
+    }
+
+    private void iterateAcceptedCounters(MoveType moveType) {
+        acceptedIterations++;
+        if (moveType == MoveType.SINGLE_CHAIN) {
+            acceptedChainMoves++;
+        }
+    }
+    //</editor-fold>
 
     public void equilibrate() {
         while (!systemAnalyzer.isEquilibrated()) {
@@ -206,11 +214,11 @@ public class PolymerSimulator implements Serializable {
         return iterationNumber;
     }
 
-    public PhysicalConstants getPhysicalConstants() {
+    public EnergeticsConstants getPhysicalConstants() {
         return physicalConstants;
     }
 
-    public SimulationParameters getSimulationParameters() {
+    public GeometricalParameters getSimulationParameters() {
         return geometry.getParameters();
     }
 

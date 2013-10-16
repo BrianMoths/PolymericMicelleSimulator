@@ -4,7 +4,6 @@
  */
 package Engine.SystemGeometry;
 
-import Engine.SimulationParameters;
 import Engine.TwoBeadOverlap;
 import SystemAnalysis.AreaPerimeter.BeadRectangle;
 import SystemAnalysis.AreaPerimeter.RectanglesAndBoundaryPerimeter;
@@ -43,7 +42,7 @@ public final class HardWallGeometry extends AbstractGeometry {
         return builder.buildGeometry();
     }
 
-    public HardWallGeometry(int dimension, double[] fullRMax, SimulationParameters parameters) {
+    public HardWallGeometry(int dimension, double[] fullRMax, GeometricalParameters parameters) {
         super(dimension, fullRMax, parameters);
     }
 

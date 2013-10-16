@@ -5,7 +5,6 @@
 package Engine.SystemGeometry;
 
 import Engine.PolymerCluster;
-import Engine.SimulationParameters;
 import SystemAnalysis.AreaPerimeter.BeadRectangle;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -23,12 +22,12 @@ public abstract class AbstractGeometry implements SystemGeometry {
 
         protected int dimension;
         protected double[] fullRMax;
-        protected SimulationParameters parameters;
+        protected GeometricalParameters parameters;
 
         public AbstractGeometryBuilder() {
             this.dimension = 2;
             this.fullRMax = new double[]{20, 20, 20};
-            this.parameters = new SimulationParameters();
+            this.parameters = new GeometricalParameters();
         }
 
         public AbstractGeometryBuilder(SystemGeometry geometry) {
@@ -63,18 +62,18 @@ public abstract class AbstractGeometry implements SystemGeometry {
         }
 
         @Override
-        public SimulationParameters getParameters() {
+        public GeometricalParameters getParameters() {
             return parameters;
         }
 
         @Override
-        public AbstractGeometryBuilder setParameters(SimulationParameters parameters) {
+        public AbstractGeometryBuilder setParameters(GeometricalParameters parameters) {
             this.parameters = parameters;
             return this;
         }
 
         @Override
-        public void makeConsistentWith(PolymerCluster polymerCluster, SimulationParameters simulationParameters) {
+        public void makeConsistentWith(PolymerCluster polymerCluster, GeometricalParameters simulationParameters) {
             this.parameters = simulationParameters;
             double boxLength;
             boxLength = findBoxLength(polymerCluster, simulationParameters);
@@ -83,7 +82,7 @@ public abstract class AbstractGeometry implements SystemGeometry {
             }
         }
 
-        private double findBoxLength(PolymerCluster polymerCluster, SimulationParameters simulationParameters) {
+        private double findBoxLength(PolymerCluster polymerCluster, GeometricalParameters simulationParameters) {
             double fractionInteracting = 14 / polymerCluster.getNumBeadsIncludingWater();
             return simulationParameters.getInteractionLength() * Math.pow(1 / fractionInteracting, 1. / dimension);
         }
@@ -94,9 +93,9 @@ public abstract class AbstractGeometry implements SystemGeometry {
     public static final Random randomNumberGenerator = new Random();
     protected final int dimension;
     protected final double[] fullRMax; //try to make this constant
-    protected final SimulationParameters parameters;
+    protected final GeometricalParameters parameters;
 
-    protected AbstractGeometry(int dimension, double[] fullRMax, SimulationParameters parameters) {
+    protected AbstractGeometry(int dimension, double[] fullRMax, GeometricalParameters parameters) {
         this.dimension = dimension;
         this.fullRMax = new double[dimension];
         System.arraycopy(fullRMax, 0, this.fullRMax, 0, dimension);
@@ -226,7 +225,7 @@ public abstract class AbstractGeometry implements SystemGeometry {
     }
 
     @Override
-    public SimulationParameters getParameters() {
+    public GeometricalParameters getParameters() {
         return parameters;
     }
     //</editor-fold>

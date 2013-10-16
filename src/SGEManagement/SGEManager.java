@@ -37,68 +37,25 @@ public class SGEManager {
     public static void main(String[] args) {
         final List<Input> inputs = makeInputs();
         submitJobs(inputs);
-
-//        runCommandForQsub("echo hi > /home/bmoths/test");
-
-//        try {
-//            String commandString;cat < 
-//            commandString = "bash -c \"qsub <<< 'echo hi > /home/bmoths/test'\"";//does not work
-//            commandString = "bash -c \"cat <<< hi > /home/bmoths/test\""; //does not work
-//            commandString = "bash -c \"'cat <<< hi' > /home/bmoths/test\""; //does not work
-//            commandString = "bash -c \"'echo hi' > /home/bmoths/test\""; //does not work
-//            commandString = "bash -c \"echo hi > /home/bmoths/test\""; //does not work
-//            commandString = "bash -c \"touch /home/bmoths/test\""; //does not work
-//            commandString = "bash -c 'touch /home/bmoths/test'"; //does not work
-//            commandString = "bash -c 'touch /home/bmoths/test'"; //does not work
-//            commandString = "touch /home/bmoths/test"; //does work
-//            String commandString = "echo hi";
-//            System.out.println("attempted to run command---" + commandString);
-
-//            String[] commandAndArguments = new String[3];
-//            commandAndArguments[0] = "bash";
-//            commandAndArguments[1] = "-c";
-//            commandAndArguments[2] = "'touch /home/bmoths/test'"; //does not work
-//            String[] commandAndArguments = new String[3];
-//            commandAndArguments[0] = "bash";
-//            commandAndArguments[1] = "-c";
-//            commandAndArguments[2] = "qsub <<<'echo hi > /home/bmoths/test'"; //does work
-//
-//            System.out.println("attempted to run command---" + commandAndArguments[0] + " " + commandAndArguments[1] + " " + commandAndArguments[2]);
-//
-//
-//
-//            Process p = Runtime.getRuntime().exec(commandAndArguments);
-//            p.waitFor();
-//            BufferedReader outputReader = new BufferedReader(new InputStreamReader(p.getInputStream()));
-//            String line = outputReader.readLine();
-//            while (line != null) {
-//                System.out.println(line);
-//                line = outputReader.readLine();
-//            }
-//        } catch (IOException ex) {
-//            Logger.getLogger(SGEManager.class.getName()).log(Level.SEVERE, null, ex);
-//        } catch (InterruptedException ex) {
-//            Logger.getLogger(SGEManager.class.getName()).log(Level.SEVERE, null, ex);
-//        }
     }
 
     static private List<Input> makeInputs() {
         List<Input> inputs = new ArrayList<>();
 
-        inputs.add(new Input(100, makeCalculatorAB(.2, -50), .15));
-        inputs.add(new Input(100, makeCalculatorAB(.18, -50), .15));
-        inputs.add(new Input(100, makeCalculatorAB(.15, -50), .15));
-        inputs.add(new Input(100, makeCalculatorAB(.22, -50), .15));
-        inputs.add(new Input(100, makeCalculatorAB(.25, -50), .15));
-        inputs.add(new Input(100, makeCalculatorAB(.2, -60), .15));
-        inputs.add(new Input(100, makeCalculatorAB(.2, -70), .15));
-        inputs.add(new Input(100, makeCalculatorAB(.2, -80), .15));
-        inputs.add(new Input(100, makeCalculatorAB(.2, -40), .15));
-        inputs.add(new Input(100, makeCalculatorAB(.2, -30), .15));
+//        inputs.add(new Input(100, makeCalculatorAB(.2, -50), .15));
+//        inputs.add(new Input(100, makeCalculatorAB(.18, -50), .15));
+//        inputs.add(new Input(100, makeCalculatorAB(.15, -50), .15));
+//        inputs.add(new Input(100, makeCalculatorAB(.22, -50), .15));
+//        inputs.add(new Input(100, makeCalculatorAB(.25, -50), .15));
+//        inputs.add(new Input(100, makeCalculatorAB(.2, -60), .15));
+//        inputs.add(new Input(100, makeCalculatorAB(.2, -70), .15));
+//        inputs.add(new Input(100, makeCalculatorAB(.2, -80), .15));
+//        inputs.add(new Input(100, makeCalculatorAB(.2, -40), .15));
+//        inputs.add(new Input(100, makeCalculatorAB(.2, -30), .15));
         inputs.add(new Input(100, makeCalculatorAB(.2, -50), .18));
-        inputs.add(new Input(100, makeCalculatorAB(.2, -50), .20));
-        inputs.add(new Input(100, makeCalculatorAB(.2, -50), .12));
-        inputs.add(new Input(100, makeCalculatorAB(.2, -50), .1));
+//        inputs.add(new Input(100, makeCalculatorAB(.2, -50), .20));
+//        inputs.add(new Input(100, makeCalculatorAB(.2, -50), .12));
+//        inputs.add(new Input(100, makeCalculatorAB(.2, -50), .1));
 
         return inputs;
     }
@@ -168,6 +125,9 @@ public class SGEManager {
     }
 
     static private void runCommandForQsub(String qsubCommand) {
+        if (qsubCommand.contains("\"")) {
+            throw new IllegalArgumentException("command submitted to qsub must not contain double quotes. Use single quotes if necessary.");
+        }
         String qsubWrappedCommand = "qsub -e /dev/null -o /dev/null <<< \"" + qsubCommand + "\"";
         try {
             runCommandForBash(qsubWrappedCommand);

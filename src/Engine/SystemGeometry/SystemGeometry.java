@@ -4,7 +4,6 @@
  */
 package Engine.SystemGeometry;
 
-import Engine.SimulationParameters;
 import Engine.TwoBeadOverlap;
 import SystemAnalysis.AreaPerimeter.BeadRectangle;
 import SystemAnalysis.AreaPerimeter.RectanglesAndBoundaryPerimeter;
@@ -29,7 +28,7 @@ public interface SystemGeometry extends Serializable {
 
     public double getVolume();
 
-    public SimulationParameters getParameters();
+    public GeometricalParameters getParameters();
 
     public double sqDist(double[] position1, double[] position2);
 

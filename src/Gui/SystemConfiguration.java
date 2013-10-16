@@ -4,12 +4,12 @@
  */
 package Gui;
 
-import Engine.PhysicalConstants;
-import Engine.PhysicalConstants.PhysicalConstantsBuilder;
+import Engine.EnergeticsConstants;
+import Engine.EnergeticsConstants.PhysicalConstantsBuilder;
 import Engine.PolymerChain;
 import Engine.PolymerCluster;
 import Engine.PolymerSimulator;
-import Engine.SimulationParameters;
+import Engine.SystemGeometry.GeometricalParameters;
 import Engine.SystemGeometry.HardWallGeometry.HardWallGeometryBuilder;
 import Engine.SystemGeometry.PeriodicGeometry.PeriodicGeometryBuilder;
 import Engine.SystemGeometry.AbstractGeometry.AbstractGeometryBuilder;
@@ -586,7 +586,7 @@ public class SystemConfiguration extends javax.swing.JFrame { //broken, need to 
     }//GEN-LAST:event_buildSystemSamebtnActionPerformed
 
     private PolymerSimulator makePolymerSystem() {
-        SimulationParameters simulationParameters;
+        GeometricalParameters simulationParameters;
         InputVariables inputVariables;
 
         inputVariables = readInputFromGui();
@@ -597,9 +597,9 @@ public class SystemConfiguration extends javax.swing.JFrame { //broken, need to 
 
         PolymerCluster polymerCluster = makePolymerCluster(inputVariables);
 
-        PhysicalConstants physicalConstants = makePhysicalConstants(inputVariables);
+        EnergeticsConstants physicalConstants = makePhysicalConstants(inputVariables);
 
-        simulationParameters = new SimulationParameters(physicalConstants.idealStepLength(), inputVariables.interactionLength);
+        simulationParameters = new GeometricalParameters(physicalConstants.idealStepLength(), inputVariables.interactionLength);
 
         if (hardCoresChk.isSelected()) { //just added by brian to avoid clustering. Let's see if it works
             simulationParameters = simulationParameters.makeParametersFromPhysicalConstants(physicalConstants);
@@ -724,7 +724,7 @@ public class SystemConfiguration extends javax.swing.JFrame { //broken, need to 
         return isInputValid;
     }
 
-    static private PhysicalConstants makePhysicalConstants(InputVariables inputVariables) {
+    static private EnergeticsConstants makePhysicalConstants(InputVariables inputVariables) {
         PhysicalConstantsBuilder physicalConstantsBuilder = new PhysicalConstantsBuilder();
 
         physicalConstantsBuilder.setTemperature(inputVariables.temperature);
@@ -828,7 +828,7 @@ public class SystemConfiguration extends javax.swing.JFrame { //broken, need to 
         return PolymerChain.makeChainStartingWithA(numBeadsAlternating);
     }
 
-    private SystemGeometry makeSystemGeometry(InputVariables inputVariables, PolymerCluster polymerCluster, SimulationParameters simulationParameters) {
+    private SystemGeometry makeSystemGeometry(InputVariables inputVariables, PolymerCluster polymerCluster, GeometricalParameters simulationParameters) {
         AbstractGeometryBuilder systemGeometryBuilder = new PeriodicGeometryBuilder();
         if (periodicRdo.isSelected()) {
             systemGeometryBuilder = new PeriodicGeometryBuilder();

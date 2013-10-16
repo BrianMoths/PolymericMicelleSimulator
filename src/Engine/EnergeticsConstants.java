@@ -4,7 +4,7 @@
  */
 package Engine;
 
-import Engine.ExternalEnergyCalculator.ExternalEnergyCalculatorBuilder;
+import Engine.SystemGeometry.GeometricalParameters;
 import Engine.SystemGeometry.AreaOverlap;
 import Engine.SystemGeometry.SystemGeometry;
 import java.io.Serializable;
@@ -14,7 +14,7 @@ import java.util.Random;
  *
  * @author bmoths
  */
-public final class PhysicalConstants implements Serializable {
+public final class EnergeticsConstants implements Serializable {
 
     //<editor-fold defaultstate="collapsed" desc="builder class">
     static public class PhysicalConstantsBuilder {
@@ -27,9 +27,9 @@ public final class PhysicalConstants implements Serializable {
                 hardOverlapCoefficient = 0;
         private ExternalEnergyCalculator externalEnergyCalculator = new ExternalEnergyCalculator();
 
-        public PhysicalConstants buildPhysicalConstants() {
+        public EnergeticsConstants buildPhysicalConstants() {
             hardOverlapCoefficient = calculateHardOverlapCoefficient();
-            return new PhysicalConstants(this);
+            return new EnergeticsConstants(this);
         }
 
         public double getTemperature() {
@@ -109,7 +109,7 @@ public final class PhysicalConstants implements Serializable {
 
     static private Random randomNumberGenerator = new Random();
 
-    static public PhysicalConstants defaultPhysicalConstants() {
+    static public EnergeticsConstants defaultPhysicalConstants() {
         return new PhysicalConstantsBuilder().buildPhysicalConstants();
     }
 
@@ -121,7 +121,7 @@ public final class PhysicalConstants implements Serializable {
             springCoefficient;
     private final ExternalEnergyCalculator externalEnergyCalculator;
 
-    private PhysicalConstants(PhysicalConstants physicalConstants, SimulationParameters parameters) {
+    private EnergeticsConstants(EnergeticsConstants physicalConstants, GeometricalParameters parameters) {
         temperature = physicalConstants.temperature;
         AAOverlapCoefficient = physicalConstants.AAOverlapCoefficient;
         BBOverlapCoefficient = physicalConstants.BBOverlapCoefficient;
@@ -136,7 +136,7 @@ public final class PhysicalConstants implements Serializable {
 //        externalEnergyCalculator = externalEnergyCalculatorBuilder.build();
     }
 
-    private PhysicalConstants(PhysicalConstantsBuilder physicalConstantsBuilder) {
+    private EnergeticsConstants(PhysicalConstantsBuilder physicalConstantsBuilder) {
         temperature = physicalConstantsBuilder.temperature;
         AAOverlapCoefficient = physicalConstantsBuilder.AAOverlapCoefficient;
         BBOverlapCoefficient = physicalConstantsBuilder.BBOverlapCoefficient;
@@ -147,11 +147,11 @@ public final class PhysicalConstants implements Serializable {
 
     }
 
-    public PhysicalConstants getPhysicalConstantsFromParameters(SimulationParameters parameters) {
-        return new PhysicalConstants(this, parameters);
+    public EnergeticsConstants getPhysicalConstantsFromParameters(GeometricalParameters parameters) {
+        return new EnergeticsConstants(this, parameters);
     }
 
-    private double hardOverlapCoefficientFromParameters(SimulationParameters parameters) {
+    private double hardOverlapCoefficientFromParameters(GeometricalParameters parameters) {
         if (parameters.getCoreLength() > 1e-10) {
             final double bondingEnergyInT = .5;
             final double coreRepulsionInT = 5; //5

@@ -4,7 +4,8 @@
  */
 package Engine;
 
-import Engine.PhysicalConstants.PhysicalConstantsBuilder;
+import Engine.SystemGeometry.GeometricalParameters;
+import Engine.EnergeticsConstants.PhysicalConstantsBuilder;
 import Engine.SystemGeometry.HardWallGeometry;
 
 /**
@@ -16,7 +17,7 @@ public class PolymerSimulatorFactory {
     private HardWallGeometry systemGeometry;
     private PolymerCluster polymerCluster;
     private PhysicalConstantsBuilder physicalConstantsBuilder;
-    private SimulationParameters simulationParameters;
+    private GeometricalParameters simulationParameters;
 
     public PolymerSimulatorFactory() {
         systemGeometry = HardWallGeometry.getDefaultGeometry();

@@ -2,54 +2,54 @@
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
-package Engine;
+package Engine.SystemGeometry;
 
+import Engine.EnergeticsConstants;
 import java.io.Serializable;
 
 /**
  *
  * @author bmoths
  */
-public final class SimulationParameters implements Serializable {
+public final class GeometricalParameters implements Serializable {
 
     private final double interactionLength, coreLength, stepLength;
 
-    public SimulationParameters() {
+    public GeometricalParameters() {
         interactionLength = 5;
         coreLength = 0;
         stepLength = interactionLength / 2; //step length should be set by spring constant
     }
 
-    public SimulationParameters(double stepLength, double interactionLength) {
+    public GeometricalParameters(double stepLength, double interactionLength) {
         this.interactionLength = interactionLength;
         this.stepLength = stepLength;
         coreLength = 0;
     }
 
-    public SimulationParameters(double stepLength, double interactionLength, double coreLength) {
+    public GeometricalParameters(double stepLength, double interactionLength, double coreLength) {
         this.interactionLength = interactionLength;
         this.stepLength = stepLength;
         this.coreLength = coreLength;
     }
 
-    public SimulationParameters(SimulationParameters simulationParameters) {
+    public GeometricalParameters(GeometricalParameters simulationParameters) {
         stepLength = simulationParameters.stepLength;
         interactionLength = simulationParameters.interactionLength;
         coreLength = simulationParameters.getCoreLength();
     }
 
-    public SimulationParameters makeParametersFromPhysicalConstants(PhysicalConstants physicalConstants) {
-        return new SimulationParameters(this, physicalConstants);
+    public GeometricalParameters makeParametersFromPhysicalConstants(EnergeticsConstants physicalConstants) {
+        return new GeometricalParameters(this, physicalConstants);
     }
 
-    private SimulationParameters(SimulationParameters simulationParameters, PhysicalConstants physicalConstants) {
-//        this.stepLength = simulationParameters.stepLength;
+    private GeometricalParameters(GeometricalParameters simulationParameters, EnergeticsConstants physicalConstants) {
         this.interactionLength = simulationParameters.interactionLength;
         stepLength = physicalConstants.idealStepLength();
         coreLength = coreLengthFromPhysicalConstants(physicalConstants);
     }
 
-    private double coreLengthFromPhysicalConstants(PhysicalConstants physicalConstants) {
+    private double coreLengthFromPhysicalConstants(EnergeticsConstants physicalConstants) {
         final double attractionInT = .5; //.5
         double thermalForce = attractionInT * physicalConstants.getTemperature() / interactionLength;
         double minCoefficientForBonding = -thermalForce / interactionLength;
@@ -57,6 +57,7 @@ public final class SimulationParameters implements Serializable {
         return interactionLength + thermalForce / minAttraction;
     }
 
+    //<editor-fold defaultstate="collapsed" desc="getters">
     public double getStepLength() {
         return stepLength;
     }
@@ -68,6 +69,7 @@ public final class SimulationParameters implements Serializable {
     public double getCoreLength() {
         return coreLength;
     }
+    //</editor-fold>
 
     @Override
     public String toString() {
