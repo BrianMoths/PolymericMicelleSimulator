@@ -6,7 +6,6 @@ package Engine.SystemGeometry;
 
 import Engine.TwoBeadOverlap;
 import SystemAnalysis.AreaPerimeter.BeadRectangle;
-import SystemAnalysis.AreaPerimeter.Interval;
 import SystemAnalysis.AreaPerimeter.OverlappingIntervalLengthFinder;
 import SystemAnalysis.AreaPerimeter.RectanglesAndBoundaryIntervals;
 import SystemAnalysis.AreaPerimeter.RectanglesAndBoundaryPerimeter;

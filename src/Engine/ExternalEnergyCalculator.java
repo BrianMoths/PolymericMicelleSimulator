@@ -70,7 +70,7 @@ public class ExternalEnergyCalculator {
     }
 //</editor-fold>
 
-    final double xTension, xQuadratic, yTension, yQuadratic, pressure;
+    private final double xTension, xQuadratic, yTension, yQuadratic, pressure;
 
     public ExternalEnergyCalculator() {
         xTension = 0;

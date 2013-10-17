@@ -4,8 +4,6 @@
  */
 package Engine;
 
-import Engine.SimulationStepping.StepTypes.SimulationStep;
-import Engine.SimulationStepping.StepTypes.SingleBeadStep;
 import Engine.SystemGeometry.SystemGeometry;
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -23,8 +21,8 @@ public class PolymerPosition implements Serializable {
     private final SystemGeometry systemGeometry;
     private double[][] beadPositions;
 
-    public PolymerPosition(PolymerCluster polymerCluster, SystemGeometry systemGeometry) {
-        numBeads = polymerCluster.getNumBeads();
+    public PolymerPosition(int numBeads, SystemGeometry systemGeometry) {
+        this.numBeads = numBeads;
         registeredSystemAnalyzers = new ArrayList<>();
         this.systemGeometry = systemGeometry;
         randomizePrivate();
@@ -36,8 +34,8 @@ public class PolymerPosition implements Serializable {
         systemGeometry = polymerPosition.systemGeometry;
         beadPositions = polymerPosition.getBeadPositions();
     }
-    //<editor-fold defaultstate="collapsed" desc="toString">
 
+    //<editor-fold defaultstate="collapsed" desc="toString">
     @Override
     public String toString() {
         StringBuilder stringBuilder = new StringBuilder();
@@ -113,8 +111,8 @@ public class PolymerPosition implements Serializable {
             systemAnalyzer.resetHistory();
         }
     }
+    //</editor-fold>
 
-//</editor-fold>
     //<editor-fold defaultstate="collapsed" desc="move beads">
     public boolean moveBead(int stepBead, double[] stepVector) {
         final boolean isSuccessful = systemGeometry.incrementFirstVector(beadPositions[stepBead], stepVector);

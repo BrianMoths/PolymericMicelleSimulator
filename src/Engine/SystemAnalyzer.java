@@ -25,9 +25,6 @@ import java.util.List;
 public class SystemAnalyzer implements Serializable {
 
     static private final int statisticsWindow = 1000;
-//    static public SystemAnalyzer defaultSystemAnalyzer() {
-//        return new SystemAnalyzer(, PolymerCluster.makeDefaultPolymerCluster(), null)
-//    }
     private final int[][] neighbors;
     private final SystemGeometry systemGeometry;
     private final EnergeticsConstants physicalConstants;
