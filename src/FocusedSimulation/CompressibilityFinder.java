@@ -6,6 +6,7 @@ package FocusedSimulation;
 
 import Engine.ExternalEnergyCalculator;
 import Engine.EnergeticsConstants;
+import Engine.EnergeticsConstants.EnergeticsConstantsBuilder;
 import Engine.PolymerChain;
 import Engine.PolymerCluster;
 import Engine.PolymerSimulator;
@@ -61,20 +62,20 @@ public class CompressibilityFinder {
 
     //<editor-fold defaultstate="collapsed" desc="makePolymerSimulator">
     static private PolymerSimulator makePolymerSimulator() {
-        PolymerCluster polymerCluster = makePolymerCluster();
-        EnergeticsConstants physicalConstants = makePhysicalConstants();
+        final double interactionLength = 4;
 
-        GeometricalParameters simulationParameters = new GeometricalParameters(physicalConstants.idealStepLength(), 4);
+        final PolymerCluster polymerCluster = makePolymerCluster();
 
-        simulationParameters = simulationParameters.makeParametersFromPhysicalConstants(physicalConstants);
-        physicalConstants = physicalConstants.getPhysicalConstantsFromParameters(simulationParameters);
+        EnergeticsConstantsBuilder energeticsConstantsBuilder = makeEnergeticsConstantsBuilder();
+        final GeometricalParameters geometricalParameters = new GeometricalParameters(interactionLength, energeticsConstantsBuilder);
+        energeticsConstantsBuilder.setHardOverlapCoefficientFromParameters(geometricalParameters);
 
-        SystemGeometry systemGeometry = makeSystemGeometry(polymerCluster, simulationParameters);
-
+        final EnergeticsConstants energeticsConstants = energeticsConstantsBuilder.buildEnergeticsConstants();
+        final SystemGeometry systemGeometry = makeSystemGeometry(polymerCluster, geometricalParameters);
         return new PolymerSimulator(
                 systemGeometry,
                 polymerCluster,
-                physicalConstants);
+                energeticsConstants);
     }
 
     static private PolymerCluster makePolymerCluster() {
@@ -84,18 +85,18 @@ public class CompressibilityFinder {
         return polymerCluster;
     }
 
-    static private EnergeticsConstants makePhysicalConstants() {
-        EnergeticsConstants.PhysicalConstantsBuilder physicalConstantsBuilder = new EnergeticsConstants.PhysicalConstantsBuilder();
+    static private EnergeticsConstantsBuilder makeEnergeticsConstantsBuilder() {
+        EnergeticsConstants.EnergeticsConstantsBuilder energeticsConstantsBuilder = new EnergeticsConstants.EnergeticsConstantsBuilder();
 
-        physicalConstantsBuilder.setTemperature(1);
-        physicalConstantsBuilder.setAAOverlapCoefficient(0);
-        physicalConstantsBuilder.setBBOverlapCoefficient(-.06);
-        physicalConstantsBuilder.setSpringCoefficient(1);
+        energeticsConstantsBuilder.setTemperature(1);
+        energeticsConstantsBuilder.setAAOverlapCoefficient(0);
+        energeticsConstantsBuilder.setBBOverlapCoefficient(-.06);
+        energeticsConstantsBuilder.setSpringCoefficient(1);
 
         final ExternalEnergyCalculator externalEnergyCalculator = makeExternalEnergyCalculator();
-        physicalConstantsBuilder.setExternalEnergyCalculator(externalEnergyCalculator);
+        energeticsConstantsBuilder.setExternalEnergyCalculator(externalEnergyCalculator);
 
-        return physicalConstantsBuilder.buildPhysicalConstants();
+        return energeticsConstantsBuilder;
     }
 
     static private ExternalEnergyCalculator makeExternalEnergyCalculator() {
@@ -105,11 +106,11 @@ public class CompressibilityFinder {
         return externalEnergyCalculatorBuilder.build();
     }
 
-    static private SystemGeometry makeSystemGeometry(PolymerCluster polymerCluster, GeometricalParameters simulationParameters) {
+    static private SystemGeometry makeSystemGeometry(PolymerCluster polymerCluster, GeometricalParameters geometricalParameters) {
         AbstractGeometry.AbstractGeometryBuilder systemGeometryBuilder = new PeriodicGeometry.PeriodicGeometryBuilder();
 
         systemGeometryBuilder.setDimension(2);
-        systemGeometryBuilder.makeConsistentWith(polymerCluster, simulationParameters);
+        systemGeometryBuilder.makeConsistentWith(polymerCluster.getNumBeadsIncludingWater(), geometricalParameters);
         return systemGeometryBuilder.buildGeometry();
     }
 //</editor-fold>

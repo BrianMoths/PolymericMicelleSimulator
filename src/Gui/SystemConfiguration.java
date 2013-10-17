@@ -5,7 +5,7 @@
 package Gui;
 
 import Engine.EnergeticsConstants;
-import Engine.EnergeticsConstants.PhysicalConstantsBuilder;
+import Engine.EnergeticsConstants.EnergeticsConstantsBuilder;
 import Engine.PolymerChain;
 import Engine.PolymerCluster;
 import Engine.PolymerSimulator;
@@ -586,7 +586,7 @@ public class SystemConfiguration extends javax.swing.JFrame { //broken, need to 
     }//GEN-LAST:event_buildSystemSamebtnActionPerformed
 
     private PolymerSimulator makePolymerSystem() {
-        GeometricalParameters simulationParameters;
+        GeometricalParameters geometricalParameters;
         InputVariables inputVariables;
 
         inputVariables = readInputFromGui();
@@ -595,28 +595,28 @@ public class SystemConfiguration extends javax.swing.JFrame { //broken, need to 
             throw new IllegalArgumentException();
         }
 
-        PolymerCluster polymerCluster = makePolymerCluster(inputVariables);
+        EnergeticsConstantsBuilder energeticsConstantsBuilder = makeEnergeticsConstantsBuilder(inputVariables);
 
-        EnergeticsConstants physicalConstants = makePhysicalConstants(inputVariables);
-
-        simulationParameters = new GeometricalParameters(physicalConstants.idealStepLength(), inputVariables.interactionLength);
-
-        if (hardCoresChk.isSelected()) { //just added by brian to avoid clustering. Let's see if it works
-            simulationParameters = simulationParameters.makeParametersFromPhysicalConstants(physicalConstants);
-            physicalConstants = physicalConstants.getPhysicalConstantsFromParameters(simulationParameters);
+        if (hardCoresChk.isSelected()) {
+            geometricalParameters = new GeometricalParameters(inputVariables.interactionLength, energeticsConstantsBuilder);
+            energeticsConstantsBuilder.setHardOverlapCoefficientFromParameters(geometricalParameters);
+        } else {
+            geometricalParameters = new GeometricalParameters(energeticsConstantsBuilder.idealStepLength(), inputVariables.interactionLength);
         }
 
-        System.out.println("Core Length: " + simulationParameters.getCoreLength());
-        System.out.println("HardOverlap: " + physicalConstants.getHardOverlapCoefficient());
-        System.out.println("Interaction Length: " + simulationParameters.getInteractionLength());
+        final PolymerCluster polymerCluster = makePolymerCluster(inputVariables);
+        final EnergeticsConstants energeticsConstants = energeticsConstantsBuilder.buildEnergeticsConstants();
+        final SystemGeometry systemGeometry = makeSystemGeometry(inputVariables, polymerCluster, geometricalParameters);
 
-        SystemGeometry systemGeometry = makeSystemGeometry(inputVariables, polymerCluster, simulationParameters);
+        System.out.println("Core Length: " + geometricalParameters.getCoreLength());
+        System.out.println("HardOverlap: " + energeticsConstantsBuilder.getHardOverlapCoefficient());
+        System.out.println("Interaction Length: " + geometricalParameters.getInteractionLength());
 
-        PolymerSimulator polymerSystem;
+        final PolymerSimulator polymerSystem;
         polymerSystem = new PolymerSimulator(
                 systemGeometry,
                 polymerCluster,
-                physicalConstants);
+                energeticsConstants);
 
         return polymerSystem;
     }
@@ -724,16 +724,16 @@ public class SystemConfiguration extends javax.swing.JFrame { //broken, need to 
         return isInputValid;
     }
 
-    static private EnergeticsConstants makePhysicalConstants(InputVariables inputVariables) {
-        PhysicalConstantsBuilder physicalConstantsBuilder = new PhysicalConstantsBuilder();
+    static private EnergeticsConstantsBuilder makeEnergeticsConstantsBuilder(InputVariables inputVariables) {
+        EnergeticsConstantsBuilder energeticsConstantsBuilder = new EnergeticsConstantsBuilder();
 
-        physicalConstantsBuilder.setTemperature(inputVariables.temperature);
-        physicalConstantsBuilder.setAAOverlapCoefficient(inputVariables.AAOverlapCoefficient);
-        physicalConstantsBuilder.setBBOverlapCoefficient(inputVariables.BBOverlapCoefficient);
-        physicalConstantsBuilder.setABOverlapCoefficient(inputVariables.ABOverlapCoefficient);
-        physicalConstantsBuilder.setSpringCoefficient(inputVariables.springConstant);
+        energeticsConstantsBuilder.setTemperature(inputVariables.temperature);
+        energeticsConstantsBuilder.setAAOverlapCoefficient(inputVariables.AAOverlapCoefficient);
+        energeticsConstantsBuilder.setBBOverlapCoefficient(inputVariables.BBOverlapCoefficient);
+        energeticsConstantsBuilder.setABOverlapCoefficient(inputVariables.ABOverlapCoefficient);
+        energeticsConstantsBuilder.setSpringCoefficient(inputVariables.springConstant);
 
-        return physicalConstantsBuilder.buildPhysicalConstants();
+        return energeticsConstantsBuilder;
     }
 
     private PolymerCluster makePolymerCluster(InputVariables inputVariables) {
@@ -828,7 +828,7 @@ public class SystemConfiguration extends javax.swing.JFrame { //broken, need to 
         return PolymerChain.makeChainStartingWithA(numBeadsAlternating);
     }
 
-    private SystemGeometry makeSystemGeometry(InputVariables inputVariables, PolymerCluster polymerCluster, GeometricalParameters simulationParameters) {
+    private SystemGeometry makeSystemGeometry(InputVariables inputVariables, PolymerCluster polymerCluster, GeometricalParameters geometricalParameters) {
         AbstractGeometryBuilder systemGeometryBuilder = new PeriodicGeometryBuilder();
         if (periodicRdo.isSelected()) {
             systemGeometryBuilder = new PeriodicGeometryBuilder();
@@ -837,7 +837,7 @@ public class SystemConfiguration extends javax.swing.JFrame { //broken, need to 
         }
 
         systemGeometryBuilder.setDimension(inputVariables.dimension);
-        systemGeometryBuilder.makeConsistentWith(polymerCluster, simulationParameters);
+        systemGeometryBuilder.makeConsistentWith(polymerCluster.getNumBeadsIncludingWater(), geometricalParameters);
         return systemGeometryBuilder.buildGeometry();
     }
     private void lamellaeBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_lamellaeBtnActionPerformed

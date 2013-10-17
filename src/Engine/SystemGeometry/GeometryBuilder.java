@@ -4,8 +4,6 @@
  */
 package Engine.SystemGeometry;
 
-import Engine.PolymerCluster;
-
 /**
  *
  * @author bmoths
@@ -24,7 +22,8 @@ public interface GeometryBuilder {
 
     public GeometryBuilder setParameters(GeometricalParameters parameters);
 
-    public void makeConsistentWith(PolymerCluster polymerCluster, GeometricalParameters simulationParameters);
+    public void makeConsistentWith(double numBeadsIncludingWater, GeometricalParameters geometricalParameters);
 
     public SystemGeometry buildGeometry();
+
 }

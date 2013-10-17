@@ -17,7 +17,7 @@ import java.util.Random;
 public final class EnergeticsConstants implements Serializable {
 
     //<editor-fold defaultstate="collapsed" desc="builder class">
-    static public class PhysicalConstantsBuilder {
+    static public class EnergeticsConstantsBuilder {
 
         private double temperature = 1,
                 AAOverlapCoefficient = 5. / 120.,
@@ -27,82 +27,110 @@ public final class EnergeticsConstants implements Serializable {
                 hardOverlapCoefficient = 0;
         private ExternalEnergyCalculator externalEnergyCalculator = new ExternalEnergyCalculator();
 
-        public EnergeticsConstants buildPhysicalConstants() {
-            hardOverlapCoefficient = calculateHardOverlapCoefficient();
+        public EnergeticsConstantsBuilder() {
+        }
+
+        public EnergeticsConstantsBuilder(EnergeticsConstants energeticsConstants) {
+            temperature = energeticsConstants.temperature;
+            AAOverlapCoefficient = energeticsConstants.AAOverlapCoefficient;
+            BBOverlapCoefficient = energeticsConstants.BBOverlapCoefficient;
+            ABOverlapCoefficient = energeticsConstants.ABOverlapCoefficient;
+            springCoefficient = energeticsConstants.springCoefficient;
+            hardOverlapCoefficient = energeticsConstants.hardOverlapCoefficient;
+        }
+
+        public EnergeticsConstants buildEnergeticsConstants() {
             return new EnergeticsConstants(this);
         }
 
-        public double getTemperature() {
-            return temperature;
+        public void setHardOverlapCoefficientFromParameters(GeometricalParameters geometricalParameters) {
+            hardOverlapCoefficient = hardOverlapCoefficientFromParameters(geometricalParameters);
         }
 
-        public PhysicalConstantsBuilder setTemperature(double temperature) {
+        private double hardOverlapCoefficientFromParameters(GeometricalParameters geometricalParameters) {
+            if (geometricalParameters.getCoreLength() > 1e-10) {
+                final double bondingEnergyInT = .5;
+                final double coreRepulsionInT = 5; //5
+                double minCoefficientForBonding = -bondingEnergyInT * temperature / (geometricalParameters.getInteractionLength() * geometricalParameters.getInteractionLength());
+                double minAttraction = Math.min(Math.min(BBOverlapCoefficient, AAOverlapCoefficient), minCoefficientForBonding);
+                return (coreRepulsionInT * temperature - geometricalParameters.getInteractionLength() * geometricalParameters.getInteractionLength() * minAttraction) / (geometricalParameters.getCoreLength() * geometricalParameters.getCoreLength());
+            } else {
+                return 0;
+            }
+        }
+
+        public double idealStepLength() {
+            return Math.sqrt(getTemperature() / getSpringCoefficient());
+        }
+
+        //<editor-fold defaultstate="collapsed" desc="setters">
+        public EnergeticsConstantsBuilder setTemperature(double temperature) {
             if (temperature > 0) {
                 this.temperature = temperature;
             }
             return this;
         }
 
-        public double getAAOverlapCoefficient() {
-            return AAOverlapCoefficient;
-        }
-
-        public PhysicalConstantsBuilder setAAOverlapCoefficient(double AAOverlapCoefficient) {
+        public EnergeticsConstantsBuilder setAAOverlapCoefficient(double AAOverlapCoefficient) {
             this.AAOverlapCoefficient = AAOverlapCoefficient;
             return this;
+        }
+
+        public EnergeticsConstantsBuilder setBBOverlapCoefficient(double BBOverlapCoefficient) {
+            this.BBOverlapCoefficient = BBOverlapCoefficient;
+            return this;
+        }
+
+        public EnergeticsConstantsBuilder setABOverlapCoefficient(double ABOverlapCoefficient) {
+            this.ABOverlapCoefficient = ABOverlapCoefficient;
+            return this;
+        }
+
+        public EnergeticsConstantsBuilder setSpringCoefficient(double springCoefficient) {
+            this.springCoefficient = springCoefficient;
+            return this;
+        }
+
+        public EnergeticsConstantsBuilder setHardOverlapCoefficient(double hardOverlapCoefficient) {
+            this.hardOverlapCoefficient = hardOverlapCoefficient;
+            return this;
+        }
+
+        public EnergeticsConstantsBuilder setExternalEnergyCalculator(ExternalEnergyCalculator externalEnergyCalculator) {
+            this.externalEnergyCalculator = externalEnergyCalculator;
+            return this;
+        }
+        //</editor-fold>
+
+        //<editor-fold defaultstate="collapsed" desc="getters">
+        public double getTemperature() {
+            return temperature;
+        }
+
+        public double getAAOverlapCoefficient() {
+            return AAOverlapCoefficient;
         }
 
         public double getBBOverlapCoefficient() {
             return BBOverlapCoefficient;
         }
 
-        public PhysicalConstantsBuilder setBBOverlapCoefficient(double BBOverlapCoefficient) {
-            this.BBOverlapCoefficient = BBOverlapCoefficient;
-            return this;
-        }
-
         public double getABOverlapCoefficient() {
             return ABOverlapCoefficient;
-        }
-
-        public PhysicalConstantsBuilder setABOverlapCoefficient(double ABOverlapCoefficient) {
-            this.ABOverlapCoefficient = ABOverlapCoefficient;
-            return this;
         }
 
         public double getSpringCoefficient() {
             return springCoefficient;
         }
 
-        public PhysicalConstantsBuilder setSpringCoefficient(double springCoefficient) {
-            this.springCoefficient = springCoefficient;
-            return this;
-        }
-
         public double getHardOverlapCoefficient() {
             return hardOverlapCoefficient;
-        }
-
-        public PhysicalConstantsBuilder setHardOverlapCoefficient(double hardOverlapCoefficient) {
-            this.hardOverlapCoefficient = hardOverlapCoefficient;
-            return this;
-        }
-
-        private double calculateHardOverlapCoefficient() {
-            return 3 * Math.max(
-                    Math.max(
-                    Math.abs(AAOverlapCoefficient),
-                    Math.abs(BBOverlapCoefficient)),
-                    Math.abs(ABOverlapCoefficient));
         }
 
         public ExternalEnergyCalculator getExternalEnergyCalculator() {
             return externalEnergyCalculator;
         }
-
-        public void setExternalEnergyCalculator(ExternalEnergyCalculator externalEnergyCalculator) {
-            this.externalEnergyCalculator = externalEnergyCalculator;
-        }
+        //</editor-fold>
 
     }
     //</editor-fold>
@@ -110,7 +138,7 @@ public final class EnergeticsConstants implements Serializable {
     static private Random randomNumberGenerator = new Random();
 
     static public EnergeticsConstants defaultPhysicalConstants() {
-        return new PhysicalConstantsBuilder().buildPhysicalConstants();
+        return new EnergeticsConstantsBuilder().buildEnergeticsConstants();
     }
 
     private final double temperature,
@@ -121,48 +149,18 @@ public final class EnergeticsConstants implements Serializable {
             springCoefficient;
     private final ExternalEnergyCalculator externalEnergyCalculator;
 
-    private EnergeticsConstants(EnergeticsConstants physicalConstants, GeometricalParameters parameters) {
-        temperature = physicalConstants.temperature;
-        AAOverlapCoefficient = physicalConstants.AAOverlapCoefficient;
-        BBOverlapCoefficient = physicalConstants.BBOverlapCoefficient;
-        ABOverlapCoefficient = physicalConstants.ABOverlapCoefficient;
-        springCoefficient = physicalConstants.springCoefficient;
-        hardOverlapCoefficient = hardOverlapCoefficientFromParameters(parameters);
-        externalEnergyCalculator = physicalConstants.externalEnergyCalculator;
-//        ExternalEnergyCalculatorBuilder externalEnergyCalculatorBuilder = new ExternalEnergyCalculatorBuilder();
-//        externalEnergyCalculatorBuilder.xTension = -50.;
-//        externalEnergyCalculatorBuilder.xQuadratic = .2;
-//
-//        externalEnergyCalculator = externalEnergyCalculatorBuilder.build();
-    }
-
-    private EnergeticsConstants(PhysicalConstantsBuilder physicalConstantsBuilder) {
-        temperature = physicalConstantsBuilder.temperature;
-        AAOverlapCoefficient = physicalConstantsBuilder.AAOverlapCoefficient;
-        BBOverlapCoefficient = physicalConstantsBuilder.BBOverlapCoefficient;
-        ABOverlapCoefficient = physicalConstantsBuilder.ABOverlapCoefficient;
-        hardOverlapCoefficient = physicalConstantsBuilder.hardOverlapCoefficient;
-        springCoefficient = physicalConstantsBuilder.springCoefficient;
-        externalEnergyCalculator = physicalConstantsBuilder.externalEnergyCalculator;
+    private EnergeticsConstants(EnergeticsConstantsBuilder energeticsConstantsBuilder) {
+        temperature = energeticsConstantsBuilder.temperature;
+        AAOverlapCoefficient = energeticsConstantsBuilder.AAOverlapCoefficient;
+        BBOverlapCoefficient = energeticsConstantsBuilder.BBOverlapCoefficient;
+        ABOverlapCoefficient = energeticsConstantsBuilder.ABOverlapCoefficient;
+        hardOverlapCoefficient = energeticsConstantsBuilder.hardOverlapCoefficient;
+        springCoefficient = energeticsConstantsBuilder.springCoefficient;
+        externalEnergyCalculator = energeticsConstantsBuilder.externalEnergyCalculator;
 
     }
 
-    public EnergeticsConstants getPhysicalConstantsFromParameters(GeometricalParameters parameters) {
-        return new EnergeticsConstants(this, parameters);
-    }
-
-    private double hardOverlapCoefficientFromParameters(GeometricalParameters parameters) {
-        if (parameters.getCoreLength() > 1e-10) {
-            final double bondingEnergyInT = .5;
-            final double coreRepulsionInT = 5; //5
-            double minCoefficientForBonding = -bondingEnergyInT * temperature / (parameters.getInteractionLength() * parameters.getInteractionLength());
-            double minAttraction = Math.min(Math.min(BBOverlapCoefficient, AAOverlapCoefficient), minCoefficientForBonding);
-            return (coreRepulsionInT * temperature - parameters.getInteractionLength() * parameters.getInteractionLength() * minAttraction) / (parameters.getCoreLength() * parameters.getCoreLength());
-        } else {
-            return 0;
-        }
-    }
-
+    //<editor-fold defaultstate="collapsed" desc="calculate energies">
     public double springEnergy(double squareLength) {
         return springCoefficient * squareLength;
     }
@@ -177,6 +175,7 @@ public final class EnergeticsConstants implements Serializable {
     public double externalEnergy(SystemGeometry systemGeometry) {
         return externalEnergyCalculator.calculateExternalEnergy(systemGeometry.getRMax());
     }
+    //</editor-fold>
 
     public boolean isEnergeticallyAllowed(double energyChange) {
         return energyChange < 0
@@ -187,6 +186,7 @@ public final class EnergeticsConstants implements Serializable {
         return Math.sqrt(getTemperature() / getSpringCoefficient());
     }
 
+    //<editor-fold defaultstate="collapsed" desc="to string">
     @Override
     public String toString() {
         StringBuilder stringBuilder = new StringBuilder();
@@ -198,6 +198,7 @@ public final class EnergeticsConstants implements Serializable {
         stringBuilder.append("Spring Coefficient: ").append(Double.toString(springCoefficient)).append("\n");
         return stringBuilder.toString();
     }
+    //</editor-fold>
 
     //<editor-fold defaultstate="collapsed" desc="getters">
     public double getTemperature() {

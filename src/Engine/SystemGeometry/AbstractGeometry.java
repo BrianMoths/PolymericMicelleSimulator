@@ -72,19 +72,31 @@ public abstract class AbstractGeometry implements SystemGeometry {
             return this;
         }
 
+        /**
+         * sets the GeometricalParameters field of the builder object. Also sets
+         * the size of the system so that on average, each bead interacts with
+         * 14 other beads. The number 14 was chosen because it produces
+         * reasonable results
+         *
+         * @param numBeadsIncludingWater the total number of beads to be put in
+         * the region specified by the geometry object to be built. The implicit
+         * water beads do count towards this number
+         * @param geometricalParameters the geometrical parameters to be
+         * contained by the the geometry object to be built
+         */
         @Override
-        public void makeConsistentWith(PolymerCluster polymerCluster, GeometricalParameters simulationParameters) {
-            this.parameters = simulationParameters;
+        public void makeConsistentWith(double numBeadsIncludingWater, GeometricalParameters geometricalParameters) {
+            this.parameters = geometricalParameters;
             double boxLength;
-            boxLength = findBoxLength(polymerCluster, simulationParameters);
+            boxLength = findBoxLength(numBeadsIncludingWater, geometricalParameters);
             for (int i = 0; i < dimension; i++) {
                 setDimensionSize(i, boxLength);
             }
         }
 
-        private double findBoxLength(PolymerCluster polymerCluster, GeometricalParameters simulationParameters) {
-            double fractionInteracting = 14 / polymerCluster.getNumBeadsIncludingWater();
-            return simulationParameters.getInteractionLength() * Math.pow(1 / fractionInteracting, 1. / dimension);
+        private double findBoxLength(double numBeadsIncludingWater, GeometricalParameters geometricalParameters) {
+            double fractionInteracting = 14 / numBeadsIncludingWater;
+            return geometricalParameters.getInteractionLength() * Math.pow(1 / fractionInteracting, 1. / dimension);
         }
 
     }

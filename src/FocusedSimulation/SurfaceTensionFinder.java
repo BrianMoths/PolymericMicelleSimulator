@@ -7,6 +7,7 @@ package FocusedSimulation;
 import Engine.ExternalEnergyCalculator;
 import Engine.ExternalEnergyCalculator.ExternalEnergyCalculatorBuilder;
 import Engine.EnergeticsConstants;
+import Engine.EnergeticsConstants.EnergeticsConstantsBuilder;
 import Engine.PolymerChain;
 import Engine.PolymerCluster;
 import Engine.PolymerSimulator;
@@ -101,16 +102,6 @@ public class SurfaceTensionFinder {
         return new InputParameters(numChains, externalEnergyCalculator, density);
     }
 
-    //<editor-fold defaultstate="collapsed" desc="makePolymerSimulator">
-    static private SystemGeometry makeSystemGeometry(PolymerCluster polymerCluster, GeometricalParameters simulationParameters) {
-        AbstractGeometryBuilder systemGeometryBuilder = new PeriodicGeometry.PeriodicGeometryBuilder();
-
-        systemGeometryBuilder.setDimension(2);
-        systemGeometryBuilder.makeConsistentWith(polymerCluster, simulationParameters);
-        return systemGeometryBuilder.buildGeometry();
-    }
-//</editor-fold>
-
     static public DescriptiveStatistics generateLengthStatistics(int numSamples, PolymerSimulator polymerSimulator) {
         final int iterationsPerSample = 100000;
         int numSamplesTaken = 0;
@@ -151,18 +142,15 @@ public class SurfaceTensionFinder {
     static private PolymerSimulator makePolymerSimulator(InputParameters inputParameters) {
         final double interactionLength = 4;
 
-        PolymerCluster polymerCluster = makePolymerCluster(inputParameters.numChains, inputParameters.density);
-        EnergeticsConstants physicalConstants = makePhysicalConstants(inputParameters.externalEnergyCalculator);
-        GeometricalParameters simulationParameters = new GeometricalParameters(physicalConstants.idealStepLength(), interactionLength);
-        simulationParameters = simulationParameters.makeParametersFromPhysicalConstants(physicalConstants);
-        physicalConstants = physicalConstants.getPhysicalConstantsFromParameters(simulationParameters);
-        SystemGeometry systemGeometry = makeSystemGeometry(polymerCluster, simulationParameters);
+        EnergeticsConstantsBuilder energeticsConstantsBuilder = makeEnergeticsConstantsBuilder(inputParameters.externalEnergyCalculator);
+        GeometricalParameters geometricalParameters = new GeometricalParameters(interactionLength, energeticsConstantsBuilder);
+        energeticsConstantsBuilder.setHardOverlapCoefficientFromParameters(geometricalParameters);
 
-        return new PolymerSimulator(
-                systemGeometry,
-                polymerCluster,
-                physicalConstants);
+        final PolymerCluster polymerCluster = makePolymerCluster(inputParameters.numChains, inputParameters.density);
+        final EnergeticsConstants energeticsConstants = energeticsConstantsBuilder.buildEnergeticsConstants();
+        final SystemGeometry systemGeometry = makeSystemGeometry(polymerCluster.getNumBeadsIncludingWater(), geometricalParameters);
 
+        return new PolymerSimulator(systemGeometry, polymerCluster, energeticsConstants);
     }
 
     static private PolymerCluster makePolymerCluster(int numChains, double density) {
@@ -172,25 +160,30 @@ public class SurfaceTensionFinder {
         return polymerCluster;
     }
 
-    static private EnergeticsConstants makePhysicalConstants(ExternalEnergyCalculator externalEnergyCalculator) {
-        EnergeticsConstants.PhysicalConstantsBuilder physicalConstantsBuilder = new EnergeticsConstants.PhysicalConstantsBuilder();
+    static private EnergeticsConstantsBuilder makeEnergeticsConstantsBuilder(ExternalEnergyCalculator externalEnergyCalculator) {
+        EnergeticsConstants.EnergeticsConstantsBuilder energeticsConstantsBuilder = new EnergeticsConstants.EnergeticsConstantsBuilder();
 
-        physicalConstantsBuilder.setTemperature(1);
-        physicalConstantsBuilder.setAAOverlapCoefficient(0);
-        physicalConstantsBuilder.setBBOverlapCoefficient(-.06);
-        physicalConstantsBuilder.setSpringCoefficient(1);
+        energeticsConstantsBuilder.setTemperature(1);
+        energeticsConstantsBuilder.setAAOverlapCoefficient(0);
+        energeticsConstantsBuilder.setBBOverlapCoefficient(-.06);
+        energeticsConstantsBuilder.setSpringCoefficient(1);
 
-        physicalConstantsBuilder.setExternalEnergyCalculator(externalEnergyCalculator);
+        energeticsConstantsBuilder.setExternalEnergyCalculator(externalEnergyCalculator);
 
-        return physicalConstantsBuilder.buildPhysicalConstants();
+        return energeticsConstantsBuilder;
+    }
+
+    static private SystemGeometry makeSystemGeometry(double numBeadsIncludingWater, GeometricalParameters geometricalParameters) {
+        AbstractGeometryBuilder systemGeometryBuilder = new PeriodicGeometry.PeriodicGeometryBuilder();
+
+        systemGeometryBuilder.setDimension(2);
+        systemGeometryBuilder.makeConsistentWith(numBeadsIncludingWater, geometricalParameters);
+        return systemGeometryBuilder.buildGeometry();
     }
 //</editor-fold>
 
     private final int numAnneals = 50; //50
     private final int numSurfaceTensionTrials = 70; //70
-//    private final ExternalEnergyCalculator externalEnergyCalculator;
-//    private final double density;
-//    private final int numChains;
     private final InputParameters inputParameters;
     private final PrintWriter dataWriter;
 

@@ -39,14 +39,14 @@ public class PolymerSimulator implements Serializable {
     }
 
     static private GeometricalParameters makeDefaultParametersPrivate(PolymerCluster polymerCluster, double boxLength, int dimension, EnergeticsConstants physicalConstants) {
-        GeometricalParameters simulationParameters;
+        GeometricalParameters geometricalParameters;
         int averageNumberOfNeighbors = 14; //14
         double interactionLength;
         interactionLength = Math.pow(averageNumberOfNeighbors * Math.pow(boxLength, dimension) / polymerCluster.getNumBeadsIncludingWater(), 1.0 / dimension);
         double stepLength;
         stepLength = Math.sqrt(physicalConstants.getTemperature() / physicalConstants.getSpringCoefficient());
-        simulationParameters = new GeometricalParameters(stepLength, interactionLength);
-        return simulationParameters;
+        geometricalParameters = new GeometricalParameters(stepLength, interactionLength);
+        return geometricalParameters;
     }
     //</editor-fold>
 

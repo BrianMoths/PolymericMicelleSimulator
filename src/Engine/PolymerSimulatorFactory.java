@@ -5,7 +5,7 @@
 package Engine;
 
 import Engine.SystemGeometry.GeometricalParameters;
-import Engine.EnergeticsConstants.PhysicalConstantsBuilder;
+import Engine.EnergeticsConstants.EnergeticsConstantsBuilder;
 import Engine.SystemGeometry.HardWallGeometry;
 
 /**
@@ -16,20 +16,20 @@ public class PolymerSimulatorFactory {
 
     private HardWallGeometry systemGeometry;
     private PolymerCluster polymerCluster;
-    private PhysicalConstantsBuilder physicalConstantsBuilder;
-    private GeometricalParameters simulationParameters;
+    private EnergeticsConstantsBuilder physicalConstantsBuilder;
+    private GeometricalParameters geometricalParameters;
 
     public PolymerSimulatorFactory() {
         systemGeometry = HardWallGeometry.getDefaultGeometry();
         polymerCluster = PolymerCluster.defaultCluster();
-        physicalConstantsBuilder = new PhysicalConstantsBuilder();
+        physicalConstantsBuilder = new EnergeticsConstantsBuilder();
     }
 
     public PolymerSimulator makePolymerSystem() {
         return new PolymerSimulator(
                 systemGeometry,
                 polymerCluster,
-                physicalConstantsBuilder.buildPhysicalConstants());
+                physicalConstantsBuilder.buildEnergeticsConstants());
     }
 
     public void setTemperature(double temperature) {
@@ -50,13 +50,14 @@ public class PolymerSimulatorFactory {
     }
 
 //    public void setInteractionLength(double interactionLength) {
-//        simulationParameters.setInteractionLength(interactionLength);
+//        geometricalParameters.setInteractionLength(interactionLength);
 //    }
 //
 //    public void setStepLength(double stepLength) {
-//        simulationParameters.setStepLength(stepLength);
+//        geometricalParameters.setStepLength(stepLength);
 //    }
     public void setPolymerCluster(PolymerCluster polymerCluster) {
         this.polymerCluster = PolymerCluster.copy(polymerCluster);
     }
+
 }

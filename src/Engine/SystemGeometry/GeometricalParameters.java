@@ -5,6 +5,7 @@
 package Engine.SystemGeometry;
 
 import Engine.EnergeticsConstants;
+import Engine.EnergeticsConstants.EnergeticsConstantsBuilder;
 import java.io.Serializable;
 
 /**
@@ -27,33 +28,23 @@ public final class GeometricalParameters implements Serializable {
         coreLength = 0;
     }
 
-    public GeometricalParameters(double stepLength, double interactionLength, double coreLength) {
+    public GeometricalParameters(GeometricalParameters geometricalParameters) {
+        stepLength = geometricalParameters.stepLength;
+        interactionLength = geometricalParameters.interactionLength;
+        coreLength = geometricalParameters.coreLength;
+    }
+
+    public GeometricalParameters(double interactionLength, EnergeticsConstantsBuilder energeticsConstantsBuilder) {
         this.interactionLength = interactionLength;
-        this.stepLength = stepLength;
-        this.coreLength = coreLength;
+        stepLength = energeticsConstantsBuilder.idealStepLength();
+        coreLength = coreLengthFromPhysicalConstants(energeticsConstantsBuilder);
     }
 
-    public GeometricalParameters(GeometricalParameters simulationParameters) {
-        stepLength = simulationParameters.stepLength;
-        interactionLength = simulationParameters.interactionLength;
-        coreLength = simulationParameters.getCoreLength();
-    }
-
-    public GeometricalParameters makeParametersFromPhysicalConstants(EnergeticsConstants physicalConstants) {
-        return new GeometricalParameters(this, physicalConstants);
-    }
-
-    private GeometricalParameters(GeometricalParameters simulationParameters, EnergeticsConstants physicalConstants) {
-        this.interactionLength = simulationParameters.interactionLength;
-        stepLength = physicalConstants.idealStepLength();
-        coreLength = coreLengthFromPhysicalConstants(physicalConstants);
-    }
-
-    private double coreLengthFromPhysicalConstants(EnergeticsConstants physicalConstants) {
+    private double coreLengthFromPhysicalConstants(EnergeticsConstantsBuilder energeticsConstantsBuilder) {
         final double attractionInT = .5; //.5
-        double thermalForce = attractionInT * physicalConstants.getTemperature() / interactionLength;
+        double thermalForce = attractionInT * energeticsConstantsBuilder.getTemperature() / interactionLength;
         double minCoefficientForBonding = -thermalForce / interactionLength;
-        double minAttraction = Math.min(Math.min(physicalConstants.getBBOverlapCoefficient(), physicalConstants.getAAOverlapCoefficient()), minCoefficientForBonding);
+        double minAttraction = Math.min(Math.min(energeticsConstantsBuilder.getBBOverlapCoefficient(), energeticsConstantsBuilder.getAAOverlapCoefficient()), minCoefficientForBonding);
         return interactionLength + thermalForce / minAttraction;
     }
 
