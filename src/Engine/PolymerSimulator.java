@@ -218,7 +218,7 @@ public class PolymerSimulator implements Serializable {
         return energeticsConstants;
     }
 
-    public GeometricalParameters getSimulationParameters() {
+    public GeometricalParameters getGeometricalParameters() {
         return geometry.getParameters();
     }
 

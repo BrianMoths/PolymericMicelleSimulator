@@ -12,7 +12,6 @@ import SystemAnalysis.GeometryAnalyzer.AreaPerimeter;
 import SystemAnalysis.AreaPerimeter.RectanglesAndBoundaryPerimeter;
 import SystemAnalysis.SimulationHistory;
 import SystemAnalysis.SimulationHistory.TrackedVariable;
-import SystemAnalysis.SurfaceTensionFinder;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -36,9 +35,9 @@ public class SystemAnalyzer implements Serializable {
     //<editor-fold defaultstate="collapsed" desc="constructors">
     public SystemAnalyzer(SystemGeometry systemGeometry,
             PolymerCluster polymerCluster,
-            EnergeticsConstants physicalConstants) {
+            EnergeticsConstants energeticsConstants) {
         this.systemGeometry = systemGeometry;
-        this.physicalConstants = physicalConstants;
+        this.physicalConstants = energeticsConstants;
         neighbors = polymerCluster.makeNeighbors();
         numBeads = polymerCluster.getNumBeads();
         numABeads = polymerCluster.getNumABeads();

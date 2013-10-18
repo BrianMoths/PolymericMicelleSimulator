@@ -169,7 +169,7 @@ public final class EnergeticsConstants implements Serializable {
         return 2 * (AAOverlapCoefficient * areaOverlap.AAOverlap
                 + BBOverlapCoefficient * areaOverlap.BBOverlap
                 + ABOverlapCoefficient * areaOverlap.ABOverlap
-                + hardOverlapCoefficient * areaOverlap.hardOverlap);
+                + hardOverlapCoefficient * areaOverlap.hardOverlap); //why a factor of two?
     }
 
     public double externalEnergy(SystemGeometry systemGeometry) {
