@@ -137,7 +137,7 @@ public final class EnergeticsConstants implements Serializable {
 
     static private Random randomNumberGenerator = new Random();
 
-    static public EnergeticsConstants defaultPhysicalConstants() {
+    static public EnergeticsConstants defaultEnergeticsConstants() {
         return new EnergeticsConstantsBuilder().buildEnergeticsConstants();
     }
 

@@ -64,7 +64,7 @@ public class PolymerSimulator implements Serializable {
     public PolymerSimulator() {
 
         PolymerCluster polymerCluster = PolymerCluster.makeDefaultPolymerCluster();
-        energeticsConstants = EnergeticsConstants.defaultPhysicalConstants();
+        energeticsConstants = EnergeticsConstants.defaultEnergeticsConstants();
         geometry = makeDefaultGeometry(polymerCluster, energeticsConstants);
 
         resetCounters();

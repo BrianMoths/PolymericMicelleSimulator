@@ -21,7 +21,7 @@ public class PolymerSimulatorFactory {
 
     public PolymerSimulatorFactory() {
         systemGeometry = HardWallGeometry.getDefaultGeometry();
-        polymerCluster = PolymerCluster.defaultCluster();
+        polymerCluster = PolymerCluster.makeDefaultPolymerCluster();
         physicalConstantsBuilder = new EnergeticsConstantsBuilder();
     }
 

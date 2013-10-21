@@ -13,11 +13,40 @@ import java.util.List;
  */
 public class PolymerCluster {
 
+    static public PolymerCluster makeEmptyPolymerCluster() {
+        return new PolymerCluster();
+    }
+
     static public PolymerCluster makeDefaultPolymerCluster() {
         PolymerChain polymerChain = PolymerChain.makeChainStartingWithA(6, 6);
         PolymerCluster polymerCluster = PolymerCluster.makeRepeatedChainCluster(polymerChain, 100);
         return polymerCluster;
     }
+
+    static public PolymerCluster makeClusterFromChain(PolymerChain polymerChain) {
+        PolymerCluster polymerCluster = new PolymerCluster(polymerChain);
+        return polymerCluster;
+    }
+
+    static public PolymerCluster makeRepeatedChainCluster(PolymerChain polymerChain, int numTimes) {
+        PolymerCluster polymerCluster = new PolymerCluster();
+        polymerCluster.addChainMultipleTimes(polymerChain, numTimes);
+        return polymerCluster;
+    }
+
+    public static PolymerCluster copy(PolymerCluster polymerCluster) {
+        PolymerCluster copy = new PolymerCluster();
+
+        copy.numBeads = polymerCluster.numBeads;
+        copy.numABeads = polymerCluster.numABeads;
+
+        for (PolymerChain polymerChain : polymerCluster.polymerChainList) {
+            copy.addChain(polymerChain);
+        }
+
+        return copy;
+    }
+
     private final List<PolymerChain> polymerChainList;
     private int numBeads, numABeads;
     private double concentrationInWater = 1;
@@ -34,36 +63,6 @@ public class PolymerCluster {
         numABeads = 0;
 
         addChainPrivate(polymerChain);
-    }
-
-    static public PolymerCluster makeClusterFromChain(PolymerChain polymerChain) {
-        PolymerCluster polymerCluster = new PolymerCluster(polymerChain);
-        return polymerCluster;
-    }
-
-    static public PolymerCluster makeRepeatedChainCluster(PolymerChain polymerChain, int numTimes) {
-        PolymerCluster polymerCluster = new PolymerCluster();
-        polymerCluster.addChainMultipleTimes(polymerChain, numTimes);
-        return polymerCluster;
-    }
-
-    static public PolymerCluster defaultCluster() {
-        PolymerCluster polymerCluster = new PolymerCluster();
-        polymerCluster.addChain(PolymerChain.makeSingletChainOfType(true));
-        return polymerCluster;
-    }
-
-    public static PolymerCluster copy(PolymerCluster polymerCluster) {
-        PolymerCluster copy = new PolymerCluster();
-
-        copy.numBeads = polymerCluster.numBeads;
-        copy.numABeads = polymerCluster.numABeads;
-
-        for (PolymerChain polymerChain : polymerCluster.polymerChainList) {
-            copy.addChain(polymerChain);
-        }
-
-        return copy;
     }
 
     public void addChain(PolymerChain polymerChain) {
@@ -141,4 +140,5 @@ public class PolymerCluster {
     public int getNumABeads() {
         return numABeads;
     }
+
 }
