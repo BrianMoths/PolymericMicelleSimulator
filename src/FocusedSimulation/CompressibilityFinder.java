@@ -14,10 +14,7 @@ import Engine.SystemGeometry.GeometricalParameters;
 import Engine.SystemGeometry.AbstractGeometry;
 import Engine.SystemGeometry.PeriodicGeometry;
 import Engine.SystemGeometry.SystemGeometry;
-import static FocusedSimulation.SurfaceTensionFinder.generateLengthStatistics;
-import static FocusedSimulation.SurfaceTensionFinder.outputSurfaceTension;
 import Gui.SystemViewer;
-import org.apache.commons.math3.stat.descriptive.DescriptiveStatistics;
 
 /**
  *

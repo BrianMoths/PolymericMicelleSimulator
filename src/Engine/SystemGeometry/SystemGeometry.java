@@ -32,8 +32,6 @@ public interface SystemGeometry extends Serializable {
 
     public double sqDist(double[] position1, double[] position2);
 
-    public double areaOverlap(double[] position1, double[] position2);
-
     public TwoBeadOverlap twoBeadOverlap(double[] position1, double[] position2);
 
     public double[] randomPosition();

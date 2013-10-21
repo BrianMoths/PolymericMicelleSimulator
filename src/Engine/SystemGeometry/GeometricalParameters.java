@@ -4,7 +4,6 @@
  */
 package Engine.SystemGeometry;
 
-import Engine.EnergeticsConstants;
 import Engine.EnergeticsConstants.EnergeticsConstantsBuilder;
 import java.io.Serializable;
 
@@ -18,7 +17,7 @@ public final class GeometricalParameters implements Serializable {
 
     public GeometricalParameters() {
         interactionLength = 5;
-        coreLength = 0;
+        coreLength = 1;
         stepLength = interactionLength / 2; //step length should be set by spring constant
     }
 

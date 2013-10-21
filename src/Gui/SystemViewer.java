@@ -4,8 +4,10 @@
  */
 package Gui;
 
+import Engine.EnergeticsConstants;
 import Engine.PolymerSimulator;
 import Engine.SystemAnalyzer;
+import Engine.SystemGeometry.GeometricalParameters;
 import SystemAnalysis.GeometryAnalyzer;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -18,9 +20,9 @@ public class SystemViewer extends javax.swing.JFrame {
 
     //<editor-fold defaultstate="collapsed" desc="updater thread classes">
     private class UpdaterRunnable implements Runnable {
-
+        
         int lastIteration = -1;
-
+        
         @Override
         public void run() {
             while (true) {
@@ -31,15 +33,15 @@ public class SystemViewer extends javax.swing.JFrame {
                 sleepUntilNextFrame();
             }
         }
-
+        
         private boolean isUpdateNecessary() {
             return polymerSimulator.getIterationNumber() != lastIteration;
         }
-
+        
         private void updateLastIteration() {
             lastIteration = polymerSimulator.getIterationNumber();
         }
-
+        
         private void sleepUntilNextFrame() {
             try {
                 Thread.sleep(100);
@@ -47,15 +49,15 @@ public class SystemViewer extends javax.swing.JFrame {
                 Logger.getLogger(MicelleGui.class.getName()).log(Level.SEVERE, null, ex);
             }
         }
-
+        
     }
-
+    
     private class UpdaterThread extends Thread {
-
+        
         public UpdaterThread() {
             super(new UpdaterRunnable());
         }
-
+        
     }
 //</editor-fold>
 
@@ -72,46 +74,56 @@ public class SystemViewer extends javax.swing.JFrame {
         updaterThread = new UpdaterThread();
         initialize();
     }
-
+    
     private void initialize() {
         registerGuiWithSystem();
         updateConstantLabels();
         updaterThread.start();
     }
-
+    
     private void registerGuiWithSystem() {
         displayPanel.setPolymerSimulator(polymerSimulator);
         if (analysisWindow != null) {
             analysisWindow.setPolymerSimulator(polymerSimulator);
         }
     }
-
+    
     private void updateConstantLabels() {
-        AACoefficientLbl.setText(String.format("%.4f", polymerSimulator.getPhysicalConstants().getAAOverlapCoefficient()));
-        BBCoefficientLbl.setText(String.format("%.4f", polymerSimulator.getPhysicalConstants().getBBOverlapCoefficient()));
-        ABCoefficientLbl.setText(String.format("%.4f", polymerSimulator.getPhysicalConstants().getABOverlapCoefficient()));
-        temperatureLbl.setText(String.format("%.4f", polymerSimulator.getPhysicalConstants().getTemperature()));
-        springConstantLbl.setText(String.format("%.4f", polymerSimulator.getPhysicalConstants().getSpringCoefficient()));
-        beadSizeLbl.setText(String.format("%.4f", polymerSimulator.getSimulationParameters().getInteractionLength()));
-        systemSizeLbl.setText(String.format("%.4f", polymerSimulator.getGeometry().getRMax()[0]));
-        hardCoresChk.setSelected(polymerSimulator.getSimulationParameters().getCoreLength() != 0);
+        final EnergeticsConstants energeticsConstants = polymerSimulator.getEnergeticsConstants();
+        AACoefficientLbl.setText(stringFormatDouble(energeticsConstants.getAAOverlapCoefficient()));
+        BBCoefficientLbl.setText(stringFormatDouble(energeticsConstants.getBBOverlapCoefficient()));
+        ABCoefficientLbl.setText(stringFormatDouble(energeticsConstants.getABOverlapCoefficient()));
+        temperatureLbl.setText(stringFormatDouble(energeticsConstants.getTemperature()));
+        springConstantLbl.setText(stringFormatDouble(energeticsConstants.getSpringCoefficient()));
+        coreCoefficientLbl.setText(stringFormatDouble(energeticsConstants.getHardOverlapCoefficient()));
+        
+        final GeometricalParameters geometricalParameters = polymerSimulator.getGeometricalParameters();
+        beadSizeLbl.setText(stringFormatDouble(geometricalParameters.getInteractionLength()));
+        systemSizeLbl.setText(stringFormatDouble(polymerSimulator.getGeometry().getRMax()[0]));
+        coreSizeLbl.setText(stringFormatDouble(geometricalParameters.getCoreLength()));
+        
+        hardCoresChk.setSelected(geometricalParameters.getCoreLength() != 0);
     }
-
+    
     private void updateDisplay() {
         SystemAnalyzer systemAnalyzer = polymerSimulator.getSystemAnalyzer();
-
+        
         final double energy = polymerSimulator.getEnergy();
-
+        
         GeometryAnalyzer.AreaPerimeter areaPerimeter = systemAnalyzer.findAreaAndPerimeter();
         systemAnalyzer.addPerimeterAreaEnergySnapshot(areaPerimeter.perimeter, areaPerimeter.area, energy);
-
-        energyLbl.setText(String.format("%.4f", energy));
+        
+        energyLbl.setText(stringFormatDouble(energy));
         numIterationsLbl.setText(String.valueOf(polymerSimulator.getIterationNumber()));
-        externalEnergyLbl.setText(String.format("%.4f", systemAnalyzer.externalEnergy()));
+        externalEnergyLbl.setText(stringFormatDouble(systemAnalyzer.externalEnergy()));
         if (analysisWindow != null) {
             analysisWindow.updateDisplay();
         }
         repaint();
+    }
+    
+    private String stringFormatDouble(double doubleForFormatting) {
+        return String.format("%.4f", doubleForFormatting);
     }
 
     /**
@@ -135,19 +147,24 @@ public class SystemViewer extends javax.swing.JFrame {
         ABCoefficientCaptionLbl = new javax.swing.JLabel();
         springConstantCaptionLbl = new javax.swing.JLabel();
         BBCoeffCaptionLbl = new javax.swing.JLabel();
-        hardCoresChk = new javax.swing.JCheckBox();
-        interactionLengthCaptionLbl = new javax.swing.JLabel();
         temperatureLbl = new javax.swing.JLabel();
         AACoefficientLbl = new javax.swing.JLabel();
         BBCoefficientLbl = new javax.swing.JLabel();
         ABCoefficientLbl = new javax.swing.JLabel();
         springConstantLbl = new javax.swing.JLabel();
-        beadSizeLbl = new javax.swing.JLabel();
-        hardCoresCaptionLbl = new javax.swing.JLabel();
-        systemSizeCaptionLbl = new javax.swing.JLabel();
-        systemSizeLbl = new javax.swing.JLabel();
+        coreCoeffCaptoinLbl = new javax.swing.JLabel();
+        coreCoefficientLbl = new javax.swing.JLabel();
         externalEnergyCaptionLbl = new javax.swing.JLabel();
         externalEnergyLbl = new javax.swing.JLabel();
+        geometricParametersPnl = new javax.swing.JPanel();
+        systemSizeCaptionLbl = new javax.swing.JLabel();
+        systemSizeLbl = new javax.swing.JLabel();
+        interactionLengthCaptionLbl = new javax.swing.JLabel();
+        beadSizeLbl = new javax.swing.JLabel();
+        coreSizeCaptionLbl = new javax.swing.JLabel();
+        coreSizeLbl = new javax.swing.JLabel();
+        hardCoresChk = new javax.swing.JCheckBox();
+        hardCoresCaptionLbl = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -194,11 +211,6 @@ public class SystemViewer extends javax.swing.JFrame {
         BBCoeffCaptionLbl.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
         BBCoeffCaptionLbl.setText("BB Coeff.:");
 
-        hardCoresChk.setEnabled(false);
-
-        interactionLengthCaptionLbl.setHorizontalAlignment(javax.swing.SwingConstants.TRAILING);
-        interactionLengthCaptionLbl.setText("Bead Size:");
-
         temperatureLbl.setText("jLabel1");
         temperatureLbl.setBorder(javax.swing.BorderFactory.createBevelBorder(javax.swing.border.BevelBorder.LOWERED));
 
@@ -214,16 +226,11 @@ public class SystemViewer extends javax.swing.JFrame {
         springConstantLbl.setText("jLabel5");
         springConstantLbl.setBorder(javax.swing.BorderFactory.createBevelBorder(javax.swing.border.BevelBorder.LOWERED));
 
-        beadSizeLbl.setText("jLabel6");
-        beadSizeLbl.setBorder(javax.swing.BorderFactory.createBevelBorder(javax.swing.border.BevelBorder.LOWERED));
+        coreCoeffCaptoinLbl.setHorizontalAlignment(javax.swing.SwingConstants.TRAILING);
+        coreCoeffCaptoinLbl.setText("Core Coeff.:");
 
-        hardCoresCaptionLbl.setText("Give Beads Hard Cores");
-
-        systemSizeCaptionLbl.setHorizontalAlignment(javax.swing.SwingConstants.TRAILING);
-        systemSizeCaptionLbl.setText("System Size:");
-
-        systemSizeLbl.setText("jLabel1");
-        systemSizeLbl.setBorder(javax.swing.BorderFactory.createBevelBorder(javax.swing.border.BevelBorder.LOWERED));
+        coreCoefficientLbl.setText("jLabel2");
+        coreCoefficientLbl.setBorder(javax.swing.BorderFactory.createBevelBorder(javax.swing.border.BevelBorder.LOWERED));
 
         javax.swing.GroupLayout physicalConstantsPanelLayout = new javax.swing.GroupLayout(physicalConstantsPanel);
         physicalConstantsPanel.setLayout(physicalConstantsPanelLayout);
@@ -233,16 +240,11 @@ public class SystemViewer extends javax.swing.JFrame {
                 .addContainerGap()
                 .addGroup(physicalConstantsPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(physicalConstantsPanelLayout.createSequentialGroup()
-                        .addComponent(systemSizeCaptionLbl, javax.swing.GroupLayout.PREFERRED_SIZE, 97, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(coreCoeffCaptoinLbl, javax.swing.GroupLayout.PREFERRED_SIZE, 91, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(systemSizeLbl, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                    .addGroup(physicalConstantsPanelLayout.createSequentialGroup()
-                        .addComponent(hardCoresChk)
-                        .addGap(2, 2, 2)
-                        .addComponent(hardCoresCaptionLbl, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                        .addComponent(coreCoefficientLbl, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                     .addGroup(physicalConstantsPanelLayout.createSequentialGroup()
                         .addGroup(physicalConstantsPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
-                            .addComponent(interactionLengthCaptionLbl, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                             .addComponent(BBCoeffCaptionLbl, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                             .addComponent(springConstantCaptionLbl, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                             .addComponent(ABCoefficientCaptionLbl, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
@@ -250,12 +252,11 @@ public class SystemViewer extends javax.swing.JFrame {
                             .addComponent(temperatureCaptionLbl, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addGroup(physicalConstantsPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(temperatureLbl, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(temperatureLbl, javax.swing.GroupLayout.DEFAULT_SIZE, 78, Short.MAX_VALUE)
                             .addComponent(AACoefficientLbl, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                             .addComponent(BBCoefficientLbl, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                             .addComponent(ABCoefficientLbl, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .addComponent(springConstantLbl, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .addComponent(beadSizeLbl, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))))
+                            .addComponent(springConstantLbl, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))))
                 .addContainerGap())
         );
         physicalConstantsPanelLayout.setVerticalGroup(
@@ -282,23 +283,77 @@ public class SystemViewer extends javax.swing.JFrame {
                     .addComponent(springConstantLbl))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(physicalConstantsPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(interactionLengthCaptionLbl)
-                    .addComponent(beadSizeLbl))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(physicalConstantsPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(systemSizeCaptionLbl)
-                    .addComponent(systemSizeLbl))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 33, Short.MAX_VALUE)
-                .addGroup(physicalConstantsPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(hardCoresChk)
-                    .addComponent(hardCoresCaptionLbl))
-                .addContainerGap())
+                    .addComponent(coreCoeffCaptoinLbl)
+                    .addComponent(coreCoefficientLbl))
+                .addContainerGap(95, Short.MAX_VALUE))
         );
 
         externalEnergyCaptionLbl.setText("External Energy:");
 
         externalEnergyLbl.setText("0");
         externalEnergyLbl.setBorder(javax.swing.BorderFactory.createBevelBorder(javax.swing.border.BevelBorder.LOWERED));
+
+        geometricParametersPnl.setBorder(javax.swing.BorderFactory.createTitledBorder("Geometric Parameters"));
+
+        systemSizeCaptionLbl.setHorizontalAlignment(javax.swing.SwingConstants.TRAILING);
+        systemSizeCaptionLbl.setText("System Size:");
+
+        systemSizeLbl.setText("jLabel1");
+        systemSizeLbl.setBorder(javax.swing.BorderFactory.createBevelBorder(javax.swing.border.BevelBorder.LOWERED));
+
+        interactionLengthCaptionLbl.setHorizontalAlignment(javax.swing.SwingConstants.TRAILING);
+        interactionLengthCaptionLbl.setText("Bead Size:");
+
+        beadSizeLbl.setText("jLabel6");
+        beadSizeLbl.setBorder(javax.swing.BorderFactory.createBevelBorder(javax.swing.border.BevelBorder.LOWERED));
+
+        coreSizeCaptionLbl.setText("Core Size:");
+
+        coreSizeLbl.setText("jLabel4");
+        coreSizeLbl.setBorder(javax.swing.BorderFactory.createBevelBorder(javax.swing.border.BevelBorder.LOWERED));
+
+        javax.swing.GroupLayout geometricParametersPnlLayout = new javax.swing.GroupLayout(geometricParametersPnl);
+        geometricParametersPnl.setLayout(geometricParametersPnlLayout);
+        geometricParametersPnlLayout.setHorizontalGroup(
+            geometricParametersPnlLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(geometricParametersPnlLayout.createSequentialGroup()
+                .addGroup(geometricParametersPnlLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(geometricParametersPnlLayout.createSequentialGroup()
+                        .addContainerGap()
+                        .addGroup(geometricParametersPnlLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                            .addGroup(geometricParametersPnlLayout.createSequentialGroup()
+                                .addGap(0, 0, Short.MAX_VALUE)
+                                .addComponent(coreSizeCaptionLbl))
+                            .addComponent(interactionLengthCaptionLbl, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
+                    .addComponent(systemSizeCaptionLbl, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(geometricParametersPnlLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(systemSizeLbl, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(beadSizeLbl, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(coreSizeLbl, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addContainerGap())
+        );
+        geometricParametersPnlLayout.setVerticalGroup(
+            geometricParametersPnlLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, geometricParametersPnlLayout.createSequentialGroup()
+                .addContainerGap(168, Short.MAX_VALUE)
+                .addGroup(geometricParametersPnlLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(coreSizeCaptionLbl)
+                    .addComponent(coreSizeLbl))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(geometricParametersPnlLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(interactionLengthCaptionLbl)
+                    .addComponent(beadSizeLbl))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(geometricParametersPnlLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(systemSizeCaptionLbl)
+                    .addComponent(systemSizeLbl))
+                .addContainerGap())
+        );
+
+        hardCoresChk.setEnabled(false);
+
+        hardCoresCaptionLbl.setText("Give Beads Hard Cores");
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -307,10 +362,6 @@ public class SystemViewer extends javax.swing.JFrame {
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(layout.createSequentialGroup()
-                        .addComponent(displayPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addComponent(physicalConstantsPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addGroup(layout.createSequentialGroup()
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                             .addComponent(numIterationsCaptionLbl, javax.swing.GroupLayout.Alignment.LEADING)
@@ -324,18 +375,34 @@ public class SystemViewer extends javax.swing.JFrame {
                         .addGap(53, 53, 53)
                         .addComponent(externalEnergyCaptionLbl)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(externalEnergyLbl, javax.swing.GroupLayout.PREFERRED_SIZE, 113, javax.swing.GroupLayout.PREFERRED_SIZE))))
+                        .addComponent(externalEnergyLbl, javax.swing.GroupLayout.PREFERRED_SIZE, 113, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(layout.createSequentialGroup()
+                        .addComponent(displayPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                                .addComponent(physicalConstantsPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                .addComponent(geometricParametersPnl, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                                .addComponent(hardCoresChk)
+                                .addGap(2, 2, 2)
+                                .addComponent(hardCoresCaptionLbl, javax.swing.GroupLayout.DEFAULT_SIZE, 189, Short.MAX_VALUE)))))
+                .addGap(12, 12, 12))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
+                .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(displayPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addGroup(layout.createSequentialGroup()
-                        .addContainerGap()
-                        .addComponent(displayPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addGroup(layout.createSequentialGroup()
-                        .addGap(196, 196, 196)
-                        .addComponent(physicalConstantsPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                        .addComponent(physicalConstantsPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(geometricParametersPnl, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(14, 14, 14)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(hardCoresChk)
+                            .addComponent(hardCoresCaptionLbl))))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(energyCaptionLbl)
@@ -366,11 +433,16 @@ public class SystemViewer extends javax.swing.JFrame {
     private javax.swing.JLabel BBCoefficientLbl;
     private javax.swing.JButton analysisWindowBtn;
     private javax.swing.JLabel beadSizeLbl;
+    private javax.swing.JLabel coreCoeffCaptoinLbl;
+    private javax.swing.JLabel coreCoefficientLbl;
+    private javax.swing.JLabel coreSizeCaptionLbl;
+    private javax.swing.JLabel coreSizeLbl;
     private Gui.DisplayPanel displayPanel;
     private javax.swing.JLabel energyCaptionLbl;
     private javax.swing.JLabel energyLbl;
     private javax.swing.JLabel externalEnergyCaptionLbl;
     private javax.swing.JLabel externalEnergyLbl;
+    private javax.swing.JPanel geometricParametersPnl;
     private javax.swing.JLabel hardCoresCaptionLbl;
     private javax.swing.JCheckBox hardCoresChk;
     private javax.swing.JLabel interactionLengthCaptionLbl;

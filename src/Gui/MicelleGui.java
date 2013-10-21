@@ -167,14 +167,14 @@ public class MicelleGui extends javax.swing.JFrame {
     }
 
     private void updateConstantLabels() {
-        AACoefficientLbl.setText(String.format("%.4f", system.getPhysicalConstants().getAAOverlapCoefficient()));
-        BBCoefficientLbl.setText(String.format("%.4f", system.getPhysicalConstants().getBBOverlapCoefficient()));
-        ABCoefficientLbl.setText(String.format("%.4f", system.getPhysicalConstants().getABOverlapCoefficient()));
-        temperatureLbl.setText(String.format("%.4f", system.getPhysicalConstants().getTemperature()));
-        springConstantLbl.setText(String.format("%.4f", system.getPhysicalConstants().getSpringCoefficient()));
-        beadSizeLbl.setText(String.format("%.4f", system.getSimulationParameters().getInteractionLength()));
+        AACoefficientLbl.setText(String.format("%.4f", system.getEnergeticsConstants().getAAOverlapCoefficient()));
+        BBCoefficientLbl.setText(String.format("%.4f", system.getEnergeticsConstants().getBBOverlapCoefficient()));
+        ABCoefficientLbl.setText(String.format("%.4f", system.getEnergeticsConstants().getABOverlapCoefficient()));
+        temperatureLbl.setText(String.format("%.4f", system.getEnergeticsConstants().getTemperature()));
+        springConstantLbl.setText(String.format("%.4f", system.getEnergeticsConstants().getSpringCoefficient()));
+        beadSizeLbl.setText(String.format("%.4f", system.getGeometricalParameters().getInteractionLength()));
         systemSizeLbl.setText(String.format("%.4f", system.getGeometry().getRMax()[0]));
-        hardCoresChk.setSelected(system.getSimulationParameters().getCoreLength() != 0);
+        hardCoresChk.setSelected(system.getGeometricalParameters().getCoreLength() != 0);
     }
 
     public void setSystem(PolymerSimulator system) {

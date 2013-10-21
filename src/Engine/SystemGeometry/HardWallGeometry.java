@@ -35,6 +35,7 @@ public final class HardWallGeometry extends AbstractGeometry {
         public HardWallGeometry buildGeometry() {
             return new HardWallGeometry(dimension, fullRMax, parameters);
         }
+
     }
 
     static public HardWallGeometry getDefaultGeometry() {
@@ -82,17 +83,6 @@ public final class HardWallGeometry extends AbstractGeometry {
     }
 
     @Override
-    public double areaOverlap(double[] position1, double[] position2) {
-        double overlap = 1;
-
-        for (int i = 0; i < dimension; i++) {
-            overlap *= Math.max(parameters.getInteractionLength() - Math.abs(position1[i] - position2[i]), 0.0);
-        }
-
-        return overlap;
-    }
-
-    @Override
     public TwoBeadOverlap twoBeadOverlap(double[] position1, double[] position2) {
         TwoBeadOverlap twoBeadOverlap = new TwoBeadOverlap(1, 1);
 
@@ -133,4 +123,5 @@ public final class HardWallGeometry extends AbstractGeometry {
         }
         System.arraycopy(src, 0, dest, 0, dimension);
     }
+
 }

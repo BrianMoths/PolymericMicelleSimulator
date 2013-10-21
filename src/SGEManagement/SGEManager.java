@@ -42,20 +42,20 @@ public class SGEManager {
     static private List<Input> makeInputs() {
         List<Input> inputs = new ArrayList<>();
 
-//        inputs.add(new Input(100, makeCalculatorAB(.2, -50), .15));
-//        inputs.add(new Input(100, makeCalculatorAB(.18, -50), .15));
-//        inputs.add(new Input(100, makeCalculatorAB(.15, -50), .15));
-//        inputs.add(new Input(100, makeCalculatorAB(.22, -50), .15));
-//        inputs.add(new Input(100, makeCalculatorAB(.25, -50), .15));
-//        inputs.add(new Input(100, makeCalculatorAB(.2, -60), .15));
-//        inputs.add(new Input(100, makeCalculatorAB(.2, -70), .15));
-//        inputs.add(new Input(100, makeCalculatorAB(.2, -80), .15));
-//        inputs.add(new Input(100, makeCalculatorAB(.2, -40), .15));
-//        inputs.add(new Input(100, makeCalculatorAB(.2, -30), .15));
+        inputs.add(new Input(100, makeCalculatorAB(.2, -50), .15));
+        inputs.add(new Input(100, makeCalculatorAB(.18, -50), .15));
+        inputs.add(new Input(100, makeCalculatorAB(.15, -50), .15));
+        inputs.add(new Input(100, makeCalculatorAB(.22, -50), .15));
+        inputs.add(new Input(100, makeCalculatorAB(.25, -50), .15));
+        inputs.add(new Input(100, makeCalculatorAB(.2, -60), .15));
+        inputs.add(new Input(100, makeCalculatorAB(.2, -70), .15));
+        inputs.add(new Input(100, makeCalculatorAB(.2, -80), .15));
+        inputs.add(new Input(100, makeCalculatorAB(.2, -40), .15));
+        inputs.add(new Input(100, makeCalculatorAB(.2, -30), .15));
         inputs.add(new Input(100, makeCalculatorAB(.2, -50), .18));
-//        inputs.add(new Input(100, makeCalculatorAB(.2, -50), .20));
-//        inputs.add(new Input(100, makeCalculatorAB(.2, -50), .12));
-//        inputs.add(new Input(100, makeCalculatorAB(.2, -50), .1));
+        inputs.add(new Input(100, makeCalculatorAB(.2, -50), .20));
+        inputs.add(new Input(100, makeCalculatorAB(.2, -50), .12));
+        inputs.add(new Input(100, makeCalculatorAB(.2, -50), .1));
 
         return inputs;
     }

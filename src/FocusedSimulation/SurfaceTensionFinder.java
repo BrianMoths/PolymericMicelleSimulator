@@ -96,7 +96,7 @@ public class SurfaceTensionFinder {
             externalEnergyCalculatorBuilder.setxTension(-50.); //was -50
             externalEnergyCalculatorBuilder.setxQuadratic(.2); //was .2
             externalEnergyCalculator = externalEnergyCalculatorBuilder.build();
-            density = .15; //.15
+            density = .1; //.15
         }
 
         return new InputParameters(numChains, externalEnergyCalculator, density);
@@ -123,18 +123,18 @@ public class SurfaceTensionFinder {
     }
 
     static public MeasuredSurfaceTension calculateSurfaceTension(DescriptiveStatistics lengthStatistics, PolymerSimulator polymerSimulator) {
-        final long numSamples = lengthStatistics.getN();
+        final long numLengthSamples = lengthStatistics.getN();
 
         final double averageLength = lengthStatistics.getMean();
         final double lengthStandardDeviation = lengthStatistics.getStandardDeviation();
 
-        final ExternalEnergyCalculator externalEnergyCalculator = polymerSimulator.getPhysicalConstants().getExternalEnergyCalculator();
+        final ExternalEnergyCalculator externalEnergyCalculator = polymerSimulator.getEnergeticsConstants().getExternalEnergyCalculator();
         final double xTension = externalEnergyCalculator.getxTension();
         final double xQuadratic = externalEnergyCalculator.getxQuadratic();
 
         final double surfaceTension = -xTension - 2 * xQuadratic * averageLength; //should divide by two since there are two surfaces
         final double surfaceTensionStandardDeviation = 2 * xQuadratic * lengthStandardDeviation;
-        final double surfaceTensionStandardError = surfaceTensionStandardDeviation / Math.sqrt(numSamples - 1);
+        final double surfaceTensionStandardError = surfaceTensionStandardDeviation / Math.sqrt(numLengthSamples - 1);
         return new MeasuredSurfaceTension(surfaceTension, surfaceTensionStandardError);
     }
 
@@ -186,12 +186,6 @@ public class SurfaceTensionFinder {
     private final int numSurfaceTensionTrials = 70; //70
     private final InputParameters inputParameters;
     private final PrintWriter dataWriter;
-
-    public SurfaceTensionFinder(ExternalEnergyCalculator externalEnergyCalculator, double density, int numChains) throws FileNotFoundException {
-        inputParameters = new InputParameters(numChains, externalEnergyCalculator, density);
-        dataWriter = makeDataWriter();
-        writeParameters();
-    }
 
     private SurfaceTensionFinder(InputParameters input) throws FileNotFoundException {
         this.inputParameters = input;
@@ -309,6 +303,9 @@ public class SurfaceTensionFinder {
             outputSurfaceTension(measuredSurfaceTension);
             writeSurfaceTensionToFile(measuredSurfaceTension);
         }
+
+        dataWriter.println();
+        dataWriter.println("fraction of area covered at end of simulation: " + Double.toString(polymerSimulator.getSystemAnalyzer().findArea() / polymerSimulator.getGeometry().getVolume()));
     }
 
 }

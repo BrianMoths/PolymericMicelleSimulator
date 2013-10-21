@@ -79,17 +79,6 @@ public final class PeriodicGeometry extends AbstractGeometry {
     }
 
     @Override
-    public double areaOverlap(double[] position1, double[] position2) {
-        double overlap = 1;
-
-        for (int i = 0; i < dimension; i++) {
-            overlap *= Math.max(parameters.getInteractionLength() - componentDistance(position1[i], position2[i], i), 0.0);
-        }
-
-        return overlap;
-    }
-
-    @Override
     public TwoBeadOverlap twoBeadOverlap(double[] position1, double[] position2) {
         TwoBeadOverlap twoBeadOverlap = new TwoBeadOverlap(1, 1);
 

@@ -25,14 +25,14 @@ public abstract class AbstractGeometry implements SystemGeometry {
 
         public AbstractGeometryBuilder() {
             this.dimension = 2;
-            this.fullRMax = new double[]{20, 20, 20};
+            this.fullRMax = new double[]{20, 20};
             this.parameters = new GeometricalParameters();
         }
 
         public AbstractGeometryBuilder(SystemGeometry geometry) {
             dimension = geometry.getDimension();
             fullRMax = new double[dimension];
-            System.arraycopy(fullRMax, 0, geometry.getRMax(), 0, dimension);
+            System.arraycopy(geometry.getRMax(), 0, fullRMax, 0, dimension);
             parameters = geometry.getParameters();
         }
 

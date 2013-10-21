@@ -35,17 +35,17 @@ public class GeometryAnalyzer {
         OverlappingIntervalLengthFinder overlappingIntervalLengthFinder = OverlappingIntervalLengthFinder.makeFromBeadRectangles(beadRectangles, xPermutation);
 
         double area = 0;
-        double oldx = 0;
+        double oldX = 0;
 
         for (int linearIndex : xPermutation) {
             final double newX = getNewX(beadRectangles, linearIndex);
-            final double deltaX = newX - oldx;
+            final double deltaX = newX - oldX;
 
             final double coveredVerticalLength = overlappingIntervalLengthFinder.getLength();
             area += deltaX * coveredVerticalLength;
 
             overlappingIntervalLengthFinder.doNextStep();
-            oldx = newX;
+            oldX = newX;
         }
         return area;
     }
