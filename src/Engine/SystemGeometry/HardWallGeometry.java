@@ -6,7 +6,10 @@ package Engine.SystemGeometry;
 
 import Engine.TwoBeadOverlap;
 import SystemAnalysis.AreaPerimeter.BeadRectangle;
-import SystemAnalysis.AreaPerimeter.RectanglesAndBoundaryPerimeter;
+import SystemAnalysis.AreaPerimeter.RectangleSplitting.HardWallRectangleSplitter;
+import SystemAnalysis.AreaPerimeter.RectangleSplitting.PeriodicRectangleSplitter;
+import SystemAnalysis.AreaPerimeter.RectangleSplitting.RectangleSplitter;
+import SystemAnalysis.AreaPerimeter.RectangleSplitting.RectanglesAndGluedPerimeter;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -48,14 +51,19 @@ public final class HardWallGeometry extends AbstractGeometry {
     }
 
     @Override
-    public RectanglesAndBoundaryPerimeter getRectanglesAndPerimeterFromPositions(double[][] beadPositions) {
-        List<BeadRectangle> beadRectangles = new ArrayList<>(beadPositions.length);
-        for (double[] beadPosition : beadPositions) {
-            beadRectangles.add(getRectangleFromPosition(beadPosition));
-        }
-        double gluedPerimeter = 0;
-        RectanglesAndBoundaryPerimeter rectanglesAndPerimeter;
-        rectanglesAndPerimeter = new RectanglesAndBoundaryPerimeter(beadRectangles, gluedPerimeter);
+    public List<BeadRectangle> getRectanglesFromPositions(double[][] beadPositions) {
+        List<BeadRectangle> beadRectangles;
+        beadRectangles = getUnsplitRectanglesFromPositions(beadPositions);
+
+        RectangleSplitter rectangleSplitter = new HardWallRectangleSplitter();
+
+        return rectangleSplitter.splitRectanglesOverBoundary(beadRectangles, makeLimits());
+    }
+
+    @Override
+    public RectanglesAndGluedPerimeter getRectanglesAndPerimeterFromPositions(double[][] beadPositions) {
+        List<BeadRectangle> beadRectangles = getRectanglesFromPositions(beadPositions);
+        RectanglesAndGluedPerimeter rectanglesAndPerimeter = new RectanglesAndGluedPerimeter(beadRectangles, 0);
         return rectanglesAndPerimeter;
     }
 

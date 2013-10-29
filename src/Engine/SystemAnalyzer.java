@@ -9,7 +9,7 @@ import Engine.SystemGeometry.SystemGeometry;
 import SystemAnalysis.AreaPerimeter.BeadRectangle;
 import SystemAnalysis.GeometryAnalyzer;
 import SystemAnalysis.GeometryAnalyzer.AreaPerimeter;
-import SystemAnalysis.AreaPerimeter.RectanglesAndBoundaryPerimeter;
+import SystemAnalysis.AreaPerimeter.RectangleSplitting.RectanglesAndGluedPerimeter;
 import SystemAnalysis.SimulationHistory;
 import SystemAnalysis.SimulationHistory.TrackedVariable;
 import java.io.Serializable;
@@ -59,29 +59,18 @@ public class SystemAnalyzer implements Serializable {
     //</editor-fold>
 
     //<editor-fold defaultstate="collapsed" desc="area and perimeter">
-    public double findArea() {
-        List<BeadRectangle> beadRectangles = makeBeadRectangles();
+    public double findArea() { //produces bad output
+        List<BeadRectangle> beadRectangles = systemGeometry.getRectanglesFromPositions(beadPositions);
         return GeometryAnalyzer.findArea(beadRectangles);
     }
 
     public AreaPerimeter findAreaAndPerimeter() {
-        RectanglesAndBoundaryPerimeter rectanglesAndPerimeter;
-        rectanglesAndPerimeter = systemGeometry.getRectanglesAndPerimeterFromPositions(beadPositions);
+        RectanglesAndGluedPerimeter rectanglesAndGluedPerimeter;
+        rectanglesAndGluedPerimeter = systemGeometry.getRectanglesAndPerimeterFromPositions(beadPositions);
         AreaPerimeter areaPerimeter;
-        areaPerimeter = GeometryAnalyzer.findAreaAndPerimeter(rectanglesAndPerimeter.beadRectangles);
-        areaPerimeter.perimeter -= rectanglesAndPerimeter.gluedPerimeter * 2;
+        areaPerimeter = GeometryAnalyzer.findAreaAndPerimeter(rectanglesAndGluedPerimeter.beadRectangles);
+        areaPerimeter.perimeter -= rectanglesAndGluedPerimeter.gluedPerimeter * 2;
         return areaPerimeter;
-    }
-
-    private List<BeadRectangle> makeBeadRectangles() {
-        List<BeadRectangle> beadRectangles = new ArrayList<>(numBeads);
-        for (int bead = 0; bead < numBeads; bead++) {
-            final double x = beadPositions[bead][0];
-            final double y = beadPositions[bead][1];
-            final double halfwidth = systemGeometry.getParameters().getInteractionLength() / 2;
-            beadRectangles.add(new BeadRectangle(x - halfwidth, x + halfwidth, y + halfwidth, y - halfwidth));
-        }
-        return beadRectangles;
     }
     //</editor-fold>
 

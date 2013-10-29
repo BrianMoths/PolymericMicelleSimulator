@@ -12,6 +12,7 @@ import Engine.PolymerSimulator;
 import Engine.SystemGeometry.PeriodicGeometry;
 import Engine.SystemGeometry.SystemGeometry;
 import static FocusedSimulation.SurfaceTensionFinder.generateLengthStatistics;
+import Gui.SystemViewer;
 import org.apache.commons.math3.stat.descriptive.DescriptiveStatistics;
 
 /**
@@ -23,7 +24,10 @@ public class WallStepGeneratorTest {
     static public void main(String[] args) {
         PolymerSimulator polymerSimulator = makePolymerSimulator();
 
-        final int numSamples = 100;
+        SystemViewer systemViewer = new SystemViewer(polymerSimulator);
+        systemViewer.setVisible(true);
+
+        final int numSamples = 1000;
         DescriptiveStatistics lengthStatistics = generateLengthStatistics(numSamples, polymerSimulator);
         System.out.println(lengthStatistics.getMean());
     }
@@ -48,7 +52,7 @@ public class WallStepGeneratorTest {
                 final double xMax = rMax[0];
                 double energy;
                 if (xMax > 10 && xMax < 20) {
-                    energy = 0;
+                    energy = xMax;
                 } else {
                     energy = 1000;
                 }

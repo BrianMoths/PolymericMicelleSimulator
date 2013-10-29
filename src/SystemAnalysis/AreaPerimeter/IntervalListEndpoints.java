@@ -4,8 +4,6 @@
  */
 package SystemAnalysis.AreaPerimeter;
 
-import SystemAnalysis.AreaPerimeter.Interval;
-import SystemAnalysis.AreaPerimeter.BeadRectangle;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -23,32 +21,28 @@ public class IntervalListEndpoints {
 
         intervalListEndpoints.endpoints = new ArrayList<>(2 * intervals.size());
         for (Interval interval : intervals) {
-            intervalListEndpoints.endpoints.add(interval.start);
-            intervalListEndpoints.endpoints.add(interval.end);
+            intervalListEndpoints.endpoints.addAll(interval.toCollection());
         }
 
         return intervalListEndpoints;
     }
 
     static public IntervalListEndpoints endpointsOfVerticalRectangleEdges(List<BeadRectangle> beadRectangles) {
-        IntervalListEndpoints intervalListEndpoints = new IntervalListEndpoints();
-
-        intervalListEndpoints.endpoints = new ArrayList<>(2 * beadRectangles.size());
-        for (BeadRectangle beadRectangle : beadRectangles) {
-            intervalListEndpoints.endpoints.add(beadRectangle.bottom);
-            intervalListEndpoints.endpoints.add(beadRectangle.top);
-        }
-
-        return intervalListEndpoints;
+        return endpointsOfDimensionRectangleEdges(1, beadRectangles);
     }
 
     static public IntervalListEndpoints endpointsOfHorizontalRectangleEdges(List<BeadRectangle> beadRectangles) {
+        return endpointsOfDimensionRectangleEdges(0, beadRectangles);
+    }
+
+    static public IntervalListEndpoints endpointsOfDimensionRectangleEdges(int dimension, List<BeadRectangle> beadRectangles) {
         IntervalListEndpoints intervalListEndpoints = new IntervalListEndpoints();
 
         intervalListEndpoints.endpoints = new ArrayList<>(2 * beadRectangles.size());
         for (BeadRectangle beadRectangle : beadRectangles) {
-            intervalListEndpoints.endpoints.add(beadRectangle.left);
-            intervalListEndpoints.endpoints.add(beadRectangle.right);
+            for (BeadRectangle.Extreme extreme : BeadRectangle.Extreme.values()) {
+                intervalListEndpoints.endpoints.add(beadRectangle.getExtremeOfDimension(extreme, dimension));
+            }
         }
 
         return intervalListEndpoints;

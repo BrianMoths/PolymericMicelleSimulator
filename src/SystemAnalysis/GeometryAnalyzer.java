@@ -82,7 +82,7 @@ public class GeometryAnalyzer {
     private static double getNewX(List<BeadRectangle> beadRectangles, int linearIndex) {
         final int beadIndex = IntervalListEndpoints.getIntervalFromLinearIndex(linearIndex);
         final BeadRectangle beadRectangle = beadRectangles.get(beadIndex);
-        return IntervalListEndpoints.getIsStartFromLinearIndex(linearIndex) ? beadRectangle.left : beadRectangle.right;
+        return IntervalListEndpoints.getIsStartFromLinearIndex(linearIndex) ? beadRectangle.getLeft() : beadRectangle.getRight();
     }
 
 }

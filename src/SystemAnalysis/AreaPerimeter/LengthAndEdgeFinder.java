@@ -62,15 +62,21 @@ public class LengthAndEdgeFinder {
     }
 
     private List<Double> calculateEndpointDifferences(IntervalListEndpoints intervalEndpoints, List<Integer> permutation) {
-        List<Double> endpointDifferences = new ArrayList<>(intervalEndpoints.size() - 1);
-        int largeEndpointIndex = permutation.get(0);
-        int smallEndpointIndex;
-        for (int i = 1; i < intervalEndpoints.size(); i++) {
-            smallEndpointIndex = largeEndpointIndex;
-            largeEndpointIndex = permutation.get(i);
-            endpointDifferences.add(intervalEndpoints.getFromLinearIndex(largeEndpointIndex) - intervalEndpoints.getFromLinearIndex(smallEndpointIndex));
+        if (intervalEndpoints.size() > 0) {
+            List<Double> endpointDifferences = new ArrayList<>(intervalEndpoints.size() - 1);
+            int largeEndpointIndex = permutation.get(0);
+            int smallEndpointIndex;
+            for (int i = 1; i < intervalEndpoints.size(); i++) {
+                smallEndpointIndex = largeEndpointIndex;
+                largeEndpointIndex = permutation.get(i);
+                endpointDifferences.add(intervalEndpoints.getFromLinearIndex(largeEndpointIndex) - intervalEndpoints.getFromLinearIndex(smallEndpointIndex));
+            }
+            return endpointDifferences;
+        } else {
+            List<Double> endpointDifferences = new ArrayList<>(1);
+            endpointDifferences.add(1.);
+            return endpointDifferences;
         }
-        return endpointDifferences;
     }
 
     private void makeNodeIntervals(List<Integer> permutation) {

@@ -5,8 +5,10 @@
 package Engine.SystemGeometry;
 
 import SystemAnalysis.AreaPerimeter.BeadRectangle;
+import SystemAnalysis.AreaPerimeter.Interval;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.EnumMap;
 import java.util.List;
 import java.util.Random;
 
@@ -103,7 +105,7 @@ public abstract class AbstractGeometry implements SystemGeometry {
 
     public static final Random randomNumberGenerator = new Random();
     protected final int dimension;
-    protected final double[] fullRMax; //try to make this constant
+    protected final double[] fullRMax;
     protected final GeometricalParameters parameters;
 
     protected AbstractGeometry(int dimension, double[] fullRMax, GeometricalParameters parameters) {
@@ -184,8 +186,19 @@ public abstract class AbstractGeometry implements SystemGeometry {
         return volume;
     }
 
-    @Override
-    public BeadRectangle getRectangleFromPosition(double[] beadPosition) {
+    //<editor-fold defaultstate="collapsed" desc="deal with rectangles">
+    final protected List<BeadRectangle> getUnsplitRectanglesFromPositions(double[][] beadPositions) {
+        List<BeadRectangle> beadRectangles = new ArrayList<>();
+
+        for (int i = 0; i < beadPositions.length; i++) {
+            final double[] beadPosition = beadPositions[i];
+            beadRectangles.add(getUnsplitRectangleFromPosition(beadPosition));
+        }
+
+        return beadRectangles;
+    }
+
+    final protected BeadRectangle getUnsplitRectangleFromPosition(double[] beadPosition) {
         double left, right, top, bottom, halfWidth;
         halfWidth = parameters.getInteractionLength() / 2;
         left = beadPosition[0] - halfWidth;
@@ -197,14 +210,25 @@ public abstract class AbstractGeometry implements SystemGeometry {
         return rectangle;
     }
 
-    @Override
-    public List<BeadRectangle> getRectanglesFromPositions(double[][] beadPositions) {
-        List<BeadRectangle> beadRectangles = new ArrayList<>(beadPositions.length);
-        for (int bead = 0; bead < beadPositions.length; bead++) {
-            beadRectangles.add(getRectangleFromPosition(beadPositions[bead]));
+    final protected BeadRectangle makeLimits() {
+        BeadRectangle limits = new BeadRectangle(0, 0, 0, 0);
+
+        for (int currentDimension = 0; currentDimension < dimension; currentDimension++) {
+            limits.setIntervalOfDimension(makeLimit(dimension), dimension);
         }
-        return beadRectangles;
+
+        return limits;
     }
+
+    private Interval makeLimit(int dimension) {
+        final double lowerLimit = 0;
+        final double upperLimit = fullRMax[dimension];
+
+        final Interval limits = new Interval(lowerLimit, upperLimit);
+
+        return limits;
+    }
+    //</editor-fold>
 
     @Override
     public void checkedCopyPositions(double[][] src, double[][] dest) {
@@ -240,4 +264,5 @@ public abstract class AbstractGeometry implements SystemGeometry {
         return parameters;
     }
     //</editor-fold>
+
 }
