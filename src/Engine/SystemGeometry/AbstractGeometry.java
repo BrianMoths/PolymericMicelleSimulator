@@ -214,7 +214,7 @@ public abstract class AbstractGeometry implements SystemGeometry {
         BeadRectangle limits = new BeadRectangle(0, 0, 0, 0);
 
         for (int currentDimension = 0; currentDimension < dimension; currentDimension++) {
-            limits.setIntervalOfDimension(makeLimit(dimension), dimension);
+            limits.setIntervalOfDimension(makeLimit(currentDimension), currentDimension);
         }
 
         return limits;

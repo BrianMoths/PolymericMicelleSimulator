@@ -107,18 +107,19 @@ public class BeadRectangle {
         for (int currentDimension = 0; currentDimension < dimension; currentDimension++) {
             newSplitBeadRectangles = new ArrayList<>();
             for (BeadRectangle beadRectangle : oldSplitBeadRectangles) {
-                newSplitBeadRectangles.addAll(splitOverPeriodicBoundaryOfDimension(boundary, currentDimension));
+                newSplitBeadRectangles.addAll(beadRectangle.getSplitOverPeriodicBoundaryOfDimension(boundary, currentDimension));
             }
+            oldSplitBeadRectangles = newSplitBeadRectangles;
         }
         return newSplitBeadRectangles;
     }
 
-    public List<BeadRectangle> splitOverPeriodicBoundaryOfDimension(BeadRectangle boundary, int dimension) {
+    public List<BeadRectangle> getSplitOverPeriodicBoundaryOfDimension(BeadRectangle boundary, int dimension) {
         final Interval boundaryInterval = boundary.getIntervalOfDimension(dimension);
-        return splitOverPeriodicIntervalOfDimension(boundaryInterval, dimension);
+        return getSplitOverPeriodicIntervalOfDimension(boundaryInterval, dimension);
     }
 
-    public List<BeadRectangle> splitOverPeriodicIntervalOfDimension(Interval boundaryInterval, int dimension) {
+    public List<BeadRectangle> getSplitOverPeriodicIntervalOfDimension(Interval boundaryInterval, int dimension) {
         List<BeadRectangle> splitBeadRectangles = new ArrayList<>();
 
         Interval intervalOfDimension = getIntervalOfDimension(dimension);
@@ -142,13 +143,13 @@ public class BeadRectangle {
     }
 
     public void setExtremeOfDimension(double position, Extreme extreme, int dimension) {
-        final Interval interval = getIntervalOfDimension(dimension);
+        final Interval interval = getIntervalOfDimensionReference(dimension);
         interval.setExtreme(position, extreme);
     }
 
     public void setIntervalOfDimension(Interval interval, int dimension) {
-        Interval beadInterval = getIntervalOfDimension(dimension);
-        beadInterval.setInterval(interval);
+        final Interval intervalOfDimension = getIntervalOfDimensionReference(dimension);
+        intervalOfDimension.setInterval(interval);
     }
 
     public boolean isOutOfExtremeBoundaryInDimension(Extreme extreme, double boundary, int dimension) {
@@ -158,6 +159,10 @@ public class BeadRectangle {
 
     public Interval getIntervalOfDimension(int dimension) {
         return new Interval(intervals.get(dimension));
+    }
+
+    private Interval getIntervalOfDimensionReference(int dimension) {
+        return intervals.get(dimension);
     }
 
     public int getDimension() {

@@ -26,7 +26,6 @@ public class StripChart extends javax.swing.JPanel {
     public StripChart() {
         initComponents();
         repaint();
-
     }
 
     public void displayNewChart(String variableName) {

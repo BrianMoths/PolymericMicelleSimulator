@@ -36,7 +36,7 @@ public class RectanglesAndBoundaryIntervals {
     public void splitOverPeriodicBoundary(BeadRectangle boundary) {
         int dimension = getDimension();
         for (int currentDimension = 0; currentDimension < dimension; currentDimension++) {
-            splitOverPeriodicBoundaryDimension(boundary, dimension);
+            splitOverPeriodicBoundaryDimension(boundary, currentDimension);
         }
     }
 
@@ -47,7 +47,7 @@ public class RectanglesAndBoundaryIntervals {
         List<BeadRectangle> newRectangles = new ArrayList<>();
 
         for (BeadRectangle beadRectangle : rectangles) {
-            List<BeadRectangle> splitBeadRectangles = beadRectangle.splitOverPeriodicIntervalOfDimension(boundaryInterval, dimension);
+            List<BeadRectangle> splitBeadRectangles = beadRectangle.getSplitOverPeriodicIntervalOfDimension(boundaryInterval, dimension);
             newRectangles.addAll(splitBeadRectangles);
             if (splitBeadRectangles.size() > 1) {
                 gluedIntervalsOfOtherDimension.add(beadRectangle.getIntervalOfDimension(1 - dimension));

@@ -7,7 +7,6 @@ package Gui;
 import Engine.PolymerSimulator;
 import Engine.SystemAnalyzer;
 import SystemAnalysis.GeometryAnalyzer.AreaPerimeter;
-import SystemAnalysis.SimulationHistory;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;

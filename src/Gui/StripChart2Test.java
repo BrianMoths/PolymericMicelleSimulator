@@ -4,7 +4,6 @@
  */
 package Gui;
 
-import com.sun.tools.visualvm.charts.SimpleXYChartSupport;
 import java.util.Random;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -15,14 +14,11 @@ import java.util.logging.Logger;
  */
 public class StripChart2Test extends javax.swing.JFrame {
 
-    static private Random random = new Random();
-
     /**
      * Creates new form StripChart2Test
      */
     public StripChart2Test() {
         initComponents();
-//        runTest();
         stripChart21.displayNewChart("energy");
     }
 

@@ -5,7 +5,6 @@
 package SystemAnalysis.AreaPerimeter.RectangleSplitting;
 
 import SystemAnalysis.AreaPerimeter.BeadRectangle;
-import SystemAnalysis.AreaPerimeter.Interval;
 import java.util.List;
 
 /**
