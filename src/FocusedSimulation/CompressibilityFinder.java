@@ -98,8 +98,8 @@ public class CompressibilityFinder {
 
     static private ExternalEnergyCalculator makeExternalEnergyCalculator() {
         final ExternalEnergyCalculator.ExternalEnergyCalculatorBuilder externalEnergyCalculatorBuilder = new ExternalEnergyCalculator.ExternalEnergyCalculatorBuilder();
-        externalEnergyCalculatorBuilder.setxTension(-50.);
-        externalEnergyCalculatorBuilder.setxQuadratic(.2);
+        externalEnergyCalculatorBuilder.setxEquilibriumPosition(66);
+        externalEnergyCalculatorBuilder.setxSpringConstant(1.8);
         return externalEnergyCalculatorBuilder.build();
     }
 

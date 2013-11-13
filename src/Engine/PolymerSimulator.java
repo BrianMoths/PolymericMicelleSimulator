@@ -4,6 +4,7 @@
  */
 package Engine;
 
+import Engine.SimulationStepping.StepGenerators.AbsoluteResizeStepGenerator;
 import Engine.SystemGeometry.GeometricalParameters;
 import Engine.SimulationStepping.StepTypes.MoveType;
 import Engine.SimulationStepping.StepTypes.SimulationStep;

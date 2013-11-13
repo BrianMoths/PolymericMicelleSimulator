@@ -83,20 +83,20 @@ public class SurfaceTensionFinder {
 
         if (args.length == 4) {
             numChains = Integer.parseInt(args[0]);
-            final double xQuadratic = Double.parseDouble(args[1]);
-            final double xTension = Double.parseDouble(args[2]);
+            final double xSpringConstant = Double.parseDouble(args[1]);
+            final double xEquilibriumPosition = Double.parseDouble(args[2]);
             ExternalEnergyCalculatorBuilder externalEnergyCalculatorBuilder = new ExternalEnergyCalculatorBuilder();
-            externalEnergyCalculatorBuilder.setxQuadratic(xQuadratic);
-            externalEnergyCalculatorBuilder.setxTension(xTension);
+            externalEnergyCalculatorBuilder.setxSpringConstant(xSpringConstant);
+            externalEnergyCalculatorBuilder.setxEquilibriumPosition(xEquilibriumPosition);
             externalEnergyCalculator = externalEnergyCalculatorBuilder.build();
             density = Double.parseDouble(args[3]);
         } else {
             numChains = 100;//100
             final ExternalEnergyCalculatorBuilder externalEnergyCalculatorBuilder = new ExternalEnergyCalculatorBuilder();
-            externalEnergyCalculatorBuilder.setxTension(-50.); //was -50
-            externalEnergyCalculatorBuilder.setxQuadratic(.2); //was .2
+            externalEnergyCalculatorBuilder.setxEquilibriumPosition(66); //was 125
+            externalEnergyCalculatorBuilder.setxSpringConstant(1.8); //was .2
             externalEnergyCalculator = externalEnergyCalculatorBuilder.build();
-            density = .1; //.15
+            density = .05; //.15
         }
 
         return new InputParameters(numChains, externalEnergyCalculator, density);
@@ -129,11 +129,11 @@ public class SurfaceTensionFinder {
         final double lengthStandardDeviation = lengthStatistics.getStandardDeviation();
 
         final ExternalEnergyCalculator externalEnergyCalculator = polymerSimulator.getEnergeticsConstants().getExternalEnergyCalculator();
-        final double xTension = externalEnergyCalculator.getxTension();
-        final double xQuadratic = externalEnergyCalculator.getxQuadratic();
+        final double xEquilibriumPosition = externalEnergyCalculator.getxEquilibriumPosition();
+        final double xSpringConstant = externalEnergyCalculator.getxSpringConstant();
 
-        final double surfaceTension = -xTension - 2 * xQuadratic * averageLength; //should divide by two since there are two surfaces
-        final double surfaceTensionStandardDeviation = 2 * xQuadratic * lengthStandardDeviation;
+        final double surfaceTension = xSpringConstant * (xEquilibriumPosition - averageLength); //should divide by two since there are two surfaces
+        final double surfaceTensionStandardDeviation = xSpringConstant * lengthStandardDeviation;
         final double surfaceTensionStandardError = surfaceTensionStandardDeviation / Math.sqrt(numLengthSamples - 1);
         return new MeasuredSurfaceTension(surfaceTension, surfaceTensionStandardError);
     }
@@ -176,13 +176,14 @@ public class SurfaceTensionFinder {
     static private SystemGeometry makeSystemGeometry(double numBeadsIncludingWater, GeometricalParameters geometricalParameters) {
         AbstractGeometryBuilder systemGeometryBuilder = new PeriodicGeometry.PeriodicGeometryBuilder();
 
+        final double aspectRatio = .1;
         systemGeometryBuilder.setDimension(2);
-        systemGeometryBuilder.makeConsistentWith(numBeadsIncludingWater, geometricalParameters);
+        systemGeometryBuilder.makeConsistentWith(numBeadsIncludingWater, geometricalParameters, aspectRatio);
         return systemGeometryBuilder.buildGeometry();
     }
 //</editor-fold>
 
-    private final int numAnneals = 50; //50
+    private final int numAnneals = 10; //50
     private final int numSurfaceTensionTrials = 70; //70
     private final InputParameters inputParameters;
     private final PrintWriter dataWriter;
@@ -252,8 +253,8 @@ public class SurfaceTensionFinder {
     private void writeParameters() {
         dataWriter.println("Number of Chains: " + Integer.toString(inputParameters.numChains));
         dataWriter.println("Number of Beads per Chain: " + Integer.toString(numBeadsPerChain));
-        dataWriter.println("E=aL^2+bL with a: " + Double.toString(inputParameters.externalEnergyCalculator.getxQuadratic()));
-        dataWriter.println("b: " + Double.toString(inputParameters.externalEnergyCalculator.getxTension()));
+        dataWriter.println("E=a(L-b)^2 with a: " + Double.toString(inputParameters.externalEnergyCalculator.getxSpringConstant()));
+        dataWriter.println("b: " + Double.toString(inputParameters.externalEnergyCalculator.getxEquilibriumPosition()));
         dataWriter.println("Density: " + Double.toString(inputParameters.density));
         dataWriter.println("number  of anneals: " + Integer.toString(numAnneals));
         dataWriter.println("number of iterations finding surface tension: " + Integer.toString(numSurfaceTensionTrials));
@@ -262,7 +263,7 @@ public class SurfaceTensionFinder {
     }
 
     private void writeSurfaceTensionToFile(MeasuredSurfaceTension measuredSurfaceTension) {
-        dataWriter.println("Surface Tension found: " + Double.toString(measuredSurfaceTension.surfaceTension) + "+/-" + Double.toString(measuredSurfaceTension.surfaceTensionStandardError));
+        dataWriter.println("Surface Tension found: " + Double.toString(measuredSurfaceTension.surfaceTension) + " +/- " + Double.toString(measuredSurfaceTension.surfaceTensionStandardError));
     }
 
     public void closeWriter() {

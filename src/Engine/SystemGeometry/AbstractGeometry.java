@@ -8,7 +8,6 @@ import SystemAnalysis.AreaPerimeter.BeadRectangle;
 import SystemAnalysis.AreaPerimeter.Interval;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.EnumMap;
 import java.util.List;
 import java.util.Random;
 
@@ -24,6 +23,11 @@ public abstract class AbstractGeometry implements SystemGeometry {
         protected int dimension;
         protected double[] fullRMax;
         protected GeometricalParameters parameters;
+        private double aspectRatio;
+
+        {
+            aspectRatio = 1;
+        }
 
         public AbstractGeometryBuilder() {
             this.dimension = 2;
@@ -92,6 +96,25 @@ public abstract class AbstractGeometry implements SystemGeometry {
             boxLength = findBoxLength(numBeadsIncludingWater, geometricalParameters);
             for (int i = 0; i < dimension; i++) {
                 setDimensionSize(i, boxLength);
+            }
+        }
+
+        @Override
+        public void makeConsistentWith(double numBeadsIncludingWater, GeometricalParameters geometricalParameters, double aspectRatio) {
+            if (dimension < 2) {
+                makeConsistentWith(numBeadsIncludingWater, geometricalParameters);
+            } else {
+                this.parameters = geometricalParameters;
+                double boxLength;
+                boxLength = findBoxLength(numBeadsIncludingWater, geometricalParameters);
+                final double boxArea = boxLength * boxLength;
+                final double xBoxLength = Math.sqrt(boxArea * aspectRatio);
+                setDimensionSize(0, xBoxLength);
+                final double yBoxLength = Math.sqrt(boxArea / aspectRatio);
+                setDimensionSize(1, yBoxLength);
+                for (int i = 2; i < dimension; i++) {
+                    setDimensionSize(i, boxLength);
+                }
             }
         }
 

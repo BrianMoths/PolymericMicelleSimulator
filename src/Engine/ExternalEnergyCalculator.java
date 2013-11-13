@@ -13,13 +13,13 @@ public class ExternalEnergyCalculator {
     //<editor-fold defaultstate="collapsed" desc="builder class">
     static public class ExternalEnergyCalculatorBuilder {
 
-        double xTension, xQuadratic, yTension, yQuadratic, pressure;
+        private double xSpringConstant, xEquilibriumPosition, ySpringConstant, yEquilibriumPosition, pressure;
 
         public ExternalEnergyCalculatorBuilder() {
-            xTension = 0;
-            xQuadratic = 0;
-            yTension = 0;
-            yQuadratic = 0;
+            xSpringConstant = 0;
+            xEquilibriumPosition = 0;
+            ySpringConstant = 0;
+            yEquilibriumPosition = 0;
             pressure = 0;
         }
 
@@ -27,36 +27,36 @@ public class ExternalEnergyCalculator {
             return new ExternalEnergyCalculator(this);
         }
 
-        public double getxTension() {
-            return xTension;
+        public double getxSpringConstant() {
+            return xSpringConstant;
         }
 
-        public void setxTension(double xTension) {
-            this.xTension = xTension;
+        public void setxSpringConstant(double xSpringConstant) {
+            this.xSpringConstant = xSpringConstant;
         }
 
-        public double getxQuadratic() {
-            return xQuadratic;
+        public double getxEquilibriumPosition() {
+            return xEquilibriumPosition;
         }
 
-        public void setxQuadratic(double xQuadratic) {
-            this.xQuadratic = xQuadratic;
+        public void setxEquilibriumPosition(double xEquilibriumPosition) {
+            this.xEquilibriumPosition = xEquilibriumPosition;
         }
 
-        public double getyTension() {
-            return yTension;
+        public double getySpringConstant() {
+            return ySpringConstant;
         }
 
-        public void setyTension(double yTension) {
-            this.yTension = yTension;
+        public void setySpringConstant(double ySpringConstant) {
+            this.ySpringConstant = ySpringConstant;
         }
 
-        public double getyQuadratic() {
-            return yQuadratic;
+        public double getyEquilibriumPosition() {
+            return yEquilibriumPosition;
         }
 
-        public void setyQuadratic(double yQuadratic) {
-            this.yQuadratic = yQuadratic;
+        public void setyEquilibriumPosition(double yEquilibriumPosition) {
+            this.yEquilibriumPosition = yEquilibriumPosition;
         }
 
         public double getPressure() {
@@ -70,21 +70,22 @@ public class ExternalEnergyCalculator {
     }
 //</editor-fold>
 
-    private final double xTension, xQuadratic, yTension, yQuadratic, pressure;
+//    private final double xTension, xQuadratic, yTension, yQuadratic, pressure;
+    private final double xSpringConstant, xEquilibriumPosition, ySpringConstant, yEquilibriumPosition, pressure;
 
     public ExternalEnergyCalculator() {
-        xTension = 0;
-        xQuadratic = 0;
-        yTension = 0;
-        yQuadratic = 0;
+        xSpringConstant = 0;
+        xEquilibriumPosition = 0;
+        ySpringConstant = 0;
+        yEquilibriumPosition = 0;
         pressure = 0;
     }
 
     private ExternalEnergyCalculator(ExternalEnergyCalculatorBuilder builder) {
-        xTension = builder.xTension;
-        xQuadratic = builder.xQuadratic;
-        yTension = builder.yTension;
-        yQuadratic = builder.yQuadratic;
+        xSpringConstant = builder.xSpringConstant;
+        xEquilibriumPosition = builder.xEquilibriumPosition;
+        ySpringConstant = builder.ySpringConstant;
+        yEquilibriumPosition = builder.yEquilibriumPosition;
         pressure = builder.pressure;
     }
 
@@ -92,28 +93,34 @@ public class ExternalEnergyCalculator {
         final double x = rMax[0];
         final double y = rMax[1];
 
-        return xTension * x + xQuadratic * x * x + yTension * y + yQuadratic * y * y - pressure * x * y;
+        final double xDisplacement = x - xEquilibriumPosition;
+        final double yDisplacement = y - yEquilibriumPosition;
+
+
+        return .5 * (xSpringConstant * xDisplacement * xDisplacement + ySpringConstant * yDisplacement * yDisplacement)
+                + pressure * x * y;
     }
 
     //<editor-fold defaultstate="collapsed" desc="getters">
-    public double getxTension() {
-        return xTension;
+    public double getxSpringConstant() {
+        return xSpringConstant;
     }
 
-    public double getxQuadratic() {
-        return xQuadratic;
+    public double getxEquilibriumPosition() {
+        return xEquilibriumPosition;
     }
 
-    public double getyTension() {
-        return yTension;
+    public double getySpringConstant() {
+        return ySpringConstant;
     }
 
-    public double getyQuadratic() {
-        return yQuadratic;
+    public double getyEquilibriumPosition() {
+        return yEquilibriumPosition;
     }
 
     public double getPressure() {
         return pressure;
     }
-//</editor-fold>
+    //</editor-fold>
+
 }

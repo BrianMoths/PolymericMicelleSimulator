@@ -42,20 +42,20 @@ public class SGEManager {
     static private List<Input> makeInputs() {
         List<Input> inputs = new ArrayList<>();
 
-        inputs.add(new Input(100, makeCalculatorAB(.2, -50), .15));
-        inputs.add(new Input(100, makeCalculatorAB(.18, -50), .15));
-        inputs.add(new Input(100, makeCalculatorAB(.15, -50), .15));
-        inputs.add(new Input(100, makeCalculatorAB(.22, -50), .15));
-        inputs.add(new Input(100, makeCalculatorAB(.25, -50), .15));
-        inputs.add(new Input(100, makeCalculatorAB(.2, -60), .15));
-        inputs.add(new Input(100, makeCalculatorAB(.2, -70), .15));
-        inputs.add(new Input(100, makeCalculatorAB(.2, -80), .15));
-        inputs.add(new Input(100, makeCalculatorAB(.2, -40), .15));
-        inputs.add(new Input(100, makeCalculatorAB(.2, -30), .15));
-        inputs.add(new Input(100, makeCalculatorAB(.2, -50), .18));
-        inputs.add(new Input(100, makeCalculatorAB(.2, -50), .20));
-        inputs.add(new Input(100, makeCalculatorAB(.2, -50), .12));
-        inputs.add(new Input(100, makeCalculatorAB(.2, -50), .1));
+        inputs.add(new Input(100, makeCalculatorAB(1.8, 66), .05));
+        inputs.add(new Input(100, makeCalculatorAB(1.8, 70), .05));
+        inputs.add(new Input(100, makeCalculatorAB(1.8, 75), .05));
+        inputs.add(new Input(100, makeCalculatorAB(1.8, 80), .05));
+        inputs.add(new Input(100, makeCalculatorAB(1.8, 63), .05));
+        inputs.add(new Input(100, makeCalculatorAB(1.8, 60), .05));
+        inputs.add(new Input(100, makeCalculatorAB(1.8, 55), .05));
+        inputs.add(new Input(100, makeCalculatorAB(18, 66), .05));
+        inputs.add(new Input(100, makeCalculatorAB(180, 66), .05));
+        inputs.add(new Input(100, makeCalculatorAB(1.6, 66), .05));
+        inputs.add(new Input(100, makeCalculatorAB(1.4, 66), .05));
+        inputs.add(new Input(100, makeCalculatorAB(2.0, 66), .05));
+        inputs.add(new Input(100, makeCalculatorAB(2.2, 66), .05));
+        inputs.add(new Input(100, makeCalculatorAB(2.4, 66), .05));
 
         return inputs;
     }
@@ -63,8 +63,8 @@ public class SGEManager {
     //<editor-fold defaultstate="collapsed" desc="makeInputsHelper">
     static private ExternalEnergyCalculator makeCalculatorAB(double a, double b) {
         ExternalEnergyCalculatorBuilder externalEnergyCalculatorBuilder = new ExternalEnergyCalculatorBuilder();
-        externalEnergyCalculatorBuilder.setxQuadratic(a);
-        externalEnergyCalculatorBuilder.setxTension(b);
+        externalEnergyCalculatorBuilder.setxSpringConstant(a);
+        externalEnergyCalculatorBuilder.setxEquilibriumPosition(b);
         return externalEnergyCalculatorBuilder.build();
     }
     //</editor-fold>
@@ -108,9 +108,9 @@ public class SGEManager {
         StringBuilder inputStringBuilder = new StringBuilder();
         inputStringBuilder.append(input.numChains)
                 .append(" ")
-                .append(input.externalEnergyCalculator.getxQuadratic())
+                .append(input.externalEnergyCalculator.getxSpringConstant())
                 .append(" ")
-                .append(input.externalEnergyCalculator.getxTension())
+                .append(input.externalEnergyCalculator.getxEquilibriumPosition())
                 .append(" ")
                 .append(input.density);
         return inputStringBuilder.toString();

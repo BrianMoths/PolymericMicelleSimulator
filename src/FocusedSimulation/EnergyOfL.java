@@ -87,8 +87,8 @@ public class EnergyOfL {
 
     static private ExternalEnergyCalculator makeExternalEnergyCalculator() {
         final ExternalEnergyCalculator.ExternalEnergyCalculatorBuilder externalEnergyCalculatorBuilder = new ExternalEnergyCalculator.ExternalEnergyCalculatorBuilder();
-        externalEnergyCalculatorBuilder.setxTension(0.); //was -50
-        externalEnergyCalculatorBuilder.setxQuadratic(.0); //was .2
+        externalEnergyCalculatorBuilder.setxEquilibriumPosition(0.); //was -50
+        externalEnergyCalculatorBuilder.setxSpringConstant(.0); //was .2
         return externalEnergyCalculatorBuilder.build();
     }
 

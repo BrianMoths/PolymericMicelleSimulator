@@ -24,6 +24,8 @@ public interface GeometryBuilder {
 
     public void makeConsistentWith(double numBeadsIncludingWater, GeometricalParameters geometricalParameters);
 
+    public void makeConsistentWith(double numBeadsIncludingWater, GeometricalParameters geometricalParameters, double aspectRatio);
+
     public SystemGeometry buildGeometry();
 
 }
