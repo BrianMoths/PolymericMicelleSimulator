@@ -42,20 +42,54 @@ public class SGEManager {
     static private List<Input> makeInputs() {
         List<Input> inputs = new ArrayList<>();
 
-        inputs.add(new Input(100, makeCalculatorAB(1.8, 66), .05));
-        inputs.add(new Input(100, makeCalculatorAB(1.8, 70), .05));
-        inputs.add(new Input(100, makeCalculatorAB(1.8, 75), .05));
-        inputs.add(new Input(100, makeCalculatorAB(1.8, 80), .05));
-        inputs.add(new Input(100, makeCalculatorAB(1.8, 63), .05));
-        inputs.add(new Input(100, makeCalculatorAB(1.8, 60), .05));
-        inputs.add(new Input(100, makeCalculatorAB(1.8, 55), .05));
-        inputs.add(new Input(100, makeCalculatorAB(18, 66), .05));
-        inputs.add(new Input(100, makeCalculatorAB(180, 66), .05));
-        inputs.add(new Input(100, makeCalculatorAB(1.6, 66), .05));
+        inputs.add(new Input(100, makeCalculatorAB(1, 66), .05));
+        inputs.add(new Input(100, makeCalculatorAB(1.2, 66), .05));
         inputs.add(new Input(100, makeCalculatorAB(1.4, 66), .05));
-        inputs.add(new Input(100, makeCalculatorAB(2.0, 66), .05));
-        inputs.add(new Input(100, makeCalculatorAB(2.2, 66), .05));
-        inputs.add(new Input(100, makeCalculatorAB(2.4, 66), .05));
+        inputs.add(new Input(100, makeCalculatorAB(1.8, 66), .05));
+        inputs.add(new Input(100, makeCalculatorAB(2.5, 66), .05));
+        inputs.add(new Input(100, makeCalculatorAB(3, 66), .05));
+        inputs.add(new Input(100, makeCalculatorAB(5, 66), .05));
+        inputs.add(new Input(100, makeCalculatorAB(8, 66), .05));
+        inputs.add(new Input(100, makeCalculatorAB(13, 66), .05));
+        inputs.add(new Input(100, makeCalculatorAB(50, 66), .05));
+
+//        inputs.add(new Input(100, makeCalculatorAB(1, 90), .05));
+//        inputs.add(new Input(100, makeCalculatorAB(1.2, 90), .05));
+//        inputs.add(new Input(100, makeCalculatorAB(1.4, 90), .05));
+//        inputs.add(new Input(100, makeCalculatorAB(1.8, 90), .05));
+//        inputs.add(new Input(100, makeCalculatorAB(2.5, 90), .05));
+//        inputs.add(new Input(100, makeCalculatorAB(3, 90), .05));
+//        inputs.add(new Input(100, makeCalculatorAB(5, 90), .05));
+//        inputs.add(new Input(100, makeCalculatorAB(8, 90), .05));
+//        inputs.add(new Input(100, makeCalculatorAB(13, 90), .05));
+//        inputs.add(new Input(100, makeCalculatorAB(50, 90), .05));
+//        inputs.add(new Input(100, makeCalculatorAB(100, 90), .05));
+
+        inputs.add(new Input(100, makeCalculatorAB(1, 30), .05));
+        inputs.add(new Input(100, makeCalculatorAB(1.2, 30), .05));
+        inputs.add(new Input(100, makeCalculatorAB(1.4, 30), .05));
+        inputs.add(new Input(100, makeCalculatorAB(1.8, 30), .05));
+        inputs.add(new Input(100, makeCalculatorAB(2.5, 30), .05));
+        inputs.add(new Input(100, makeCalculatorAB(3, 30), .05));
+        inputs.add(new Input(100, makeCalculatorAB(5, 30), .05));
+        inputs.add(new Input(100, makeCalculatorAB(8, 30), .05));
+        inputs.add(new Input(100, makeCalculatorAB(13, 30), .05));
+        inputs.add(new Input(100, makeCalculatorAB(50, 30), .05));
+
+//        inputs.add(new Input(100, makeCalculatorAB(1.8, 66), .05));
+//        inputs.add(new Input(100, makeCalculatorAB(1.8, 70), .05));
+//        inputs.add(new Input(100, makeCalculatorAB(1.8, 75), .05));
+//        inputs.add(new Input(100, makeCalculatorAB(1.8, 80), .05));
+//        inputs.add(new Input(100, makeCalculatorAB(1.8, 63), .05));
+//        inputs.add(new Input(100, makeCalculatorAB(1.8, 60), .05));
+//        inputs.add(new Input(100, makeCalculatorAB(1.8, 55), .05));
+//        inputs.add(new Input(100, makeCalculatorAB(18, 66), .05));
+//        inputs.add(new Input(100, makeCalculatorAB(180, 66), .05));
+//        inputs.add(new Input(100, makeCalculatorAB(1.6, 66), .05));
+//        inputs.add(new Input(100, makeCalculatorAB(1.4, 66), .05));
+//        inputs.add(new Input(100, makeCalculatorAB(2.0, 66), .05));
+//        inputs.add(new Input(100, makeCalculatorAB(2.2, 66), .05));
+//        inputs.add(new Input(100, makeCalculatorAB(2.4, 66), .05));
 
         return inputs;
     }

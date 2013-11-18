@@ -9,7 +9,6 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Iterator;
-import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
 
@@ -17,17 +16,9 @@ import java.util.Set;
  *
  * @author bmoths
  */
-public class BeadBinner implements Serializable{ //keep track of where beads are so bead moves require only bead number and new position
+public class BeadBinner implements Serializable {
 
-    private final int dimension;
-    private final double[] binSize;
-    private final int[] numBins;
-    private List<List<Set<Integer>>> beadBins;
-//    private SimulationStep simulationStep;
-    private boolean isStepDone = false;
-    private List<BinIndex> binIndices;
-
-    static private class BinIndex implements Serializable{
+    static private class BinIndex implements Serializable {
 
         public int x, y;
 
@@ -43,7 +34,10 @@ public class BeadBinner implements Serializable{ //keep track of where beads are
             this.x = binIndex.x;
             this.y = binIndex.y;
         }
+
     }
+
+    private final int dimension;
 
     private class NearbyBeadIterator implements Iterator<Integer> {
 
@@ -111,7 +105,14 @@ public class BeadBinner implements Serializable{ //keep track of where beads are
         public void remove() {
             throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
         }
+
     }
+
+    private final double[] binSize;
+    private final int[] numBins;
+    private List<List<Set<Integer>>> beadBins;
+    private boolean isStepDone = false;
+    private List<BinIndex> binIndices;
 
     public BeadBinner(double[][] beadPositions, SystemGeometry systemGeometry) {
         final double[] rMax = systemGeometry.getRMax();
@@ -120,7 +121,7 @@ public class BeadBinner implements Serializable{ //keep track of where beads are
         numBins = new int[dimension];
         binSize = new double[dimension];
         for (int i = 0; i < dimension; i++) {
-            numBins[i] = (int) Math.floor(rMax[i] / interactionLength);
+            numBins[i] = (int)Math.floor(rMax[i] / interactionLength);
             binSize[i] = rMax[i] / numBins[i];
         }
 
@@ -216,26 +217,11 @@ public class BeadBinner implements Serializable{ //keep track of where beads are
 
     private BinIndex getBinIndex(double[] position) {
         BinIndex binIndex = new BinIndex();
-        binIndex.x = (int) Math.floor(position[0] / binSize[0]);
-        binIndex.y = (int) Math.floor(position[1] / binSize[1]); //make this nicer like a loop or something
+        binIndex.x = (int)Math.floor(position[0] / binSize[0]);
+        binIndex.y = (int)Math.floor(position[1] / binSize[1]); //make this nicer like a loop or something
         return binIndex;
     }
 
-//    public void setStep(SimulationStep simulationStep) {
-//        this.simulationStep = simulationStep;
-//    }
-//
-//    public void doStep() {
-//        removeBeadAt(simulationStep.getStepBead(), simulationStep.getInitialPosition());
-//        addBeadAt(simulationStep.getStepBead(), simulationStep.getFinalPosition());
-//        isStepDone = true;
-//    }
-//
-//    public void undoStep() {
-//        removeBeadAt(simulationStep.getStepBead(), simulationStep.getFinalPosition());
-//        addBeadAt(simulationStep.getStepBead(), simulationStep.getInitialPosition());
-//        isStepDone = false;
-//    }
     private void projectBinIndex(BinIndex binIndex) {
         if (binIndex.x < 0) {
             binIndex.x += numBins[0];
@@ -250,10 +236,6 @@ public class BeadBinner implements Serializable{ //keep track of where beads are
         }
     }
 
-//    public Iterator<Integer> getStepBeadNearbyBeadIterator() {
-//        final double[] position = isStepDone ? simulationStep.getFinalPosition() : simulationStep.getInitialPosition();
-//        return getNearbyBeadIterator(position);
-//    }
     public Iterator<Integer> getNearbyBeadIterator(int bead) {
         BinIndex binIndex = binIndices.get(bead);
 
@@ -269,4 +251,5 @@ public class BeadBinner implements Serializable{ //keep track of where beads are
 
         return iterator;
     }
+
 }

@@ -11,7 +11,6 @@ import SystemAnalysis.AreaPerimeter.RectangleSplitting.PeriodicRectangleSplitter
 import SystemAnalysis.AreaPerimeter.RectangleSplitting.RectangleSplitter;
 import SystemAnalysis.AreaPerimeter.RectangleSplitting.RectanglesAndBoundaryIntervals;
 import SystemAnalysis.AreaPerimeter.RectangleSplitting.RectanglesAndGluedPerimeter;
-import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -57,7 +56,6 @@ public final class PeriodicGeometry extends AbstractGeometry {
         beadRectangles = getUnsplitRectanglesFromPositions(beadPositions);
 
         RectangleSplitter rectangleSplitter = new PeriodicRectangleSplitter();
-
         return rectangleSplitter.splitRectanglesOverBoundary(beadRectangles, makeLimits());
     }
 

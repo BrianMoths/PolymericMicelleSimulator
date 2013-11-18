@@ -70,7 +70,6 @@ public class ExternalEnergyCalculator {
     }
 //</editor-fold>
 
-//    private final double xTension, xQuadratic, yTension, yQuadratic, pressure;
     private final double xSpringConstant, xEquilibriumPosition, ySpringConstant, yEquilibriumPosition, pressure;
 
     public ExternalEnergyCalculator() {

@@ -93,8 +93,8 @@ public class SurfaceTensionFinder {
         } else {
             numChains = 100;//100
             final ExternalEnergyCalculatorBuilder externalEnergyCalculatorBuilder = new ExternalEnergyCalculatorBuilder();
-            externalEnergyCalculatorBuilder.setxEquilibriumPosition(66); //was 125
-            externalEnergyCalculatorBuilder.setxSpringConstant(1.8); //was .2
+            externalEnergyCalculatorBuilder.setxEquilibriumPosition(66); //was 125 or 66
+            externalEnergyCalculatorBuilder.setxSpringConstant(1.); //was .2 or 1.8
             externalEnergyCalculator = externalEnergyCalculatorBuilder.build();
             density = .05; //.15
         }
@@ -183,7 +183,7 @@ public class SurfaceTensionFinder {
     }
 //</editor-fold>
 
-    private final int numAnneals = 10; //50
+    private final int numAnneals = 50; //50
     private final int numSurfaceTensionTrials = 70; //70
     private final InputParameters inputParameters;
     private final PrintWriter dataWriter;

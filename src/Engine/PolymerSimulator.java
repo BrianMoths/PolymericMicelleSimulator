@@ -4,14 +4,11 @@
  */
 package Engine;
 
-import Engine.SimulationStepping.StepGenerators.AbsoluteResizeStepGenerator;
 import Engine.SystemGeometry.GeometricalParameters;
 import Engine.SimulationStepping.StepTypes.MoveType;
 import Engine.SimulationStepping.StepTypes.SimulationStep;
-import Engine.SimulationStepping.StepGenerators.ChainMoveStepGenerator;
 import Engine.SimulationStepping.StepGenerators.ResizeStepGenerator;
 import Engine.SimulationStepping.StepGenerators.StepGenerator;
-import Engine.SystemGeometry.HardWallGeometry.HardWallGeometryBuilder;
 import Engine.SystemGeometry.PeriodicGeometry.PeriodicGeometryBuilder;
 import Engine.SystemGeometry.SystemGeometry;
 import SystemAnalysis.GeometryAnalyzer;
