@@ -7,7 +7,6 @@ package Engine.BeadBinning;
 import Engine.SystemGeometry.SystemGeometry;
 import java.io.Serializable;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
@@ -27,7 +26,8 @@ public class BeadBinner implements Serializable {
             BinIndex sum = new BinIndex(numDimensions);
 
             for (int dimension = 0; dimension < numDimensions; dimension++) {
-                sum.indices.add(firstSummand.indices.get(dimension) + secondSummand.get(dimension));
+                final int newIndexOfDimension = firstSummand.indices.get(dimension) + secondSummand.get(dimension);
+                sum.setIndexOfDimension(dimension, newIndexOfDimension);
             }
 
             return sum;
@@ -164,7 +164,6 @@ public class BeadBinner implements Serializable {
         }
 
         private void updateBeadIterator() {
-//            BinIndex neighboringBinIndex = new BinIndex(binIndex.x + i, binIndex.y + j);
             BinIndex neighboringBinIndex = BinIndex.addIndices(binIndex, currentBinOffset);
             projectBinIndex(neighboringBinIndex);
             beadIterator = getBin(neighboringBinIndex).iterator();
@@ -183,7 +182,6 @@ public class BeadBinner implements Serializable {
 
     private final double[] binSize;
     private final int[] numBins;
-//    private List<List<Set<Integer>>> beadBins;
     private MultidimensionalArray<Set<Integer>> beadBins;
     private boolean isStepDone = false;
     private List<BinIndex> binIndices;
