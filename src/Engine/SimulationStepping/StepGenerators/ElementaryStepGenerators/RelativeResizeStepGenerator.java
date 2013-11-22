@@ -2,8 +2,9 @@
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
-package Engine.SimulationStepping.StepGenerators;
+package Engine.SimulationStepping.StepGenerators.ElementaryStepGenerators;
 
+import Engine.SimulationStepping.StepGenerators.StepGenerator;
 import Engine.SimulationStepping.StepTypes.SimulationStep;
 import Engine.SimulationStepping.StepTypes.SingleWallResizeStep;
 import Engine.SystemAnalyzer;
@@ -13,26 +14,23 @@ import java.util.Random;
  *
  * @author bmoths
  */
-public class ResizeStepGenerator implements StepGenerator {
+public class RelativeResizeStepGenerator implements StepGenerator {
 
-    static private Random random;
     static private final int resizeDimension = 0;
+    static private Random random;
 
     static {
         random = new Random();
     }
 
-    private final double resizeStepChance;
     private final double lowerRandom, randomRange;
 
-    public ResizeStepGenerator() {
+    public RelativeResizeStepGenerator() {
 //        this(maxScalingFactor, resizeStepChance);
-        this(.01, .0001);//.0001
+        this(.01);//.0001
     }
 
-    public ResizeStepGenerator(double maxScalingFactor, double resizeStepChance) {
-        this.resizeStepChance = resizeStepChance;
-
+    public RelativeResizeStepGenerator(double maxScalingFactor) {
         lowerRandom = Math.sqrt(1 / (1 + maxScalingFactor));
         double upperRandom = Math.sqrt(1 + maxScalingFactor);
         randomRange = upperRandom - lowerRandom;
@@ -40,14 +38,6 @@ public class ResizeStepGenerator implements StepGenerator {
 
     @Override
     public SimulationStep generateStep(SystemAnalyzer systemAnalyzer) {
-        if (random.nextDouble() < resizeStepChance) {
-            return generateResizeMove(systemAnalyzer);
-        } else {
-            return BeadMoveGenerator.getBeadMove(systemAnalyzer);
-        }
-    }
-
-    public SimulationStep generateResizeMove(SystemAnalyzer systemAnalyzer) {
         final double rescaleFactor = generateRescaleFactor();
         final double sizeChange = getSizeChange(rescaleFactor, systemAnalyzer);
         return new SingleWallResizeStep(resizeDimension, sizeChange);

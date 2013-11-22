@@ -194,6 +194,9 @@ public class BeadBinner implements Serializable {
         binSize = new double[numDimensions];
         for (int i = 0; i < numDimensions; i++) {
             numBins[i] = (int)Math.floor(rMax[i] / interactionLength);
+            if (numBins[i] < 4) {
+                numBins[i] = 1;
+            }
             binSize[i] = rMax[i] / numBins[i];
         }
 

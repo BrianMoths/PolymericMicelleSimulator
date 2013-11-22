@@ -2,8 +2,9 @@
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
-package Engine.SimulationStepping.StepGenerators;
+package Engine.SimulationStepping.StepGenerators.ElementaryStepGenerators;
 
+import Engine.SimulationStepping.StepGenerators.StepGenerator;
 import Engine.SimulationStepping.StepTypes.SimulationStep;
 import Engine.SimulationStepping.StepTypes.SingleBeadStep;
 import Engine.SystemAnalyzer;

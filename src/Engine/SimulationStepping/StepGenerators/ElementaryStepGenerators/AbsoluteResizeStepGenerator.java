@@ -2,8 +2,9 @@
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
-package Engine.SimulationStepping.StepGenerators;
+package Engine.SimulationStepping.StepGenerators.ElementaryStepGenerators;
 
+import Engine.SimulationStepping.StepGenerators.StepGenerator;
 import Engine.SimulationStepping.StepTypes.SimulationStep;
 import Engine.SimulationStepping.StepTypes.SingleWallResizeStep;
 import Engine.SystemAnalyzer;
@@ -22,29 +23,19 @@ public class AbsoluteResizeStepGenerator implements StepGenerator {
         random = new Random();
     }
 
-    private final double resizeStepChance;
     private final double maxDisplacement;
 
     public AbsoluteResizeStepGenerator() {
-//        this(maxScalingFactor, resizeStepChance);
-        this(1., .0001);//.0001
+        this(1.);
     }
 
-    public AbsoluteResizeStepGenerator(double maxDisplacement, double resizeStepChance) {
-        this.resizeStepChance = resizeStepChance;
+    public AbsoluteResizeStepGenerator(double maxDisplacement) {
         this.maxDisplacement = maxDisplacement;
     }
 
     @Override
     public SimulationStep generateStep(SystemAnalyzer systemAnalyzer) {
-        if (random.nextDouble() < resizeStepChance) {
-            return generateResizeMove(systemAnalyzer);
-        } else {
-            return BeadMoveGenerator.getBeadMove(systemAnalyzer);
-        }
-    }
 
-    public SimulationStep generateResizeMove(SystemAnalyzer systemAnalyzer) {
         final double randomNumber = 2 * random.nextDouble() - 1.;
         final double sizeChange = maxDisplacement * randomNumber;
         return new SingleWallResizeStep(resizeDimension, sizeChange);

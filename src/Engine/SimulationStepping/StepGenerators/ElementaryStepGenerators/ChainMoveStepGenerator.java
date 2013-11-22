@@ -2,11 +2,11 @@
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
-package Engine.SimulationStepping.StepGenerators;
+package Engine.SimulationStepping.StepGenerators.ElementaryStepGenerators;
 
+import Engine.SimulationStepping.StepGenerators.StepGenerator;
 import Engine.SimulationStepping.StepTypes.SimulationStep;
 import Engine.SimulationStepping.StepTypes.SingleChainStep;
-import Engine.SimulationStepping.StepTypes.SingleBeadStep;
 import Engine.SystemAnalyzer;
 import Engine.SystemGeometry.SystemGeometry;
 import java.util.List;
@@ -24,16 +24,12 @@ public class ChainMoveStepGenerator implements StepGenerator {
         random = new Random();
     }
 
-    private static SimulationStep getChainMove(SystemAnalyzer systemAnalyzer) {
+    public static SimulationStep getChainMove(SystemAnalyzer systemAnalyzer) {
         List<Integer> chain = getChain(systemAnalyzer);
         final double[] stepVector = getStepVector(systemAnalyzer); //need to make this bigger
 
-        stepVector[0] *= 1;
-        stepVector[1] *= 1;
-
-//        for (int i = 0; i < stepVector.length; i++) {
-//            stepVector[i] *= 10;
-//        }
+//        stepVector[0] *= 1;
+//        stepVector[1] *= 1;
 
         return new SingleChainStep(chain, stepVector);
     }
@@ -52,23 +48,9 @@ public class ChainMoveStepGenerator implements StepGenerator {
         return systemGeometry.randomGaussian();
     }
 
-    final private double chainMoveChance;
-
-    public ChainMoveStepGenerator() {
-        chainMoveChance = 0;
-    }
-
-    public ChainMoveStepGenerator(double chainMoveChance) {
-        this.chainMoveChance = chainMoveChance;
-    }
-
     @Override
     public SimulationStep generateStep(SystemAnalyzer systemAnalyzer) {
-        if (random.nextDouble() < chainMoveChance) {
-            return getChainMove(systemAnalyzer);
-        } else {
-            return BeadMoveGenerator.getBeadMove(systemAnalyzer);
-        }
+        return getChainMove(systemAnalyzer);
     }
 
 }

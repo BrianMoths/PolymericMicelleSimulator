@@ -7,7 +7,7 @@ package Engine;
 import Engine.SystemGeometry.GeometricalParameters;
 import Engine.SimulationStepping.StepTypes.MoveType;
 import Engine.SimulationStepping.StepTypes.SimulationStep;
-import Engine.SimulationStepping.StepGenerators.ResizeStepGenerator;
+import Engine.SimulationStepping.StepGenerators.CompoundStepGenerators.BeadMoveAndRelativeResizeStepGenerator;
 import Engine.SimulationStepping.StepGenerators.StepGenerator;
 import Engine.SystemGeometry.PeriodicGeometry.PeriodicGeometryBuilder;
 import Engine.SystemGeometry.SystemGeometry;
@@ -52,7 +52,7 @@ public class PolymerSimulator implements Serializable {
     private final EnergeticsConstants energeticsConstants;
     private final PolymerPosition polymerPosition;
     private final SystemAnalyzer systemAnalyzer;
-    private final StepGenerator stepGenerator = new ResizeStepGenerator();
+    private final StepGenerator stepGenerator = new BeadMoveAndRelativeResizeStepGenerator();
     private double energy;
     private int iterationNumber;
     private int acceptedIterations;
