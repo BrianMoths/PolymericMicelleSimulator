@@ -102,12 +102,12 @@ public class BeadRectangle {
         List<BeadRectangle> oldSplitBeadRectangles = new ArrayList<>();
         oldSplitBeadRectangles.add(this);
         List<BeadRectangle> newSplitBeadRectangles = new ArrayList<>();
-        final int dimension = getDimension();
+        final int numDimensions = getDimension();
 
-        for (int currentDimension = 0; currentDimension < dimension; currentDimension++) {
+        for (int dimension = 0; dimension < numDimensions; dimension++) {
             newSplitBeadRectangles = new ArrayList<>();
             for (BeadRectangle beadRectangle : oldSplitBeadRectangles) {
-                newSplitBeadRectangles.addAll(beadRectangle.getSplitOverPeriodicBoundaryOfDimension(boundary, currentDimension));
+                newSplitBeadRectangles.addAll(beadRectangle.getSplitOverPeriodicBoundaryOfDimension(boundary, dimension));
             }
             oldSplitBeadRectangles = newSplitBeadRectangles;
         }

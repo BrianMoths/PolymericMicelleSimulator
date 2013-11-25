@@ -60,6 +60,11 @@ public class SystemAnalyzer implements Serializable {
     //</editor-fold>
 
     //<editor-fold defaultstate="collapsed" desc="area and perimeter">
+    /**
+     *
+     * @return The amount of area occupied by the beads (any area covered
+     * multiple times is still only counted once).
+     */
     public double findArea() { //produces bad output
         List<BeadRectangle> beadRectangles = systemGeometry.getRectanglesFromPositions(beadPositions);
         return GeometryAnalyzer.findArea(beadRectangles);

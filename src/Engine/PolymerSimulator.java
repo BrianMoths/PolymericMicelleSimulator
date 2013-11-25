@@ -224,6 +224,10 @@ public class PolymerSimulator implements Serializable {
         return acceptedIterations;
     }
 
+    /**
+     *
+     * @return The SystemAnalyzer object registered to this PolymerSimulator.
+     */
     public SystemAnalyzer getSystemAnalyzer() {
         return systemAnalyzer;
     }

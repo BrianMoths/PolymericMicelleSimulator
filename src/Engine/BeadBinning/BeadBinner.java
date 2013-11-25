@@ -192,12 +192,12 @@ public class BeadBinner implements Serializable {
         numDimensions = systemGeometry.getDimension();
         numBins = new int[numDimensions];
         binSize = new double[numDimensions];
-        for (int i = 0; i < numDimensions; i++) {
-            numBins[i] = (int)Math.floor(rMax[i] / interactionLength);
-            if (numBins[i] < 4) {
-                numBins[i] = 1;
+        for (int dimension = 0; dimension < numDimensions; dimension++) {
+            numBins[dimension] = (int)Math.floor(rMax[dimension] / interactionLength);
+            if (numBins[dimension] < 4) {
+                numBins[dimension] = 1;
             }
-            binSize[i] = rMax[i] / numBins[i];
+            binSize[dimension] = rMax[dimension] / numBins[dimension];
         }
 
         binBeadsPrivate(beadPositions);
@@ -244,23 +244,23 @@ public class BeadBinner implements Serializable {
         addBeadAt(stepBead, newBeadPosition);
     }
 
-    private void addBeadAt(int bead, double[] position) {
-        final BinIndex index = getBinIndex(position);
-        addBeadToBin(bead, index);
-    }
-
     private void removeBead(int bead) {
         BinIndex binIndex = binIndices.get(bead);
         removeBeadFromBin(bead, binIndex);
     }
 
+    private void removeBeadFromBin(int bead, BinIndex binIndex) {
+        getBin(binIndex).remove(bead);
+    }
+
+    private void addBeadAt(int bead, double[] position) {
+        final BinIndex index = getBinIndex(position);
+        addBeadToBin(bead, index);
+    }
+
     private void addBeadToBin(int bead, BinIndex binIndex) {
         getBin(binIndex).add(bead);
         binIndices.set(bead, binIndex);
-    }
-
-    private void removeBeadFromBin(int bead, BinIndex binIndex) {
-        getBin(binIndex).remove(bead);
     }
 
     private Set<Integer> getBin(BinIndex binIndex) {

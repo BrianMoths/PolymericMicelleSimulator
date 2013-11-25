@@ -4,16 +4,16 @@
  */
 package FocusedSimulation;
 
-import Engine.ExternalEnergyCalculator;
-import Engine.ExternalEnergyCalculator.ExternalEnergyCalculatorBuilder;
 import Engine.EnergeticsConstants;
 import Engine.EnergeticsConstants.EnergeticsConstantsBuilder;
+import Engine.ExternalEnergyCalculator;
+import Engine.ExternalEnergyCalculator.ExternalEnergyCalculatorBuilder;
 import Engine.PolymerChain;
 import Engine.PolymerCluster;
 import Engine.PolymerSimulator;
-import Engine.SystemGeometry.GeometricalParameters;
 import Engine.SystemAnalyzer;
 import Engine.SystemGeometry.AbstractGeometry.AbstractGeometryBuilder;
+import Engine.SystemGeometry.GeometricalParameters;
 import Engine.SystemGeometry.PeriodicGeometry;
 import Engine.SystemGeometry.SystemGeometry;
 import Gui.SystemViewer;
@@ -176,14 +176,14 @@ public class SurfaceTensionFinder {
     static private SystemGeometry makeSystemGeometry(double numBeadsIncludingWater, GeometricalParameters geometricalParameters) {
         AbstractGeometryBuilder systemGeometryBuilder = new PeriodicGeometry.PeriodicGeometryBuilder();
 
-        final double aspectRatio = .1;
+        final double aspectRatio = .01;
         systemGeometryBuilder.setDimension(2);
         systemGeometryBuilder.makeConsistentWith(numBeadsIncludingWater, geometricalParameters, aspectRatio);
         return systemGeometryBuilder.buildGeometry();
     }
 //</editor-fold>
 
-    private final int numAnneals = 50; //50
+    private final int numAnneals = 3; //50
     private final int numSurfaceTensionTrials = 70; //70
     private final InputParameters inputParameters;
     private final PrintWriter dataWriter;
@@ -305,8 +305,16 @@ public class SurfaceTensionFinder {
             writeSurfaceTensionToFile(measuredSurfaceTension);
         }
 
+        printFinalOutput(polymerSimulator);
+    }
+
+    private void printFinalOutput(PolymerSimulator polymerSimulator) {
         dataWriter.println();
-        dataWriter.println("fraction of area covered at end of simulation: " + Double.toString(polymerSimulator.getSystemAnalyzer().findArea() / polymerSimulator.getGeometry().getVolume()));
+        final int numBeads = polymerSimulator.getNumBeads();
+        final double beadArea = polymerSimulator.getSystemAnalyzer().findArea();
+        final double totalArea = polymerSimulator.getGeometry().getVolume();
+        dataWriter.println("fraction of area covered at end of simulation: " + Double.toString(beadArea / totalArea));
+        dataWriter.print("number density of blob at end of simulation: " + Double.toString(numBeads / beadArea));
     }
 
 }
