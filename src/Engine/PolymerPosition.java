@@ -145,6 +145,12 @@ public class PolymerPosition implements Serializable {
         return numBeads;
     }
 
+    public double[] getBeadPosition(int bead) {
+        double[] beadPositionCopy = new double[systemGeometry.getDimension()];
+        System.arraycopy(beadPositions[bead], 0, beadPositionCopy, 0, systemGeometry.getDimension());
+        return beadPositionCopy;
+    }
+
     public double[][] getBeadPositions() {
         double[][] beadPositionsCopy = new double[numBeads][systemGeometry.getDimension()];
         for (int bead = 0; bead < numBeads; bead++) {

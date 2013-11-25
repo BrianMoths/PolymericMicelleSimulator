@@ -7,10 +7,8 @@ package Engine.SystemGeometry;
 import Engine.TwoBeadOverlap;
 import SystemAnalysis.AreaPerimeter.BeadRectangle;
 import SystemAnalysis.AreaPerimeter.RectangleSplitting.HardWallRectangleSplitter;
-import SystemAnalysis.AreaPerimeter.RectangleSplitting.PeriodicRectangleSplitter;
 import SystemAnalysis.AreaPerimeter.RectangleSplitting.RectangleSplitter;
 import SystemAnalysis.AreaPerimeter.RectangleSplitting.RectanglesAndGluedPerimeter;
-import java.util.ArrayList;
 import java.util.List;
 
 /**
