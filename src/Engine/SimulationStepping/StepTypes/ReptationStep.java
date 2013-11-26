@@ -6,7 +6,7 @@ package Engine.SimulationStepping.StepTypes;
 
 import Engine.PolymerPosition;
 import Engine.SystemAnalyzer;
-import Engine.SystemGeometry.SystemGeometry;
+import Engine.SystemGeometry.Interfaces.SystemGeometry;
 
 /**
  *

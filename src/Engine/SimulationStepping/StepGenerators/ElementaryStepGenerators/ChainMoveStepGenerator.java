@@ -8,7 +8,7 @@ import Engine.SimulationStepping.StepGenerators.StepGenerator;
 import Engine.SimulationStepping.StepTypes.SimulationStep;
 import Engine.SimulationStepping.StepTypes.SingleChainStep;
 import Engine.SystemAnalyzer;
-import Engine.SystemGeometry.SystemGeometry;
+import Engine.SystemGeometry.Interfaces.SystemGeometry;
 import java.util.List;
 import java.util.Random;
 

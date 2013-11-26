@@ -6,7 +6,7 @@ package Engine;
 
 import Engine.SystemGeometry.GeometricalParameters;
 import Engine.EnergeticsConstants.EnergeticsConstantsBuilder;
-import Engine.SystemGeometry.HardWallGeometry;
+import Engine.SystemGeometry.Implementations.HardWallGeometry;
 
 /**
  *

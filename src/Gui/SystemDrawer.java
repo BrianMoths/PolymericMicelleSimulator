@@ -5,7 +5,7 @@
 package Gui;
 
 import Engine.SystemAnalyzer;
-import Engine.SystemGeometry.SystemGeometry;
+import Engine.SystemGeometry.Interfaces.SystemGeometry;
 import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Point;

@@ -4,7 +4,7 @@
  */
 package Engine.BeadBinning;
 
-import Engine.SystemGeometry.SystemGeometry;
+import Engine.SystemGeometry.Interfaces.SystemGeometry;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashSet;

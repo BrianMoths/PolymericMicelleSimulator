@@ -11,9 +11,9 @@ import Engine.PolymerChain;
 import Engine.PolymerCluster;
 import Engine.PolymerSimulator;
 import Engine.SystemGeometry.GeometricalParameters;
-import Engine.SystemGeometry.AbstractGeometry;
-import Engine.SystemGeometry.PeriodicGeometry;
-import Engine.SystemGeometry.SystemGeometry;
+import Engine.SystemGeometry.Implementations.AbstractGeometry;
+import Engine.SystemGeometry.Implementations.PeriodicGeometry;
+import Engine.SystemGeometry.Interfaces.SystemGeometry;
 import Gui.SystemViewer;
 import org.apache.commons.math3.stat.descriptive.DescriptiveStatistics;
 

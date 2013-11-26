@@ -6,7 +6,7 @@ package Engine;
 
 import Engine.SystemGeometry.GeometricalParameters;
 import Engine.SystemGeometry.AreaOverlap;
-import Engine.SystemGeometry.SystemGeometry;
+import Engine.SystemGeometry.Interfaces.SystemGeometry;
 import java.io.Serializable;
 import java.util.Random;
 

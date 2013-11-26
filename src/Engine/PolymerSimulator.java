@@ -9,8 +9,8 @@ import Engine.SimulationStepping.StepTypes.MoveType;
 import Engine.SimulationStepping.StepTypes.SimulationStep;
 import Engine.SimulationStepping.StepGenerators.CompoundStepGenerators.BeadMoveAndRelativeResizeStepGenerator;
 import Engine.SimulationStepping.StepGenerators.StepGenerator;
-import Engine.SystemGeometry.PeriodicGeometry.PeriodicGeometryBuilder;
-import Engine.SystemGeometry.SystemGeometry;
+import Engine.SystemGeometry.Implementations.PeriodicGeometry.PeriodicGeometryBuilder;
+import Engine.SystemGeometry.Interfaces.SystemGeometry;
 import SystemAnalysis.GeometryAnalyzer;
 import java.io.Serializable;
 

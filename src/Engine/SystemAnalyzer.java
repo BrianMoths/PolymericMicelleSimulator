@@ -6,7 +6,7 @@ package Engine;
 
 import Engine.BeadBinning.BeadBinner;
 import Engine.SystemGeometry.AreaOverlap;
-import Engine.SystemGeometry.SystemGeometry;
+import Engine.SystemGeometry.Interfaces.SystemGeometry;
 import SystemAnalysis.AreaPerimeter.BeadRectangle;
 import SystemAnalysis.GeometryAnalyzer;
 import SystemAnalysis.GeometryAnalyzer.AreaPerimeter;
