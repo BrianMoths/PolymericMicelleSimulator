@@ -68,7 +68,7 @@ public class PolymerSimulator implements Serializable {
         resetCounters();
         polymerPosition = makePolymerPosition(polymerCluster, geometry);
         systemAnalyzer = new SystemAnalyzer(geometry, polymerCluster, energeticsConstants);
-        polymerPosition.registerAnalyzer(systemAnalyzer);
+        systemAnalyzer.registerToPolymerPosition(polymerPosition);
         energy = systemAnalyzer.computeEnergy();
     }
 
@@ -83,7 +83,7 @@ public class PolymerSimulator implements Serializable {
         resetCounters();
 
         systemAnalyzer = new SystemAnalyzer(geometry, polymerCluster, energeticsConstants);
-        polymerPosition.registerAnalyzer(systemAnalyzer);
+        systemAnalyzer.registerToPolymerPosition(polymerPosition);
         energy = systemAnalyzer.computeEnergy();
     }
 
@@ -95,7 +95,7 @@ public class PolymerSimulator implements Serializable {
         iterationNumber = polymerSimulator.iterationNumber;
         acceptedIterations = polymerSimulator.acceptedIterations;
         systemAnalyzer = new SystemAnalyzer(polymerSimulator.systemAnalyzer);
-        polymerPosition.registerAnalyzer(systemAnalyzer);
+        systemAnalyzer.registerToPolymerPosition(polymerPosition);
     }
 
     private PolymerPosition makePolymerPosition(PolymerCluster polymerCluster, SystemGeometry geometry) {

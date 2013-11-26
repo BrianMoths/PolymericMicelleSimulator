@@ -4,6 +4,7 @@
  */
 package Engine;
 
+import Engine.SystemAnalyzer.AnalyzerListener;
 import Engine.SystemGeometry.Interfaces.SystemGeometry;
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -17,20 +18,20 @@ import java.util.List;
 public class PolymerPosition implements Serializable {
 
     private final int numBeads;
-    private List<SystemAnalyzer> registeredSystemAnalyzers;
+    private List<AnalyzerListener> registeredAnalyzerListeners;
     private final SystemGeometry systemGeometry;
     private double[][] beadPositions;
 
     public PolymerPosition(int numBeads, SystemGeometry systemGeometry) {
         this.numBeads = numBeads;
-        registeredSystemAnalyzers = new ArrayList<>();
+        registeredAnalyzerListeners = new ArrayList<>();
         this.systemGeometry = systemGeometry;
         randomizePrivate();
     }
 
     public PolymerPosition(PolymerPosition polymerPosition) {
         numBeads = polymerPosition.numBeads;
-        registeredSystemAnalyzers = new ArrayList<>();
+        registeredAnalyzerListeners = new ArrayList<>();
         systemGeometry = polymerPosition.systemGeometry;
         beadPositions = polymerPosition.getBeadPositions();
     }
@@ -89,26 +90,30 @@ public class PolymerPosition implements Serializable {
     //</editor-fold>
 
     //<editor-fold defaultstate="collapsed" desc="deal with analyzers">
-    public void registerAnalyzer(SystemAnalyzer systemAnalyzer) {
-        registeredSystemAnalyzers.add(systemAnalyzer);
-        systemAnalyzer.setBeadPositions(beadPositions);
+//    public void registerAnalyzer(SystemAnalyzer systemAnalyzer) {
+//        registeredSystemAnalyzers.add(systemAnalyzer);
+//        systemAnalyzer.setBeadPositions(beadPositions);
+//    }
+    public void acceptAnalyzerListener(AnalyzerListener analyzerListener) {
+        registeredAnalyzerListeners.add(analyzerListener);
+        analyzerListener.setBeadPositions(beadPositions);
     }
 
     private void syncAnalyzers() {
-        for (SystemAnalyzer systemAnalyzer : registeredSystemAnalyzers) {
-            systemAnalyzer.setBeadPositions(beadPositions);
+        for (AnalyzerListener analyzerListener : registeredAnalyzerListeners) {
+            analyzerListener.setBeadPositions(beadPositions);
         }
     }
 
     private void signalMoveToAnalyzers(int stepBead) {
-        for (SystemAnalyzer systemAnalyzer : registeredSystemAnalyzers) {
-            systemAnalyzer.updateBinOfBead(stepBead);
+        for (AnalyzerListener analyzerListener : registeredAnalyzerListeners) {
+            analyzerListener.updateBinOfBead(stepBead);
         }
     }
 
     private void resetAnalyzersHistory() {
-        for (SystemAnalyzer systemAnalyzer : registeredSystemAnalyzers) {
-            systemAnalyzer.resetHistory();
+        for (AnalyzerListener analyzerListener : registeredAnalyzerListeners) {
+            analyzerListener.resetHistory();
         }
     }
     //</editor-fold>

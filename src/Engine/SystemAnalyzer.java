@@ -24,11 +24,38 @@ import java.util.List;
  */
 public class SystemAnalyzer implements Serializable {
 
+    public class AnalyzerListener {
+
+        private AnalyzerListener() {
+        }
+
+        public void setBeadPositions(double[][] beadPositions) {
+            SystemAnalyzer.this.beadPositions = beadPositions;
+            rebinBeads();
+        }
+
+        //<editor-fold defaultstate="collapsed" desc="setBeadPositions Helper">
+        private void rebinBeads() {
+            beadBinner = new BeadBinner(beadPositions, systemGeometry);
+        }
+        //</editor-fold>
+
+        void updateBinOfBead(int stepBead) {
+            beadBinner.updateBeadPosition(stepBead, beadPositions[stepBead]);
+        }
+
+        public void resetHistory() {
+            simulationHistory.clearAll();
+        }
+
+    }
+
     static private final int statisticsWindow = 1000;
     private final int[][] neighbors;
     private final SystemGeometry systemGeometry;
     private final EnergeticsConstants physicalConstants;
     private final int numBeads, numABeads;
+    private final AnalyzerListener analyzerListener;
     private BeadBinner beadBinner;
     private double[][] beadPositions;
     private SimulationHistory simulationHistory;
@@ -45,6 +72,7 @@ public class SystemAnalyzer implements Serializable {
         beadPositions = new double[numBeads][systemGeometry.getDimension()];
         beadBinner = new BeadBinner(beadPositions, systemGeometry);
         simulationHistory = new SimulationHistory(statisticsWindow);
+        analyzerListener = new AnalyzerListener();
     }
 
     public SystemAnalyzer(SystemAnalyzer systemAnalyzer) {
@@ -56,6 +84,7 @@ public class SystemAnalyzer implements Serializable {
         beadPositions = new double[systemAnalyzer.numBeads][systemGeometry.getDimension()];
         systemGeometry.checkedCopyPositions(systemAnalyzer.beadPositions, beadPositions);
         beadBinner = new BeadBinner(systemAnalyzer.beadBinner); //check this
+        analyzerListener = systemAnalyzer.analyzerListener;
     }
     //</editor-fold>
 
@@ -78,8 +107,8 @@ public class SystemAnalyzer implements Serializable {
         areaPerimeter.perimeter -= rectanglesAndGluedPerimeter.gluedPerimeter * 2;
         return areaPerimeter;
     }
-    //</editor-fold>
 
+    //</editor-fold>
     //<editor-fold defaultstate="collapsed" desc="simulation history">
     public void addPerimeterAreaEnergySnapshot(double perimeter, double area, double energy) {
         simulationHistory.addValue(SimulationHistory.TrackedVariable.PERIMETER, perimeter);
@@ -91,11 +120,7 @@ public class SystemAnalyzer implements Serializable {
         return simulationHistory.getAverage(trackedVariable);
     }
 
-    public void resetHistory() {
-        simulationHistory.clearAll();
-    }
     //</editor-fold>
-
     //<editor-fold defaultstate="collapsed" desc="overlap and stretching">
     public double totalSpringStretching() {
         double sqLength = 0;
@@ -189,8 +214,8 @@ public class SystemAnalyzer implements Serializable {
     //</editor-fold>
     //</editor-fold>
 
-    void updateBinOfBead(int stepBead) {
-        beadBinner.updateBeadPosition(stepBead, beadPositions[stepBead]);
+    public void registerToPolymerPosition(PolymerPosition polymerPosition) {
+        polymerPosition.acceptAnalyzerListener(analyzerListener);
     }
 
     public List<Integer> getChainOfBead(int bead) {
@@ -226,19 +251,6 @@ public class SystemAnalyzer implements Serializable {
     private int getBeadToRight(int bead) {
         return neighbors[bead][1];
     }
-//</editor-fold>
-
-    //<editor-fold defaultstate="collapsed" desc="setters">
-    public void setBeadPositions(double[][] beadPositions) {
-        this.beadPositions = beadPositions;
-        rebinBeads();
-    }
-
-    //<editor-fold defaultstate="collapsed" desc="setBeadPositions Helper">
-    private void rebinBeads() {
-        beadBinner = new BeadBinner(beadPositions, systemGeometry);
-    }
-    //</editor-fold>
 //</editor-fold>
 
     //<editor-fold defaultstate="collapsed" desc="getters">

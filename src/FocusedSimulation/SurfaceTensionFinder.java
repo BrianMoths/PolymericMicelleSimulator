@@ -176,7 +176,7 @@ public class SurfaceTensionFinder {
     static private SystemGeometry makeSystemGeometry(double numBeadsIncludingWater, GeometricalParameters geometricalParameters) {
         AbstractGeometryBuilder systemGeometryBuilder = new PeriodicGeometry.PeriodicGeometryBuilder();
 
-        final double aspectRatio = .01;
+        final double aspectRatio = .1;
         systemGeometryBuilder.setDimension(2);
         systemGeometryBuilder.makeConsistentWith(numBeadsIncludingWater, geometricalParameters, aspectRatio);
         return systemGeometryBuilder.buildGeometry();
