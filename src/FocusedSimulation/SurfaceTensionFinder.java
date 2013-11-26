@@ -236,7 +236,9 @@ public class SurfaceTensionFinder {
                 .append("_")
                 .append(makeDoubleDigitString(minute))
                 .append("_")
-                .append(makeDoubleDigitString(second));
+                .append(makeDoubleDigitString(second))
+                .append("_")
+                .append(hashCode() % 1000);
         return fileNameBuilder.toString();
     }
 
