@@ -2,29 +2,29 @@
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
-package Engine.SystemGeometry;
+package Engine.PolymerState.SystemGeometry.Interfaces;
 
+import Engine.PolymerState.SystemGeometry.GeometricalParameters;
 import Engine.TwoBeadOverlap;
 import SystemAnalysis.AreaPerimeter.BeadRectangle;
 import SystemAnalysis.AreaPerimeter.RectangleSplitting.RectanglesAndGluedPerimeter;
-import java.io.Serializable;
 import java.util.List;
 
 /**
  *
  * @author bmoths
  */
-public interface SystemGeometry extends Serializable {
+public interface ImmutableSystemGeometry {
 
     public GeometryBuilder toBuilder();
 
     public boolean isPositionValid(double[] position);
 
-    public int getDimension();
+    public int getNumDimensions();
 
     public double[] getRMax();
 
-    public void setRMax(int index, double rMax);
+    public double getSizeOfDimension(int dimension);
 
     public double getVolume();
 

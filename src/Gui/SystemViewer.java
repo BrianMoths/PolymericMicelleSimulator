@@ -7,7 +7,7 @@ package Gui;
 import Engine.EnergeticsConstants;
 import Engine.PolymerSimulator;
 import Engine.SystemAnalyzer;
-import Engine.SystemGeometry.GeometricalParameters;
+import Engine.PolymerState.SystemGeometry.GeometricalParameters;
 import SystemAnalysis.GeometryAnalyzer;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -20,9 +20,9 @@ public class SystemViewer extends javax.swing.JFrame {
 
     //<editor-fold defaultstate="collapsed" desc="updater thread classes">
     private class UpdaterRunnable implements Runnable {
-        
+
         int lastIteration = -1;
-        
+
         @Override
         public void run() {
             while (true) {
@@ -33,15 +33,15 @@ public class SystemViewer extends javax.swing.JFrame {
                 sleepUntilNextFrame();
             }
         }
-        
+
         private boolean isUpdateNecessary() {
             return polymerSimulator.getIterationNumber() != lastIteration;
         }
-        
+
         private void updateLastIteration() {
             lastIteration = polymerSimulator.getIterationNumber();
         }
-        
+
         private void sleepUntilNextFrame() {
             try {
                 Thread.sleep(100);
@@ -49,15 +49,15 @@ public class SystemViewer extends javax.swing.JFrame {
                 Logger.getLogger(MicelleGui.class.getName()).log(Level.SEVERE, null, ex);
             }
         }
-        
+
     }
-    
+
     private class UpdaterThread extends Thread {
-        
+
         public UpdaterThread() {
             super(new UpdaterRunnable());
         }
-        
+
     }
 //</editor-fold>
 
@@ -74,20 +74,20 @@ public class SystemViewer extends javax.swing.JFrame {
         updaterThread = new UpdaterThread();
         initialize();
     }
-    
+
     private void initialize() {
         registerGuiWithSystem();
         updateConstantLabels();
         updaterThread.start();
     }
-    
+
     private void registerGuiWithSystem() {
         displayPanel.setPolymerSimulator(polymerSimulator);
         if (analysisWindow != null) {
             analysisWindow.setPolymerSimulator(polymerSimulator);
         }
     }
-    
+
     private void updateConstantLabels() {
         final EnergeticsConstants energeticsConstants = polymerSimulator.getEnergeticsConstants();
         AACoefficientLbl.setText(stringFormatDouble(energeticsConstants.getAAOverlapCoefficient()));
@@ -96,23 +96,23 @@ public class SystemViewer extends javax.swing.JFrame {
         temperatureLbl.setText(stringFormatDouble(energeticsConstants.getTemperature()));
         springConstantLbl.setText(stringFormatDouble(energeticsConstants.getSpringCoefficient()));
         coreCoefficientLbl.setText(stringFormatDouble(energeticsConstants.getHardOverlapCoefficient()));
-        
+
         final GeometricalParameters geometricalParameters = polymerSimulator.getGeometricalParameters();
         beadSizeLbl.setText(stringFormatDouble(geometricalParameters.getInteractionLength()));
-        systemSizeLbl.setText(stringFormatDouble(polymerSimulator.getGeometry().getRMax()[0]));
+        systemSizeLbl.setText(stringFormatDouble(polymerSimulator.getGeometry().getSizeOfDimension(0)));
         coreSizeLbl.setText(stringFormatDouble(geometricalParameters.getCoreLength()));
-        
+
         hardCoresChk.setSelected(geometricalParameters.getCoreLength() != 0);
     }
-    
+
     private void updateDisplay() {
         SystemAnalyzer systemAnalyzer = polymerSimulator.getSystemAnalyzer();
-        
+
         final double energy = polymerSimulator.getEnergy();
-        
+
         GeometryAnalyzer.AreaPerimeter areaPerimeter = systemAnalyzer.findAreaAndPerimeter();
         systemAnalyzer.addPerimeterAreaEnergySnapshot(areaPerimeter.perimeter, areaPerimeter.area, energy);
-        
+
         energyLbl.setText(stringFormatDouble(energy));
         numIterationsLbl.setText(String.valueOf(polymerSimulator.getIterationNumber()));
         externalEnergyLbl.setText(stringFormatDouble(systemAnalyzer.externalEnergy()));
@@ -121,7 +121,7 @@ public class SystemViewer extends javax.swing.JFrame {
         }
         repaint();
     }
-    
+
     private String stringFormatDouble(double doubleForFormatting) {
         return String.format("%.4f", doubleForFormatting);
     }

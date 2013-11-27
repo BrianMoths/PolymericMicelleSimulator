@@ -4,11 +4,11 @@
  */
 package Engine.SimulationStepping.StepGenerators.ElementaryStepGenerators;
 
+import Engine.PolymerState.SystemGeometry.Interfaces.ImmutableSystemGeometry;
 import Engine.SimulationStepping.StepGenerators.StepGenerator;
 import Engine.SimulationStepping.StepTypes.SimulationStep;
 import Engine.SimulationStepping.StepTypes.SingleBeadStep;
 import Engine.SystemAnalyzer;
-import Engine.SystemGeometry.SystemGeometry;
 import java.util.Random;
 
 /**
@@ -35,7 +35,7 @@ public class BeadMoveGenerator implements StepGenerator {
     }
 
     static private double[] getStepVector(SystemAnalyzer systemAnalyzer) {
-        SystemGeometry systemGeometry = systemAnalyzer.getSystemGeometry();
+        ImmutableSystemGeometry systemGeometry = systemAnalyzer.getSystemGeometry();
         return systemGeometry.randomGaussian();
     }
 

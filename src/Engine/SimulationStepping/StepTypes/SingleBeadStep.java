@@ -4,7 +4,7 @@
  */
 package Engine.SimulationStepping.StepTypes;
 
-import Engine.PolymerPosition;
+import Engine.PolymerState.PolymerState;
 import Engine.SystemAnalyzer;
 
 /**
@@ -37,9 +37,9 @@ public class SingleBeadStep implements SimulationStep {
     }
 
     @Override
-    public boolean doStep(PolymerPosition polymerPosition, SystemAnalyzer systemAnalyzer) {
+    public boolean doStep(PolymerState polymerState, SystemAnalyzer systemAnalyzer) {
         final double initialEnergy = systemAnalyzer.beadEnergy(bead);
-        final boolean isMoveSuccessful = polymerPosition.moveBead(bead, stepVector);
+        final boolean isMoveSuccessful = polymerState.moveBead(bead, stepVector);
         if (isMoveSuccessful) {
             energyChange = systemAnalyzer.beadEnergy(bead) - initialEnergy;
         }
@@ -47,8 +47,8 @@ public class SingleBeadStep implements SimulationStep {
     }
 
     @Override
-    public void undoStep(PolymerPosition polymerPosition, SystemAnalyzer systemAnalyzer) {
-        polymerPosition.undoStep(bead, stepVector);
+    public void undoStep(PolymerState polymerState) {
+        polymerState.undoStep(bead, stepVector);
     }
 
     @Override

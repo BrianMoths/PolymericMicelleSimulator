@@ -4,8 +4,9 @@
  */
 package Gui;
 
+import Engine.PolymerState.SystemGeometry.Interfaces.ImmutableSystemGeometry;
 import Engine.SystemAnalyzer;
-import Engine.SystemGeometry.SystemGeometry;
+import Engine.PolymerState.SystemGeometry.Interfaces.SystemGeometry;
 import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Point;
@@ -42,17 +43,19 @@ public class SystemDrawer {
     private void registerSystemAnalyzerPrivate(SystemAnalyzer systemAnalyzer) {
         this.systemAnalyzer = systemAnalyzer;
 
-        SystemGeometry systemGeometry = systemAnalyzer.getSystemGeometry();
+        ImmutableSystemGeometry systemGeometry = systemAnalyzer.getSystemGeometry();
 
         resetSystemGeometry(systemGeometry);
     }
 
-    private void resetSystemGeometry(SystemGeometry systemGeometry) {
-        scaleFactor = displaySize / Math.max(systemGeometry.getRMax()[0], systemGeometry.getRMax()[1]);
+    private void resetSystemGeometry(ImmutableSystemGeometry systemGeometry) {
+        final double xMax = systemGeometry.getSizeOfDimension(0);
+        final double yMax = systemGeometry.getSizeOfDimension(1);
+        scaleFactor = displaySize / Math.max(xMax, yMax);
         diameter = (int)Math.round(systemGeometry.getParameters().getInteractionLength() * scaleFactor); //make diameter smaller
         radius = diameter / 2;
-        maxX = (int)(systemGeometry.getRMax()[0] * scaleFactor);
-        maxY = (int)(systemGeometry.getRMax()[1] * scaleFactor);
+        maxX = (int)(xMax * scaleFactor);
+        maxY = (int)(yMax * scaleFactor);
     }
 
     public void setGraphics(Graphics graphics) {

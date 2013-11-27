@@ -12,5 +12,6 @@ public enum MoveType {
 
     SINGLE_BEAD,
     SINGLE_CHAIN,
-    SINGLE_WALL_RESIZE
+    SINGLE_WALL_RESIZE,
+    REPTATION
 }

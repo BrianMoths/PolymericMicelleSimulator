@@ -79,7 +79,7 @@ public class SurfaceTensionFinder implements Serializable {
     }
 
     private double getSystemHeight() {
-        return systemAnalyzer.getSystemGeometry().getRMax()[1];
+        return systemAnalyzer.getSystemGeometry().getSizeOfDimension(1);
     }
 //</editor-fold>
 
@@ -102,7 +102,7 @@ public class SurfaceTensionFinder implements Serializable {
     public double findSurfaceTension() {
         final double msAmplitude = surfaceTensionStatistics.getMean();
         final double extraLength = getExtraLength(msAmplitude);
-        return systemAnalyzer.getPhysicalConstants().getTemperature() / 2 / extraLength;
+        return systemAnalyzer.getEnergeticsConstants().getTemperature() / 2 / extraLength;
     }
 
     private double getExtraLength(double msAmplitude) {
@@ -130,11 +130,11 @@ public class SurfaceTensionFinder implements Serializable {
         double amplitude = getFundamentalAmplitude(rightXs);
         graphics.setColor(Color.red);
         for (int i = 0; i < numSamples; i++) {
-            graphics.fillOval((int)Math.round(rightXs[i] / systemAnalyzer.getSystemGeometry().getRMax()[0] * 600), (int)Math.round(sampledYs[i] / systemAnalyzer.getSystemGeometry().getRMax()[0] * 600), radius, radius);
+            graphics.fillOval((int)Math.round(rightXs[i] / systemAnalyzer.getSystemGeometry().getSizeOfDimension(0) * 600), (int)Math.round(sampledYs[i] / systemAnalyzer.getSystemGeometry().getSizeOfDimension(0) * 600), radius, radius);
         }
         graphics.setColor(Color.green);
         for (int i = 0; i < numSamples; i++) {
-            graphics.fillOval((int)Math.round((amplitude * modelXs[i] + meanX) / systemAnalyzer.getSystemGeometry().getRMax()[0] * 600), (int)Math.round(sampledYs[i] / systemAnalyzer.getSystemGeometry().getRMax()[0] * 600), radius, radius);
+            graphics.fillOval((int)Math.round((amplitude * modelXs[i] + meanX) / systemAnalyzer.getSystemGeometry().getSizeOfDimension(0) * 600), (int)Math.round(sampledYs[i] / systemAnalyzer.getSystemGeometry().getSizeOfDimension(0) * 600), radius, radius);
         }
 
     }

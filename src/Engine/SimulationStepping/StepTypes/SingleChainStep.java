@@ -4,7 +4,7 @@
  */
 package Engine.SimulationStepping.StepTypes;
 
-import Engine.PolymerPosition;
+import Engine.PolymerState.PolymerState;
 import Engine.SystemAnalyzer;
 import java.util.List;
 
@@ -36,7 +36,7 @@ public class SingleChainStep implements SimulationStep {
     }
 
     @Override
-    public boolean doStep(PolymerPosition polymerPosition, SystemAnalyzer systemAnalyzer) {
+    public boolean doStep(PolymerState polymerState, SystemAnalyzer systemAnalyzer) {
         boolean isSuccessful = true;
         energyChange = 0;
         int currentBeadInChain = 0;
@@ -44,7 +44,7 @@ public class SingleChainStep implements SimulationStep {
         while (currentBeadInChain < numBeads && isSuccessful) {
             final int currentBead = beads.get(currentBeadInChain);
             final SingleBeadStep beadStep = new SingleBeadStep(currentBead, stepVector);
-            isSuccessful = beadStep.doStep(polymerPosition, systemAnalyzer);
+            isSuccessful = beadStep.doStep(polymerState, systemAnalyzer);
             energyChange += beadStep.getEnergyChange();
             currentBeadInChain++;
         }
@@ -54,19 +54,19 @@ public class SingleChainStep implements SimulationStep {
             for (; currentBeadInChain >= 0; currentBeadInChain--) {
                 final int currentBead = beads.get(currentBeadInChain);
                 final SingleBeadStep beadStep = new SingleBeadStep(currentBead, stepVector);
-                beadStep.undoStep(polymerPosition, systemAnalyzer);
+                beadStep.undoStep(polymerState);
             }
         }
         return isSuccessful;
     }
 
     @Override
-    public void undoStep(PolymerPosition polymerPosition, SystemAnalyzer systemAnalyzer) {
+    public void undoStep(PolymerState polymerState) {
         final int numBeads = beads.size();
         for (int currentBeadInChain = 0; currentBeadInChain < numBeads; currentBeadInChain++) {
             final int currentBead = beads.get(currentBeadInChain);
             final SingleBeadStep beadStep = new SingleBeadStep(currentBead, stepVector);
-            beadStep.undoStep(polymerPosition, systemAnalyzer);
+            beadStep.undoStep(polymerState);
         }
     }
 

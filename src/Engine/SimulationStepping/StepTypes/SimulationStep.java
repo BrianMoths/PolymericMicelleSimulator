@@ -4,7 +4,7 @@
  */
 package Engine.SimulationStepping.StepTypes;
 
-import Engine.PolymerPosition;
+import Engine.PolymerState.PolymerState;
 import Engine.SystemAnalyzer;
 
 /**
@@ -13,9 +13,9 @@ import Engine.SystemAnalyzer;
  */
 public interface SimulationStep {
 
-    public boolean doStep(PolymerPosition polymerPosition, SystemAnalyzer systemAnalyzer);
+    public boolean doStep(PolymerState polymerState, SystemAnalyzer systemAnalyzer);
 
-    public void undoStep(PolymerPosition polymerPosition, SystemAnalyzer systemAnalyzer);
+    public void undoStep(PolymerState polymerState);
 
     public double getEnergyChange();
 

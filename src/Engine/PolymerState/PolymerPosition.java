@@ -2,9 +2,11 @@
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
-package Engine;
+package Engine.PolymerState;
 
-import Engine.SystemGeometry.SystemGeometry;
+import Engine.SystemAnalyzer.AnalyzerListener;
+import Engine.PolymerState.SystemGeometry.Interfaces.SystemGeometry;
+import Engine.SystemAnalyzer;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -14,23 +16,24 @@ import java.util.List;
  *
  * @author bmoths
  */
-public class PolymerPosition implements Serializable {
+public class PolymerPosition implements ImmutablePolymerPosition, Serializable {
 
     private final int numBeads;
-    private List<SystemAnalyzer> registeredSystemAnalyzers;
+    private List<AnalyzerListener> registeredAnalyzerListeners;
     private final SystemGeometry systemGeometry;
-    private double[][] beadPositions;
+    private final double[][] beadPositions;
 
     public PolymerPosition(int numBeads, SystemGeometry systemGeometry) {
         this.numBeads = numBeads;
-        registeredSystemAnalyzers = new ArrayList<>();
+        registeredAnalyzerListeners = new ArrayList<>();
         this.systemGeometry = systemGeometry;
+        beadPositions = new double[numBeads][systemGeometry.getNumDimensions()];
         randomizePrivate();
     }
 
     public PolymerPosition(PolymerPosition polymerPosition) {
         numBeads = polymerPosition.numBeads;
-        registeredSystemAnalyzers = new ArrayList<>();
+        registeredAnalyzerListeners = new ArrayList<>();
         systemGeometry = polymerPosition.systemGeometry;
         beadPositions = polymerPosition.getBeadPositions();
     }
@@ -68,12 +71,12 @@ public class PolymerPosition implements Serializable {
     }
 
     public void columnRandomize() {
-        setBeadPositionsPrivate(systemGeometry.randomColumnPositions(numBeads));
+        setBeadPositions(systemGeometry.randomColumnPositions(numBeads));
         resetAnalyzersHistory();
     }
 
     private void randomizePrivate() {
-        setBeadPositionsPrivate(systemGeometry.randomPositions(numBeads));
+        setBeadPositions(systemGeometry.randomPositions(numBeads));
         resetAnalyzersHistory();
     }
 
@@ -84,36 +87,39 @@ public class PolymerPosition implements Serializable {
             systemGeometry.incrementFirstVector(beadPosition, stepVector);
         }
         resetAnalyzersHistory();
-        syncAnalyzers();
+        analyzersRebinBeads();
     }
     //</editor-fold>
 
     //<editor-fold defaultstate="collapsed" desc="deal with analyzers">
-    public void registerAnalyzer(SystemAnalyzer systemAnalyzer) {
-        registeredSystemAnalyzers.add(systemAnalyzer);
-        systemAnalyzer.setBeadPositions(beadPositions);
+    public void acceptBeadPositionsGetter(SystemAnalyzer.BeadPositionsGetter beadPositionsGetter) {
+        beadPositionsGetter.setBeadPositions(beadPositions);
     }
 
-    private void syncAnalyzers() {
-        for (SystemAnalyzer systemAnalyzer : registeredSystemAnalyzers) {
-            systemAnalyzer.setBeadPositions(beadPositions);
+    public void acceptAnalyzerListener(AnalyzerListener analyzerListener) {
+        registeredAnalyzerListeners.add(analyzerListener);
+    }
+
+    private void analyzersRebinBeads() {
+        for (AnalyzerListener analyzerListener : registeredAnalyzerListeners) {
+            analyzerListener.rebinBeads();
         }
     }
 
     private void signalMoveToAnalyzers(int stepBead) {
-        for (SystemAnalyzer systemAnalyzer : registeredSystemAnalyzers) {
-            systemAnalyzer.updateBinOfBead(stepBead);
+        for (AnalyzerListener analyzerListener : registeredAnalyzerListeners) {
+            analyzerListener.updateBinOfBead(stepBead);
         }
     }
 
     private void resetAnalyzersHistory() {
-        for (SystemAnalyzer systemAnalyzer : registeredSystemAnalyzers) {
-            systemAnalyzer.resetHistory();
+        for (AnalyzerListener analyzerListener : registeredAnalyzerListeners) {
+            analyzerListener.resetHistory();
         }
     }
     //</editor-fold>
 
-    //<editor-fold defaultstate="collapsed" desc="move beads">
+    //<editor-fold defaultstate="collapsed" desc="move beads">    
     public boolean moveBead(int stepBead, double[] stepVector) {
         final boolean isSuccessful = systemGeometry.incrementFirstVector(beadPositions[stepBead], stepVector);
         if (isSuccessful) {
@@ -131,24 +137,28 @@ public class PolymerPosition implements Serializable {
     //<editor-fold defaultstate="collapsed" desc="setters">
     public void setBeadPositions(double[][] beadPositions) {
         systemGeometry.checkedCopyPositions(beadPositions, this.beadPositions);
-        syncAnalyzers();
-    }
-
-    private void setBeadPositionsPrivate(double[][] newBeadPositions) {
-        beadPositions = newBeadPositions;
-        syncAnalyzers();
+        analyzersRebinBeads();
     }
     //</editor-fold>
 
     //<editor-fold defaultstate="collapsed" desc="getters">
+    @Override
     public int getNumBeads() {
         return numBeads;
     }
 
+    @Override
+    public double[] getBeadPosition(int bead) {
+        double[] beadPositionCopy = new double[systemGeometry.getNumDimensions()];
+        System.arraycopy(beadPositions[bead], 0, beadPositionCopy, 0, systemGeometry.getNumDimensions());
+        return beadPositionCopy;
+    }
+
+    @Override
     public double[][] getBeadPositions() {
-        double[][] beadPositionsCopy = new double[numBeads][systemGeometry.getDimension()];
+        double[][] beadPositionsCopy = new double[numBeads][systemGeometry.getNumDimensions()];
         for (int bead = 0; bead < numBeads; bead++) {
-            System.arraycopy(beadPositions[bead], 0, beadPositionsCopy[bead], 0, systemGeometry.getDimension());
+            System.arraycopy(beadPositions[bead], 0, beadPositionsCopy[bead], 0, systemGeometry.getNumDimensions());
         }
         return beadPositionsCopy;
     }

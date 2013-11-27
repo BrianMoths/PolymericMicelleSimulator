@@ -10,10 +10,10 @@ import Engine.EnergeticsConstants.EnergeticsConstantsBuilder;
 import Engine.PolymerChain;
 import Engine.PolymerCluster;
 import Engine.PolymerSimulator;
-import Engine.SystemGeometry.GeometricalParameters;
-import Engine.SystemGeometry.AbstractGeometry;
-import Engine.SystemGeometry.PeriodicGeometry;
-import Engine.SystemGeometry.SystemGeometry;
+import Engine.PolymerState.SystemGeometry.GeometricalParameters;
+import Engine.PolymerState.SystemGeometry.Implementations.AbstractGeometry;
+import Engine.PolymerState.SystemGeometry.Implementations.PeriodicGeometry;
+import Engine.PolymerState.SystemGeometry.Interfaces.SystemGeometry;
 import Gui.SystemViewer;
 import org.apache.commons.math3.stat.descriptive.DescriptiveStatistics;
 
@@ -118,7 +118,7 @@ public class EnergyOfL {
     static public void outputAverageEnergy(DescriptiveStatistics energyStatistics, PolymerSimulator polymerSimulator) {
         final double averageEnergy = energyStatistics.getMean();
         System.out.println("Average Energy found: " + Double.toString(averageEnergy));
-        System.out.println("Length of System:  " + Double.toString(polymerSimulator.getGeometry().getRMax()[0]));
+        System.out.println("Length of System:  " + Double.toString(polymerSimulator.getGeometry().getSizeOfDimension(0)));
     }
 
 }
