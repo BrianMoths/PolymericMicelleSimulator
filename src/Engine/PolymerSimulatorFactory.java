@@ -4,9 +4,9 @@
  */
 package Engine;
 
-import Engine.SystemGeometry.GeometricalParameters;
+import Engine.PolymerState.SystemGeometry.GeometricalParameters;
 import Engine.EnergeticsConstants.EnergeticsConstantsBuilder;
-import Engine.SystemGeometry.Implementations.HardWallGeometry;
+import Engine.PolymerState.SystemGeometry.Implementations.HardWallGeometry;
 
 /**
  *

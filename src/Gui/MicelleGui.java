@@ -172,7 +172,7 @@ public class MicelleGui extends javax.swing.JFrame {
         temperatureLbl.setText(String.format("%.4f", system.getEnergeticsConstants().getTemperature()));
         springConstantLbl.setText(String.format("%.4f", system.getEnergeticsConstants().getSpringCoefficient()));
         beadSizeLbl.setText(String.format("%.4f", system.getGeometricalParameters().getInteractionLength()));
-        systemSizeLbl.setText(String.format("%.4f", system.getGeometry().getRMax()[0]));
+        systemSizeLbl.setText(String.format("%.4f", system.getGeometry().getSizeOfDimension(0)));
         hardCoresChk.setSelected(system.getGeometricalParameters().getCoreLength() != 0);
     }
 

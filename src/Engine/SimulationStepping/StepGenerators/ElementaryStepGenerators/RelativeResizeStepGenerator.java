@@ -50,7 +50,7 @@ public class RelativeResizeStepGenerator implements StepGenerator {
 
     private double getSizeChange(double rescaleFactor, SystemAnalyzer systemAnalyzer) {
         final double changeFactor = rescaleFactor - 1;
-        final double originalSize = systemAnalyzer.getSystemGeometry().getRMax()[resizeDimension];
+        final double originalSize = systemAnalyzer.getSystemGeometry().getSizeOfDimension(resizeDimension);
         return changeFactor * originalSize;
     }
 

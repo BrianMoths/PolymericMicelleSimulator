@@ -2,8 +2,9 @@
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
-package Engine;
+package Engine.PolymerState;
 
+import Engine.PolymerCluster;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
@@ -12,7 +13,7 @@ import java.util.List;
  *
  * @author bmoths
  */
-public class DiscretePolymerState implements Serializable {
+public class DiscretePolymerState implements ImmutableDiscretePolymerState, Serializable {
 
     private final int[][] neighbors;
     private final int numBeads;
@@ -95,6 +96,7 @@ public class DiscretePolymerState implements Serializable {
     }
     //</editor-fold>
 
+    @Override
     public List<Integer> getChainOfBead(int bead) {
         List<Integer> chain = new ArrayList<>();
         chain.add(bead);
@@ -113,10 +115,6 @@ public class DiscretePolymerState implements Serializable {
         }
     }
 
-    public int getNeighborToLeftOfBead(int bead) {
-        return neighbors[bead][0];
-    }
-
     private void addBeadsRightToChain(int bead, List<Integer> chain) {
         int nextBead = getNeighborToRightOfBead(bead);
         while (nextBead != -1) {
@@ -124,24 +122,34 @@ public class DiscretePolymerState implements Serializable {
             nextBead = getNeighborToRightOfBead(nextBead);
         }
     }
+//</editor-fold>
 
+    @Override
+    public int getNeighborToLeftOfBead(int bead) {
+        return neighbors[bead][0];
+    }
+
+    @Override
     public int getNeighborToRightOfBead(int bead) {
         return neighbors[bead][1];
     }
-//</editor-fold>
 
+    @Override
     public int getNumBeads() {
         return numBeads;
     }
 
+    @Override
     public int getNumABeads() {
         return numABeads;
     }
 
+    @Override
     public int getNumBBeads() {
         return numBBeads;
     }
 
+    @Override
     public boolean isTypeA(int bead) {
         return bead < numABeads;
     }

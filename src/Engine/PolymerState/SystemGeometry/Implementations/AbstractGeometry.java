@@ -2,11 +2,11 @@
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
-package Engine.SystemGeometry.Implementations;
+package Engine.PolymerState.SystemGeometry.Implementations;
 
-import Engine.SystemGeometry.GeometricalParameters;
-import Engine.SystemGeometry.Interfaces.GeometryBuilder;
-import Engine.SystemGeometry.Interfaces.SystemGeometry;
+import Engine.PolymerState.SystemGeometry.GeometricalParameters;
+import Engine.PolymerState.SystemGeometry.Interfaces.GeometryBuilder;
+import Engine.PolymerState.SystemGeometry.Interfaces.SystemGeometry;
 import SystemAnalysis.AreaPerimeter.BeadRectangle;
 import SystemAnalysis.AreaPerimeter.Interval;
 import java.util.ArrayList;
@@ -39,7 +39,7 @@ public abstract class AbstractGeometry implements SystemGeometry {
         }
 
         public AbstractGeometryBuilder(SystemGeometry geometry) {
-            dimension = geometry.getDimension();
+            dimension = geometry.getNumDimensions();
             fullRMax = new double[dimension];
             System.arraycopy(geometry.getRMax(), 0, fullRMax, 0, dimension);
             parameters = geometry.getParameters();
@@ -274,7 +274,7 @@ public abstract class AbstractGeometry implements SystemGeometry {
 
     //<editor-fold defaultstate="collapsed" desc="getters">
     @Override
-    public int getDimension() {
+    public int getNumDimensions() {
         return dimension;
     }
 
@@ -283,6 +283,11 @@ public abstract class AbstractGeometry implements SystemGeometry {
         double[] rMax = new double[dimension];
         System.arraycopy(fullRMax, 0, rMax, 0, dimension);
         return rMax;
+    }
+
+    @Override
+    public double getSizeOfDimension(int dimension) {
+        return fullRMax[dimension];
     }
 
     @Override

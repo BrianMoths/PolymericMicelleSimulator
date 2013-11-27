@@ -2,9 +2,9 @@
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
-package Engine.SystemGeometry.Interfaces;
+package Engine.PolymerState.SystemGeometry.Interfaces;
 
-import Engine.SystemGeometry.GeometricalParameters;
+import Engine.PolymerState.SystemGeometry.GeometricalParameters;
 import Engine.TwoBeadOverlap;
 import SystemAnalysis.AreaPerimeter.BeadRectangle;
 import SystemAnalysis.AreaPerimeter.RectangleSplitting.RectanglesAndGluedPerimeter;
@@ -20,9 +20,11 @@ public interface ImmutableSystemGeometry {
 
     public boolean isPositionValid(double[] position);
 
-    public int getDimension();
+    public int getNumDimensions();
 
     public double[] getRMax();
+
+    public double getSizeOfDimension(int dimension);
 
     public double getVolume();
 

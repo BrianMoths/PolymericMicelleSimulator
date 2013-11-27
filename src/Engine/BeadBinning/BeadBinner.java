@@ -4,7 +4,8 @@
  */
 package Engine.BeadBinning;
 
-import Engine.SystemGeometry.Interfaces.SystemGeometry;
+import Engine.PolymerState.SystemGeometry.Interfaces.ImmutableSystemGeometry;
+import Engine.PolymerState.SystemGeometry.Interfaces.SystemGeometry;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -186,10 +187,10 @@ public class BeadBinner implements Serializable {
     private boolean isStepDone = false;
     private List<BinIndex> binIndices;
 
-    public BeadBinner(double[][] beadPositions, SystemGeometry systemGeometry) {
+    public BeadBinner(double[][] beadPositions, ImmutableSystemGeometry systemGeometry) {
         final double[] rMax = systemGeometry.getRMax();
         final double interactionLength = systemGeometry.getParameters().getInteractionLength();
-        numDimensions = systemGeometry.getDimension();
+        numDimensions = systemGeometry.getNumDimensions();
         numBins = new int[numDimensions];
         binSize = new double[numDimensions];
         for (int dimension = 0; dimension < numDimensions; dimension++) {

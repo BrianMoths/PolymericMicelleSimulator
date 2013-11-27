@@ -2,9 +2,9 @@
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
-package Engine.SystemGeometry.Interfaces;
+package Engine.PolymerState.SystemGeometry.Interfaces;
 
-import Engine.SystemGeometry.GeometricalParameters;
+import Engine.PolymerState.SystemGeometry.GeometricalParameters;
 
 /**
  *

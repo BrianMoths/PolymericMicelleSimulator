@@ -2,10 +2,10 @@
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
-package Engine.SystemGeometry.Implementations;
+package Engine.PolymerState.SystemGeometry.Implementations;
 
-import Engine.SystemGeometry.GeometricalParameters;
-import Engine.SystemGeometry.Interfaces.GeometryBuilder;
+import Engine.PolymerState.SystemGeometry.GeometricalParameters;
+import Engine.PolymerState.SystemGeometry.Interfaces.GeometryBuilder;
 import Engine.TwoBeadOverlap;
 import SystemAnalysis.AreaPerimeter.BeadRectangle;
 import SystemAnalysis.AreaPerimeter.OverlappingIntervalLengthFinder;

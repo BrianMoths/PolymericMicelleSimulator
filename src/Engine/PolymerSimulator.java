@@ -4,13 +4,16 @@
  */
 package Engine;
 
-import Engine.SystemGeometry.GeometricalParameters;
+import Engine.PolymerState.DiscretePolymerState;
+import Engine.PolymerState.PolymerPosition;
+import Engine.PolymerState.PolymerState;
+import Engine.PolymerState.SystemGeometry.GeometricalParameters;
 import Engine.SimulationStepping.StepTypes.MoveType;
 import Engine.SimulationStepping.StepTypes.SimulationStep;
 import Engine.SimulationStepping.StepGenerators.CompoundStepGenerators.BeadMoveAndRelativeResizeStepGenerator;
 import Engine.SimulationStepping.StepGenerators.StepGenerator;
-import Engine.SystemGeometry.Implementations.PeriodicGeometry.PeriodicGeometryBuilder;
-import Engine.SystemGeometry.Interfaces.SystemGeometry;
+import Engine.PolymerState.SystemGeometry.Implementations.PeriodicGeometry.PeriodicGeometryBuilder;
+import Engine.PolymerState.SystemGeometry.Interfaces.SystemGeometry;
 import SystemAnalysis.GeometryAnalyzer;
 import java.io.Serializable;
 
@@ -49,8 +52,8 @@ public class PolymerSimulator implements Serializable {
     //</editor-fold>
 
     private final SystemGeometry geometry;
-    private final EnergeticsConstants energeticsConstants;
     private final PolymerPosition polymerPosition;
+    private final PolymerState polymerState;
     private final SystemAnalyzer systemAnalyzer;
     private final StepGenerator stepGenerator = new BeadMoveAndRelativeResizeStepGenerator();
     private double energy;
@@ -62,13 +65,14 @@ public class PolymerSimulator implements Serializable {
     public PolymerSimulator() {
 
         PolymerCluster polymerCluster = PolymerCluster.makeDefaultPolymerCluster();
-        energeticsConstants = EnergeticsConstants.defaultEnergeticsConstants();
+        EnergeticsConstants energeticsConstants = EnergeticsConstants.defaultEnergeticsConstants();
         geometry = makeDefaultGeometry(polymerCluster, energeticsConstants);
 
         resetCounters();
         polymerPosition = makePolymerPosition(polymerCluster, geometry);
-        systemAnalyzer = new SystemAnalyzer(geometry, polymerCluster, energeticsConstants);
-        systemAnalyzer.registerToPolymerPosition(polymerPosition);
+        DiscretePolymerState discretePolymerState = new DiscretePolymerState(polymerCluster);
+        polymerState = new PolymerState(discretePolymerState, polymerPosition, geometry);
+        systemAnalyzer = new SystemAnalyzer(polymerState, energeticsConstants);
         energy = systemAnalyzer.computeEnergy();
     }
 
@@ -76,26 +80,26 @@ public class PolymerSimulator implements Serializable {
 
         this.geometry = systemGeometry;
 
-        this.energeticsConstants = energeticsConstants;
 
         polymerPosition = new PolymerPosition(polymerCluster.getNumBeads(), geometry);
 
+        DiscretePolymerState discretePolymerState = new DiscretePolymerState(polymerCluster);
+        polymerState = new PolymerState(discretePolymerState, polymerPosition, geometry);
+
         resetCounters();
 
-        systemAnalyzer = new SystemAnalyzer(geometry, polymerCluster, energeticsConstants);
-        systemAnalyzer.registerToPolymerPosition(polymerPosition);
+        systemAnalyzer = new SystemAnalyzer(polymerState, energeticsConstants);
         energy = systemAnalyzer.computeEnergy();
     }
 
     public PolymerSimulator(PolymerSimulator polymerSimulator) {
         geometry = polymerSimulator.geometry;
-        energeticsConstants = polymerSimulator.energeticsConstants;
         polymerPosition = new PolymerPosition(polymerSimulator.polymerPosition);
+        polymerState = new PolymerState(polymerSimulator.polymerState.getDiscretePolymerState(), polymerPosition, geometry);
         energy = polymerSimulator.energy;
         iterationNumber = polymerSimulator.iterationNumber;
         acceptedIterations = polymerSimulator.acceptedIterations;
         systemAnalyzer = new SystemAnalyzer(polymerSimulator.systemAnalyzer);
-        systemAnalyzer.registerToPolymerPosition(polymerPosition);
     }
 
     private PolymerPosition makePolymerPosition(PolymerCluster polymerCluster, SystemGeometry geometry) {
@@ -107,7 +111,8 @@ public class PolymerSimulator implements Serializable {
     @Override
     public String toString() {
         StringBuilder stringBuilder = new StringBuilder();
-        stringBuilder.append("Physical Constants: ").append(energeticsConstants.toString()).append("\n");
+        //add systemAnalyzer toString
+//        stringBuilder.append("Physical Constants: ").append(energeticsConstants.toString()).append("\n");
         stringBuilder.append("Polymer position: \n").append(polymerPosition.toString()).append("\n");
         stringBuilder.append("Energy: ").append(Double.toString(energy)).append("\n");
         stringBuilder.append("Total iterations performed: ").append(Integer.toString(iterationNumber)).append("\n");
@@ -145,13 +150,13 @@ public class PolymerSimulator implements Serializable {
     public synchronized void doIteration() { //todo: cache bead energies
         SimulationStep simulationStep = stepGenerator.generateStep(systemAnalyzer);
         iterateAttemptCounters(simulationStep.getMoveType());
-        if (simulationStep.doStep(polymerPosition, systemAnalyzer)) {
+        if (simulationStep.doStep(polymerState, systemAnalyzer)) {
             final double energyChange = simulationStep.getEnergyChange();
-            if (energeticsConstants.isEnergeticallyAllowed(energyChange)) {
+            if (systemAnalyzer.isEnergeticallyAllowed(energyChange)) {
                 energy += energyChange;
                 iterateAcceptedCounters(simulationStep.getMoveType());
             } else {
-                simulationStep.undoStep(polymerPosition, systemAnalyzer);
+                simulationStep.undoStep(polymerState);
             }
         }
     }
@@ -212,10 +217,6 @@ public class PolymerSimulator implements Serializable {
         return iterationNumber;
     }
 
-    public EnergeticsConstants getEnergeticsConstants() {
-        return energeticsConstants;
-    }
-
     public GeometricalParameters getGeometricalParameters() {
         return geometry.getParameters();
     }
@@ -238,6 +239,10 @@ public class PolymerSimulator implements Serializable {
 
     public int getAcceptedChainMoves() {
         return acceptedChainMoves;
+    }
+
+    public EnergeticsConstants getEnergeticsConstants() {
+        return systemAnalyzer.getEnergeticsConstants();
     }
     // </editor-fold>
 

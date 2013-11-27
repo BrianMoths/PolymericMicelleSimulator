@@ -12,10 +12,10 @@ import Engine.PolymerChain;
 import Engine.PolymerCluster;
 import Engine.PolymerSimulator;
 import Engine.SystemAnalyzer;
-import Engine.SystemGeometry.Implementations.AbstractGeometry.AbstractGeometryBuilder;
-import Engine.SystemGeometry.GeometricalParameters;
-import Engine.SystemGeometry.Implementations.PeriodicGeometry;
-import Engine.SystemGeometry.Interfaces.SystemGeometry;
+import Engine.PolymerState.SystemGeometry.Implementations.AbstractGeometry.AbstractGeometryBuilder;
+import Engine.PolymerState.SystemGeometry.GeometricalParameters;
+import Engine.PolymerState.SystemGeometry.Implementations.PeriodicGeometry;
+import Engine.PolymerState.SystemGeometry.Interfaces.SystemGeometry;
 import Gui.SystemViewer;
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -111,7 +111,7 @@ public class SurfaceTensionFinder {
         while (numSamplesTaken < numSamples) {
 //            System.out.println(Integer.toString(100 * numSamplesTaken / numSamples) + "% done collecting statisitcs.");
             polymerSimulator.doIterations(iterationsPerSample);
-            lengthStatistics.addValue(systemAnalyzer.getSystemGeometry().getRMax()[0]);
+            lengthStatistics.addValue(systemAnalyzer.getSystemGeometry().getSizeOfDimension(0));
             numSamplesTaken++;
         }
 
@@ -128,7 +128,7 @@ public class SurfaceTensionFinder {
         final double averageLength = lengthStatistics.getMean();
         final double lengthStandardDeviation = lengthStatistics.getStandardDeviation();
 
-        final ExternalEnergyCalculator externalEnergyCalculator = polymerSimulator.getEnergeticsConstants().getExternalEnergyCalculator();
+        final ExternalEnergyCalculator externalEnergyCalculator = polymerSimulator.getSystemAnalyzer().getEnergeticsConstants().getExternalEnergyCalculator();
         final double xEquilibriumPosition = externalEnergyCalculator.getxEquilibriumPosition();
         final double xSpringConstant = externalEnergyCalculator.getxSpringConstant();
 

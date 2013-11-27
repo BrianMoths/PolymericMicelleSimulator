@@ -2,7 +2,7 @@
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
-package Engine.SystemGeometry;
+package Engine.PolymerState.SystemGeometry;
 
 import Engine.EnergeticsConstants.EnergeticsConstantsBuilder;
 import java.io.Serializable;
