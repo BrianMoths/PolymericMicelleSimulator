@@ -50,8 +50,64 @@ public class PolymerState implements ImmutablePolymerState {
 //</editor-fold>
 
     public boolean reptate(int bead, boolean isGoingRight) {
-        return false;
+        int movingBead = discretePolymerState.getReptatingBead(bead, isGoingRight);
+        double[] stepVector = getStepVector(movingBead, isGoingRight);
+        boolean isSuccessful = polymerPosition.moveBead(movingBead, stepVector);
+        if (isSuccessful) {
+            discretePolymerState.reptateChainOfBead(bead, isGoingRight);
+        }
+        return isSuccessful;
     }
+
+    //<editor-fold defaultstate="collapsed" desc="reptate helpers">
+    private double[] getStepVector(int movingBead, boolean isGoingRight) {
+        double[] stepVector;
+
+        double[] movingBeadPosition = getMovingBeadPosition(movingBead);
+        double[] initialNeighborPosition = getInitialNeighborPosition(movingBead, isGoingRight);
+        double[] finalNeighborPosittion = getFinalNeighborPosition(movingBead, isGoingRight);
+
+        stepVector = getStepVectorFromPositions(movingBeadPosition, initialNeighborPosition, finalNeighborPosittion);
+        return stepVector;
+    }
+
+    private double[] getStepVectorFromPositions(double[] movingBeadPosition, double[] initialNeighborPosition, double[] finalNeighborPosittion) {
+        final int numDimensions = movingBeadPosition.length;
+        double[] stepVector = new double[numDimensions];
+
+        for (int dimension = 0; dimension < numDimensions; dimension++) {
+            stepVector[dimension] = initialNeighborPosition[dimension] + finalNeighborPosittion[dimension] - 2 * movingBeadPosition[dimension];
+        }
+
+        return stepVector;
+    }
+
+    private double[] getMovingBeadPosition(int movingBead) {
+        return polymerPosition.getBeadPosition(movingBead);
+    }
+
+    private double[] getInitialNeighborPosition(int movingBead, boolean isGoingRight) {
+        return polymerPosition.getBeadPosition(getInitialNeighbor(movingBead, isGoingRight));
+    }
+
+    private int getInitialNeighbor(int movingBead, boolean isGoingRight) {
+        int initialNeighbor;
+        if (isGoingRight) {
+            initialNeighbor = discretePolymerState.getNeighborToRightOfBead(movingBead);
+        } else {
+            initialNeighbor = discretePolymerState.getNeighborToLeftOfBead(movingBead);
+        }
+        return initialNeighbor;
+    }
+
+    private double[] getFinalNeighborPosition(int movingBead, boolean isGoingRight) {
+        return polymerPosition.getBeadPosition(getFinalNeighbor(movingBead, isGoingRight));
+    }
+
+    private int getFinalNeighbor(int movingBead, boolean isGoingRight) {
+        return discretePolymerState.getReptatingBeadDestination(movingBead, isGoingRight);
+    }
+    //</editor-fold>
 
     @Override
     public ImmutableSystemGeometry getImmutableSystemGeometry() {

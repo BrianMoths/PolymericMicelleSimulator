@@ -43,15 +43,31 @@ public class DiscretePolymerState implements ImmutableDiscretePolymerState, Seri
         }
     }
 
-    public void reptateChainOfBead(int bead) {
-        int leftBead = getLeftBeadOfChain(bead);
-        int rightBead = getRightBeadOfChain(bead);
-        if (leftBead != rightBead) {
-            reptateBeads(leftBead, rightBead);
+    public void reptateChainOfBead(int bead, boolean isGoingRight) {
+        final int movingBead = getReptatingBead(bead, isGoingRight);
+        final int destinationBead = getReptatingBeadDestination(bead, isGoingRight);
+        if (movingBead != destinationBead) {
+            reptateBeads(movingBead, destinationBead);
         }
     }
 
     //<editor-fold defaultstate="collapsed" desc="reptateChainOfBead helpers">
+    public int getReptatingBead(int beadInChain, boolean isGoingRight) {
+        int movingBead;
+
+        if (isGoingRight) {
+            movingBead = getLeftBeadOfChain(beadInChain);
+        } else {
+            movingBead = getRightBeadOfChain(beadInChain);
+        }
+
+        return movingBead;
+    }
+
+    public int getReptatingBeadDestination(int beadInChain, boolean isGoingRight) {
+        return getReptatingBead(beadInChain, !isGoingRight);
+    }
+
     public int getLeftBeadOfChain(int bead) {
         int nextBead = bead;
         int currentBead = bead;
