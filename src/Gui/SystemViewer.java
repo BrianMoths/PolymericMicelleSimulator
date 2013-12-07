@@ -99,7 +99,6 @@ public class SystemViewer extends javax.swing.JFrame {
 
         final GeometricalParameters geometricalParameters = polymerSimulator.getGeometricalParameters();
         beadSizeLbl.setText(stringFormatDouble(geometricalParameters.getInteractionLength()));
-        systemSizeLbl.setText(stringFormatDouble(polymerSimulator.getGeometry().getSizeOfDimension(0)));
         coreSizeLbl.setText(stringFormatDouble(geometricalParameters.getCoreLength()));
 
         hardCoresChk.setSelected(geometricalParameters.getCoreLength() != 0);
@@ -116,6 +115,8 @@ public class SystemViewer extends javax.swing.JFrame {
         energyLbl.setText(stringFormatDouble(energy));
         numIterationsLbl.setText(String.valueOf(polymerSimulator.getIterationNumber()));
         externalEnergyLbl.setText(stringFormatDouble(systemAnalyzer.externalEnergy()));
+        systemSizeLbl.setText(stringFormatDouble(polymerSimulator.getGeometry().getSizeOfDimension(0)));
+
         if (analysisWindow != null) {
             analysisWindow.updateDisplay();
         }
@@ -285,7 +286,7 @@ public class SystemViewer extends javax.swing.JFrame {
                 .addGroup(physicalConstantsPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(coreCoeffCaptoinLbl)
                     .addComponent(coreCoefficientLbl))
-                .addContainerGap(95, Short.MAX_VALUE))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
         externalEnergyCaptionLbl.setText("External Energy:");
@@ -325,18 +326,17 @@ public class SystemViewer extends javax.swing.JFrame {
                                 .addGap(0, 0, Short.MAX_VALUE)
                                 .addComponent(coreSizeCaptionLbl))
                             .addComponent(interactionLengthCaptionLbl, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
-                    .addComponent(systemSizeCaptionLbl, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                    .addComponent(systemSizeCaptionLbl, javax.swing.GroupLayout.DEFAULT_SIZE, 108, Short.MAX_VALUE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(geometricParametersPnlLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(systemSizeLbl, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(systemSizeLbl, javax.swing.GroupLayout.DEFAULT_SIZE, 73, Short.MAX_VALUE)
                     .addComponent(beadSizeLbl, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(coreSizeLbl, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addContainerGap())
         );
         geometricParametersPnlLayout.setVerticalGroup(
             geometricParametersPnlLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, geometricParametersPnlLayout.createSequentialGroup()
-                .addContainerGap(168, Short.MAX_VALUE)
+            .addGroup(geometricParametersPnlLayout.createSequentialGroup()
                 .addGroup(geometricParametersPnlLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(coreSizeCaptionLbl)
                     .addComponent(coreSizeLbl))
@@ -347,8 +347,7 @@ public class SystemViewer extends javax.swing.JFrame {
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(geometricParametersPnlLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(systemSizeCaptionLbl)
-                    .addComponent(systemSizeLbl))
-                .addContainerGap())
+                    .addComponent(systemSizeLbl)))
         );
 
         hardCoresChk.setEnabled(false);
@@ -378,15 +377,18 @@ public class SystemViewer extends javax.swing.JFrame {
                         .addComponent(externalEnergyLbl, javax.swing.GroupLayout.PREFERRED_SIZE, 113, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addGroup(layout.createSequentialGroup()
                         .addComponent(displayPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                                .addComponent(physicalConstantsPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                .addComponent(geometricParametersPnl, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                            .addGroup(layout.createSequentialGroup()
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addComponent(physicalConstantsPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                                        .addComponent(hardCoresChk)
+                                        .addGap(2, 2, 2)
+                                        .addComponent(hardCoresCaptionLbl, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))))
                             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                                .addComponent(hardCoresChk)
-                                .addGap(2, 2, 2)
-                                .addComponent(hardCoresCaptionLbl, javax.swing.GroupLayout.DEFAULT_SIZE, 189, Short.MAX_VALUE)))))
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                .addComponent(geometricParametersPnl, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))))
                 .addGap(12, 12, 12))
         );
         layout.setVerticalGroup(
@@ -396,10 +398,10 @@ public class SystemViewer extends javax.swing.JFrame {
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(displayPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addGroup(layout.createSequentialGroup()
-                        .addComponent(physicalConstantsPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(physicalConstantsPanel, javax.swing.GroupLayout.PREFERRED_SIZE, 185, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(geometricParametersPnl, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(14, 14, 14)
+                        .addGap(277, 277, 277)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(hardCoresChk)
                             .addComponent(hardCoresCaptionLbl))))

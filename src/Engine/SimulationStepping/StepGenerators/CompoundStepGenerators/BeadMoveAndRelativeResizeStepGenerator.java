@@ -8,7 +8,6 @@ import Engine.SimulationStepping.StepGenerators.ElementaryStepGenerators.BeadMov
 import Engine.SimulationStepping.StepGenerators.ElementaryStepGenerators.RelativeResizeStepGenerator;
 import Engine.SimulationStepping.StepGenerators.StepGenerator;
 import Engine.SimulationStepping.StepTypes.SimulationStep;
-import Engine.SimulationStepping.StepTypes.SingleWallResizeStep;
 import Engine.SystemAnalyzer;
 import java.util.Random;
 

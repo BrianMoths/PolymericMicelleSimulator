@@ -55,6 +55,32 @@ public class SurfaceTensionFinder {
             this.density = density;
         }
 
+        @Override
+        public int hashCode() {
+            int hash = 7;
+            hash = 59 * hash + this.numChains;
+            hash = 59 * hash + externalEnergyCalculator.hashCode();
+            hash = 59 * hash + (int) (Double.doubleToLongBits(this.density) ^ (Double.doubleToLongBits(this.density) >>> 32));
+            return hash;
+        }
+
+        @Override
+        public boolean equals(Object obj) {
+            if (obj == null) {
+                return false;
+            }
+            if (getClass() != obj.getClass()) {
+                return false;
+            }
+            final InputParameters otherInputParameters = (InputParameters) obj;
+            final boolean externalEnergyCalculatorEquals = externalEnergyCalculator == null
+                    ? otherInputParameters.externalEnergyCalculator == null
+                    : externalEnergyCalculator.equals(otherInputParameters.externalEnergyCalculator);
+            return numChains == otherInputParameters.numChains
+                    && externalEnergyCalculatorEquals
+                    && density == otherInputParameters.density;
+        }
+
     }
 
     static private final int numBeadsPerChain = 15;
@@ -93,8 +119,8 @@ public class SurfaceTensionFinder {
         } else {
             numChains = 100;//100
             final ExternalEnergyCalculatorBuilder externalEnergyCalculatorBuilder = new ExternalEnergyCalculatorBuilder();
-            externalEnergyCalculatorBuilder.setxEquilibriumPosition(66); //was 125 or 66
-            externalEnergyCalculatorBuilder.setxSpringConstant(1.); //was .2 or 1.8
+            externalEnergyCalculatorBuilder.setxEquilibriumPosition(66.); //was 125 or 66
+            externalEnergyCalculatorBuilder.setxSpringConstant(0.); //was .2 or 1.8
             externalEnergyCalculator = externalEnergyCalculatorBuilder.build();
             density = .05; //.15
         }
@@ -176,14 +202,14 @@ public class SurfaceTensionFinder {
     static private SystemGeometry makeSystemGeometry(double numBeadsIncludingWater, GeometricalParameters geometricalParameters) {
         AbstractGeometryBuilder systemGeometryBuilder = new PeriodicGeometry.PeriodicGeometryBuilder();
 
-        final double aspectRatio = .1;
+        final double aspectRatio = 1.;
         systemGeometryBuilder.setDimension(2);
         systemGeometryBuilder.makeConsistentWith(numBeadsIncludingWater, geometricalParameters, aspectRatio);
         return systemGeometryBuilder.buildGeometry();
     }
 //</editor-fold>
 
-    private final int numAnneals = 3; //50
+    private final int numAnneals = 50; //50
     private final int numSurfaceTensionTrials = 70; //70
     private final InputParameters inputParameters;
     private final PrintWriter dataWriter;
@@ -238,7 +264,7 @@ public class SurfaceTensionFinder {
                 .append("_")
                 .append(makeDoubleDigitString(second))
                 .append("_")
-                .append(hashCode() % 1000);
+                .append((hashCode() + inputParameters.hashCode()) % 1000);
         return fileNameBuilder.toString();
     }
 

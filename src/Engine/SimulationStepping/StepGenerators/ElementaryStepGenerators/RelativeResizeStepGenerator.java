@@ -17,10 +17,20 @@ import java.util.Random;
 public class RelativeResizeStepGenerator implements StepGenerator {
 
     static private final int resizeDimension = 0;
-    static private Random random;
+    static private final Random random;
 
     static {
         random = new Random();
+    }
+
+    static public SimulationStep getRelativeResizeStep(SystemAnalyzer systemAnalyzer) {
+        RelativeResizeStepGenerator relativeResizeStepGenerator = new RelativeResizeStepGenerator();
+        return relativeResizeStepGenerator.generateStep(systemAnalyzer);
+    }
+
+    static public SimulationStep getRelativeResizeStep(SystemAnalyzer systemAnalyzer, double maxScalingFactor) {
+        RelativeResizeStepGenerator relativeResizeStepGenerator = new RelativeResizeStepGenerator(maxScalingFactor);
+        return relativeResizeStepGenerator.generateStep(systemAnalyzer);
     }
 
     private final double lowerRandom, randomRange;

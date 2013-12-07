@@ -10,10 +10,10 @@ import Engine.PolymerState.PolymerState;
 import Engine.PolymerState.SystemGeometry.GeometricalParameters;
 import Engine.SimulationStepping.StepTypes.MoveType;
 import Engine.SimulationStepping.StepTypes.SimulationStep;
-import Engine.SimulationStepping.StepGenerators.CompoundStepGenerators.BeadMoveAndRelativeResizeStepGenerator;
 import Engine.SimulationStepping.StepGenerators.StepGenerator;
 import Engine.PolymerState.SystemGeometry.Implementations.PeriodicGeometry.PeriodicGeometryBuilder;
 import Engine.PolymerState.SystemGeometry.Interfaces.SystemGeometry;
+import Engine.SimulationStepping.StepGenerators.CompoundStepGenerators.GeneralStepGenerator;
 import SystemAnalysis.GeometryAnalyzer;
 import java.io.Serializable;
 
@@ -55,7 +55,7 @@ public class PolymerSimulator implements Serializable {
     private final PolymerPosition polymerPosition;
     private final PolymerState polymerState;
     private final SystemAnalyzer systemAnalyzer;
-    private final StepGenerator stepGenerator = new BeadMoveAndRelativeResizeStepGenerator();
+    private final StepGenerator stepGenerator = GeneralStepGenerator.defaultStepGenerator();
     private double energy;
     private int iterationNumber;
     private int acceptedIterations;

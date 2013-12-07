@@ -80,6 +80,33 @@ public class ExternalEnergyCalculator {
         pressure = 0;
     }
 
+    @Override
+    public int hashCode() {
+        int hash = 5;
+        hash = 59 * hash + (int) (Double.doubleToLongBits(this.xSpringConstant) ^ (Double.doubleToLongBits(this.xSpringConstant) >>> 32));
+        hash = 59 * hash + (int) (Double.doubleToLongBits(this.xEquilibriumPosition) ^ (Double.doubleToLongBits(this.xEquilibriumPosition) >>> 32));
+        hash = 59 * hash + (int) (Double.doubleToLongBits(this.ySpringConstant) ^ (Double.doubleToLongBits(this.ySpringConstant) >>> 32));
+        hash = 59 * hash + (int) (Double.doubleToLongBits(this.yEquilibriumPosition) ^ (Double.doubleToLongBits(this.yEquilibriumPosition) >>> 32));
+        hash = 59 * hash + (int) (Double.doubleToLongBits(this.pressure) ^ (Double.doubleToLongBits(this.pressure) >>> 32));
+        return hash;
+    }
+
+    @Override
+    public boolean equals(Object object) {
+        if (object == null) {
+            return false;
+        }
+        if (getClass() != object.getClass()) {
+            return false;
+        }
+        final ExternalEnergyCalculator other = (ExternalEnergyCalculator) object;
+        return xSpringConstant == other.xSpringConstant
+                && xEquilibriumPosition == other.xEquilibriumPosition
+                && ySpringConstant == other.ySpringConstant
+                && yEquilibriumPosition == other.yEquilibriumPosition
+                && pressure == other.pressure;
+    }
+
     private ExternalEnergyCalculator(ExternalEnergyCalculatorBuilder builder) {
         xSpringConstant = builder.xSpringConstant;
         xEquilibriumPosition = builder.xEquilibriumPosition;

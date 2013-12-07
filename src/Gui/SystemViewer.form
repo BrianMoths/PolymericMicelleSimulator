@@ -45,16 +45,21 @@
                   </Group>
                   <Group type="102" alignment="0" attributes="0">
                       <Component id="displayPanel" min="-2" max="-2" attributes="0"/>
-                      <EmptySpace max="-2" attributes="0"/>
                       <Group type="103" groupAlignment="0" attributes="0">
-                          <Group type="103" groupAlignment="0" max="-2" attributes="0">
-                              <Component id="physicalConstantsPanel" max="32767" attributes="0"/>
-                              <Component id="geometricParametersPnl" max="32767" attributes="0"/>
+                          <Group type="102" attributes="0">
+                              <EmptySpace max="-2" attributes="0"/>
+                              <Group type="103" groupAlignment="0" attributes="0">
+                                  <Component id="physicalConstantsPanel" min="-2" max="-2" attributes="0"/>
+                                  <Group type="102" alignment="1" attributes="0">
+                                      <Component id="hardCoresChk" min="-2" max="-2" attributes="0"/>
+                                      <EmptySpace min="-2" pref="2" max="-2" attributes="0"/>
+                                      <Component id="hardCoresCaptionLbl" max="32767" attributes="0"/>
+                                  </Group>
+                              </Group>
                           </Group>
                           <Group type="102" alignment="1" attributes="0">
-                              <Component id="hardCoresChk" min="-2" max="-2" attributes="0"/>
-                              <EmptySpace min="-2" pref="2" max="-2" attributes="0"/>
-                              <Component id="hardCoresCaptionLbl" pref="189" max="32767" attributes="0"/>
+                              <EmptySpace max="32767" attributes="0"/>
+                              <Component id="geometricParametersPnl" min="-2" max="-2" attributes="0"/>
                           </Group>
                       </Group>
                   </Group>
@@ -70,10 +75,10 @@
               <Group type="103" groupAlignment="0" attributes="0">
                   <Component id="displayPanel" min="-2" max="-2" attributes="0"/>
                   <Group type="102" attributes="0">
-                      <Component id="physicalConstantsPanel" min="-2" max="-2" attributes="0"/>
+                      <Component id="physicalConstantsPanel" min="-2" pref="185" max="-2" attributes="0"/>
                       <EmptySpace max="-2" attributes="0"/>
                       <Component id="geometricParametersPnl" min="-2" max="-2" attributes="0"/>
-                      <EmptySpace min="-2" pref="14" max="-2" attributes="0"/>
+                      <EmptySpace min="-2" pref="277" max="-2" attributes="0"/>
                       <Group type="103" groupAlignment="0" attributes="0">
                           <Component id="hardCoresChk" alignment="0" min="-2" max="-2" attributes="0"/>
                           <Component id="hardCoresCaptionLbl" alignment="0" min="-2" max="-2" attributes="0"/>
@@ -225,7 +230,7 @@
                       <Component id="coreCoeffCaptoinLbl" alignment="3" min="-2" max="-2" attributes="0"/>
                       <Component id="coreCoefficientLbl" alignment="3" min="-2" max="-2" attributes="0"/>
                   </Group>
-                  <EmptySpace pref="95" max="32767" attributes="0"/>
+                  <EmptySpace max="32767" attributes="0"/>
               </Group>
           </Group>
         </DimensionLayout>
@@ -366,11 +371,11 @@
                               <Component id="interactionLengthCaptionLbl" max="32767" attributes="0"/>
                           </Group>
                       </Group>
-                      <Component id="systemSizeCaptionLbl" max="32767" attributes="0"/>
+                      <Component id="systemSizeCaptionLbl" pref="108" max="32767" attributes="0"/>
                   </Group>
                   <EmptySpace max="-2" attributes="0"/>
                   <Group type="103" groupAlignment="0" attributes="0">
-                      <Component id="systemSizeLbl" max="32767" attributes="0"/>
+                      <Component id="systemSizeLbl" pref="73" max="32767" attributes="0"/>
                       <Component id="beadSizeLbl" max="32767" attributes="0"/>
                       <Component id="coreSizeLbl" max="32767" attributes="0"/>
                   </Group>
@@ -380,8 +385,7 @@
         </DimensionLayout>
         <DimensionLayout dim="1">
           <Group type="103" groupAlignment="0" attributes="0">
-              <Group type="102" alignment="1" attributes="0">
-                  <EmptySpace pref="168" max="32767" attributes="0"/>
+              <Group type="102" alignment="0" attributes="0">
                   <Group type="103" groupAlignment="3" attributes="0">
                       <Component id="coreSizeCaptionLbl" alignment="3" min="-2" max="-2" attributes="0"/>
                       <Component id="coreSizeLbl" alignment="3" min="-2" max="-2" attributes="0"/>
@@ -396,7 +400,6 @@
                       <Component id="systemSizeCaptionLbl" alignment="3" min="-2" max="-2" attributes="0"/>
                       <Component id="systemSizeLbl" alignment="3" min="-2" max="-2" attributes="0"/>
                   </Group>
-                  <EmptySpace max="-2" attributes="0"/>
               </Group>
           </Group>
         </DimensionLayout>

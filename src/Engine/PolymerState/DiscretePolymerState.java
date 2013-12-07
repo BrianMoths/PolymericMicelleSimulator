@@ -44,14 +44,76 @@ public class DiscretePolymerState implements ImmutableDiscretePolymerState, Seri
     }
 
     public void reptateChainOfBead(int bead, boolean isGoingRight) {
-        final int movingBead = getReptatingBead(bead, isGoingRight);
-        final int destinationBead = getReptatingBeadDestination(bead, isGoingRight);
-        if (movingBead != destinationBead) {
-            reptateBeads(movingBead, destinationBead);
+        final int leftBead = getLeftBeadOfChain(bead);
+        final int rightBead = getRightBeadOfChain(bead);
+        if (leftBead != rightBead) {
+            reptateBeads(leftBead, rightBead, isGoingRight);
         }
     }
 
     //<editor-fold defaultstate="collapsed" desc="reptateChainOfBead helpers">
+    private void reptateBeads(int leftBead, int rightBead, boolean isGoingRight) {
+        if (isGoingRight) {
+            breakBondToRight(leftBead);
+            setOrderedBond(rightBead, leftBead);
+        } else {
+            breakBondToLeft(rightBead);
+            setOrderedBond(rightBead, leftBead);
+        }
+    }
+
+    private void breakBondToRight(int leftBead) {
+        int neighborOnRight = neighbors[leftBead][1];
+        neighbors[leftBead][1] = -1;
+        neighbors[neighborOnRight][0] = -1;
+    }
+
+    private void breakBondToLeft(int rightBead) {
+        int neighborOnLeft = neighbors[rightBead][0];
+        neighbors[rightBead][0] = -1;
+        neighbors[neighborOnLeft][1] = -1;
+    }
+
+    private void setOrderedBond(int leftBead, int rightBead) {
+        neighbors[leftBead][1] = rightBead;
+        neighbors[rightBead][0] = leftBead;
+    }
+    //</editor-fold>
+
+    @Override
+    public List<Integer> getChainOfBead(int bead) {
+        List<Integer> chain = new ArrayList<>();
+        chain.add(bead);
+        addBeadsLeftToChain(bead, chain);
+        addBeadsRightToChain(bead, chain);
+
+        return chain;
+    }
+
+    //<editor-fold defaultstate="collapsed" desc="getChainOfBead helpers">
+    private void addBeadsLeftToChain(int bead, List<Integer> chain) {
+        int nextBead = getNeighborToLeftOfBead(bead);
+        while (nextBead != -1) {
+            chain.add(nextBead);
+//            if (chain.size() > 20) {
+//                throw new AssertionError();
+//            }
+            nextBead = getNeighborToLeftOfBead(nextBead);
+        }
+    }
+
+    private void addBeadsRightToChain(int bead, List<Integer> chain) {
+        int nextBead = getNeighborToRightOfBead(bead);
+        while (nextBead != -1) {
+            chain.add(nextBead);
+//            if (chain.size() > 20) {
+//                throw new AssertionError();
+//            }
+            nextBead = getNeighborToRightOfBead(nextBead);
+        }
+    }
+//</editor-fold>
+
     public int getReptatingBead(int beadInChain, boolean isGoingRight) {
         int movingBead;
 
@@ -71,9 +133,13 @@ public class DiscretePolymerState implements ImmutableDiscretePolymerState, Seri
     public int getLeftBeadOfChain(int bead) {
         int nextBead = bead;
         int currentBead = bead;
+        int count = 0;
         while (nextBead != -1) {
             currentBead = nextBead;
             nextBead = getNeighborToLeftOfBead(nextBead);
+            if (count++ > 20) {
+                throw new AssertionError();
+            }
         }
         return currentBead;
     }
@@ -81,64 +147,16 @@ public class DiscretePolymerState implements ImmutableDiscretePolymerState, Seri
     public int getRightBeadOfChain(int bead) {
         int nextBead = bead;
         int currentBead = bead;
+        int count = 0;
         while (nextBead != -1) {
             currentBead = nextBead;
             nextBead = getNeighborToRightOfBead(nextBead);
+            if (count++ > 20) {
+                throw new AssertionError();
+            }
         }
         return currentBead;
     }
-
-    private void reptateBeads(int leftBead, int rightBead) {
-        breakBondToRight(leftBead);
-        breakBondToLeft(rightBead);
-        setOrderedBond(rightBead, leftBead);
-    }
-
-    private void breakBondToRight(int leftBead) {
-        int neighborOnRight = neighbors[leftBead][1];
-        neighbors[leftBead][1] = -1;
-        neighbors[neighborOnRight][0] = -1;
-    }
-
-    private void breakBondToLeft(int rightBead) {
-        int neighborOnLeft = neighbors[rightBead][0];
-        neighbors[rightBead][0] = -1;
-        neighbors[neighborOnLeft][1] = -1;
-    }
-
-    private void setOrderedBond(int leftBead, int rightBead) {
-        neighbors[leftBead][1] = rightBead;
-        neighbors[rightBead][1] = leftBead;
-    }
-    //</editor-fold>
-
-    @Override
-    public List<Integer> getChainOfBead(int bead) {
-        List<Integer> chain = new ArrayList<>();
-        chain.add(bead);
-        addBeadsLeftToChain(bead, chain);
-        addBeadsRightToChain(bead, chain);
-
-        return chain;
-    }
-
-    //<editor-fold defaultstate="collapsed" desc="getChainOfBead helpers">
-    private void addBeadsLeftToChain(int bead, List<Integer> chain) {
-        int nextBead = getNeighborToLeftOfBead(bead);
-        while (nextBead != -1) {
-            chain.add(nextBead);
-            nextBead = getNeighborToLeftOfBead(nextBead);
-        }
-    }
-
-    private void addBeadsRightToChain(int bead, List<Integer> chain) {
-        int nextBead = getNeighborToRightOfBead(bead);
-        while (nextBead != -1) {
-            chain.add(nextBead);
-            nextBead = getNeighborToRightOfBead(nextBead);
-        }
-    }
-//</editor-fold>
 
     @Override
     public int getNeighborToLeftOfBead(int bead) {
