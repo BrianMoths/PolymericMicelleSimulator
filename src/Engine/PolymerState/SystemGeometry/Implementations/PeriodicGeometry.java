@@ -93,7 +93,7 @@ public final class PeriodicGeometry extends AbstractGeometry {
         TwoBeadOverlap twoBeadOverlap = new TwoBeadOverlap(1, 1);
 
         for (int i = 0; i < dimension; i++) {
-            double componentDistance = componentDistance(position1[i], position2[i], i);
+            final double componentDistance = componentDistance(position1[i], position2[i], i);
             twoBeadOverlap.softOverlap *= Math.max(parameters.getInteractionLength() - componentDistance, 0.0);
             twoBeadOverlap.hardOverlap *= Math.max(parameters.getCoreLength() - componentDistance, 0.0);
         }

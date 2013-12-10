@@ -60,7 +60,7 @@ public class BeadRectangle {
 
     }
 
-    private List<Interval> intervals;
+    private final List<Interval> intervals;
 
     private BeadRectangle() {
         intervals = new ArrayList<>();

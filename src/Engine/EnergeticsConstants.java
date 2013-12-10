@@ -7,9 +7,9 @@ package Engine;
 import Engine.PolymerState.SystemGeometry.GeometricalParameters;
 import Engine.PolymerState.SystemGeometry.AreaOverlap;
 import Engine.PolymerState.SystemGeometry.Interfaces.ImmutableSystemGeometry;
-import Engine.PolymerState.SystemGeometry.Interfaces.SystemGeometry;
 import java.io.Serializable;
 import java.util.Random;
+import sun.font.EAttribute;
 
 /**
  *
@@ -140,6 +140,17 @@ public final class EnergeticsConstants implements Serializable {
 
     static public EnergeticsConstants defaultEnergeticsConstants() {
         return new EnergeticsConstantsBuilder().buildEnergeticsConstants();
+    }
+
+    static public EnergeticsConstants zeroEnergeticsConstants() {
+        EnergeticsConstantsBuilder energeticsConstantsBuilder = new EnergeticsConstantsBuilder();
+        energeticsConstantsBuilder.AAOverlapCoefficient = 0;
+        energeticsConstantsBuilder.ABOverlapCoefficient = 0;
+        energeticsConstantsBuilder.BBOverlapCoefficient = 0;
+        energeticsConstantsBuilder.temperature = 0;
+        energeticsConstantsBuilder.springCoefficient = 0;
+        energeticsConstantsBuilder.hardOverlapCoefficient = 0;
+        return new EnergeticsConstants(energeticsConstantsBuilder);
     }
 
     private final double temperature,

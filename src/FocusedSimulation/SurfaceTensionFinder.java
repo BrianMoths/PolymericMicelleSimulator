@@ -15,6 +15,7 @@ import Engine.SystemAnalyzer;
 import Engine.PolymerState.SystemGeometry.Implementations.AbstractGeometry.AbstractGeometryBuilder;
 import Engine.PolymerState.SystemGeometry.GeometricalParameters;
 import Engine.PolymerState.SystemGeometry.Implementations.PeriodicGeometry;
+import Engine.PolymerState.SystemGeometry.Interfaces.ImmutableSystemGeometry;
 import Engine.PolymerState.SystemGeometry.Interfaces.SystemGeometry;
 import Gui.SystemViewer;
 import java.io.File;
@@ -112,17 +113,15 @@ public class SurfaceTensionFinder {
             final double xSpringConstant = Double.parseDouble(args[1]);
             final double xEquilibriumPosition = Double.parseDouble(args[2]);
             ExternalEnergyCalculatorBuilder externalEnergyCalculatorBuilder = new ExternalEnergyCalculatorBuilder();
-            externalEnergyCalculatorBuilder.setxSpringConstant(xSpringConstant);
-            externalEnergyCalculatorBuilder.setxEquilibriumPosition(xEquilibriumPosition);
+            externalEnergyCalculatorBuilder.setXPositionAndSpringConstant(xEquilibriumPosition, xSpringConstant);
             externalEnergyCalculator = externalEnergyCalculatorBuilder.build();
             density = Double.parseDouble(args[3]);
         } else {
             numChains = 100;//100
             final ExternalEnergyCalculatorBuilder externalEnergyCalculatorBuilder = new ExternalEnergyCalculatorBuilder();
-            externalEnergyCalculatorBuilder.setxEquilibriumPosition(66.); //was 125 or 66
-            externalEnergyCalculatorBuilder.setxSpringConstant(0.); //was .2 or 1.8
+            externalEnergyCalculatorBuilder.setXPositionAndSpringConstant(66, 3.); //66 and .2 or 1.8
             externalEnergyCalculator = externalEnergyCalculatorBuilder.build();
-            density = .1; //.15
+            density = .05; //.15
         }
 
         return new InputParameters(numChains, externalEnergyCalculator, density);
@@ -311,9 +310,6 @@ public class SurfaceTensionFinder {
 
         System.out.println("System is initialized.");
 
-//        polymerSimulator.doIterations(1000000);
-//        polymerSimulator.anneal();
-
         for (int i = 0; i < numAnneals; i++) {
             polymerSimulator.doIterations(3000000);//3000000
             polymerSimulator.anneal();
@@ -341,11 +337,20 @@ public class SurfaceTensionFinder {
 
     private void printFinalOutput(PolymerSimulator polymerSimulator) {
         dataWriter.println();
-        final int numBeads = polymerSimulator.getNumBeads();
-        final double beadArea = polymerSimulator.getSystemAnalyzer().findArea();
-        final double totalArea = polymerSimulator.getGeometry().getVolume();
+        final SystemAnalyzer systemAnalyzer = polymerSimulator.getSystemAnalyzer();
+        final int numBeads = systemAnalyzer.getNumBeads();
+        final double beadArea = systemAnalyzer.findArea();
+
+        final ImmutableSystemGeometry systemGeometry = systemAnalyzer.getSystemGeometry();
+        final double totalArea = systemGeometry.getVolume();
+        final double width = systemGeometry.getSizeOfDimension(0);
+        final double height = systemGeometry.getSizeOfDimension(1);
+        final double beadSideLength = systemGeometry.getParameters().getInteractionLength();
         dataWriter.println("fraction of area covered at end of simulation: " + Double.toString(beadArea / totalArea));
-        dataWriter.print("number density of blob at end of simulation: " + Double.toString(numBeads / beadArea));
+        dataWriter.println("number density of blob at end of simulation: " + Double.toString(numBeads / beadArea));
+        dataWriter.println("horizontal size of system at end of simulation: " + Double.toString(width));
+        dataWriter.println("vertical size of system at end of simulation: " + Double.toString(height));
+        dataWriter.println("Side length of beads: " + Double.toString(beadSideLength));
     }
 
 }

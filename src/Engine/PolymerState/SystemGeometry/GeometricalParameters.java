@@ -15,6 +15,36 @@ public final class GeometricalParameters implements Serializable {
 
     private final double interactionLength, coreLength, stepLength;
 
+    @Override
+    public int hashCode() {
+        int hash = 7;
+        hash = 89 * hash + (int) (Double.doubleToLongBits(this.interactionLength) ^ (Double.doubleToLongBits(this.interactionLength) >>> 32));
+        hash = 89 * hash + (int) (Double.doubleToLongBits(this.coreLength) ^ (Double.doubleToLongBits(this.coreLength) >>> 32));
+        hash = 89 * hash + (int) (Double.doubleToLongBits(this.stepLength) ^ (Double.doubleToLongBits(this.stepLength) >>> 32));
+        return hash;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (obj == null) {
+            return false;
+        }
+        if (getClass() != obj.getClass()) {
+            return false;
+        }
+        final GeometricalParameters other = (GeometricalParameters) obj;
+        if (Double.doubleToLongBits(this.interactionLength) != Double.doubleToLongBits(other.interactionLength)) {
+            return false;
+        }
+        if (Double.doubleToLongBits(this.coreLength) != Double.doubleToLongBits(other.coreLength)) {
+            return false;
+        }
+        if (Double.doubleToLongBits(this.stepLength) != Double.doubleToLongBits(other.stepLength)) {
+            return false;
+        }
+        return true;
+    }
+
     public GeometricalParameters() {
         interactionLength = 5;
         coreLength = 1;

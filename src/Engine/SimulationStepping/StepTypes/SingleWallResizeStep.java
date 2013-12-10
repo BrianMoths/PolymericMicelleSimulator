@@ -25,7 +25,7 @@ public class SingleWallResizeStep implements SimulationStep {
 
     @Override
     public boolean doStep(PolymerState polymerState, SystemAnalyzer systemAnalyzer) {
-        final double oldEnergy = systemAnalyzer.computeEnergy();
+        final double oldEnergy = systemAnalyzer.computeEnergy(); //optimization: get energy from polymerSimulator.
         polymerState.scaleSystemAlongDimension(sizeChange, dimension);
         final double newEnergy = systemAnalyzer.computeEnergy();
         energyChange = newEnergy - oldEnergy;
