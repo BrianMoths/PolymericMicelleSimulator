@@ -24,13 +24,13 @@ public class BeadMoveGenerator implements StepGenerator {
     }
 
     static public SimulationStep getBeadMove(SystemAnalyzer systemAnalyzer) {
-        final int bead = getBeadNumber(systemAnalyzer);
+        final int bead = getRandomBeadNumber(systemAnalyzer);
         final double[] stepVector = getStepVector(systemAnalyzer);
 
         return new SingleBeadStep(bead, stepVector);
     }
 
-    static private int getBeadNumber(SystemAnalyzer systemAnalyzer) {
+    static private int getRandomBeadNumber(SystemAnalyzer systemAnalyzer) {
         return random.nextInt(systemAnalyzer.getNumBeads());
     }
 

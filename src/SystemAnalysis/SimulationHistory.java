@@ -107,7 +107,7 @@ public class SimulationHistory implements Serializable {
 //        System.out.println("Slope Limit: " + Double.toString(slopeLimit));
 
         final boolean isVariableEquilibrated;
-        isVariableEquilibrated = Math.abs(slope) < slopeLimit;
+        isVariableEquilibrated = Math.abs(slope) <= slopeLimit;
         return isVariableEquilibrated;
     }
 
@@ -119,7 +119,7 @@ public class SimulationHistory implements Serializable {
         final double f1 = getF1(points);
 
         final double slope;
-        slope = 6 * (double)(numPoints - 1) / (double)(numPoints * (numPoints + 1)) * (2 * f1 - f0);
+        slope = 6 * (double) (numPoints - 1) / (double) (numPoints * (numPoints + 1)) * (2 * f1 - f0);
         return slope;
     }
 
@@ -137,7 +137,7 @@ public class SimulationHistory implements Serializable {
 
     private double getSlopeLimit(DescriptiveStatistics descriptiveStatistics) {
         final double standardDeviation = descriptiveStatistics.getStandardDeviation();
-        final double numPoints = (double)descriptiveStatistics.getN();
+        final double numPoints = (double) descriptiveStatistics.getN();
         return standardDeviation * 24. / Math.sqrt(numPoints);
     }
 

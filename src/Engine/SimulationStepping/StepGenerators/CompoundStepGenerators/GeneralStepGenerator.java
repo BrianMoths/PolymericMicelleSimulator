@@ -32,8 +32,8 @@ public class GeneralStepGenerator implements StepGenerator {
     static private EnumMap<MoveType, Double> makeDefaultWeights() {
         EnumMap<MoveType, Double> weights = new EnumMap<>(MoveType.class);
         weights.put(MoveType.SINGLE_BEAD, 1.);
-        weights.put(MoveType.SINGLE_CHAIN, .01);
-        weights.put(MoveType.SINGLE_WALL_RESIZE, .0001);
+        weights.put(MoveType.SINGLE_CHAIN, .00);//.01
+        weights.put(MoveType.SINGLE_WALL_RESIZE, .0001);//.0001
         weights.put(MoveType.REPTATION, .00);//.01
         return weights;
     }

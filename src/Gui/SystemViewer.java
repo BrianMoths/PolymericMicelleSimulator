@@ -96,6 +96,7 @@ public class SystemViewer extends javax.swing.JFrame {
         temperatureLbl.setText(stringFormatDouble(energeticsConstants.getTemperature()));
         springConstantLbl.setText(stringFormatDouble(energeticsConstants.getSpringCoefficient()));
         coreCoefficientLbl.setText(stringFormatDouble(energeticsConstants.getHardOverlapCoefficient()));
+        numBeadsLbl.setText(Integer.toString(polymerSimulator.getNumBeads()));
 
         final GeometricalParameters geometricalParameters = polymerSimulator.getGeometricalParameters();
         beadSizeLbl.setText(stringFormatDouble(geometricalParameters.getInteractionLength()));
@@ -166,6 +167,8 @@ public class SystemViewer extends javax.swing.JFrame {
         coreSizeLbl = new javax.swing.JLabel();
         hardCoresChk = new javax.swing.JCheckBox();
         hardCoresCaptionLbl = new javax.swing.JLabel();
+        numBeadsCaptionLbl = new javax.swing.JLabel();
+        numBeadsLbl = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -286,7 +289,7 @@ public class SystemViewer extends javax.swing.JFrame {
                 .addGroup(physicalConstantsPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(coreCoeffCaptoinLbl)
                     .addComponent(coreCoefficientLbl))
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addContainerGap(153, Short.MAX_VALUE))
         );
 
         externalEnergyCaptionLbl.setText("External Energy:");
@@ -354,6 +357,11 @@ public class SystemViewer extends javax.swing.JFrame {
 
         hardCoresCaptionLbl.setText("Give Beads Hard Cores");
 
+        numBeadsCaptionLbl.setText("Number of Beads:");
+
+        numBeadsLbl.setText("jLabel2");
+        numBeadsLbl.setBorder(javax.swing.BorderFactory.createBevelBorder(javax.swing.border.BevelBorder.LOWERED));
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
@@ -381,14 +389,21 @@ public class SystemViewer extends javax.swing.JFrame {
                             .addGroup(layout.createSequentialGroup()
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addComponent(physicalConstantsPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                                         .addComponent(hardCoresChk)
                                         .addGap(2, 2, 2)
-                                        .addComponent(hardCoresCaptionLbl, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))))
+                                        .addComponent(hardCoresCaptionLbl, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                                    .addGroup(layout.createSequentialGroup()
+                                        .addComponent(physicalConstantsPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                        .addGap(0, 0, Short.MAX_VALUE))))
                             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                .addComponent(geometricParametersPnl, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))))
+                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addComponent(geometricParametersPnl, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addGroup(layout.createSequentialGroup()
+                                        .addComponent(numBeadsCaptionLbl)
+                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                        .addComponent(numBeadsLbl, javax.swing.GroupLayout.PREFERRED_SIZE, 65, javax.swing.GroupLayout.PREFERRED_SIZE)))))))
                 .addGap(12, 12, 12))
         );
         layout.setVerticalGroup(
@@ -398,10 +413,14 @@ public class SystemViewer extends javax.swing.JFrame {
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(displayPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addGroup(layout.createSequentialGroup()
-                        .addComponent(physicalConstantsPanel, javax.swing.GroupLayout.PREFERRED_SIZE, 185, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(physicalConstantsPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(geometricParametersPnl, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(277, 277, 277)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(numBeadsCaptionLbl)
+                            .addComponent(numBeadsLbl))
+                        .addGap(108, 108, 108)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(hardCoresChk)
                             .addComponent(hardCoresCaptionLbl))))
@@ -448,6 +467,8 @@ public class SystemViewer extends javax.swing.JFrame {
     private javax.swing.JLabel hardCoresCaptionLbl;
     private javax.swing.JCheckBox hardCoresChk;
     private javax.swing.JLabel interactionLengthCaptionLbl;
+    private javax.swing.JLabel numBeadsCaptionLbl;
+    private javax.swing.JLabel numBeadsLbl;
     private javax.swing.JLabel numIterationsCaptionLbl;
     private javax.swing.JLabel numIterationsLbl;
     private javax.swing.JPanel physicalConstantsPanel;

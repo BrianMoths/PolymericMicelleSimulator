@@ -4,7 +4,6 @@
  */
 package Engine;
 
-import Engine.PolymerState.PolymerPosition;
 import Engine.BeadBinning.BeadBinner;
 import Engine.PolymerState.ImmutableDiscretePolymerState;
 import Engine.PolymerState.ImmutablePolymerState;
@@ -19,7 +18,6 @@ import SystemAnalysis.SimulationHistory.TrackedVariable;
 import java.io.Serializable;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Random;
 
 /**
  *
@@ -149,7 +147,7 @@ public class SystemAnalyzer implements Serializable {
     }
 
     private double getBeadStretchingEnergyWithNeighborIndex(int bead, int neighborIndex) {
-        if (neighborIndex > 0) {
+        if (neighborIndex >= 0) {
             return systemGeometry.sqDist(beadPositions[bead], beadPositions[neighborIndex]);
         } else {
             return 0;

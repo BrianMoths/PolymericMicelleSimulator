@@ -122,7 +122,7 @@ public class SurfaceTensionFinder {
             externalEnergyCalculatorBuilder.setxEquilibriumPosition(66.); //was 125 or 66
             externalEnergyCalculatorBuilder.setxSpringConstant(0.); //was .2 or 1.8
             externalEnergyCalculator = externalEnergyCalculatorBuilder.build();
-            density = .05; //.15
+            density = .1; //.15
         }
 
         return new InputParameters(numChains, externalEnergyCalculator, density);
@@ -311,8 +311,11 @@ public class SurfaceTensionFinder {
 
         System.out.println("System is initialized.");
 
+//        polymerSimulator.doIterations(1000000);
+//        polymerSimulator.anneal();
+
         for (int i = 0; i < numAnneals; i++) {
-            polymerSimulator.doIterations(3000000);
+            polymerSimulator.doIterations(3000000);//3000000
             polymerSimulator.anneal();
             System.out.println("equilibrate anneal iteration done.");
         }

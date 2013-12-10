@@ -49,17 +49,27 @@
                           <Group type="102" attributes="0">
                               <EmptySpace max="-2" attributes="0"/>
                               <Group type="103" groupAlignment="0" attributes="0">
-                                  <Component id="physicalConstantsPanel" min="-2" max="-2" attributes="0"/>
                                   <Group type="102" alignment="1" attributes="0">
                                       <Component id="hardCoresChk" min="-2" max="-2" attributes="0"/>
                                       <EmptySpace min="-2" pref="2" max="-2" attributes="0"/>
                                       <Component id="hardCoresCaptionLbl" max="32767" attributes="0"/>
                                   </Group>
+                                  <Group type="102" attributes="0">
+                                      <Component id="physicalConstantsPanel" min="-2" max="-2" attributes="0"/>
+                                      <EmptySpace min="0" pref="0" max="32767" attributes="0"/>
+                                  </Group>
                               </Group>
                           </Group>
                           <Group type="102" alignment="1" attributes="0">
                               <EmptySpace max="32767" attributes="0"/>
-                              <Component id="geometricParametersPnl" min="-2" max="-2" attributes="0"/>
+                              <Group type="103" groupAlignment="0" attributes="0">
+                                  <Component id="geometricParametersPnl" alignment="1" min="-2" max="-2" attributes="0"/>
+                                  <Group type="102" alignment="0" attributes="0">
+                                      <Component id="numBeadsCaptionLbl" min="-2" max="-2" attributes="0"/>
+                                      <EmptySpace max="-2" attributes="0"/>
+                                      <Component id="numBeadsLbl" min="-2" pref="65" max="-2" attributes="0"/>
+                                  </Group>
+                              </Group>
                           </Group>
                       </Group>
                   </Group>
@@ -75,10 +85,15 @@
               <Group type="103" groupAlignment="0" attributes="0">
                   <Component id="displayPanel" min="-2" max="-2" attributes="0"/>
                   <Group type="102" attributes="0">
-                      <Component id="physicalConstantsPanel" min="-2" pref="185" max="-2" attributes="0"/>
+                      <Component id="physicalConstantsPanel" min="-2" max="-2" attributes="0"/>
                       <EmptySpace max="-2" attributes="0"/>
                       <Component id="geometricParametersPnl" min="-2" max="-2" attributes="0"/>
-                      <EmptySpace min="-2" pref="277" max="-2" attributes="0"/>
+                      <EmptySpace type="unrelated" max="-2" attributes="0"/>
+                      <Group type="103" groupAlignment="3" attributes="0">
+                          <Component id="numBeadsCaptionLbl" alignment="3" min="-2" max="-2" attributes="0"/>
+                          <Component id="numBeadsLbl" alignment="3" min="-2" max="-2" attributes="0"/>
+                      </Group>
+                      <EmptySpace min="-2" pref="108" max="-2" attributes="0"/>
                       <Group type="103" groupAlignment="0" attributes="0">
                           <Component id="hardCoresChk" alignment="0" min="-2" max="-2" attributes="0"/>
                           <Component id="hardCoresCaptionLbl" alignment="0" min="-2" max="-2" attributes="0"/>
@@ -230,7 +245,7 @@
                       <Component id="coreCoeffCaptoinLbl" alignment="3" min="-2" max="-2" attributes="0"/>
                       <Component id="coreCoefficientLbl" alignment="3" min="-2" max="-2" attributes="0"/>
                   </Group>
-                  <EmptySpace max="32767" attributes="0"/>
+                  <EmptySpace pref="153" max="32767" attributes="0"/>
               </Group>
           </Group>
         </DimensionLayout>
@@ -462,6 +477,21 @@
     <Component class="javax.swing.JLabel" name="hardCoresCaptionLbl">
       <Properties>
         <Property name="text" type="java.lang.String" value="Give Beads Hard Cores"/>
+      </Properties>
+    </Component>
+    <Component class="javax.swing.JLabel" name="numBeadsCaptionLbl">
+      <Properties>
+        <Property name="text" type="java.lang.String" value="Number of Beads:"/>
+      </Properties>
+    </Component>
+    <Component class="javax.swing.JLabel" name="numBeadsLbl">
+      <Properties>
+        <Property name="text" type="java.lang.String" value="jLabel2"/>
+        <Property name="border" type="javax.swing.border.Border" editor="org.netbeans.modules.form.editors2.BorderEditor">
+          <Border info="org.netbeans.modules.form.compat2.border.BevelBorderInfo">
+            <BevelBorder bevelType="1"/>
+          </Border>
+        </Property>
       </Properties>
     </Component>
   </SubComponents>
