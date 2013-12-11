@@ -19,6 +19,6 @@ public interface SimulationStep {
 
     public double getEnergyChange();
 
-    public MoveType getMoveType();
+    public StepType getMoveType();
 
 }

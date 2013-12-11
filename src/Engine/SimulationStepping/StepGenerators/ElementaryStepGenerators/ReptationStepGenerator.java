@@ -7,6 +7,7 @@ package Engine.SimulationStepping.StepGenerators.ElementaryStepGenerators;
 import Engine.SimulationStepping.StepGenerators.StepGenerator;
 import Engine.SimulationStepping.StepTypes.ReptationStep;
 import Engine.SimulationStepping.StepTypes.SimulationStep;
+import Engine.SimulationStepping.StepTypes.ZeroStep;
 import Engine.SystemAnalyzer;
 import java.util.Random;
 
@@ -23,6 +24,9 @@ public class ReptationStepGenerator implements StepGenerator {
     }
 
     static public SimulationStep getReptationMove(SystemAnalyzer systemAnalyzer) {
+        if (systemAnalyzer.getNumBeads() == 0) {
+            return ZeroStep.getZeroStep();
+        }
         final int bead = getBeadNumber(systemAnalyzer);
         final boolean isGoingRight = random.nextBoolean();
 

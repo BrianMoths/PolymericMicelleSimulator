@@ -106,18 +106,19 @@ public class SystemViewer extends javax.swing.JFrame {
     }
 
     private void updateDisplay() {
-        SystemAnalyzer systemAnalyzer = polymerSimulator.getSystemAnalyzer();
+        synchronized (polymerSimulator) {
+            SystemAnalyzer systemAnalyzer = polymerSimulator.getSystemAnalyzer();
 
-        final double energy = polymerSimulator.getEnergy();
+            final double energy = polymerSimulator.getEnergy();
 
-        GeometryAnalyzer.AreaPerimeter areaPerimeter = systemAnalyzer.findAreaAndPerimeter();
-        systemAnalyzer.addPerimeterAreaEnergySnapshot(areaPerimeter.perimeter, areaPerimeter.area, energy);
+            GeometryAnalyzer.AreaPerimeter areaPerimeter = systemAnalyzer.findAreaAndPerimeter();
+            systemAnalyzer.addPerimeterAreaEnergySnapshot(areaPerimeter.perimeter, areaPerimeter.area, energy);
 
-        energyLbl.setText(stringFormatDouble(energy));
-        numIterationsLbl.setText(String.valueOf(polymerSimulator.getIterationNumber()));
-        externalEnergyLbl.setText(stringFormatDouble(systemAnalyzer.externalEnergy()));
-        systemSizeLbl.setText(stringFormatDouble(polymerSimulator.getGeometry().getSizeOfDimension(0)));
-
+            energyLbl.setText(stringFormatDouble(energy));
+            numIterationsLbl.setText(String.valueOf(polymerSimulator.getIterationNumber()));
+            externalEnergyLbl.setText(stringFormatDouble(systemAnalyzer.externalEnergy()));
+            systemSizeLbl.setText(stringFormatDouble(polymerSimulator.getGeometry().getSizeOfDimension(0)));
+        }
         if (analysisWindow != null) {
             analysisWindow.updateDisplay();
         }

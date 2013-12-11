@@ -57,7 +57,7 @@ public abstract class AbstractGeometry implements SystemGeometry {
         }
 
         @Override
-        public double[] getFullRMax() {
+        public double[] getFullRMaxCopy() {
             double[] rMax = new double[dimension];
             System.arraycopy(fullRMax, 0, rMax, 0, dimension);
             return rMax;
@@ -227,12 +227,13 @@ public abstract class AbstractGeometry implements SystemGeometry {
     final protected BeadRectangle getUnsplitRectangleFromPosition(double[] beadPosition) {
         double left, right, top, bottom, halfWidth;
         halfWidth = parameters.getInteractionLength() / 2;
+        double initialX = beadPosition[0];
+        double initialY = beadPosition[1];
         left = beadPosition[0] - halfWidth;
         right = beadPosition[0] + halfWidth;
         top = beadPosition[1] + halfWidth;
         bottom = beadPosition[1] - halfWidth;
         BeadRectangle rectangle = new BeadRectangle(left, right, top, bottom);
-
         return rectangle;
     }
 

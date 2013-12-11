@@ -15,7 +15,7 @@ import Engine.SystemAnalyzer;
  *
  * @author bmoths
  */
-public enum MoveType {
+public enum StepType {
 
     SINGLE_BEAD(new StepGenerator() {
         @Override
@@ -44,10 +44,17 @@ public enum MoveType {
             return ReptationStepGenerator.getReptationMove(systemAnalyzer);
         }
 
+    }),
+    ZERO_STEP(new StepGenerator() {
+        @Override
+        public SimulationStep generateStep(SystemAnalyzer systemAnalyzer) {
+            return ZeroStep.getZeroStep();
+        }
+
     });
     private final StepGenerator stepGenerator;
 
-    private MoveType(StepGenerator stepGenerator) {
+    private StepType(StepGenerator stepGenerator) {
         this.stepGenerator = stepGenerator;
     }
 

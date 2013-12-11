@@ -9,7 +9,6 @@ import Engine.PolymerState.SystemGeometry.AreaOverlap;
 import Engine.PolymerState.SystemGeometry.Interfaces.ImmutableSystemGeometry;
 import java.io.Serializable;
 import java.util.Random;
-import sun.font.EAttribute;
 
 /**
  *
@@ -20,15 +19,39 @@ public final class EnergeticsConstants implements Serializable {
     //<editor-fold defaultstate="collapsed" desc="builder class">
     static public class EnergeticsConstantsBuilder {
 
-        private double temperature = 1,
-                AAOverlapCoefficient = 5. / 120.,
-                BBOverlapCoefficient = 5. / 120.,
-                ABOverlapCoefficient = .1,
-                springCoefficient = 1. / 3.,
-                hardOverlapCoefficient = 0;
+        static public EnergeticsConstantsBuilder zeroEnergeticsConstantsBuilder() {
+            EnergeticsConstantsBuilder energeticsConstantsBuilder;
+            energeticsConstantsBuilder = new EnergeticsConstantsBuilder();
+            energeticsConstantsBuilder.AAOverlapCoefficient = 0;
+            energeticsConstantsBuilder.ABOverlapCoefficient = 0;
+            energeticsConstantsBuilder.BBOverlapCoefficient = 0;
+            energeticsConstantsBuilder.temperature = 0;
+            energeticsConstantsBuilder.springCoefficient = 0;
+            energeticsConstantsBuilder.hardOverlapCoefficient = 0;
+            return energeticsConstantsBuilder;
+        }
+
+        static public EnergeticsConstantsBuilder defaultEnergeticsConstantsBuilder() {
+            EnergeticsConstantsBuilder energeticsConstantsBuilder;
+            energeticsConstantsBuilder = new EnergeticsConstantsBuilder();
+            energeticsConstantsBuilder.AAOverlapCoefficient = 5. / 120;
+            energeticsConstantsBuilder.ABOverlapCoefficient = .1;
+            energeticsConstantsBuilder.BBOverlapCoefficient = 5. / 120.;
+            energeticsConstantsBuilder.temperature = 1;
+            energeticsConstantsBuilder.springCoefficient = 1. / 3.;
+            energeticsConstantsBuilder.hardOverlapCoefficient = 0;
+            return energeticsConstantsBuilder;
+        }
+
+        private double temperature,
+                AAOverlapCoefficient,
+                BBOverlapCoefficient,
+                ABOverlapCoefficient,
+                springCoefficient,
+                hardOverlapCoefficient;
         private ExternalEnergyCalculator externalEnergyCalculator = new ExternalEnergyCalculator();
 
-        public EnergeticsConstantsBuilder() {
+        private EnergeticsConstantsBuilder() {
         }
 
         public EnergeticsConstantsBuilder(EnergeticsConstants energeticsConstants) {
@@ -143,14 +166,8 @@ public final class EnergeticsConstants implements Serializable {
     }
 
     static public EnergeticsConstants zeroEnergeticsConstants() {
-        EnergeticsConstantsBuilder energeticsConstantsBuilder = new EnergeticsConstantsBuilder();
-        energeticsConstantsBuilder.AAOverlapCoefficient = 0;
-        energeticsConstantsBuilder.ABOverlapCoefficient = 0;
-        energeticsConstantsBuilder.BBOverlapCoefficient = 0;
-        energeticsConstantsBuilder.temperature = 0;
-        energeticsConstantsBuilder.springCoefficient = 0;
-        energeticsConstantsBuilder.hardOverlapCoefficient = 0;
-        return new EnergeticsConstants(energeticsConstantsBuilder);
+        EnergeticsConstantsBuilder energeticsConstantsBuilder = EnergeticsConstantsBuilder.zeroEnergeticsConstantsBuilder();
+        return energeticsConstantsBuilder.buildEnergeticsConstants();
     }
 
     private final double temperature,

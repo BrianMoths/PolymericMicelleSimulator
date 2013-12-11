@@ -26,14 +26,14 @@ import org.apache.commons.math3.stat.descriptive.DescriptiveStatistics;
 public class IdealGasSimulation {
 
     static private final int numBeadsPerChain = 1;
-    static private final int numBeads = 1;
+    static private final int numBeads = 0;
     static private final double density = .01;
 
     public static void main(String[] args) {
 
         final IdealGasSimulation idealGasSimulation;
         idealGasSimulation = new IdealGasSimulation();
-        idealGasSimulation.findVolume(.01);
+        idealGasSimulation.findVolume(.1);
 
     }
 
@@ -76,19 +76,24 @@ public class IdealGasSimulation {
         final double aspectRatio = 1.;
         systemGeometryBuilder.setDimension(2);
         systemGeometryBuilder.makeConsistentWith(numBeadsIncludingWater, geometricalParameters, aspectRatio);
+        if (systemGeometryBuilder.getFullRMaxCopy()[0] == 0) {
+            systemGeometryBuilder.setDimensionSize(0, 10);
+            systemGeometryBuilder.setDimensionSize(1, 10);
+        }
         return systemGeometryBuilder.buildGeometry();
     }
 //</editor-fold>
 
-    private static EnergeticsConstants makeEnergeticsConstants(double pressure) {
-        EnergeticsConstantsBuilder energeticsConstantsBuilder = new EnergeticsConstantsBuilder();
+    static private EnergeticsConstants makeEnergeticsConstants(double pressure) {
+        EnergeticsConstantsBuilder energeticsConstantsBuilder = EnergeticsConstantsBuilder.zeroEnergeticsConstantsBuilder();
+        energeticsConstantsBuilder.setTemperature(1);
         ExternalEnergyCalculatorBuilder externalEnergyCalculatorBuilder = new ExternalEnergyCalculatorBuilder();
         externalEnergyCalculatorBuilder.setPressure(pressure);
         energeticsConstantsBuilder.setExternalEnergyCalculator(externalEnergyCalculatorBuilder.build());
         return energeticsConstantsBuilder.buildEnergeticsConstants();
     }
 
-    private int numSurfaceTensionTrials = 10;
+    private int numSurfaceTensionTrials = 1000;
 
     private IdealGasSimulation() {
     }
@@ -112,7 +117,7 @@ public class IdealGasSimulation {
             System.out.println("System equilibrated.");
             System.out.println("Gathering statistics to find equilibrium length.");
 
-            final int numSamples = 100;
+            final int numSamples = 1000;
             DescriptiveStatistics lengthStatistics = generateLengthStatistics(numSamples, polymerSimulator);
             System.out.println("Pressure times Volume found is: " + pressure * polymerSimulator.getSystemAnalyzer().getSystemGeometry().getSizeOfDimension(1) * lengthStatistics.getMean());
         }

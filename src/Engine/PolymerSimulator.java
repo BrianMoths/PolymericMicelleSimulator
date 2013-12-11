@@ -8,7 +8,7 @@ import Engine.PolymerState.DiscretePolymerState;
 import Engine.PolymerState.PolymerPosition;
 import Engine.PolymerState.PolymerState;
 import Engine.PolymerState.SystemGeometry.GeometricalParameters;
-import Engine.SimulationStepping.StepTypes.MoveType;
+import Engine.SimulationStepping.StepTypes.StepType;
 import Engine.SimulationStepping.StepTypes.SimulationStep;
 import Engine.SimulationStepping.StepGenerators.StepGenerator;
 import Engine.PolymerState.SystemGeometry.Implementations.PeriodicGeometry.PeriodicGeometryBuilder;
@@ -138,9 +138,11 @@ public class PolymerSimulator implements Serializable {
         energy = systemAnalyzer.computeEnergy();
     }
 
-    public synchronized void doIterations(int n) { //possibly optomize by unrolling loop and tracking pairwise interactions
+    public void doIterations(int n) { //possibly optomize by unrolling loop and tracking pairwise interactions
         for (int i = 0; i < n; i++) {
-            doIteration();
+            synchronized (this) {
+                doIteration();
+            }
             if (Thread.interrupted()) {
                 return;
             }
@@ -169,16 +171,16 @@ public class PolymerSimulator implements Serializable {
         numChainMoves = 0;
     }
 
-    private void iterateAttemptCounters(MoveType moveType) {
+    private void iterateAttemptCounters(StepType moveType) {
         iterationNumber++;
-        if (moveType == MoveType.SINGLE_CHAIN) {
+        if (moveType == StepType.SINGLE_CHAIN) {
             numChainMoves++;
         }
     }
 
-    private void iterateAcceptedCounters(MoveType moveType) {
+    private void iterateAcceptedCounters(StepType moveType) {
         acceptedIterations++;
-        if (moveType == MoveType.SINGLE_CHAIN) {
+        if (moveType == StepType.SINGLE_CHAIN) {
             acceptedChainMoves++;
         }
     }

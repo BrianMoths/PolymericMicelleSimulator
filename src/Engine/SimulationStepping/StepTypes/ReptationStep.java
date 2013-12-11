@@ -13,7 +13,7 @@ import Engine.SystemAnalyzer;
  */
 public class ReptationStep implements SimulationStep {
 
-    static public final MoveType moveType = MoveType.REPTATION;
+    static public final StepType moveType = StepType.REPTATION;
     private double energyChange;
     private final int beadInChain;
     private final boolean isGoingRight;
@@ -48,7 +48,7 @@ public class ReptationStep implements SimulationStep {
     }
 
     @Override
-    public MoveType getMoveType() {
+    public StepType getMoveType() {
         return moveType;
     }
 

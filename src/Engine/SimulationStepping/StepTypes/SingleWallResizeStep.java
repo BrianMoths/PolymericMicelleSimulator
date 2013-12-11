@@ -13,7 +13,7 @@ import Engine.SystemAnalyzer;
  */
 public class SingleWallResizeStep implements SimulationStep {
 
-    static public final MoveType moveType = MoveType.SINGLE_WALL_RESIZE;
+    static public final StepType moveType = StepType.SINGLE_WALL_RESIZE;
     private final int dimension;
     private final double sizeChange;
     private double energyChange;
@@ -43,7 +43,7 @@ public class SingleWallResizeStep implements SimulationStep {
     }
 
     @Override
-    public MoveType getMoveType() {
+    public StepType getMoveType() {
         return moveType;
     }
 

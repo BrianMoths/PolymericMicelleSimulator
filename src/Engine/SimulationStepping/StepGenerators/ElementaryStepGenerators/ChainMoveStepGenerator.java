@@ -8,6 +8,7 @@ import Engine.PolymerState.SystemGeometry.Interfaces.ImmutableSystemGeometry;
 import Engine.SimulationStepping.StepGenerators.StepGenerator;
 import Engine.SimulationStepping.StepTypes.SimulationStep;
 import Engine.SimulationStepping.StepTypes.SingleChainStep;
+import Engine.SimulationStepping.StepTypes.ZeroStep;
 import Engine.SystemAnalyzer;
 import java.util.List;
 import java.util.Random;
@@ -25,6 +26,9 @@ public class ChainMoveStepGenerator implements StepGenerator {
     }
 
     public static SimulationStep getChainMove(SystemAnalyzer systemAnalyzer) {
+        if (systemAnalyzer.getNumBeads() == 0) {
+            return ZeroStep.getZeroStep();
+        }
         List<Integer> chain = getChain(systemAnalyzer);
         final double[] stepVector = getStepVector(systemAnalyzer); //need to make this bigger
 

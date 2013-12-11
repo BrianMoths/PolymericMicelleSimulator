@@ -725,7 +725,7 @@ public class SystemConfiguration extends javax.swing.JFrame { //broken, need to 
     }
 
     static private EnergeticsConstantsBuilder makeEnergeticsConstantsBuilder(InputVariables inputVariables) {
-        EnergeticsConstantsBuilder energeticsConstantsBuilder = new EnergeticsConstantsBuilder();
+        EnergeticsConstantsBuilder energeticsConstantsBuilder = EnergeticsConstantsBuilder.defaultEnergeticsConstantsBuilder();
 
         energeticsConstantsBuilder.setTemperature(inputVariables.temperature);
         energeticsConstantsBuilder.setAAOverlapCoefficient(inputVariables.AAOverlapCoefficient);

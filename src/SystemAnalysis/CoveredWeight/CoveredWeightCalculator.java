@@ -106,7 +106,9 @@ public class CoveredWeightCalculator {
         public double getCoveredWeight() {
             return coveredWeight;
         }
+
     }
+
     private List<Double> weights; //nodes are private inner class so have acces to this variable
     WeightedNode rootNode;
 
@@ -132,4 +134,5 @@ public class CoveredWeightCalculator {
     public double getWeight() {
         return rootNode.getCoveredWeight();
     }
+
 }

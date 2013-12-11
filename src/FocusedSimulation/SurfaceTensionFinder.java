@@ -186,7 +186,7 @@ public class SurfaceTensionFinder {
     }
 
     static private EnergeticsConstantsBuilder makeEnergeticsConstantsBuilder(ExternalEnergyCalculator externalEnergyCalculator) {
-        EnergeticsConstants.EnergeticsConstantsBuilder energeticsConstantsBuilder = new EnergeticsConstants.EnergeticsConstantsBuilder();
+        EnergeticsConstants.EnergeticsConstantsBuilder energeticsConstantsBuilder = EnergeticsConstantsBuilder.defaultEnergeticsConstantsBuilder();
 
         energeticsConstantsBuilder.setTemperature(1);
         energeticsConstantsBuilder.setAAOverlapCoefficient(0);

@@ -133,7 +133,9 @@ public class CoveredWeightAndEdgeCalculator {
         public boolean isRightEdgeCovered() {
             return isRightEdgeCovered;
         }
+
     }
+
     private List<Double> weights; //nodes are private inner class so have acces to this variable
     WeightedNode rootNode;
 
@@ -158,4 +160,5 @@ public class CoveredWeightAndEdgeCalculator {
     public int getNumEdges() {
         return rootNode.getNumInternalEdges() + (rootNode.isLeftEdgeCovered() ? 1 : 0) + (rootNode.isRightEdgeCovered() ? 1 : 0);
     }
+
 }

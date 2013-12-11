@@ -72,7 +72,7 @@ public class EnergyOfL {
     }
 
     static private EnergeticsConstantsBuilder makeEnergeticsConstantsBuilder() {
-        EnergeticsConstants.EnergeticsConstantsBuilder energeticsConstantsBuilder = new EnergeticsConstants.EnergeticsConstantsBuilder();
+        EnergeticsConstants.EnergeticsConstantsBuilder energeticsConstantsBuilder = EnergeticsConstantsBuilder.defaultEnergeticsConstantsBuilder();
 
         energeticsConstantsBuilder.setTemperature(1);
         energeticsConstantsBuilder.setAAOverlapCoefficient(0);

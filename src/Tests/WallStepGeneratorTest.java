@@ -35,7 +35,7 @@ public class WallStepGeneratorTest {
     private static PolymerSimulator makePolymerSimulator() {
         PolymerCluster polymerCluster = PolymerCluster.makeEmptyPolymerCluster();
 
-        EnergeticsConstantsBuilder energeticsConstantsBuilder = new EnergeticsConstantsBuilder();
+        EnergeticsConstantsBuilder energeticsConstantsBuilder = EnergeticsConstantsBuilder.defaultEnergeticsConstantsBuilder();
         energeticsConstantsBuilder.setExternalEnergyCalculator(makeExternalEnergyCalculator());
         final EnergeticsConstants energeticsConstants = energeticsConstantsBuilder.buildEnergeticsConstants();
 

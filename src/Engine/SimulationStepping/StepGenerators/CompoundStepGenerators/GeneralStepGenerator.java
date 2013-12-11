@@ -5,7 +5,7 @@
 package Engine.SimulationStepping.StepGenerators.CompoundStepGenerators;
 
 import Engine.SimulationStepping.StepGenerators.StepGenerator;
-import Engine.SimulationStepping.StepTypes.MoveType;
+import Engine.SimulationStepping.StepTypes.StepType;
 import Engine.SimulationStepping.StepTypes.SimulationStep;
 import Engine.SystemAnalyzer;
 import java.util.EnumMap;
@@ -25,37 +25,37 @@ public class GeneralStepGenerator implements StepGenerator {
     }
 
     static public GeneralStepGenerator defaultStepGenerator() {
-        EnumMap<MoveType, Double> weights = makeDefaultWeights();
+        EnumMap<StepType, Double> weights = makeDefaultWeights();
         return new GeneralStepGenerator(weights);
     }
 
-    static private EnumMap<MoveType, Double> makeDefaultWeights() {
-        EnumMap<MoveType, Double> weights = new EnumMap<>(MoveType.class);
-        weights.put(MoveType.SINGLE_BEAD, 1.);
-        weights.put(MoveType.SINGLE_CHAIN, .00);//.01
-        weights.put(MoveType.SINGLE_WALL_RESIZE, .0001);//.0001
-        weights.put(MoveType.REPTATION, .00);//.01
+    static private EnumMap<StepType, Double> makeDefaultWeights() {
+        EnumMap<StepType, Double> weights = new EnumMap<>(StepType.class);
+        weights.put(StepType.SINGLE_BEAD, 0.);//1
+        weights.put(StepType.SINGLE_CHAIN, .00);//.01
+        weights.put(StepType.SINGLE_WALL_RESIZE, .1);//.0001
+        weights.put(StepType.REPTATION, .00);//.01
         return weights;
     }
 
-    private final EnumMap<MoveType, Double> weights;
+    private final EnumMap<StepType, Double> weights;
     private final double weightSum;
 
-    public GeneralStepGenerator(EnumMap<MoveType, Double> weights) {
+    public GeneralStepGenerator(EnumMap<StepType, Double> weights) {
         this.weights = new EnumMap<>(weights);
         weightSum = calculateWeightSum();
     }
 
     @Override
     public SimulationStep generateStep(SystemAnalyzer systemAnalyzer) {
-        MoveType moveType = getRandomMoveType();
+        StepType moveType = getRandomMoveType();
         return moveType.getSimulationStep(systemAnalyzer);
     }
 
-    private MoveType getRandomMoveType() {
+    private StepType getRandomMoveType() {
         double randomDouble = random.nextDouble() * weightSum;
 
-        for (Entry<MoveType, Double> entry : weights.entrySet()) {
+        for (Entry<StepType, Double> entry : weights.entrySet()) {
             double weight = entry.getValue();
             if (randomDouble <= weight) {
                 return entry.getKey();

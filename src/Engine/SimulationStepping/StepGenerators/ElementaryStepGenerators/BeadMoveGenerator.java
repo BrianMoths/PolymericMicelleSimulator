@@ -8,6 +8,7 @@ import Engine.PolymerState.SystemGeometry.Interfaces.ImmutableSystemGeometry;
 import Engine.SimulationStepping.StepGenerators.StepGenerator;
 import Engine.SimulationStepping.StepTypes.SimulationStep;
 import Engine.SimulationStepping.StepTypes.SingleBeadStep;
+import Engine.SimulationStepping.StepTypes.ZeroStep;
 import Engine.SystemAnalyzer;
 import java.util.Random;
 
@@ -24,6 +25,9 @@ public class BeadMoveGenerator implements StepGenerator {
     }
 
     static public SimulationStep getBeadMove(SystemAnalyzer systemAnalyzer) {
+        if (systemAnalyzer.getNumBeads() == 0) {
+            return ZeroStep.getZeroStep();
+        }
         final int bead = getRandomBeadNumber(systemAnalyzer);
         final double[] stepVector = getStepVector(systemAnalyzer);
 

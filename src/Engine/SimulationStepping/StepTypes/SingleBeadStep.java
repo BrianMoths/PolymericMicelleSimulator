@@ -13,7 +13,7 @@ import Engine.SystemAnalyzer;
  */
 public class SingleBeadStep implements SimulationStep {
 
-    static public final MoveType moveType = MoveType.SINGLE_BEAD;
+    static public final StepType moveType = StepType.SINGLE_BEAD;
     private final int bead;
     private final double[] stepVector;
     private double energyChange;
@@ -68,7 +68,7 @@ public class SingleBeadStep implements SimulationStep {
     }
 
     @Override
-    public MoveType getMoveType() {
+    public StepType getMoveType() {
         return moveType;
     }
 

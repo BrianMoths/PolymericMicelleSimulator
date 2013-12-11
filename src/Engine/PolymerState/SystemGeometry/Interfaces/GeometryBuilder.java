@@ -16,7 +16,7 @@ public interface GeometryBuilder {
 
     public GeometryBuilder setDimension(int dimension);
 
-    public double[] getFullRMax();
+    public double[] getFullRMaxCopy();
 
     public GeometryBuilder setDimensionSize(int dimension, double size);
 

@@ -95,9 +95,6 @@ public class DiscretePolymerState implements ImmutableDiscretePolymerState, Seri
         int nextBead = getNeighborToLeftOfBead(bead);
         while (nextBead != -1) {
             chain.add(nextBead);
-//            if (chain.size() > 20) {
-//                throw new AssertionError();
-//            }
             nextBead = getNeighborToLeftOfBead(nextBead);
         }
     }
@@ -106,9 +103,6 @@ public class DiscretePolymerState implements ImmutableDiscretePolymerState, Seri
         int nextBead = getNeighborToRightOfBead(bead);
         while (nextBead != -1) {
             chain.add(nextBead);
-//            if (chain.size() > 20) {
-//                throw new AssertionError();
-//            }
             nextBead = getNeighborToRightOfBead(nextBead);
         }
     }
@@ -137,9 +131,6 @@ public class DiscretePolymerState implements ImmutableDiscretePolymerState, Seri
         while (nextBead != -1) {
             currentBead = nextBead;
             nextBead = getNeighborToLeftOfBead(nextBead);
-            if (count++ > 20) {
-                throw new AssertionError();
-            }
         }
         return currentBead;
     }
@@ -151,9 +142,6 @@ public class DiscretePolymerState implements ImmutableDiscretePolymerState, Seri
         while (nextBead != -1) {
             currentBead = nextBead;
             nextBead = getNeighborToRightOfBead(nextBead);
-            if (count++ > 20) {
-                throw new AssertionError();
-            }
         }
         return currentBead;
     }

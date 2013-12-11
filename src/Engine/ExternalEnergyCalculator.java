@@ -305,7 +305,7 @@ public class ExternalEnergyCalculator {
         final double x = rMax[0];
         final double y = rMax[1];
 
-        return xTension * x + xQuadratic * x * x + yTension * y + yQuadratic * y * y - pressure * x * y;
+        return xTension * x + xQuadratic * x * x + yTension * y + yQuadratic * y * y + pressure * x * y;
     }
 
     //<editor-fold defaultstate="collapsed" desc="getters">
