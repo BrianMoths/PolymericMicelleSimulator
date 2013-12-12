@@ -5,7 +5,6 @@
 package Engine.BeadBinning;
 
 import Engine.PolymerState.SystemGeometry.Interfaces.ImmutableSystemGeometry;
-import Engine.PolymerState.SystemGeometry.Interfaces.SystemGeometry;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -68,45 +67,14 @@ public class BeadBinner implements Serializable {
 
         private final BinIndex binIndex;
         private Iterator<Integer> beadIterator;
-        final List<Integer> ranges;
         final List<Integer> currentBinOffset;
         private boolean isOutOfBins;
 
         public NearbyBeadIterator(BinIndex binIndex) {
-            ranges = makeRanges();
-            currentBinOffset = makeCurrentBinOffset();
+            currentBinOffset = new ArrayList<>(initialBinOffset);
             isOutOfBins = false;
             this.binIndex = new BinIndex(binIndex);
             updateBeadIterator();
-        }
-
-        private List<Integer> makeRanges() {
-            List<Integer> rangesLocal;
-            rangesLocal = new ArrayList<>(numDimensions);
-
-            for (int dimension = 0; dimension < numDimensions; dimension++) {
-                rangesLocal.add(getRangeForDimension(dimension));
-            }
-
-            return rangesLocal;
-        }
-
-        private int getRangeForDimension(int dimension) {
-            final int numBinsOfDimension = numBins[dimension];
-            if (numBinsOfDimension > 3) {
-                return 1;
-            } else {
-                return 0;
-            }
-        }
-
-        private List<Integer> makeCurrentBinOffset() {
-            List<Integer> currentBinOffsetLocal;
-            currentBinOffsetLocal = new ArrayList<>(numDimensions);
-            for (Integer range : ranges) {
-                currentBinOffsetLocal.add(-range);
-            }
-            return currentBinOffsetLocal;
         }
 
         @Override
@@ -186,6 +154,8 @@ public class BeadBinner implements Serializable {
     private MultidimensionalArray<Set<Integer>> beadBins;
     private boolean isStepDone = false;
     private List<BinIndex> binIndices;
+    private final List<Integer> ranges;
+    private final List<Integer> initialBinOffset;
 
     public BeadBinner(double[][] beadPositions, ImmutableSystemGeometry systemGeometry) {
         final double[] rMax = systemGeometry.getRMax();
@@ -194,13 +164,14 @@ public class BeadBinner implements Serializable {
         numBins = new int[numDimensions];
         binSize = new double[numDimensions];
         for (int dimension = 0; dimension < numDimensions; dimension++) {
-            numBins[dimension] = (int)Math.floor(rMax[dimension] / interactionLength);
+            numBins[dimension] = (int) Math.floor(rMax[dimension] / interactionLength);
             if (numBins[dimension] < 4) {
                 numBins[dimension] = 1;
             }
             binSize[dimension] = rMax[dimension] / numBins[dimension];
         }
-
+        ranges = makeRanges();
+        initialBinOffset = makeInitialBinOffset();
         binBeadsPrivate(beadPositions);
     }
 
@@ -214,6 +185,37 @@ public class BeadBinner implements Serializable {
         numBins = beadBinner.numBins;
         beadBins = new MultidimensionalArray<>(beadBinner.beadBins);
         isStepDone = beadBinner.isStepDone;
+        ranges = new ArrayList<>(beadBinner.ranges);
+        initialBinOffset = new ArrayList<>(beadBinner.initialBinOffset);
+    }
+
+    private List<Integer> makeRanges() {
+        List<Integer> rangesLocal;
+        rangesLocal = new ArrayList<>(numDimensions);
+
+        for (int dimension = 0; dimension < numDimensions; dimension++) {
+            rangesLocal.add(getRangeForDimension(dimension));
+        }
+
+        return rangesLocal;
+    }
+
+    private int getRangeForDimension(int dimension) {
+        final int numBinsOfDimension = numBins[dimension];
+        if (numBinsOfDimension > 3) {
+            return 1;
+        } else {
+            return 0;
+        }
+    }
+
+    private List<Integer> makeInitialBinOffset() {
+        List<Integer> currentBinOffsetLocal;
+        currentBinOffsetLocal = new ArrayList<>(numDimensions);
+        for (Integer range : ranges) {
+            currentBinOffsetLocal.add(-range);
+        }
+        return currentBinOffsetLocal;
     }
 
     public void binBeads(double[][] beadPositions) {
@@ -278,7 +280,7 @@ public class BeadBinner implements Serializable {
     }
 
     private int calculateBinIndexForPositionOfDimension(double[] position, int dimension) {
-        return (int)Math.floor(position[dimension] / binSize[dimension]);
+        return (int) Math.floor(position[dimension] / binSize[dimension]);
     }
 
     private void projectBinIndex(BinIndex binIndex) {
