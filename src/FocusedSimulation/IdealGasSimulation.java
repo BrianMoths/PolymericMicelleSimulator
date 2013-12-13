@@ -26,19 +26,19 @@ import org.apache.commons.math3.stat.descriptive.DescriptiveStatistics;
 public class IdealGasSimulation {
 
     static private final int numBeadsPerChain = 1;
-    static private final int numBeads = 0;
+    static private final int numBeads = 5;
     static private final double density = .01;
 
     public static void main(String[] args) {
 
         final IdealGasSimulation idealGasSimulation;
         idealGasSimulation = new IdealGasSimulation();
-        idealGasSimulation.findVolume(.1);
+        idealGasSimulation.findVolume(.01);
 
     }
 
     static public DescriptiveStatistics generateLengthStatistics(int numSamples, PolymerSimulator polymerSimulator) {
-        final int iterationsPerSample = 100000;
+        final int iterationsPerSample = 100000;//1000000
         int numSamplesTaken = 0;
         SystemAnalyzer systemAnalyzer = polymerSimulator.getSystemAnalyzer();
 
@@ -55,7 +55,7 @@ public class IdealGasSimulation {
     //<editor-fold defaultstate="expanded" desc="makePolymerSimulator">
     static private PolymerSimulator makePolymerSimulator(double pressure) {
         EnergeticsConstants energeticsConstants = makeEnergeticsConstants(pressure);
-        GeometricalParameters geometricalParameters = new GeometricalParameters();
+        GeometricalParameters geometricalParameters = new GeometricalParameters(1., 1.);
 
         final PolymerCluster polymerCluster = makePolymerCluster(numBeads, density);
         final SystemGeometry systemGeometry = makeSystemGeometry(polymerCluster.getNumBeadsIncludingWater(), geometricalParameters);
@@ -101,6 +101,14 @@ public class IdealGasSimulation {
     private void findVolume(double pressure) {
         PolymerSimulator polymerSimulator = makePolymerSimulator(pressure);
         polymerSimulator.columnRandomizePositions();
+
+//        final int numIterations = 5000000;
+//        final long beginTime = System.currentTimeMillis();
+//        polymerSimulator.doIterations(numIterations);
+//        final long timeTaken = System.currentTimeMillis() - beginTime;
+//        System.out.println("Total milleseconds taken for " + numIterations + " iterations: " + timeTaken);
+//        System.out.println("Microseconds per iteration: " + (1000. * (double) timeTaken / numIterations));
+
         try {
             SystemViewer systemViewer = new SystemViewer(polymerSimulator);
             systemViewer.setVisible(true);
@@ -117,7 +125,7 @@ public class IdealGasSimulation {
             System.out.println("System equilibrated.");
             System.out.println("Gathering statistics to find equilibrium length.");
 
-            final int numSamples = 1000;
+            final int numSamples = 1000;//100
             DescriptiveStatistics lengthStatistics = generateLengthStatistics(numSamples, polymerSimulator);
             System.out.println("Pressure times Volume found is: " + pressure * polymerSimulator.getSystemAnalyzer().getSystemGeometry().getSizeOfDimension(1) * lengthStatistics.getMean());
         }

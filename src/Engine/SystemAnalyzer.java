@@ -169,7 +169,7 @@ public class SystemAnalyzer implements Serializable {
     public AreaOverlap beadOverlap(int bead) {
         TwoBeadOverlap AOverlap = new TwoBeadOverlap(), BOverlap = new TwoBeadOverlap();
         final double[] beadPosition = beadPositions[bead];
-        Iterator<Integer> nearbyBeadIterator = beadBinner.getNearbyBeadIterator(beadPosition);
+        Iterator<Integer> nearbyBeadIterator = beadBinner.getNearbyBeadIterator(bead);
         while (nearbyBeadIterator.hasNext()) {
             final int currentBead = nearbyBeadIterator.next();
             if (isTypeA(currentBead)) {

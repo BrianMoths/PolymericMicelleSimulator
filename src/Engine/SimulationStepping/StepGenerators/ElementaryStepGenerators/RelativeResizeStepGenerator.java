@@ -24,26 +24,42 @@ public class RelativeResizeStepGenerator implements StepGenerator {
     }
 
     static public SimulationStep getRelativeResizeStep(SystemAnalyzer systemAnalyzer) {
-        RelativeResizeStepGenerator relativeResizeStepGenerator = new RelativeResizeStepGenerator();
+        RelativeResizeStepGenerator relativeResizeStepGenerator = new RelativeResizeStepGenerator(systemAnalyzer.getNumBeads());
         return relativeResizeStepGenerator.generateStep(systemAnalyzer);
     }
 
     static public SimulationStep getRelativeResizeStep(SystemAnalyzer systemAnalyzer, double maxScalingFactor) {
-        RelativeResizeStepGenerator relativeResizeStepGenerator = new RelativeResizeStepGenerator(maxScalingFactor);
+        RelativeResizeStepGenerator relativeResizeStepGenerator = new RelativeResizeStepGenerator(maxScalingFactor, systemAnalyzer.getNumBeads());
         return relativeResizeStepGenerator.generateStep(systemAnalyzer);
     }
 
-    private final double lowerRandom, randomRange;
+    private final double lowerRandom, randomRange, power;
 
-    public RelativeResizeStepGenerator() {
+    public RelativeResizeStepGenerator(int numBeads) {
 //        this(maxScalingFactor, resizeStepChance);
-        this(.01);//.0001
+        this(.01, numBeads);//.0001
     }
 
-    public RelativeResizeStepGenerator(double maxScalingFactor) {
-        lowerRandom = Math.sqrt(1 / (1 + maxScalingFactor));
-        double upperRandom = Math.sqrt(1 + maxScalingFactor);
+    public RelativeResizeStepGenerator(double maxScalingFactor, int numBeads) {
+        power = calculatePowerForNumBeads(numBeads);
+//        if (numBeads == 1) {
+//            double upperRandom = Math.log(1 + maxScalingFactor);
+////            double upperRandom = Math.log1p(maxScalingFactor);
+//            lowerRandom = -upperRandom;
+//            randomRange = upperRandom - lowerRandom;
+//        } else {
+//            double upperRandom = Math.pow(1 + maxScalingFactor, (1.0 - numBeads) / 2);
+//            lowerRandom = 1 / upperRandom;
+//            randomRange = upperRandom - lowerRandom;
+//        }
+        double upperRandom = Math.pow(1 + maxScalingFactor, power);
+        lowerRandom = 1 / upperRandom;
         randomRange = upperRandom - lowerRandom;
+    }
+
+    private double calculatePowerForNumBeads(int numBeads) {
+        //get rid of 1 if we don't want to include the wall as a dof.
+        return (1. + numBeads) / 2.;
     }
 
     @Override
@@ -54,8 +70,14 @@ public class RelativeResizeStepGenerator implements StepGenerator {
     }
 
     private double generateRescaleFactor() {
-        final double rootScaleFactor = lowerRandom + random.nextDouble() * randomRange;
-        return rootScaleFactor * rootScaleFactor;
+        final double transformedScaleFactor = lowerRandom + random.nextDouble() * randomRange;
+//        return transformedScaleFactor * transformedScaleFactor;
+//        if (numBeads == 1) {
+//            return Math.exp(transformedScaleFactor);
+//        } else {
+//            return Math.pow(transformedScaleFactor, 2. / (1 - numBeads));
+//        }
+        return Math.pow(transformedScaleFactor, 1. / power);
     }
 
     private double getSizeChange(double rescaleFactor, SystemAnalyzer systemAnalyzer) {

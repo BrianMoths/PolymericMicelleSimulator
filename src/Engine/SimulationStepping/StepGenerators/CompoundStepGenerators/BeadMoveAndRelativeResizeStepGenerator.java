@@ -24,7 +24,7 @@ public class BeadMoveAndRelativeResizeStepGenerator implements StepGenerator {
     }
 
     private final double resizeStepChance;
-    private final RelativeResizeStepGenerator relativeResizeStepGenerator;
+    private final double maxScalingFactor;
 
     public BeadMoveAndRelativeResizeStepGenerator() {
 //        this(maxScalingFactor, resizeStepChance);
@@ -32,15 +32,14 @@ public class BeadMoveAndRelativeResizeStepGenerator implements StepGenerator {
     }
 
     public BeadMoveAndRelativeResizeStepGenerator(double maxScalingFactor, double resizeStepChance) {
+        this.maxScalingFactor = maxScalingFactor;
         this.resizeStepChance = resizeStepChance;
-
-        relativeResizeStepGenerator = new RelativeResizeStepGenerator(maxScalingFactor);
     }
 
     @Override
     public SimulationStep generateStep(SystemAnalyzer systemAnalyzer) {
         if (random.nextDouble() < resizeStepChance) {
-            return relativeResizeStepGenerator.generateStep(systemAnalyzer);
+            return RelativeResizeStepGenerator.getRelativeResizeStep(systemAnalyzer, maxScalingFactor);
         } else {
             return BeadMoveGenerator.getBeadMove(systemAnalyzer);
         }
