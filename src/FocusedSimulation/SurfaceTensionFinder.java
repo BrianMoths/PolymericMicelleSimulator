@@ -15,13 +15,9 @@ import Engine.SystemAnalyzer;
 import Engine.PolymerState.SystemGeometry.Implementations.AbstractGeometry.AbstractGeometryBuilder;
 import Engine.PolymerState.SystemGeometry.GeometricalParameters;
 import Engine.PolymerState.SystemGeometry.Implementations.PeriodicGeometry;
-import Engine.PolymerState.SystemGeometry.Interfaces.ImmutableSystemGeometry;
 import Engine.PolymerState.SystemGeometry.Interfaces.SystemGeometry;
 import Gui.SystemViewer;
-import java.io.File;
 import java.io.FileNotFoundException;
-import java.io.PrintWriter;
-import java.util.Calendar;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.apache.commons.math3.stat.descriptive.DescriptiveStatistics;
@@ -44,7 +40,7 @@ public class SurfaceTensionFinder {
 
     }
 
-    static private final class InputParameters {
+    static public final class InputParameters {
 
         public final int numChains;
         public final ExternalEnergyCalculator externalEnergyCalculator;
@@ -56,6 +52,7 @@ public class SurfaceTensionFinder {
             this.density = density;
         }
 
+        //<editor-fold defaultstate="collapsed" desc="equals and hashcode">
         @Override
         public int hashCode() {
             int hash = 7;
@@ -81,6 +78,7 @@ public class SurfaceTensionFinder {
                     && externalEnergyCalculatorEquals
                     && density == otherInputParameters.density;
         }
+        //</editor-fold>        
 
     }
 
@@ -96,7 +94,7 @@ public class SurfaceTensionFinder {
 //            surfaceTensionFinder = new SurfaceTensionFinder(input.externalEnergyCalculator, input.density, input.numChains);
             surfaceTensionFinder = new SurfaceTensionFinder(inputParameters);
             surfaceTensionFinder.findSurfaceTension();
-            surfaceTensionFinder.closeWriter();
+            surfaceTensionFinder.closeOutputWriter();
         } catch (FileNotFoundException ex) {
             Logger.getLogger(SurfaceTensionFinder.class.getName()).log(Level.SEVERE, null, ex);
             System.out.println("File not able to be opened");
@@ -141,10 +139,6 @@ public class SurfaceTensionFinder {
         }
 
         return lengthStatistics;
-    }
-
-    static public void outputSurfaceTension(MeasuredSurfaceTension measuredSurfaceTension) {
-        System.out.println("Surface Tension found: " + Double.toString(measuredSurfaceTension.surfaceTension) + "+/-" + Double.toString(measuredSurfaceTension.surfaceTensionStandardError));
     }
 
     static public MeasuredSurfaceTension calculateSurfaceTension(DescriptiveStatistics lengthStatistics, PolymerSimulator polymerSimulator) {
@@ -201,104 +195,29 @@ public class SurfaceTensionFinder {
     static private SystemGeometry makeSystemGeometry(double numBeadsIncludingWater, GeometricalParameters geometricalParameters) {
         AbstractGeometryBuilder systemGeometryBuilder = new PeriodicGeometry.PeriodicGeometryBuilder();
 
-        final double aspectRatio = 1.;
+        final double aspectRatio = .1;
         systemGeometryBuilder.setDimension(2);
         systemGeometryBuilder.makeConsistentWith(numBeadsIncludingWater, geometricalParameters, aspectRatio);
         return systemGeometryBuilder.buildGeometry();
     }
 //</editor-fold>
 
-    private final int numAnneals = 50; //50
+    public static int getNumBeadsPerChain() {
+        return numBeadsPerChain;
+    }
+
+    private final int numAnneals = 10; //50
     private final int numSurfaceTensionTrials = 70; //70
     private final InputParameters inputParameters;
-    private final PrintWriter dataWriter;
+    private final OutputWriter outputWriter;
 
     private SurfaceTensionFinder(InputParameters input) throws FileNotFoundException {
         this.inputParameters = input;
-        dataWriter = makeDataWriter();
-        writeParameters();
+        outputWriter = new OutputWriter(this);
     }
-
-    //<editor-fold defaultstate="collapsed" desc="handle output">
-    private PrintWriter makeDataWriter() throws FileNotFoundException {
-        final String path = "/home/bmoths/Desktop/projects/polymerMicelles/simulation/simulationResults/";
-        File file;
-        int fileNameNumber = -1;
-        String fileName;
-        do {
-            fileNameNumber++;
-            fileName = makeFileName(fileNameNumber);
-            file = new File(path + fileName);
-        } while (file.exists());
-
-        return new PrintWriter(path + fileName);
-    }
-
-    private String makeFileName(int fileNameNumber) {
-        StringBuilder fileNameBuilder = new StringBuilder();
-        String datePrefix = makeDatePrefix();
-        fileNameBuilder.append(datePrefix).append("_");
-        fileNameBuilder.append(makeDoubleDigitString(fileNameNumber));
-        return fileNameBuilder.toString();
-    }
-
-    private String makeDatePrefix() {
-        StringBuilder fileNameBuilder = new StringBuilder();
-        Calendar calendar = Calendar.getInstance();
-        final int year = calendar.get(Calendar.YEAR);
-        final int month = calendar.get(Calendar.MONTH) + 1;
-        final int day = calendar.get(Calendar.DAY_OF_MONTH);
-        final int hour = calendar.get(Calendar.HOUR_OF_DAY);
-        final int minute = calendar.get(Calendar.MINUTE);
-        final int second = calendar.get(Calendar.SECOND);
-        fileNameBuilder.append(makeDoubleDigitString(year))
-                .append("_")
-                .append(makeDoubleDigitString(month))
-                .append("_")
-                .append(makeDoubleDigitString(day))
-                .append("_")
-                .append(makeDoubleDigitString(hour))
-                .append("_")
-                .append(makeDoubleDigitString(minute))
-                .append("_")
-                .append(makeDoubleDigitString(second))
-                .append("_")
-                .append((hashCode() + inputParameters.hashCode()) % 1000);
-        return fileNameBuilder.toString();
-    }
-
-    private String makeDoubleDigitString(int num) {
-        num %= 100;
-        StringBuilder stringBuilder = new StringBuilder();
-        if (num < 10) {
-            stringBuilder.append("0");
-        }
-        stringBuilder.append(Integer.toString(num));
-        return stringBuilder.toString();
-    }
-
-    private void writeParameters() {
-        dataWriter.println("Number of Chains: " + Integer.toString(inputParameters.numChains));
-        dataWriter.println("Number of Beads per Chain: " + Integer.toString(numBeadsPerChain));
-        dataWriter.println("E=a(L-b)^2 with a: " + Double.toString(inputParameters.externalEnergyCalculator.getxSpringConstant()));
-        dataWriter.println("b: " + Double.toString(inputParameters.externalEnergyCalculator.getxEquilibriumPosition()));
-        dataWriter.println("Density: " + Double.toString(inputParameters.density));
-        dataWriter.println("number  of anneals: " + Integer.toString(numAnneals));
-        dataWriter.println("number of iterations finding surface tension: " + Integer.toString(numSurfaceTensionTrials));
-        dataWriter.println("=====================");
-        dataWriter.println();
-    }
-
-    private void writeSurfaceTensionToFile(MeasuredSurfaceTension measuredSurfaceTension) {
-        dataWriter.println("Surface Tension found: " + Double.toString(measuredSurfaceTension.surfaceTension) + " +/- " + Double.toString(measuredSurfaceTension.surfaceTensionStandardError));
-    }
-
-    public void closeWriter() {
-        dataWriter.close();
-    }
-    //</editor-fold>
 
     public void findSurfaceTension() {
+        outputWriter.printParameters();
         PolymerSimulator polymerSimulator = makePolymerSimulator(inputParameters);
         polymerSimulator.columnRandomizePositions();
         try {
@@ -328,29 +247,28 @@ public class SurfaceTensionFinder {
             final int numSamples = 100;
             DescriptiveStatistics lengthStatistics = generateLengthStatistics(numSamples, polymerSimulator);
             MeasuredSurfaceTension measuredSurfaceTension = calculateSurfaceTension(lengthStatistics, polymerSimulator);
-            outputSurfaceTension(measuredSurfaceTension);
-            writeSurfaceTensionToFile(measuredSurfaceTension);
+            outputWriter.printSurfaceTension(measuredSurfaceTension);
         }
 
-        printFinalOutput(polymerSimulator);
+        outputWriter.printFinalOutput(polymerSimulator);
     }
 
-    private void printFinalOutput(PolymerSimulator polymerSimulator) {
-        dataWriter.println();
-        final SystemAnalyzer systemAnalyzer = polymerSimulator.getSystemAnalyzer();
-        final int numBeads = systemAnalyzer.getNumBeads();
-        final double beadArea = systemAnalyzer.findArea();
-
-        final ImmutableSystemGeometry systemGeometry = systemAnalyzer.getSystemGeometry();
-        final double totalArea = systemGeometry.getVolume();
-        final double width = systemGeometry.getSizeOfDimension(0);
-        final double height = systemGeometry.getSizeOfDimension(1);
-        final double beadSideLength = systemGeometry.getParameters().getInteractionLength();
-        dataWriter.println("fraction of area covered at end of simulation: " + Double.toString(beadArea / totalArea));
-        dataWriter.println("number density of blob at end of simulation: " + Double.toString(numBeads / beadArea));
-        dataWriter.println("horizontal size of system at end of simulation: " + Double.toString(width));
-        dataWriter.println("vertical size of system at end of simulation: " + Double.toString(height));
-        dataWriter.println("Side length of beads: " + Double.toString(beadSideLength));
+    public void closeOutputWriter() {
+        outputWriter.closeWriter();
     }
+
+    //<editor-fold defaultstate="collapsed" desc="getters">
+    public int getNumAnneals() {
+        return numAnneals;
+    }
+
+    public int getNumSurfaceTensionTrials() {
+        return numSurfaceTensionTrials;
+    }
+
+    public InputParameters getInputParameters() {
+        return inputParameters;
+    }
+    //</editor-fold>
 
 }

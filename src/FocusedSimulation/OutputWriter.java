@@ -1,0 +1,169 @@
+/*
+ * To change this template, choose Tools | Templates
+ * and open the template in the editor.
+ */
+package FocusedSimulation;
+
+import Engine.PolymerSimulator;
+import Engine.PolymerState.SystemGeometry.Interfaces.ImmutableSystemGeometry;
+import Engine.SystemAnalyzer;
+import FocusedSimulation.SurfaceTensionFinder.InputParameters;
+import FocusedSimulation.SurfaceTensionFinder.MeasuredSurfaceTension;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.PrintWriter;
+import java.util.Calendar;
+
+/**
+ *
+ * @author brian
+ */
+public class OutputWriter { //TO DO: sout everything here as well
+
+    private final PrintWriter dataWriter;
+    private final SurfaceTensionFinder surfaceTensionFinder;
+    
+    public OutputWriter(final SurfaceTensionFinder surfaceTensionFinder) throws FileNotFoundException {
+        this.surfaceTensionFinder = surfaceTensionFinder;
+        dataWriter = makeDataWriter();
+    }
+
+    //<editor-fold defaultstate="collapsed" desc="ctor helpers">
+    private PrintWriter makeDataWriter() throws FileNotFoundException {
+        final String path = "../simulationResults/";
+        File file;
+        int fileNameNumber = -1;
+        String fileName;
+        do {
+            fileNameNumber++;
+            fileName = makeFileName(fileNameNumber);
+            file = new File(path + fileName);
+        } while (file.exists());
+        
+        return new PrintWriter(path + fileName);
+    }
+    
+    private String makeFileName(int fileNameNumber) {
+        StringBuilder fileNameBuilder = new StringBuilder();
+        String datePrefix = makeDatePrefix();
+        fileNameBuilder.append(datePrefix).append("_");
+        fileNameBuilder.append(makeDoubleDigitString(fileNameNumber));
+        return fileNameBuilder.toString();
+    }
+    
+    private String makeDatePrefix() {
+        StringBuilder fileNameBuilder = new StringBuilder();
+        Calendar calendar = Calendar.getInstance();
+        final int year = calendar.get(Calendar.YEAR);
+        final int month = calendar.get(Calendar.MONTH) + 1;
+        final int day = calendar.get(Calendar.DAY_OF_MONTH);
+        final int hour = calendar.get(Calendar.HOUR_OF_DAY);
+        final int minute = calendar.get(Calendar.MINUTE);
+        final int second = calendar.get(Calendar.SECOND);
+        fileNameBuilder.append(makeDoubleDigitString(year))
+                .append("_")
+                .append(makeDoubleDigitString(month))
+                .append("_")
+                .append(makeDoubleDigitString(day))
+                .append("_")
+                .append(makeDoubleDigitString(hour))
+                .append("_")
+                .append(makeDoubleDigitString(minute))
+                .append("_")
+                .append(makeDoubleDigitString(second))
+                .append("_")
+                .append((surfaceTensionFinder.hashCode() + surfaceTensionFinder.getInputParameters().hashCode()) % 1000);
+        return fileNameBuilder.toString();
+    }
+    
+    private String makeDoubleDigitString(int num) {
+        num %= 100;
+        StringBuilder stringBuilder = new StringBuilder();
+        if (num < 10) {
+            stringBuilder.append("0");
+        }
+        stringBuilder.append(Integer.toString(num));
+        return stringBuilder.toString();
+    }
+    //</editor-fold>
+
+    public void printParameters() {
+        String parametersString = makeParametersString();
+        System.out.println(parametersString);
+        dataWriter.print(parametersString);
+    }
+    
+    private String makeParametersString() {
+        final InputParameters inputParameters = surfaceTensionFinder.getInputParameters();
+        final int numBeadsPerChain = SurfaceTensionFinder.getNumBeadsPerChain();
+        final int numAnneals = surfaceTensionFinder.getNumAnneals();
+        final int numSurfaceTensionTrials = surfaceTensionFinder.getNumSurfaceTensionTrials();
+        
+        StringBuilder parametersStringBuilder = new StringBuilder();
+        parametersStringBuilder
+                .append("Number of Chains: ").append(Integer.toString(inputParameters.numChains)).append("\n")
+                .append("Number of Beads per Chain: ").append(Integer.toString(numBeadsPerChain)).append("\n")
+                .append("E=a(L-b)^2 with a: ").append(Double.toString(inputParameters.externalEnergyCalculator.getxSpringConstant())).append("\n")
+                .append("b: ").append(Double.toString(inputParameters.externalEnergyCalculator.getxEquilibriumPosition())).append("\n").
+                append("Density: ").append(Double.toString(inputParameters.density)).append("\n")
+                .append("number  of anneals: ").append(Integer.toString(numAnneals)).append("\n")
+                .append("number of iterations finding surface tension: ").append(Integer.toString(numSurfaceTensionTrials)).append("\n")
+                .append("=====================").append("\n")
+                .append("\n");
+        return parametersStringBuilder.toString();
+    }
+    
+    public void printSurfaceTension(MeasuredSurfaceTension measuredSurfaceTension) {
+        String surfaceTensionString = makeSurfaceTensionString(measuredSurfaceTension);
+        dataWriter.print(surfaceTensionString);
+        System.out.println(surfaceTensionString);
+    }
+    
+    private String makeSurfaceTensionString(MeasuredSurfaceTension measuredSurfaceTension) {
+        StringBuilder parametersStringBuilder = new StringBuilder();
+        parametersStringBuilder
+                .append("Surface Tension found: ")
+                .append(Double.toString(measuredSurfaceTension.surfaceTension))
+                .append(" +/- ")
+                .append(Double.toString(measuredSurfaceTension.surfaceTensionStandardError))
+                .append("\n");
+        return parametersStringBuilder.toString();
+    }
+    
+    public void printFinalOutput(PolymerSimulator polymerSimulator) {
+        String finalOutputString = makeFinalOutputString(polymerSimulator);
+        System.out.println(finalOutputString);
+        dataWriter.print(finalOutputString);
+    }
+    
+    private String makeFinalOutputString(PolymerSimulator polymerSimulator) {
+        final SystemAnalyzer systemAnalyzer = polymerSimulator.getSystemAnalyzer();
+        final int numBeads = systemAnalyzer.getNumBeads();
+        final double beadArea = systemAnalyzer.findArea();
+        
+        final ImmutableSystemGeometry systemGeometry = systemAnalyzer.getSystemGeometry();
+        final double totalArea = systemGeometry.getVolume();
+        final double width = systemGeometry.getSizeOfDimension(0);
+        final double height = systemGeometry.getSizeOfDimension(1);
+        final double beadSideLength = systemGeometry.getParameters().getInteractionLength();
+        
+        StringBuilder parametersStringBuilder = new StringBuilder();
+        parametersStringBuilder
+                .append("\n")
+                .append("fraction of area covered at end of simulation: ").append(Double.toString(beadArea / totalArea)).append("\n").append("number density of blob at end of simulation: ")
+                .append(Double.toString(numBeads / beadArea)).append("\n")
+                .append("horizontal size of system at end of simulation: ")
+                .append(Double.toString(width)).append("\n")
+                .append("vertical size of system at end of simulation: ")
+                .append(Double.toString(height)).append("\n")
+                .append("Side length of beads: ")
+                .append(Double.toString(beadSideLength)).append("\n");
+        
+        return parametersStringBuilder.toString();
+    }
+    
+    public void closeWriter() {
+        dataWriter.close();
+    }
+    
+}

@@ -36,12 +36,12 @@ public class RelativeResizeStepGenerator implements StepGenerator {
     private final double lowerRandom, randomRange, power;
 
     public RelativeResizeStepGenerator(int numBeads) {
-//        this(maxScalingFactor, resizeStepChance);
         this(.01, numBeads);//.0001
     }
 
     public RelativeResizeStepGenerator(double maxScalingFactor, int numBeads) {
         power = calculatePowerForNumBeads(numBeads);
+//        power = 1. / 2;
 //        if (numBeads == 1) {
 //            double upperRandom = Math.log(1 + maxScalingFactor);
 ////            double upperRandom = Math.log1p(maxScalingFactor);
@@ -77,7 +77,8 @@ public class RelativeResizeStepGenerator implements StepGenerator {
 //        } else {
 //            return Math.pow(transformedScaleFactor, 2. / (1 - numBeads));
 //        }
-        return Math.pow(transformedScaleFactor, 1. / power);
+        final double rescaleFactor = Math.pow(transformedScaleFactor, 1. / power);
+        return rescaleFactor;
     }
 
     private double getSizeChange(double rescaleFactor, SystemAnalyzer systemAnalyzer) {
