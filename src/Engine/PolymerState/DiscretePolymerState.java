@@ -4,7 +4,7 @@
  */
 package Engine.PolymerState;
 
-import Engine.PolymerCluster;
+import Engine.PolymerTopology.PolymerCluster;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;

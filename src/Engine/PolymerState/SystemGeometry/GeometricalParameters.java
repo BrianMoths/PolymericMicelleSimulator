@@ -4,7 +4,7 @@
  */
 package Engine.PolymerState.SystemGeometry;
 
-import Engine.EnergeticsConstants.EnergeticsConstantsBuilder;
+import Engine.Energetics.EnergeticsConstants.EnergeticsConstantsBuilder;
 import java.io.Serializable;
 
 /**

@@ -6,7 +6,7 @@ package Engine.PolymerState.SystemGeometry.Implementations;
 
 import Engine.PolymerState.SystemGeometry.GeometricalParameters;
 import Engine.PolymerState.SystemGeometry.Interfaces.GeometryBuilder;
-import Engine.TwoBeadOverlap;
+import Engine.Energetics.TwoBeadOverlap;
 import SystemAnalysis.AreaPerimeter.BeadRectangle;
 import SystemAnalysis.AreaPerimeter.RectangleSplitting.HardWallRectangleSplitter;
 import SystemAnalysis.AreaPerimeter.RectangleSplitting.RectangleSplitter;

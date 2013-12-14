@@ -4,6 +4,8 @@
  */
 package Engine;
 
+import Engine.Energetics.EnergeticsConstants;
+import Engine.Energetics.TwoBeadOverlap;
 import Engine.BeadBinning.BeadBinner;
 import Engine.PolymerState.ImmutableDiscretePolymerState;
 import Engine.PolymerState.ImmutablePolymerState;

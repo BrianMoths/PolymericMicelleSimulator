@@ -4,8 +4,8 @@
  */
 package SGEManagement;
 
-import Engine.ExternalEnergyCalculator;
-import Engine.ExternalEnergyCalculator.ExternalEnergyCalculatorBuilder;
+import Engine.Energetics.ExternalEnergyCalculator;
+import Engine.Energetics.ExternalEnergyCalculator.ExternalEnergyCalculatorBuilder;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;

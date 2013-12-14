@@ -4,7 +4,7 @@
  */
 package Gui;
 
-import Engine.EnergeticsConstants;
+import Engine.Energetics.EnergeticsConstants;
 import Engine.PolymerSimulator;
 import Engine.SystemAnalyzer;
 import Engine.PolymerState.SystemGeometry.GeometricalParameters;

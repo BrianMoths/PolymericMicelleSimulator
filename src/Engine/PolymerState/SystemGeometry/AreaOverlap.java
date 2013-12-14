@@ -4,7 +4,7 @@
  */
 package Engine.PolymerState.SystemGeometry;
 
-import Engine.TwoBeadOverlap;
+import Engine.Energetics.TwoBeadOverlap;
 
 /**
  *

@@ -4,6 +4,8 @@
  */
 package Engine;
 
+import Engine.PolymerTopology.PolymerCluster;
+import Engine.Energetics.EnergeticsConstants;
 import Engine.PolymerState.DiscretePolymerState;
 import Engine.PolymerState.PolymerPosition;
 import Engine.PolymerState.PolymerState;

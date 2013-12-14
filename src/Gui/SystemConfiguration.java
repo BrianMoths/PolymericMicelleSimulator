@@ -4,10 +4,10 @@
  */
 package Gui;
 
-import Engine.EnergeticsConstants;
-import Engine.EnergeticsConstants.EnergeticsConstantsBuilder;
-import Engine.PolymerChain;
-import Engine.PolymerCluster;
+import Engine.Energetics.EnergeticsConstants;
+import Engine.Energetics.EnergeticsConstants.EnergeticsConstantsBuilder;
+import Engine.PolymerTopology.PolymerChain;
+import Engine.PolymerTopology.PolymerCluster;
 import Engine.PolymerSimulator;
 import Engine.PolymerState.SystemGeometry.GeometricalParameters;
 import Engine.PolymerState.SystemGeometry.Implementations.HardWallGeometry.HardWallGeometryBuilder;

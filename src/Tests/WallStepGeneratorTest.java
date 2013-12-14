@@ -4,10 +4,10 @@
  */
 package Tests;
 
-import Engine.EnergeticsConstants;
-import Engine.EnergeticsConstants.EnergeticsConstantsBuilder;
-import Engine.ExternalEnergyCalculator;
-import Engine.PolymerCluster;
+import Engine.Energetics.EnergeticsConstants;
+import Engine.Energetics.EnergeticsConstants.EnergeticsConstantsBuilder;
+import Engine.Energetics.ExternalEnergyCalculator;
+import Engine.PolymerTopology.PolymerCluster;
 import Engine.PolymerSimulator;
 import Engine.PolymerState.SystemGeometry.Implementations.PeriodicGeometry;
 import Engine.PolymerState.SystemGeometry.Interfaces.SystemGeometry;

@@ -4,12 +4,12 @@
  */
 package FocusedSimulation;
 
-import Engine.EnergeticsConstants;
-import Engine.EnergeticsConstants.EnergeticsConstantsBuilder;
-import Engine.ExternalEnergyCalculator;
-import Engine.ExternalEnergyCalculator.ExternalEnergyCalculatorBuilder;
-import Engine.PolymerChain;
-import Engine.PolymerCluster;
+import Engine.Energetics.EnergeticsConstants;
+import Engine.Energetics.EnergeticsConstants.EnergeticsConstantsBuilder;
+import Engine.Energetics.ExternalEnergyCalculator;
+import Engine.Energetics.ExternalEnergyCalculator.ExternalEnergyCalculatorBuilder;
+import Engine.PolymerTopology.PolymerChain;
+import Engine.PolymerTopology.PolymerCluster;
 import Engine.PolymerSimulator;
 import Engine.SystemAnalyzer;
 import Engine.PolymerState.SystemGeometry.Implementations.AbstractGeometry.AbstractGeometryBuilder;
