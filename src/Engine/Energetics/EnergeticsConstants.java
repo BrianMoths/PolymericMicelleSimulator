@@ -211,6 +211,12 @@ public final class EnergeticsConstants implements Serializable {
                 || randomNumberGenerator.nextDouble() < Math.exp(-energyChange / temperature);
     }
 
+    public boolean isEnergeticallyAllowed(EnergyEntropyChange energyEntropyChange) {
+        final double freeEnergyChange = energyEntropyChange.calculateFreeEnergyChange(temperature);
+        return freeEnergyChange < 0
+                || randomNumberGenerator.nextDouble() < Math.exp(-freeEnergyChange / temperature);
+    }
+
     public double idealStepLength() {
         return Math.sqrt(getTemperature() / getSpringCoefficient());
     }

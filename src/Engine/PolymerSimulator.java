@@ -6,6 +6,7 @@ package Engine;
 
 import Engine.PolymerTopology.PolymerCluster;
 import Engine.Energetics.EnergeticsConstants;
+import Engine.Energetics.EnergyEntropyChange;
 import Engine.PolymerState.DiscretePolymerState;
 import Engine.PolymerState.PolymerPosition;
 import Engine.PolymerState.PolymerState;
@@ -155,9 +156,9 @@ public class PolymerSimulator implements Serializable {
         SimulationStep simulationStep = stepGenerator.generateStep(systemAnalyzer);
         iterateAttemptCounters(simulationStep.getMoveType());
         if (simulationStep.doStep(polymerState, systemAnalyzer)) {
-            final double energyChange = simulationStep.getEnergyChange();
-            if (systemAnalyzer.isEnergeticallyAllowed(energyChange)) {
-                energy += energyChange;
+            final EnergyEntropyChange energyEntropyChange = simulationStep.getEnergyEntropyChange();
+            if (systemAnalyzer.isEnergeticallyAllowed(energyEntropyChange)) {
+                energy += energyEntropyChange.getEnergy();
                 iterateAcceptedCounters(simulationStep.getMoveType());
             } else {
                 simulationStep.undoStep(polymerState);

@@ -4,6 +4,7 @@
  */
 package Engine.SimulationStepping.StepTypes;
 
+import Engine.Energetics.EnergyEntropyChange;
 import Engine.PolymerState.PolymerState;
 import Engine.SystemAnalyzer;
 
@@ -17,6 +18,7 @@ public class SingleWallResizeStep implements SimulationStep {
     private final int dimension;
     private final double sizeChange;
     private double energyChange;
+    private double entropyChange;
 
     public SingleWallResizeStep(int dimension, double sizeChange) {
         this.dimension = dimension;
@@ -26,10 +28,22 @@ public class SingleWallResizeStep implements SimulationStep {
     @Override
     public boolean doStep(PolymerState polymerState, SystemAnalyzer systemAnalyzer) {
         final double oldEnergy = systemAnalyzer.computeEnergy(); //optimization: get energy from polymerSimulator.
+        entropyChange = computeEntropyChange(systemAnalyzer);
         polymerState.scaleSystemAlongDimension(sizeChange, dimension);
         final double newEnergy = systemAnalyzer.computeEnergy();
         energyChange = newEnergy - oldEnergy;
         return true;
+    }
+
+    private double computeEntropyChange(SystemAnalyzer systemAnalyzer) {
+        double entropyChangeLocal;
+
+        final int numBeads = systemAnalyzer.getNumBeads();
+        final double fractionalSizeChange = 1. + sizeChange / systemAnalyzer.getSystemGeometry().getSizeOfDimension(dimension);
+
+        entropyChangeLocal = numBeads / 2 * Math.log(fractionalSizeChange);
+
+        return entropyChangeLocal;
     }
 
     @Override
@@ -38,8 +52,8 @@ public class SingleWallResizeStep implements SimulationStep {
     }
 
     @Override
-    public double getEnergyChange() {
-        return energyChange;
+    public EnergyEntropyChange getEnergyEntropyChange() {
+        return new EnergyEntropyChange(energyChange, entropyChange);
     }
 
     @Override

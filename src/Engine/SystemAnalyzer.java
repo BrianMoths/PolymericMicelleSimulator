@@ -7,6 +7,7 @@ package Engine;
 import Engine.Energetics.EnergeticsConstants;
 import Engine.Energetics.TwoBeadOverlap;
 import Engine.BeadBinning.BeadBinner;
+import Engine.Energetics.EnergyEntropyChange;
 import Engine.PolymerState.ImmutableDiscretePolymerState;
 import Engine.PolymerState.ImmutablePolymerState;
 import Engine.PolymerState.SystemGeometry.AreaOverlap;
@@ -246,6 +247,10 @@ public class SystemAnalyzer implements Serializable {
 
     public boolean isEnergeticallyAllowed(double energyChange) {
         return energeticsConstants.isEnergeticallyAllowed(energyChange);
+    }
+
+    public boolean isEnergeticallyAllowed(EnergyEntropyChange energyEntropyChange) {
+        return energeticsConstants.isEnergeticallyAllowed(energyEntropyChange);
     }
 
     public int getNumBeads() {

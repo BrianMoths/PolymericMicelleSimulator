@@ -4,6 +4,7 @@
  */
 package Engine.SimulationStepping.StepTypes;
 
+import Engine.Energetics.EnergyEntropyChange;
 import Engine.PolymerState.PolymerState;
 import Engine.SystemAnalyzer;
 
@@ -17,7 +18,7 @@ public interface SimulationStep {
 
     public void undoStep(PolymerState polymerState);
 
-    public double getEnergyChange();
+    public EnergyEntropyChange getEnergyEntropyChange();
 
     public StepType getMoveType();
 

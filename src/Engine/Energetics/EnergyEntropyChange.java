@@ -21,6 +21,10 @@ public class EnergyEntropyChange {
         this(energyEntropyChange.energy, energyEntropyChange.entropy);
     }
 
+    public double calculateFreeEnergyChange(double temperature) {
+        return energy - temperature * entropy;
+    }
+
     //<editor-fold defaultstate="collapsed" desc="equals and hashcode">
     @Override
     public int hashCode() {

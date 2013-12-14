@@ -4,6 +4,7 @@
  */
 package Engine.SimulationStepping.StepTypes;
 
+import Engine.Energetics.EnergyEntropyChange;
 import Engine.PolymerState.PolymerState;
 import Engine.SystemAnalyzer;
 
@@ -43,8 +44,8 @@ public class ReptationStep implements SimulationStep {
     }
 
     @Override
-    public double getEnergyChange() {
-        return energyChange;
+    public EnergyEntropyChange getEnergyEntropyChange() {
+        return new EnergyEntropyChange(energyChange, 0);
     }
 
     @Override

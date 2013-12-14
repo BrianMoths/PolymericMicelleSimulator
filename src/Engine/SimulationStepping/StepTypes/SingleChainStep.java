@@ -4,6 +4,7 @@
  */
 package Engine.SimulationStepping.StepTypes;
 
+import Engine.Energetics.EnergyEntropyChange;
 import Engine.PolymerState.PolymerState;
 import Engine.SystemAnalyzer;
 import java.util.List;
@@ -45,7 +46,7 @@ public class SingleChainStep implements SimulationStep {
             final int currentBead = beads.get(currentBeadInChain);
             final SingleBeadStep beadStep = new SingleBeadStep(currentBead, stepVector);
             isSuccessful = beadStep.doStep(polymerState, systemAnalyzer);
-            energyChange += beadStep.getEnergyChange();
+            energyChange += beadStep.getEnergyEntropyChange().getEnergy();
             currentBeadInChain++;
         }
         if (!isSuccessful) {
@@ -71,8 +72,8 @@ public class SingleChainStep implements SimulationStep {
     }
 
     @Override
-    public double getEnergyChange() {
-        return energyChange;
+    public EnergyEntropyChange getEnergyEntropyChange() {
+        return new EnergyEntropyChange(energyChange, 0);
     }
 
     public List<Integer> getBeads() {

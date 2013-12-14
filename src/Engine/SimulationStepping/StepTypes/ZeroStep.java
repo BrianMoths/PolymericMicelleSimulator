@@ -4,6 +4,7 @@
  */
 package Engine.SimulationStepping.StepTypes;
 
+import Engine.Energetics.EnergyEntropyChange;
 import Engine.PolymerState.PolymerState;
 import Engine.SystemAnalyzer;
 
@@ -27,8 +28,8 @@ public class ZeroStep implements SimulationStep {
     }
 
     @Override
-    public double getEnergyChange() {
-        return 0;
+    public EnergyEntropyChange getEnergyEntropyChange() {
+        return new EnergyEntropyChange(0, 0);
     }
 
     @Override
