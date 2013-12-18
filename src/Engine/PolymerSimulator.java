@@ -60,10 +60,7 @@ public class PolymerSimulator implements Serializable {
     private final SystemAnalyzer systemAnalyzer;
     private final StepGenerator stepGenerator = GeneralStepGenerator.defaultStepGenerator();
     private double energy;
-    private int iterationNumber;
-    private int acceptedIterations;
-    private int numChainMoves;
-    private int acceptedChainMoves;
+    private AcceptanceStatistics acceptanceStatistics;
 
     public PolymerSimulator() {
 
@@ -72,6 +69,7 @@ public class PolymerSimulator implements Serializable {
         geometry = makeDefaultGeometry(polymerCluster, energeticsConstants);
 
         resetCounters();
+        acceptanceStatistics = new AcceptanceStatistics();
         polymerPosition = makePolymerPosition(polymerCluster, geometry);
         DiscretePolymerState discretePolymerState = new DiscretePolymerState(polymerCluster);
         polymerState = new PolymerState(discretePolymerState, polymerPosition, geometry);
@@ -90,6 +88,7 @@ public class PolymerSimulator implements Serializable {
         polymerState = new PolymerState(discretePolymerState, polymerPosition, geometry);
 
         resetCounters();
+        acceptanceStatistics = new AcceptanceStatistics();
 
         systemAnalyzer = new SystemAnalyzer(polymerState, energeticsConstants);
         energy = systemAnalyzer.computeEnergy();
@@ -100,8 +99,7 @@ public class PolymerSimulator implements Serializable {
         polymerPosition = new PolymerPosition(polymerSimulator.polymerPosition);
         polymerState = new PolymerState(polymerSimulator.polymerState.getDiscretePolymerState(), polymerPosition, geometry);
         energy = polymerSimulator.energy;
-        iterationNumber = polymerSimulator.iterationNumber;
-        acceptedIterations = polymerSimulator.acceptedIterations;
+        acceptanceStatistics = new AcceptanceStatistics(polymerSimulator.acceptanceStatistics);
         systemAnalyzer = new SystemAnalyzer(polymerSimulator.systemAnalyzer);
     }
 
@@ -118,8 +116,8 @@ public class PolymerSimulator implements Serializable {
 //        stringBuilder.append("Physical Constants: ").append(energeticsConstants.toString()).append("\n");
         stringBuilder.append("Polymer position: \n").append(polymerPosition.toString()).append("\n");
         stringBuilder.append("Energy: ").append(Double.toString(energy)).append("\n");
-        stringBuilder.append("Total iterations performed: ").append(Integer.toString(iterationNumber)).append("\n");
-        stringBuilder.append("Number iterations accepted: ").append(Integer.toString(acceptedIterations)).append("\n");
+        stringBuilder.append("Total iterations performed: ").append(Integer.toString(getIterationNumber())).append("\n");
+        stringBuilder.append("Number iterations accepted: ").append(Integer.toString(getAcceptedIterations())).append("\n");
         return stringBuilder.toString();
     }
 
@@ -154,12 +152,12 @@ public class PolymerSimulator implements Serializable {
 
     public synchronized void doIteration() { //todo: cache bead energies
         SimulationStep simulationStep = stepGenerator.generateStep(systemAnalyzer);
-        iterateAttemptCounters(simulationStep.getMoveType());
+        acceptanceStatistics.attemptStepOfType(simulationStep.getMoveType());
         if (simulationStep.doStep(polymerState, systemAnalyzer)) {
             final EnergyEntropyChange energyEntropyChange = simulationStep.getEnergyEntropyChange();
             if (systemAnalyzer.isEnergeticallyAllowed(energyEntropyChange)) {
                 energy += energyEntropyChange.getEnergy();
-                iterateAcceptedCounters(simulationStep.getMoveType());
+                acceptanceStatistics.acceptStepOfType(simulationStep.getMoveType());
             } else {
                 simulationStep.undoStep(polymerState);
             }
@@ -168,24 +166,7 @@ public class PolymerSimulator implements Serializable {
 
     //<editor-fold defaultstate="collapsed" desc="manage counters">
     private void resetCounters() {
-        iterationNumber = 0;
-        acceptedIterations = 0;
-        acceptedChainMoves = 0;
-        numChainMoves = 0;
-    }
-
-    private void iterateAttemptCounters(StepType moveType) {
-        iterationNumber++;
-        if (moveType == StepType.SINGLE_CHAIN) {
-            numChainMoves++;
-        }
-    }
-
-    private void iterateAcceptedCounters(StepType moveType) {
-        acceptedIterations++;
-        if (moveType == StepType.SINGLE_CHAIN) {
-            acceptedChainMoves++;
-        }
+        acceptanceStatistics = new AcceptanceStatistics();
     }
     //</editor-fold>
 
@@ -219,7 +200,7 @@ public class PolymerSimulator implements Serializable {
     }
 
     public int getIterationNumber() {
-        return iterationNumber;
+        return acceptanceStatistics.getTotalAttemptedSteps();
     }
 
     public GeometricalParameters getGeometricalParameters() {
@@ -227,7 +208,7 @@ public class PolymerSimulator implements Serializable {
     }
 
     public int getAcceptedIterations() {
-        return acceptedIterations;
+        return acceptanceStatistics.getTotalAcceptedSteps();
     }
 
     /**
@@ -238,12 +219,12 @@ public class PolymerSimulator implements Serializable {
         return systemAnalyzer;
     }
 
-    public int getNumChainMoves() {
-        return numChainMoves;
+    public int getAttemptedStepsOfType(StepType stepType) {
+        return acceptanceStatistics.getAttemptedStepsOfType(stepType);
     }
 
-    public int getAcceptedChainMoves() {
-        return acceptedChainMoves;
+    public int getAcceptedStepsOfType(StepType stepType) {
+        return acceptanceStatistics.getAcceptedStepsOfType(stepType);
     }
 
     public EnergeticsConstants getEnergeticsConstants() {

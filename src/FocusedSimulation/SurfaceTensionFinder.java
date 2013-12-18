@@ -18,6 +18,8 @@ import Engine.PolymerState.SystemGeometry.Implementations.PeriodicGeometry;
 import Engine.PolymerState.SystemGeometry.Interfaces.SystemGeometry;
 import Gui.SystemViewer;
 import java.io.FileNotFoundException;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.apache.commons.math3.stat.descriptive.DescriptiveStatistics;
@@ -210,10 +212,12 @@ public class SurfaceTensionFinder {
     private final int numSurfaceTensionTrials = 70; //70
     private final InputParameters inputParameters;
     private final OutputWriter outputWriter;
+    private final List<MeasuredSurfaceTension> measuredSurfaceTensions;
 
     private SurfaceTensionFinder(InputParameters input) throws FileNotFoundException {
         this.inputParameters = input;
         outputWriter = new OutputWriter(this);
+        measuredSurfaceTensions = new ArrayList<>();
     }
 
     public void findSurfaceTension() {
@@ -236,21 +240,44 @@ public class SurfaceTensionFinder {
         }
 
         for (int i = 0; i < numSurfaceTensionTrials; i++) {
-            System.out.println("Equilibrating System");
+            doSurfaceTensionIteration(polymerSimulator);
+        }
 
-            polymerSimulator.anneal();
-            polymerSimulator.equilibrate();
-
-            System.out.println("System equilibrated.");
-            System.out.println("Gathering statistics to find equilibrium length.");
-
-            final int numSamples = 100;
-            DescriptiveStatistics lengthStatistics = generateLengthStatistics(numSamples, polymerSimulator);
-            MeasuredSurfaceTension measuredSurfaceTension = calculateSurfaceTension(lengthStatistics, polymerSimulator);
-            outputWriter.printSurfaceTension(measuredSurfaceTension);
+        while (!isConverged(measuredSurfaceTensions)) {
+            doSurfaceTensionIteration(polymerSimulator);
         }
 
         outputWriter.printFinalOutput(polymerSimulator);
+    }
+
+    private void doSurfaceTensionIteration(PolymerSimulator polymerSimulator) {
+        System.out.println("Equilibrating System");
+
+        polymerSimulator.anneal();
+        polymerSimulator.equilibrate();
+
+        System.out.println("System equilibrated.");
+        System.out.println("Gathering statistics to find equilibrium length.");
+
+        final int numSamples = 100;
+        DescriptiveStatistics lengthStatistics = generateLengthStatistics(numSamples, polymerSimulator);
+        MeasuredSurfaceTension measuredSurfaceTension = calculateSurfaceTension(lengthStatistics, polymerSimulator);
+        outputWriter.printSurfaceTension(measuredSurfaceTension);
+        measuredSurfaceTensions.add(measuredSurfaceTension);
+    }
+
+    private boolean isConverged(List<MeasuredSurfaceTension> measuredSurfaceTensions) {
+        final int windowSize = 10;
+        final int numMeasurements = measuredSurfaceTensions.size();
+        if (numMeasurements < windowSize) {
+            return false;
+        }
+        int comparisonCount = 0;
+        for (int offset = 1; offset < windowSize; offset++) {
+            final int comparison = measuredSurfaceTensions.get(numMeasurements - offset).surfaceTension > measuredSurfaceTensions.get(numMeasurements - offset - 1).surfaceTension ? 1 : -1;
+            comparisonCount += comparison;
+        }
+        return Math.abs(comparisonCount) < windowSize / 3;
     }
 
     public void closeOutputWriter() {

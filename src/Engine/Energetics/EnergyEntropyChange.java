@@ -10,6 +10,15 @@ package Engine.Energetics;
  */
 public class EnergyEntropyChange {
 
+    static public EnergyEntropyChange sum(EnergyEntropyChange firstSummand, EnergyEntropyChange secondSummand) {
+        final double energySum = firstSummand.getEnergy() + secondSummand.getEnergy();
+        final double entropySum = firstSummand.getEntropy() + secondSummand.getEntropy();
+
+        EnergyEntropyChange sum;
+        sum = new EnergyEntropyChange(energySum, entropySum);
+        return sum;
+    }
+
     private final double energy, entropy;
 
     public EnergyEntropyChange(double energy, double entropy) {

@@ -40,7 +40,27 @@ public class SGEManager {
     static private List<Input> makeInputs() {
         List<Input> inputs = new ArrayList<>();
 
-        inputs.add(new Input(100, makeCalculatorAB(3., 66), .05));
+        inputs.add(new Input(100, makeCalculatorAB(1., 100), .05));
+        inputs.add(new Input(100, makeCalculatorAB(5., 100), .05));
+        inputs.add(new Input(100, makeCalculatorAB(10., 100), .05));
+        inputs.add(new Input(100, makeCalculatorAB(50., 100), .05));
+        inputs.add(new Input(100, makeCalculatorAB(100., 100), .05));
+        inputs.add(new Input(100, makeCalculatorAB(1000., 100), .05));
+
+        inputs.add(new Input(100, makeCalculatorAB(5., 80), .05));
+        inputs.add(new Input(100, makeCalculatorAB(10., 80), .05));
+        inputs.add(new Input(100, makeCalculatorAB(30., 80), .05));
+        inputs.add(new Input(100, makeCalculatorAB(100., 80), .05));
+        inputs.add(new Input(100, makeCalculatorAB(300., 80), .05));
+        inputs.add(new Input(100, makeCalculatorAB(1000., 80), .05));
+
+        inputs.add(new Input(100, makeCalculatorAB(1., 50), .05));
+        inputs.add(new Input(100, makeCalculatorAB(3., 50), .05));
+        inputs.add(new Input(100, makeCalculatorAB(10., 50), .05));
+        inputs.add(new Input(100, makeCalculatorAB(30., 50), .05));
+        inputs.add(new Input(100, makeCalculatorAB(100., 50), .05));
+        inputs.add(new Input(100, makeCalculatorAB(300., 50), .05));
+        inputs.add(new Input(100, makeCalculatorAB(1000., 50), .05));
 
 //        inputs.add(new Input(100, makeCalculatorAB(0, 66), .01));
 //        inputs.add(new Input(50, makeCalculatorAB(0, 66), .01));

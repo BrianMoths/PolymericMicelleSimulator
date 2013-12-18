@@ -24,32 +24,29 @@ public class RelativeResizeStepGenerator implements StepGenerator {
     }
 
     static public SimulationStep getRelativeResizeStep(SystemAnalyzer systemAnalyzer) {
-        RelativeResizeStepGenerator relativeResizeStepGenerator = new RelativeResizeStepGenerator(systemAnalyzer.getNumBeads());
+        RelativeResizeStepGenerator relativeResizeStepGenerator = new RelativeResizeStepGenerator();
         return relativeResizeStepGenerator.generateStep(systemAnalyzer);
     }
 
     static public SimulationStep getRelativeResizeStep(SystemAnalyzer systemAnalyzer, double maxScalingFactor) {
-        RelativeResizeStepGenerator relativeResizeStepGenerator = new RelativeResizeStepGenerator(maxScalingFactor, systemAnalyzer.getNumBeads());
+        RelativeResizeStepGenerator relativeResizeStepGenerator = new RelativeResizeStepGenerator(maxScalingFactor);
         return relativeResizeStepGenerator.generateStep(systemAnalyzer);
     }
 
     private final double lowerRandom, randomRange, power;
 
-    public RelativeResizeStepGenerator(int numBeads) {
-        this(.01, numBeads);//.0001
+    public RelativeResizeStepGenerator() {
+        this(.01);//.0001
     }
 
-    public RelativeResizeStepGenerator(double maxScalingFactor, int numBeads) {
-//        power = calculatePowerForNumBeads(numBeads);
+    public RelativeResizeStepGenerator(double maxScalingFactor) {
         power = .5;
-        double upperRandom = Math.pow(1 + maxScalingFactor, power);
+        final double upperRandom = Math.pow(1 + maxScalingFactor, power);
         lowerRandom = 1 / upperRandom;
+//       final double upperRandom = Math.log(1 + maxScalingFactor);
+//        double lowerRandom = -upperRandom;
         randomRange = upperRandom - lowerRandom;
-    }
 
-    private double calculatePowerForNumBeads(int numBeads) {
-        //get rid of 1 if we don't want to include the wall as a dof.
-        return (1. + numBeads) / 2.;
     }
 
     @Override
@@ -61,13 +58,8 @@ public class RelativeResizeStepGenerator implements StepGenerator {
 
     private double generateRescaleFactor() {
         final double transformedScaleFactor = lowerRandom + random.nextDouble() * randomRange;
-//        return transformedScaleFactor * transformedScaleFactor;
-//        if (numBeads == 1) {
-//            return Math.exp(transformedScaleFactor);
-//        } else {
-//            return Math.pow(transformedScaleFactor, 2. / (1 - numBeads));
-//        }
         final double rescaleFactor = Math.pow(transformedScaleFactor, 1. / power);
+//        final double rescaleFactor = Math.exp(transformedScaleFactor);
         return rescaleFactor;
     }
 

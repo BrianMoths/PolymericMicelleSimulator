@@ -18,11 +18,11 @@ import java.util.Calendar;
  *
  * @author brian
  */
-public class OutputWriter { //TO DO: sout everything here as well
+public class OutputWriter {
 
     private final PrintWriter dataWriter;
     private final SurfaceTensionFinder surfaceTensionFinder;
-    
+
     public OutputWriter(final SurfaceTensionFinder surfaceTensionFinder) throws FileNotFoundException {
         this.surfaceTensionFinder = surfaceTensionFinder;
         dataWriter = makeDataWriter();
@@ -30,7 +30,14 @@ public class OutputWriter { //TO DO: sout everything here as well
 
     //<editor-fold defaultstate="collapsed" desc="ctor helpers">
     private PrintWriter makeDataWriter() throws FileNotFoundException {
-        final String path = "../simulationResults/";
+        String jarPath = OutputWriter.class.getProtectionDomain().getCodeSource().getLocation().getPath();
+        System.out.println(jarPath);
+        if (jarPath.contains("build/")) {
+            jarPath = jarPath.substring(0, jarPath.lastIndexOf("build/") + "build/".length());
+        } else if (jarPath.contains("dist/")) {
+            jarPath = jarPath.substring(0, jarPath.lastIndexOf("dist/") + "dist/".length());
+        }
+        final String path = jarPath + "../../simulationResults/";
         File file;
         int fileNameNumber = -1;
         String fileName;
@@ -39,10 +46,10 @@ public class OutputWriter { //TO DO: sout everything here as well
             fileName = makeFileName(fileNameNumber);
             file = new File(path + fileName);
         } while (file.exists());
-        
+
         return new PrintWriter(path + fileName);
     }
-    
+
     private String makeFileName(int fileNameNumber) {
         StringBuilder fileNameBuilder = new StringBuilder();
         String datePrefix = makeDatePrefix();
@@ -50,7 +57,7 @@ public class OutputWriter { //TO DO: sout everything here as well
         fileNameBuilder.append(makeDoubleDigitString(fileNameNumber));
         return fileNameBuilder.toString();
     }
-    
+
     private String makeDatePrefix() {
         StringBuilder fileNameBuilder = new StringBuilder();
         Calendar calendar = Calendar.getInstance();
@@ -75,7 +82,7 @@ public class OutputWriter { //TO DO: sout everything here as well
                 .append((surfaceTensionFinder.hashCode() + surfaceTensionFinder.getInputParameters().hashCode()) % 1000);
         return fileNameBuilder.toString();
     }
-    
+
     private String makeDoubleDigitString(int num) {
         num %= 100;
         StringBuilder stringBuilder = new StringBuilder();
@@ -92,18 +99,18 @@ public class OutputWriter { //TO DO: sout everything here as well
         System.out.println(parametersString);
         dataWriter.print(parametersString);
     }
-    
+
     private String makeParametersString() {
         final InputParameters inputParameters = surfaceTensionFinder.getInputParameters();
         final int numBeadsPerChain = SurfaceTensionFinder.getNumBeadsPerChain();
         final int numAnneals = surfaceTensionFinder.getNumAnneals();
         final int numSurfaceTensionTrials = surfaceTensionFinder.getNumSurfaceTensionTrials();
-        
+
         StringBuilder parametersStringBuilder = new StringBuilder();
         parametersStringBuilder
                 .append("Number of Chains: ").append(Integer.toString(inputParameters.numChains)).append("\n")
                 .append("Number of Beads per Chain: ").append(Integer.toString(numBeadsPerChain)).append("\n")
-                .append("E=a(L-b)^2 with a: ").append(Double.toString(inputParameters.externalEnergyCalculator.getxSpringConstant())).append("\n")
+                .append("E=(1/2)a(L-b)^2 with a: ").append(Double.toString(inputParameters.externalEnergyCalculator.getxSpringConstant())).append("\n")
                 .append("b: ").append(Double.toString(inputParameters.externalEnergyCalculator.getxEquilibriumPosition())).append("\n").
                 append("Density: ").append(Double.toString(inputParameters.density)).append("\n")
                 .append("number  of anneals: ").append(Integer.toString(numAnneals)).append("\n")
@@ -112,13 +119,13 @@ public class OutputWriter { //TO DO: sout everything here as well
                 .append("\n");
         return parametersStringBuilder.toString();
     }
-    
+
     public void printSurfaceTension(MeasuredSurfaceTension measuredSurfaceTension) {
         String surfaceTensionString = makeSurfaceTensionString(measuredSurfaceTension);
         dataWriter.print(surfaceTensionString);
         System.out.println(surfaceTensionString);
     }
-    
+
     private String makeSurfaceTensionString(MeasuredSurfaceTension measuredSurfaceTension) {
         StringBuilder parametersStringBuilder = new StringBuilder();
         parametersStringBuilder
@@ -129,24 +136,24 @@ public class OutputWriter { //TO DO: sout everything here as well
                 .append("\n");
         return parametersStringBuilder.toString();
     }
-    
+
     public void printFinalOutput(PolymerSimulator polymerSimulator) {
         String finalOutputString = makeFinalOutputString(polymerSimulator);
         System.out.println(finalOutputString);
         dataWriter.print(finalOutputString);
     }
-    
+
     private String makeFinalOutputString(PolymerSimulator polymerSimulator) {
         final SystemAnalyzer systemAnalyzer = polymerSimulator.getSystemAnalyzer();
         final int numBeads = systemAnalyzer.getNumBeads();
         final double beadArea = systemAnalyzer.findArea();
-        
+
         final ImmutableSystemGeometry systemGeometry = systemAnalyzer.getSystemGeometry();
         final double totalArea = systemGeometry.getVolume();
         final double width = systemGeometry.getSizeOfDimension(0);
         final double height = systemGeometry.getSizeOfDimension(1);
         final double beadSideLength = systemGeometry.getParameters().getInteractionLength();
-        
+
         StringBuilder parametersStringBuilder = new StringBuilder();
         parametersStringBuilder
                 .append("\n")
@@ -158,12 +165,12 @@ public class OutputWriter { //TO DO: sout everything here as well
                 .append(Double.toString(height)).append("\n")
                 .append("Side length of beads: ")
                 .append(Double.toString(beadSideLength)).append("\n");
-        
+
         return parametersStringBuilder.toString();
     }
-    
+
     public void closeWriter() {
         dataWriter.close();
     }
-    
+
 }

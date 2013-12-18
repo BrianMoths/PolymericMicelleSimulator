@@ -5,10 +5,9 @@
 package Gui;
 
 import Engine.PolymerSimulator;
+import Engine.SimulationStepping.StepTypes.StepType;
 import Engine.SystemAnalyzer;
-import SystemAnalysis.GeometryAnalyzer;
 import SystemAnalysis.GeometryAnalyzer.AreaPerimeter;
-import SystemAnalysis.SimulationHistory;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -92,7 +91,7 @@ public class AnalysisWindow extends javax.swing.JFrame {
     private void updateTotalIterationsDisplay() {
         final int numIterations = polymerSimulator.getIterationNumber();
         final int acceptedIterations = polymerSimulator.getAcceptedIterations();
-        final double acceptanceRate = (double)acceptedIterations / (double)numIterations;
+        final double acceptanceRate = (double) acceptedIterations / (double) numIterations;
 
         numIterationsLbl.setText(Integer.toString(numIterations));
         numAcceptedIterationsLbl.setText(Integer.toString(acceptedIterations));
@@ -100,9 +99,9 @@ public class AnalysisWindow extends javax.swing.JFrame {
     }
 
     private void updateChainIterationsDisplay() {
-        final int numIterations = polymerSimulator.getNumChainMoves();
-        final int acceptedIterations = polymerSimulator.getAcceptedChainMoves();
-        final double acceptanceRate = (double)acceptedIterations / (double)numIterations;
+        final int numIterations = polymerSimulator.getAttemptedStepsOfType(StepType.SINGLE_CHAIN);
+        final int acceptedIterations = polymerSimulator.getAcceptedStepsOfType(StepType.SINGLE_CHAIN);
+        final double acceptanceRate = (double) acceptedIterations / (double) numIterations;
 
         chainMovesLbl.setText(Integer.toString(numIterations));
         acceptChainMovesLbl.setText(Integer.toString(acceptedIterations));
@@ -125,17 +124,17 @@ public class AnalysisWindow extends javax.swing.JFrame {
         final double energy = polymerSimulator.getEnergy();
 
         energyLbl.setText(doubleToString(energy));
-        energyChart.addValue((int)energy);
+        energyChart.addValue((int) energy);
     }
 
     private void updateAreaDisplay(final double area) {
         areaLbl.setText(doubleToString(area));
-        areaChart.addValue((int)area);
+        areaChart.addValue((int) area);
     }
 
     private void updatePerimeterDisplay(final double perimeter) {
         perimeterLbl.setText(doubleToString(perimeter));
-        perimeterChart.addValue((int)perimeter);
+        perimeterChart.addValue((int) perimeter);
     }
     //</editor-fold>
 
