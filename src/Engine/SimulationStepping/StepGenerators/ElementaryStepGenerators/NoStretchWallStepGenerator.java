@@ -5,8 +5,8 @@
 package Engine.SimulationStepping.StepGenerators.ElementaryStepGenerators;
 
 import Engine.SimulationStepping.StepGenerators.StepGenerator;
+import Engine.SimulationStepping.StepTypes.NoStretchWallStep;
 import Engine.SimulationStepping.StepTypes.SimulationStep;
-import Engine.SimulationStepping.StepTypes.SingleWallResizeStep;
 import Engine.SystemAnalyzer;
 import java.util.Random;
 
@@ -14,7 +14,7 @@ import java.util.Random;
  *
  * @author bmoths
  */
-public class RelativeResizeStepGenerator implements StepGenerator {
+public class NoStretchWallStepGenerator implements StepGenerator {
 
     static private final int resizeDimension = 0;
     static private final Random random;
@@ -23,23 +23,23 @@ public class RelativeResizeStepGenerator implements StepGenerator {
         random = new Random();
     }
 
-    static public SimulationStep getRelativeResizeStep(SystemAnalyzer systemAnalyzer) {
+    static public SimulationStep getNoStretchWallStep(SystemAnalyzer systemAnalyzer) {
         RelativeResizeStepGenerator relativeResizeStepGenerator = new RelativeResizeStepGenerator();
         return relativeResizeStepGenerator.generateStep(systemAnalyzer);
     }
 
-    static public SimulationStep getRelativeResizeStep(SystemAnalyzer systemAnalyzer, double maxScalingFactor) {
+    static public SimulationStep getNoStretchWallStep(SystemAnalyzer systemAnalyzer, double maxScalingFactor) {
         RelativeResizeStepGenerator relativeResizeStepGenerator = new RelativeResizeStepGenerator(maxScalingFactor);
         return relativeResizeStepGenerator.generateStep(systemAnalyzer);
     }
 
     private final double lowerRandom, randomRange, power;
 
-    public RelativeResizeStepGenerator() {
+    public NoStretchWallStepGenerator() {
         this(.01);//.0001
     }
 
-    public RelativeResizeStepGenerator(double maxScalingFactor) {
+    public NoStretchWallStepGenerator(double maxScalingFactor) {
         power = .5;
 //        final double upperRandom = Math.pow(1 + maxScalingFactor, power);
 //        lowerRandom = 1 / upperRandom;
@@ -53,7 +53,7 @@ public class RelativeResizeStepGenerator implements StepGenerator {
     public SimulationStep generateStep(SystemAnalyzer systemAnalyzer) {
         final double rescaleFactor = generateRescaleFactor();
         final double sizeChange = getSizeChange(rescaleFactor, systemAnalyzer);
-        return new SingleWallResizeStep(resizeDimension, sizeChange);
+        return new NoStretchWallStep(resizeDimension, sizeChange);
     }
 
     private double generateRescaleFactor() {

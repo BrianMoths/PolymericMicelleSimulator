@@ -6,6 +6,7 @@ package Engine.SimulationStepping.StepTypes;
 
 import Engine.SimulationStepping.StepGenerators.ElementaryStepGenerators.BeadMoveGenerator;
 import Engine.SimulationStepping.StepGenerators.ElementaryStepGenerators.ChainMoveStepGenerator;
+import Engine.SimulationStepping.StepGenerators.ElementaryStepGenerators.NoStretchWallStepGenerator;
 import Engine.SimulationStepping.StepGenerators.ElementaryStepGenerators.RelativeResizeStepGenerator;
 import Engine.SimulationStepping.StepGenerators.ElementaryStepGenerators.ReptationStepGenerator;
 import Engine.SimulationStepping.StepGenerators.StepGenerator;
@@ -35,6 +36,13 @@ public enum StepType {
         @Override
         public SimulationStep generateStep(SystemAnalyzer systemAnalyzer) {
             return RelativeResizeStepGenerator.getRelativeResizeStep(systemAnalyzer);
+        }
+
+    }),
+    NO_STRETCH_WALL(new StepGenerator() {
+        @Override
+        public SimulationStep generateStep(SystemAnalyzer systemAnalyzer) {
+            return NoStretchWallStepGenerator.getNoStretchWallStep(systemAnalyzer);
         }
 
     }),
