@@ -24,50 +24,62 @@ public enum StepType {
             return BeadMoveGenerator.getBeadMove(systemAnalyzer);
         }
 
-    }),
+    },
+    "single bead"),
     SINGLE_CHAIN(new StepGenerator() {
         @Override
         public SimulationStep generateStep(SystemAnalyzer systemAnalyzer) {
             return ChainMoveStepGenerator.getChainMove(systemAnalyzer);
         }
 
-    }),
+    },
+    "chain"),
     SINGLE_WALL_RESIZE(new StepGenerator() {
         @Override
         public SimulationStep generateStep(SystemAnalyzer systemAnalyzer) {
             return RelativeResizeStepGenerator.getRelativeResizeStep(systemAnalyzer);
         }
 
-    }),
+    },
+    "wall scaling"),
     NO_STRETCH_WALL(new StepGenerator() {
         @Override
         public SimulationStep generateStep(SystemAnalyzer systemAnalyzer) {
             return NoStretchWallStepGenerator.getNoStretchWallStep(systemAnalyzer);
         }
 
-    }),
+    },
+    "wall move"),
     REPTATION(new StepGenerator() {
         @Override
         public SimulationStep generateStep(SystemAnalyzer systemAnalyzer) {
             return ReptationStepGenerator.getReptationMove(systemAnalyzer);
         }
 
-    }),
+    },
+    "reptation"),
     ZERO_STEP(new StepGenerator() {
         @Override
         public SimulationStep generateStep(SystemAnalyzer systemAnalyzer) {
             return ZeroStep.getZeroStep();
         }
 
-    });
+    },
+    "trivial");
     private final StepGenerator stepGenerator;
+    private final String name;
 
-    private StepType(StepGenerator stepGenerator) {
+    private StepType(StepGenerator stepGenerator, String name) {
         this.stepGenerator = stepGenerator;
+        this.name = name;
     }
 
     public SimulationStep getSimulationStep(SystemAnalyzer systemAnalyzer) {
         return stepGenerator.generateStep(systemAnalyzer);
+    }
+
+    public String getName() {
+        return name;
     }
 
 }

@@ -20,11 +20,17 @@ public class SGEManager {
 
     static private class Input {
 
+        public int jobNumber;
         public int numChains;
         public ExternalEnergyCalculator externalEnergyCalculator;
         public double density;
 
         public Input(int numChains, ExternalEnergyCalculator externalEnergyCalculator, double density) {
+            this(0, numChains, externalEnergyCalculator, density);
+        }
+
+        public Input(int jobNumber, int numChains, ExternalEnergyCalculator externalEnergyCalculator, double density) {
+            this.jobNumber = jobNumber;
             this.numChains = numChains;
             this.externalEnergyCalculator = externalEnergyCalculator;
             this.density = density;
@@ -40,37 +46,36 @@ public class SGEManager {
     static private List<Input> makeInputs() {
         List<Input> inputs = new ArrayList<>();
 
-        inputs.add(new Input(100, makeCalculatorAB(1., 100), .05));
-        inputs.add(new Input(100, makeCalculatorAB(5., 100), .05));
-        inputs.add(new Input(100, makeCalculatorAB(10., 100), .05));
-        inputs.add(new Input(100, makeCalculatorAB(50., 100), .05));
-        inputs.add(new Input(100, makeCalculatorAB(100., 100), .05));
-        inputs.add(new Input(100, makeCalculatorAB(1000., 100), .05));
+        int jobNumber = 1;
+        int numChains = 100;
+        double a = 10;
+        double b = 50;
+        double density = .05;
 
-        inputs.add(new Input(100, makeCalculatorAB(5., 80), .05));
-        inputs.add(new Input(100, makeCalculatorAB(10., 80), .05));
-        inputs.add(new Input(100, makeCalculatorAB(30., 80), .05));
-        inputs.add(new Input(100, makeCalculatorAB(100., 80), .05));
-        inputs.add(new Input(100, makeCalculatorAB(300., 80), .05));
-        inputs.add(new Input(100, makeCalculatorAB(1000., 80), .05));
+        inputs.add(new Input(jobNumber++, numChains, makeCalculatorAB(a, b), density));
+        inputs.add(new Input(jobNumber++, numChains, makeCalculatorAB(a, b), density));
+        inputs.add(new Input(jobNumber++, numChains, makeCalculatorAB(a, b), density));
+        inputs.add(new Input(jobNumber++, numChains, makeCalculatorAB(a, b), density));
+        inputs.add(new Input(jobNumber++, numChains, makeCalculatorAB(a, b), density));
 
-        inputs.add(new Input(100, makeCalculatorAB(1., 50), .05));
-        inputs.add(new Input(100, makeCalculatorAB(3., 50), .05));
-        inputs.add(new Input(100, makeCalculatorAB(10., 50), .05));
-        inputs.add(new Input(100, makeCalculatorAB(30., 50), .05));
-        inputs.add(new Input(100, makeCalculatorAB(100., 50), .05));
-        inputs.add(new Input(100, makeCalculatorAB(300., 50), .05));
-        inputs.add(new Input(100, makeCalculatorAB(1000., 50), .05));
+        inputs.add(new Input(jobNumber++, numChains, makeCalculatorAB(a, b), density));
+        inputs.add(new Input(jobNumber++, numChains, makeCalculatorAB(a * 3, b), density));
+        inputs.add(new Input(jobNumber++, numChains, makeCalculatorAB(a * 10, b), density));
+        inputs.add(new Input(jobNumber++, numChains, makeCalculatorAB(a * 30, b), density));
+        inputs.add(new Input(jobNumber++, numChains, makeCalculatorAB(a * 100, b), density));
 
-//        inputs.add(new Input(100, makeCalculatorAB(0, 66), .01));
-//        inputs.add(new Input(50, makeCalculatorAB(0, 66), .01));
-//        inputs.add(new Input(80, makeCalculatorAB(0, 66), .01));
-//        inputs.add(new Input(10, makeCalculatorAB(0, 66), .01));
-//        inputs.add(new Input(100, makeCalculatorAB(0, 66), .01));
-//        inputs.add(new Input(100, makeCalculatorAB(0, 66), .1));
-//        inputs.add(new Input(100, makeCalculatorAB(0, 66), .03));
-//        inputs.add(new Input(100, makeCalculatorAB(0, 66), .001));
-//        inputs.add(new Input(100, makeCalculatorAB(0, 66), .003));
+        inputs.add(new Input(jobNumber++, numChains, makeCalculatorAB(a, b / 2), density));
+        inputs.add(new Input(jobNumber++, numChains, makeCalculatorAB(a, b * 2 / 3), density));
+        inputs.add(new Input(jobNumber++, numChains, makeCalculatorAB(a, b), density));
+        inputs.add(new Input(jobNumber++, numChains, makeCalculatorAB(a, b * 3 / 2), density));
+        inputs.add(new Input(jobNumber++, numChains, makeCalculatorAB(a, b * 2), density));
+
+        inputs.add(new Input(jobNumber++, numChains / 2, makeCalculatorAB(a, b / 2), density));
+        inputs.add(new Input(jobNumber++, numChains * 2 / 3, makeCalculatorAB(a, b * 2 / 3), density));
+        inputs.add(new Input(jobNumber++, numChains, makeCalculatorAB(a, b), density));
+        inputs.add(new Input(jobNumber++, numChains * 3 / 2, makeCalculatorAB(a, b * 3 / 2), density));
+        inputs.add(new Input(jobNumber++, numChains * 2, makeCalculatorAB(a, b * 2), density));
+
 
 
 
@@ -122,7 +127,10 @@ public class SGEManager {
 
     static private String makeInputString(Input input) {
         StringBuilder inputStringBuilder = new StringBuilder();
-        inputStringBuilder.append(input.numChains)
+        inputStringBuilder
+                .append(input.jobNumber)
+                .append(" ")
+                .append(input.numChains)
                 .append(" ")
                 .append(input.externalEnergyCalculator.getxSpringConstant())
                 .append(" ")

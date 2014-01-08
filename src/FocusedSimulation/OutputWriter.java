@@ -28,7 +28,7 @@ public class OutputWriter {
         dataWriter = makeDataWriter();
     }
 
-    //<editor-fold defaultstate="collapsed" desc="ctor helpers">
+    //<editor-fold defaultstate="collapsed" desc="makeDataWriter and helpers">
     private PrintWriter makeDataWriter() throws FileNotFoundException {
         String jarPath = OutputWriter.class.getProtectionDomain().getCodeSource().getLocation().getPath();
         System.out.println(jarPath);
@@ -39,13 +39,9 @@ public class OutputWriter {
         }
         final String path = jarPath + "../../simulationResults/";
         File file;
-        int fileNameNumber = -1;
+        int fileNameNumber = surfaceTensionFinder.getJobNumber();
         String fileName;
-        do {
-            fileNameNumber++;
-            fileName = makeFileName(fileNameNumber);
-            file = new File(path + fileName);
-        } while (file.exists());
+        fileName = makeFileName(fileNameNumber);
 
         return new PrintWriter(path + fileName);
     }
@@ -53,8 +49,8 @@ public class OutputWriter {
     private String makeFileName(int fileNameNumber) {
         StringBuilder fileNameBuilder = new StringBuilder();
         String datePrefix = makeDatePrefix();
-        fileNameBuilder.append(datePrefix).append("_");
-        fileNameBuilder.append(makeDoubleDigitString(fileNameNumber));
+        fileNameBuilder.append(datePrefix);
+        fileNameBuilder.append("_").append(makeDoubleDigitString(fileNameNumber));
         return fileNameBuilder.toString();
     }
 
@@ -77,9 +73,9 @@ public class OutputWriter {
                 .append("_")
                 .append(makeDoubleDigitString(minute))
                 .append("_")
-                .append(makeDoubleDigitString(second))
-                .append("_")
-                .append((surfaceTensionFinder.hashCode() + surfaceTensionFinder.getInputParameters().hashCode()) % 1000);
+                .append(makeDoubleDigitString(second));
+        //                .append("_")
+        //                .append((surfaceTensionFinder.hashCode() + surfaceTensionFinder.getInputParameters().hashCode()) % 1000);
         return fileNameBuilder.toString();
     }
 
@@ -98,6 +94,7 @@ public class OutputWriter {
         String parametersString = makeParametersString();
         System.out.println(parametersString);
         dataWriter.print(parametersString);
+        dataWriter.flush();
     }
 
     private String makeParametersString() {
@@ -111,8 +108,8 @@ public class OutputWriter {
                 .append("Number of Chains: ").append(Integer.toString(inputParameters.numChains)).append("\n")
                 .append("Number of Beads per Chain: ").append(Integer.toString(numBeadsPerChain)).append("\n")
                 .append("E=(1/2)a(L-b)^2 with a: ").append(Double.toString(inputParameters.externalEnergyCalculator.getxSpringConstant())).append("\n")
-                .append("b: ").append(Double.toString(inputParameters.externalEnergyCalculator.getxEquilibriumPosition())).append("\n").
-                append("Density: ").append(Double.toString(inputParameters.density)).append("\n")
+                .append("b: ").append(Double.toString(inputParameters.externalEnergyCalculator.getxEquilibriumPosition())).append("\n")
+                .append("Density: ").append(Double.toString(inputParameters.density)).append("\n")
                 .append("number  of anneals: ").append(Integer.toString(numAnneals)).append("\n")
                 .append("number of iterations finding surface tension: ").append(Integer.toString(numSurfaceTensionTrials)).append("\n")
                 .append("=====================").append("\n")
@@ -123,6 +120,7 @@ public class OutputWriter {
     public void printSurfaceTension(MeasuredSurfaceTension measuredSurfaceTension) {
         String surfaceTensionString = makeSurfaceTensionString(measuredSurfaceTension);
         dataWriter.print(surfaceTensionString);
+        dataWriter.flush();
         System.out.println(surfaceTensionString);
     }
 
@@ -141,6 +139,7 @@ public class OutputWriter {
         String finalOutputString = makeFinalOutputString(polymerSimulator);
         System.out.println(finalOutputString);
         dataWriter.print(finalOutputString);
+        dataWriter.flush();
     }
 
     private String makeFinalOutputString(PolymerSimulator polymerSimulator) {

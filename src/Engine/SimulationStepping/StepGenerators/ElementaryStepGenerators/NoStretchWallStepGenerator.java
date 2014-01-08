@@ -24,13 +24,13 @@ public class NoStretchWallStepGenerator implements StepGenerator {
     }
 
     static public SimulationStep getNoStretchWallStep(SystemAnalyzer systemAnalyzer) {
-        RelativeResizeStepGenerator relativeResizeStepGenerator = new RelativeResizeStepGenerator();
-        return relativeResizeStepGenerator.generateStep(systemAnalyzer);
+        NoStretchWallStepGenerator noStretchWallStepGenerator = new NoStretchWallStepGenerator();
+        return noStretchWallStepGenerator.generateStep(systemAnalyzer);
     }
 
     static public SimulationStep getNoStretchWallStep(SystemAnalyzer systemAnalyzer, double maxScalingFactor) {
-        RelativeResizeStepGenerator relativeResizeStepGenerator = new RelativeResizeStepGenerator(maxScalingFactor);
-        return relativeResizeStepGenerator.generateStep(systemAnalyzer);
+        NoStretchWallStepGenerator noStretchWallStepGenerator = new NoStretchWallStepGenerator(maxScalingFactor);
+        return noStretchWallStepGenerator.generateStep(systemAnalyzer);
     }
 
     private final double lowerRandom, randomRange, power;

@@ -91,10 +91,13 @@ public class SurfaceTensionFinder {
         final InputParameters inputParameters;
         inputParameters = parseInput(args);
 
+        final int jobNumber;
+        jobNumber = parseJobNumber(args);
+
         final SurfaceTensionFinder surfaceTensionFinder;
         try {
 //            surfaceTensionFinder = new SurfaceTensionFinder(input.externalEnergyCalculator, input.density, input.numChains);
-            surfaceTensionFinder = new SurfaceTensionFinder(inputParameters);
+            surfaceTensionFinder = new SurfaceTensionFinder(jobNumber, inputParameters);
             surfaceTensionFinder.findSurfaceTension();
             surfaceTensionFinder.closeOutputWriter();
         } catch (FileNotFoundException ex) {
@@ -103,19 +106,27 @@ public class SurfaceTensionFinder {
         }
     }
 
+    static private int parseJobNumber(String[] args) {
+        if (args.length > 0) {
+            return Integer.parseInt(args[0]);
+        } else {
+            return 0;
+        }
+    }
+
     static private InputParameters parseInput(String[] args) {
         final int numChains;
         final ExternalEnergyCalculator externalEnergyCalculator;
         final double density;
 
-        if (args.length == 4) {
-            numChains = Integer.parseInt(args[0]);
-            final double xSpringConstant = Double.parseDouble(args[1]);
-            final double xEquilibriumPosition = Double.parseDouble(args[2]);
+        if (args.length == 5) {
+            numChains = Integer.parseInt(args[1]);
+            final double xSpringConstant = Double.parseDouble(args[2]);
+            final double xEquilibriumPosition = Double.parseDouble(args[3]);
             ExternalEnergyCalculatorBuilder externalEnergyCalculatorBuilder = new ExternalEnergyCalculatorBuilder();
             externalEnergyCalculatorBuilder.setXPositionAndSpringConstant(xEquilibriumPosition, xSpringConstant);
             externalEnergyCalculator = externalEnergyCalculatorBuilder.build();
-            density = Double.parseDouble(args[3]);
+            density = Double.parseDouble(args[4]);
         } else {
             numChains = 100;//100
             final ExternalEnergyCalculatorBuilder externalEnergyCalculatorBuilder = new ExternalEnergyCalculatorBuilder();
@@ -210,11 +221,13 @@ public class SurfaceTensionFinder {
 
     private final int numAnneals = 10; //50
     private final int numSurfaceTensionTrials = 70; //70
+    private final int jobNumber;
     private final InputParameters inputParameters;
     private final OutputWriter outputWriter;
     private final List<MeasuredSurfaceTension> measuredSurfaceTensions;
 
-    private SurfaceTensionFinder(InputParameters input) throws FileNotFoundException {
+    private SurfaceTensionFinder(int jobNumber, InputParameters input) throws FileNotFoundException {
+        this.jobNumber = jobNumber;
         this.inputParameters = input;
         outputWriter = new OutputWriter(this);
         measuredSurfaceTensions = new ArrayList<>();
@@ -296,6 +309,10 @@ public class SurfaceTensionFinder {
     public InputParameters getInputParameters() {
         return inputParameters;
     }
-    //</editor-fold>
 
+    public int getJobNumber() {
+        return jobNumber;
+    }
+
+    //</editor-fold>
 }

@@ -30,9 +30,10 @@ public class NoStretchWallStep implements SimulationStep {
         if (!isMoveAllowed(systemAnalyzer)) {
             return false;
         } else {
+            final double intialEnergy = systemAnalyzer.computeEnergy();
             polymerState.getSystemGeometry().setRMax(dimension, polymerState.getSystemGeometry().getSizeOfDimension(dimension) + sizeChange);
             entropyChange = computeEntropyChange(systemAnalyzer);
-            energyChange = 0;
+            energyChange = systemAnalyzer.computeEnergy() - intialEnergy;
             return true;
         }
     }

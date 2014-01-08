@@ -59,7 +59,7 @@ public class AnalysisWindow extends javax.swing.JFrame {
         systemAnalyzer = polymerSimulator.getSystemAnalyzer();
 
         createCharts();
-//        initialize();
+        initialize();
     }
 
     private void createCharts() {
@@ -69,7 +69,14 @@ public class AnalysisWindow extends javax.swing.JFrame {
     }
 
     private void initialize() {
-//        updaterThread.start();
+        initializeIterationsStatistics();
+    }
+
+    private void initializeIterationsStatistics() {
+        aggregateStatistics.setSimulatorForAggregate(polymerSimulator);
+        singleBeadStatistics.setSimulatorAndStepType(polymerSimulator, StepType.SINGLE_BEAD);
+        wallMoveStatistics.setSimulatorAndStepType(polymerSimulator, StepType.SINGLE_WALL_RESIZE);
+        reptationStatistics.setSimulatorAndStepType(polymerSimulator, StepType.REPTATION);
     }
 
     public void setPolymerSimulator(PolymerSimulator polymerSimulator) {
@@ -83,31 +90,11 @@ public class AnalysisWindow extends javax.swing.JFrame {
     }
 
     private void updateIterationStatisticsDisplay() {
-        updateTotalIterationsDisplay();
-        updateChainIterationsDisplay();
+        aggregateStatistics.updateValues();
+        singleBeadStatistics.updateValues();
+        wallMoveStatistics.updateValues();
+        reptationStatistics.updateValues();
     }
-
-    //<editor-fold defaultstate="collapsed" desc="update Statistics Display">
-    private void updateTotalIterationsDisplay() {
-        final int numIterations = polymerSimulator.getIterationNumber();
-        final int acceptedIterations = polymerSimulator.getAcceptedIterations();
-        final double acceptanceRate = (double) acceptedIterations / (double) numIterations;
-
-        numIterationsLbl.setText(Integer.toString(numIterations));
-        numAcceptedIterationsLbl.setText(Integer.toString(acceptedIterations));
-        iterationAcceptanceRateLbl.setText(doubleToString(acceptanceRate));
-    }
-
-    private void updateChainIterationsDisplay() {
-        final int numIterations = polymerSimulator.getAttemptedStepsOfType(StepType.SINGLE_CHAIN);
-        final int acceptedIterations = polymerSimulator.getAcceptedStepsOfType(StepType.SINGLE_CHAIN);
-        final double acceptanceRate = (double) acceptedIterations / (double) numIterations;
-
-        chainMovesLbl.setText(Integer.toString(numIterations));
-        acceptChainMovesLbl.setText(Integer.toString(acceptedIterations));
-        chainMoveAcceptanceRateLbl.setText(doubleToString(acceptanceRate));
-    }
-    //</editor-fold>
 
     private void updatePhysicalPropertiesDisplay() {
         final AreaPerimeter areaPerimeter = systemAnalyzer.findAreaAndPerimeter();
@@ -157,19 +144,6 @@ public class AnalysisWindow extends javax.swing.JFrame {
     private void initComponents() {
 
         mainPanel = new javax.swing.JPanel();
-        iterationStatisticsLbl = new javax.swing.JPanel();
-        numAcceptedIterationsCaptionLbl = new javax.swing.JLabel();
-        numIterationsCaptionLbl = new javax.swing.JLabel();
-        chainMovesLbl = new javax.swing.JLabel();
-        chainMovesCaptionLbl = new javax.swing.JLabel();
-        acceptedChainMovesCaptionLbl = new javax.swing.JLabel();
-        chainMoveAcceptanceRateLbl = new javax.swing.JLabel();
-        numIterationsLbl = new javax.swing.JLabel();
-        iterationAcceptanceRateLbl = new javax.swing.JLabel();
-        chainMoveAcceptanceRateCaptionLbl = new javax.swing.JLabel();
-        acceptChainMovesLbl = new javax.swing.JLabel();
-        iterationAcceptanceRateCaptionLbl = new javax.swing.JLabel();
-        numAcceptedIterationsLbl = new javax.swing.JLabel();
         jPanel1 = new javax.swing.JPanel();
         volumeCaptionLbl = new javax.swing.JLabel();
         areaLbl = new javax.swing.JLabel();
@@ -180,103 +154,12 @@ public class AnalysisWindow extends javax.swing.JFrame {
         areaChart = new Gui.StripChart();
         perimeterChart = new Gui.StripChart();
         energyChart = new Gui.StripChart();
+        aggregateStatistics = new Gui.AcceptanceStatistics();
+        singleBeadStatistics = new Gui.AcceptanceStatistics();
+        wallMoveStatistics = new Gui.AcceptanceStatistics();
+        reptationStatistics = new Gui.AcceptanceStatistics();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
-
-        iterationStatisticsLbl.setBorder(javax.swing.BorderFactory.createTitledBorder("Iteration Statistics"));
-
-        numAcceptedIterationsCaptionLbl.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
-        numAcceptedIterationsCaptionLbl.setText("Accepted Iterations:");
-
-        numIterationsCaptionLbl.setText("Number of Iterations:");
-
-        chainMovesLbl.setText("0");
-        chainMovesLbl.setBorder(javax.swing.BorderFactory.createBevelBorder(javax.swing.border.BevelBorder.LOWERED));
-
-        chainMovesCaptionLbl.setText("Number of Chain Moves:");
-
-        acceptedChainMovesCaptionLbl.setText("Accepted Chain Moves:");
-
-        chainMoveAcceptanceRateLbl.setText("0");
-        chainMoveAcceptanceRateLbl.setBorder(javax.swing.BorderFactory.createBevelBorder(javax.swing.border.BevelBorder.LOWERED));
-
-        numIterationsLbl.setText("0");
-        numIterationsLbl.setBorder(javax.swing.BorderFactory.createBevelBorder(javax.swing.border.BevelBorder.LOWERED));
-
-        iterationAcceptanceRateLbl.setText("0");
-        iterationAcceptanceRateLbl.setBorder(javax.swing.BorderFactory.createBevelBorder(javax.swing.border.BevelBorder.LOWERED));
-
-        chainMoveAcceptanceRateCaptionLbl.setHorizontalAlignment(javax.swing.SwingConstants.TRAILING);
-        chainMoveAcceptanceRateCaptionLbl.setText("AcceptanceRate:");
-
-        acceptChainMovesLbl.setText("0");
-        acceptChainMovesLbl.setBorder(javax.swing.BorderFactory.createBevelBorder(javax.swing.border.BevelBorder.LOWERED));
-
-        iterationAcceptanceRateCaptionLbl.setText("Acceptance Rate:");
-
-        numAcceptedIterationsLbl.setText("0");
-        numAcceptedIterationsLbl.setBorder(javax.swing.BorderFactory.createBevelBorder(javax.swing.border.BevelBorder.LOWERED));
-
-        javax.swing.GroupLayout iterationStatisticsLblLayout = new javax.swing.GroupLayout(iterationStatisticsLbl);
-        iterationStatisticsLbl.setLayout(iterationStatisticsLblLayout);
-        iterationStatisticsLblLayout.setHorizontalGroup(
-            iterationStatisticsLblLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(iterationStatisticsLblLayout.createSequentialGroup()
-                .addGroup(iterationStatisticsLblLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addGroup(iterationStatisticsLblLayout.createSequentialGroup()
-                        .addGroup(iterationStatisticsLblLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                            .addComponent(chainMoveAcceptanceRateCaptionLbl, javax.swing.GroupLayout.PREFERRED_SIZE, 155, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(chainMovesCaptionLbl)
-                            .addComponent(acceptedChainMovesCaptionLbl))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addGroup(iterationStatisticsLblLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                            .addComponent(acceptChainMovesLbl, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .addComponent(chainMoveAcceptanceRateLbl, javax.swing.GroupLayout.DEFAULT_SIZE, 65, Short.MAX_VALUE)
-                            .addComponent(chainMovesLbl, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
-                    .addGroup(iterationStatisticsLblLayout.createSequentialGroup()
-                        .addGap(25, 25, 25)
-                        .addGroup(iterationStatisticsLblLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addGroup(iterationStatisticsLblLayout.createSequentialGroup()
-                                .addComponent(numIterationsCaptionLbl)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(numIterationsLbl, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                            .addGroup(iterationStatisticsLblLayout.createSequentialGroup()
-                                .addGroup(iterationStatisticsLblLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                                    .addComponent(numAcceptedIterationsCaptionLbl, javax.swing.GroupLayout.PREFERRED_SIZE, 144, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                    .addComponent(iterationAcceptanceRateCaptionLbl))
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addGroup(iterationStatisticsLblLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addComponent(iterationAcceptanceRateLbl, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                    .addComponent(numAcceptedIterationsLbl, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))))))
-                .addGap(0, 12, Short.MAX_VALUE))
-        );
-        iterationStatisticsLblLayout.setVerticalGroup(
-            iterationStatisticsLblLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(iterationStatisticsLblLayout.createSequentialGroup()
-                .addGroup(iterationStatisticsLblLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(numIterationsCaptionLbl, javax.swing.GroupLayout.PREFERRED_SIZE, 28, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(numIterationsLbl))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(iterationStatisticsLblLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(numAcceptedIterationsCaptionLbl)
-                    .addComponent(numAcceptedIterationsLbl))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(iterationStatisticsLblLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(iterationAcceptanceRateCaptionLbl)
-                    .addComponent(iterationAcceptanceRateLbl))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(iterationStatisticsLblLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(chainMovesCaptionLbl)
-                    .addComponent(chainMovesLbl))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(iterationStatisticsLblLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(acceptedChainMovesCaptionLbl)
-                    .addComponent(acceptChainMovesLbl))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(iterationStatisticsLblLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(chainMoveAcceptanceRateCaptionLbl)
-                    .addComponent(chainMoveAcceptanceRateLbl)))
-        );
 
         jPanel1.setBorder(javax.swing.BorderFactory.createTitledBorder("Physical Properties"));
 
@@ -350,18 +233,31 @@ public class AnalysisWindow extends javax.swing.JFrame {
             .addGroup(mainPanelLayout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(mainPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(iterationStatisticsLbl, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                    .addGroup(mainPanelLayout.createSequentialGroup()
+                        .addComponent(aggregateStatistics, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(wallMoveStatistics, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addGroup(mainPanelLayout.createSequentialGroup()
+                        .addComponent(singleBeadStatistics, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(reptationStatistics, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addContainerGap(76, Short.MAX_VALUE))
         );
         mainPanelLayout.setVerticalGroup(
             mainPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(mainPanelLayout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(iterationStatisticsLbl, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addGroup(mainPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(aggregateStatistics, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(wallMoveStatistics, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(mainPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(singleBeadStatistics, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(reptationStatistics, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 26, Short.MAX_VALUE)
                 .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(42, Short.MAX_VALUE))
+                .addContainerGap())
         );
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
@@ -376,36 +272,27 @@ public class AnalysisWindow extends javax.swing.JFrame {
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addComponent(mainPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(0, 0, Short.MAX_VALUE))
+                .addGap(0, 3, Short.MAX_VALUE))
         );
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JLabel acceptChainMovesLbl;
-    private javax.swing.JLabel acceptedChainMovesCaptionLbl;
+    private Gui.AcceptanceStatistics aggregateStatistics;
     private Gui.StripChart areaChart;
     private javax.swing.JLabel areaLbl;
-    private javax.swing.JLabel chainMoveAcceptanceRateCaptionLbl;
-    private javax.swing.JLabel chainMoveAcceptanceRateLbl;
-    private javax.swing.JLabel chainMovesCaptionLbl;
-    private javax.swing.JLabel chainMovesLbl;
     private javax.swing.JLabel energyCaptionLbl;
     private Gui.StripChart energyChart;
     private javax.swing.JLabel energyLbl;
-    private javax.swing.JLabel iterationAcceptanceRateCaptionLbl;
-    private javax.swing.JLabel iterationAcceptanceRateLbl;
-    private javax.swing.JPanel iterationStatisticsLbl;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel mainPanel;
-    private javax.swing.JLabel numAcceptedIterationsCaptionLbl;
-    private javax.swing.JLabel numAcceptedIterationsLbl;
-    private javax.swing.JLabel numIterationsCaptionLbl;
-    private javax.swing.JLabel numIterationsLbl;
     private javax.swing.JLabel perimeterCaptionLbl;
     private Gui.StripChart perimeterChart;
     private javax.swing.JLabel perimeterLbl;
+    private Gui.AcceptanceStatistics reptationStatistics;
+    private Gui.AcceptanceStatistics singleBeadStatistics;
     private javax.swing.JLabel volumeCaptionLbl;
+    private Gui.AcceptanceStatistics wallMoveStatistics;
     // End of variables declaration//GEN-END:variables
 }
