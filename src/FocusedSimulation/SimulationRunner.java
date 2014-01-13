@@ -7,11 +7,10 @@ package FocusedSimulation;
 import Engine.PolymerSimulator;
 import FocusedSimulation.StatisticsTracker.TrackableVariable;
 import Gui.SystemViewer;
-import SystemAnalysis.SimulationHistory;
-import SystemAnalysis.SimulationHistory.TrackedVariable;
-import com.sun.xml.internal.ws.message.saaj.SAAJHeader;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  *
@@ -74,15 +73,18 @@ public class SimulationRunner {
     private final PolymerSimulator polymerSimulator;
     private final StatisticsTracker statisticsTracker;
     private final SimulationRunnerParameters simulationRunnerParameters;
+    private final Map<TrackableVariable, List<DoubleWithUncertainty>> measuredValues;
 
     public SimulationRunner(PolymerSimulator polymerSimulator, SimulationRunnerParameters simulationRunnerParameters) {
         this.polymerSimulator = polymerSimulator;
         this.simulationRunnerParameters = simulationRunnerParameters;
         statisticsTracker = new StatisticsTracker(simulationRunnerParameters.getWindowSize());
+        measuredValues = new HashMap<>();
     }
 
     public void trackVariable(TrackableVariable trackableVariable) {
         statisticsTracker.addTrackableVariable(trackableVariable);
+        measuredValues.put(trackableVariable, new ArrayList<DoubleWithUncertainty>());
     }
 
 //    public void ignoreVariable(TrackedVariable trackedVariable) {
@@ -99,7 +101,19 @@ public class SimulationRunner {
         }
     }
 
-    public void generateStatistics() {
+    public void doMeasurementRuns(int numMeasurementRuns) {
+        for (int i = 0; i < numMeasurementRuns; i++) {
+            doMeasurementRun();
+        }
+    }
+
+    public void doMeasurementRun() {
+        statisticsTracker.clearAll();
+        generateStatistics();
+        updateMeasuredValuesWithStatistics();
+    }
+
+    private void generateStatistics() {
         int numSamplesTaken = 0;
         while (numSamplesTaken < simulationRunnerParameters.getNumSamples()) {
             polymerSimulator.doIterations(simulationRunnerParameters.numIterationsPerSample);
@@ -108,21 +122,49 @@ public class SimulationRunner {
         }
     }
 
-    public void generateStatisticsUntilConverged() {
-        while (!isConverged(TrackedVariable.PERIMETER)) {
-            polymerSimulator.doIterations(simulationRunnerParameters.numIterationsPerSample);
-            statisticsTracker.addSnapshotForPolymerSimulator(polymerSimulator);
+    private void updateMeasuredValuesWithStatistics() {
+        for (TrackableVariable trackableVariable : statisticsTracker.getTrackedVariables()) {
+            final DoubleWithUncertainty doubleWithUncertainty = getAverageWithUncertainty(trackableVariable);
+            final List<DoubleWithUncertainty> measuredValuesForTrackedVariable = measuredValues.get(trackableVariable);
+            measuredValuesForTrackedVariable.add(doubleWithUncertainty);
         }
     }
 
-    public DoubleWithUncertainty getAverageWithUncertainty(TrackableVariable trackableVariable) {
+    private DoubleWithUncertainty getAverageWithUncertainty(TrackableVariable trackableVariable) {
         final double average = statisticsTracker.getAverage(trackableVariable);
         final double standardError = statisticsTracker.getStandardDeviation(trackableVariable) / Math.sqrt(statisticsTracker.getNumSamples(trackableVariable));
         return new DoubleWithUncertainty(average, standardError);
     }
 
-    private boolean isConverged(TrackedVariable trackedVariable) {
-        return true;
+    public void doTrialsUntilConverged() {
+        while (!isConverged()) {
+            doMeasurementRun();
+        }
+    }
+
+    private boolean isConverged() {
+        boolean isConverged = true;
+        for (TrackableVariable trackableVariable : statisticsTracker.getTrackedVariables()) {
+            isConverged &= isConverged(trackableVariable);
+        }
+        return isConverged;
+    }
+
+    public boolean isConverged(TrackableVariable trackableVariable) {
+        final List<DoubleWithUncertainty> measurements = getMeasurementsForTrackedVariable(trackableVariable);
+        final int numMeasurements = measurements.size();
+        final int windowSIze = 10;
+
+        if (numMeasurements < windowSIze) {
+            return false;
+        }
+
+        int comparisonCount = 0;
+        for (int offset = 0; offset < windowSIze; offset++) {
+            final int comparison = measurements.get(numMeasurements - offset).getValue() > measurements.get(numMeasurements - offset - 1).getValue() ? 1 : -1;
+            comparisonCount += comparison;
+        }
+        return Math.abs(comparisonCount) < windowSIze / 3;
     }
 
     public void showViewer() {
@@ -132,6 +174,15 @@ public class SimulationRunner {
         } catch (java.awt.HeadlessException e) {
             System.out.println("Headless exception thrown when creating system viewer. I am unable to create system viewer.");
         }
+    }
+
+    public DoubleWithUncertainty getRecentMeasurementForTrackedVariable(TrackableVariable trackableVariable) {
+        List<DoubleWithUncertainty> measurements = getMeasurementsForTrackedVariable(trackableVariable);
+        return measurements.get(measurements.size() - 1);
+    }
+
+    public List<DoubleWithUncertainty> getMeasurementsForTrackedVariable(TrackableVariable trackableVariable) {
+        return measuredValues.get(trackableVariable);
     }
 
 }

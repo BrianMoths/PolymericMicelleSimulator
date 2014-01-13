@@ -7,6 +7,7 @@ package FocusedSimulation;
 import Engine.PolymerSimulator;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Set;
 import org.apache.commons.math3.stat.descriptive.DescriptiveStatistics;
 
 /**
@@ -58,7 +59,11 @@ public class StatisticsTracker {
         }
     }
 
-    private DescriptiveStatistics getStatisticsFor(TrackableVariable trackableVariable) {
+    public Set<TrackableVariable> getTrackedVariables() {
+        return statistics.keySet();
+    }
+
+    public DescriptiveStatistics getStatisticsFor(TrackableVariable trackableVariable) {
         return statistics.get(trackableVariable);
     }
 
