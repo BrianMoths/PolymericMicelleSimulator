@@ -61,8 +61,6 @@ public class BeadBinner implements Serializable {
 
     }
 
-    private final int numDimensions;
-
     private class NearbyBeadIterator implements Iterator<Integer> {
 
         private final BinIndex binIndex;
@@ -152,6 +150,7 @@ public class BeadBinner implements Serializable {
 
     }
 
+    private final int numDimensions;
     private final double[] binSize;
     private final int[] numBins;
     private MultidimensionalArray<Set<Integer>> beadBins;
@@ -224,68 +223,8 @@ public class BeadBinner implements Serializable {
         }
         return currentBinOffsetLocal;
     }
-
-//    private List<List<Integer>> makeBinOffsets() {
-//
-//        class BinOffsetsMaker {
-//
-//            private List<Integer> currentBinOffset;
-//            private boolean isOutOfBins;
-//
-//            public BinOffsetsMaker() {
-//                currentBinOffset = makeInitialBinOffset();
-//                isOutOfBins = false;
-//            }
-//
-//            public void iterate() {
-//                iterateBinWithDimension(numDimensions - 1);
-//            }
-//
-//            private void iterateBinWithDimension(int dimension) { //highest dimension is least significant
-//                int offsetOfDimension = currentBinOffset.get(dimension);
-//                offsetOfDimension++;
-//                if (isCurrentBinOffsetTooHigh(offsetOfDimension, dimension)) {
-//                    if (dimension > 0) {
-//                        resetOffsetOfDimension(dimension);
-//                        iterateBinWithDimension(dimension - 1);
-//                    } else {
-//                        isOutOfBins = true;
-//                    }
-//                } else {
-//                    currentBinOffset.set(dimension, offsetOfDimension);
-//                }
-//            }
-//
-//            private boolean isCurrentBinOffsetTooHigh(int offsetOfDimension, int dimension) {
-//                return offsetOfDimension > ranges.get(dimension);
-//            }
-//
-//            private void resetOffsetOfDimension(int dimension) {
-//                currentBinOffset.set(dimension, -ranges.get(dimension));
-//            }
-//
-//            public List<Integer> getCurrentBinOffsetCopy() {
-//                return new ArrayList<>(currentBinOffset);
-//            }
-//
-//            public boolean isOutOfBins() {
-//                return isOutOfBins;
-//            }
-//
-//        }
-//
-//        List<List<Integer>> binOffsets = new ArrayList<>();
-//
-//        BinOffsetsMaker binOffsetsMaker = new BinOffsetsMaker();
-//
-//        while (!binOffsetsMaker.isOutOfBins()) {
-//            binOffsets.add(binOffsetsMaker.getCurrentBinOffsetCopy());
-//            binOffsetsMaker.iterate();
-//        }
-//
-//        return binOffsets;
-//    }
     //</editor-fold>
+
     public void binBeads(double[][] beadPositions) {
         binBeadsPrivate(beadPositions);
     }

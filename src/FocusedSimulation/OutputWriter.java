@@ -7,7 +7,7 @@ package FocusedSimulation;
 import Engine.PolymerSimulator;
 import Engine.PolymerState.SystemGeometry.Interfaces.ImmutableSystemGeometry;
 import Engine.SystemAnalyzer;
-import FocusedSimulation.SurfaceTensionFinder.InputParameters;
+import FocusedSimulation.SurfaceTensionFinder.SystemParameters;
 import FocusedSimulation.SurfaceTensionFinder.MeasuredSurfaceTension;
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -98,7 +98,7 @@ public class OutputWriter {
     }
 
     private String makeParametersString() {
-        final InputParameters inputParameters = surfaceTensionFinder.getInputParameters();
+        final SystemParameters inputParameters = surfaceTensionFinder.getInputParameters();
         final int numBeadsPerChain = SurfaceTensionFinder.getNumBeadsPerChain();
         final int numAnneals = surfaceTensionFinder.getNumAnneals();
         final int numSurfaceTensionTrials = surfaceTensionFinder.getNumSurfaceTensionTrials();

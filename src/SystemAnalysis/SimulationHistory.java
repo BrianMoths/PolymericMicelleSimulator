@@ -63,6 +63,10 @@ public class SimulationHistory implements Serializable {
         getStatisticsFor(trackedVariable).addValue(value);
     }
 
+    public double getNumSamples(TrackedVariable trackedVariable) {
+        return getStatisticsFor(trackedVariable).getN();
+    }
+
     public double getAverage(TrackedVariable trackedVariable) {
         return getStatisticsFor(trackedVariable).getMean();
     }

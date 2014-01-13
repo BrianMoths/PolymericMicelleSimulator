@@ -15,7 +15,7 @@ import Engine.PolymerState.SystemGeometry.Implementations.AbstractGeometry.Abstr
 import Engine.PolymerState.SystemGeometry.Implementations.PeriodicGeometry;
 import Engine.PolymerState.SystemGeometry.Interfaces.SystemGeometry;
 import Engine.SystemAnalyzer;
-import static FocusedSimulation.SurfaceTensionFinder.generateLengthStatistics;
+//import static FocusedSimulation.SurfaceTensionFinder.generateLengthStatistics;
 import Gui.SystemViewer;
 import org.apache.commons.math3.stat.descriptive.DescriptiveStatistics;
 

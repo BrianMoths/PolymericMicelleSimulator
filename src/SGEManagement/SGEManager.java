@@ -47,34 +47,19 @@ public class SGEManager {
         List<Input> inputs = new ArrayList<>();
 
         int jobNumber = 1;
-        int numChains = 100;
+        int numChains = 100 / 3;
         double a = 10;
-        double b = 50;
+        double b = 50 / 3;
         double density = .05;
 
-        inputs.add(new Input(jobNumber++, numChains, makeCalculatorAB(a, b), density));
-        inputs.add(new Input(jobNumber++, numChains, makeCalculatorAB(a, b), density));
-        inputs.add(new Input(jobNumber++, numChains, makeCalculatorAB(a, b), density));
-        inputs.add(new Input(jobNumber++, numChains, makeCalculatorAB(a, b), density));
-        inputs.add(new Input(jobNumber++, numChains, makeCalculatorAB(a, b), density));
-
-        inputs.add(new Input(jobNumber++, numChains, makeCalculatorAB(a, b), density));
-        inputs.add(new Input(jobNumber++, numChains, makeCalculatorAB(a * 3, b), density));
-        inputs.add(new Input(jobNumber++, numChains, makeCalculatorAB(a * 10, b), density));
-        inputs.add(new Input(jobNumber++, numChains, makeCalculatorAB(a * 30, b), density));
-        inputs.add(new Input(jobNumber++, numChains, makeCalculatorAB(a * 100, b), density));
-
-        inputs.add(new Input(jobNumber++, numChains, makeCalculatorAB(a, b / 2), density));
-        inputs.add(new Input(jobNumber++, numChains, makeCalculatorAB(a, b * 2 / 3), density));
-        inputs.add(new Input(jobNumber++, numChains, makeCalculatorAB(a, b), density));
-        inputs.add(new Input(jobNumber++, numChains, makeCalculatorAB(a, b * 3 / 2), density));
-        inputs.add(new Input(jobNumber++, numChains, makeCalculatorAB(a, b * 2), density));
-
-        inputs.add(new Input(jobNumber++, numChains / 2, makeCalculatorAB(a, b / 2), density));
-        inputs.add(new Input(jobNumber++, numChains * 2 / 3, makeCalculatorAB(a, b * 2 / 3), density));
-        inputs.add(new Input(jobNumber++, numChains, makeCalculatorAB(a, b), density));
-        inputs.add(new Input(jobNumber++, numChains * 3 / 2, makeCalculatorAB(a, b * 3 / 2), density));
-        inputs.add(new Input(jobNumber++, numChains * 2, makeCalculatorAB(a, b * 2), density));
+//        inputs.add(new Input(jobNumber++, numChains / 2, makeCalculatorAB(a, b), density));
+//        inputs.add(new Input(jobNumber++, numChains * 2 / 3, makeCalculatorAB(a, b), density));
+//        inputs.add(new Input(jobNumber++, numChains, makeCalculatorAB(a, b), density));
+//        inputs.add(new Input(jobNumber++, numChains * 3 / 2, makeCalculatorAB(a, b), density));
+//        inputs.add(new Input(jobNumber++, numChains * 2, makeCalculatorAB(a, b), density));
+//        inputs.add(new Input(jobNumber++, numChains * 3, makeCalculatorAB(a, b), density));
+        inputs.add(new Input(jobNumber++, numChains * 5, makeCalculatorAB(a, b), density));
+//        inputs.add(new Input(jobNumber++, numChains * 10, makeCalculatorAB(a, b), density));
 
 
 

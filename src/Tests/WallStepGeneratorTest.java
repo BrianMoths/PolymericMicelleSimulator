@@ -11,7 +11,7 @@ import Engine.PolymerTopology.PolymerCluster;
 import Engine.PolymerSimulator;
 import Engine.PolymerState.SystemGeometry.Implementations.PeriodicGeometry;
 import Engine.PolymerState.SystemGeometry.Interfaces.SystemGeometry;
-import static FocusedSimulation.SurfaceTensionFinder.generateLengthStatistics;
+//import static FocusedSimulation.SurfaceTensionFinder.generateLengthStatistics;
 import Gui.SystemViewer;
 import org.apache.commons.math3.stat.descriptive.DescriptiveStatistics;
 
@@ -28,8 +28,8 @@ public class WallStepGeneratorTest {
         systemViewer.setVisible(true);
 
         final int numSamples = 1000;
-        DescriptiveStatistics lengthStatistics = generateLengthStatistics(numSamples, polymerSimulator);
-        System.out.println(lengthStatistics.getMean());
+//        DescriptiveStatistics lengthStatistics = generateLengthStatistics(numSamples, polymerSimulator);
+//        System.out.println(lengthStatistics.getMean());
     }
 
     private static PolymerSimulator makePolymerSimulator() {

@@ -111,8 +111,8 @@ public class SystemViewer extends javax.swing.JFrame {
 
             final double energy = polymerSimulator.getEnergy();
 
-            GeometryAnalyzer.AreaPerimeter areaPerimeter = systemAnalyzer.findAreaAndPerimeter();
-            systemAnalyzer.addPerimeterAreaEnergySnapshot(areaPerimeter.perimeter, areaPerimeter.area, energy);
+//            GeometryAnalyzer.AreaPerimeter areaPerimeter = systemAnalyzer.findAreaAndPerimeter();
+//            systemAnalyzer.addPerimeterAreaEnergySnapshot(areaPerimeter.perimeter, areaPerimeter.area, energy);
 
             energyLbl.setText(stringFormatDouble(energy));
             numIterationsLbl.setText(String.valueOf(polymerSimulator.getIterationNumber()));

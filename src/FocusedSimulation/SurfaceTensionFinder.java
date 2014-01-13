@@ -42,13 +42,13 @@ public class SurfaceTensionFinder {
 
     }
 
-    static public final class InputParameters {
+    static public final class SystemParameters {
 
         public final int numChains;
         public final ExternalEnergyCalculator externalEnergyCalculator;
         public final double density;
 
-        public InputParameters(int numChains, ExternalEnergyCalculator externalEnergyCalculator, double density) {
+        public SystemParameters(int numChains, ExternalEnergyCalculator externalEnergyCalculator, double density) {
             this.numChains = numChains;
             this.externalEnergyCalculator = externalEnergyCalculator;
             this.density = density;
@@ -72,7 +72,7 @@ public class SurfaceTensionFinder {
             if (getClass() != obj.getClass()) {
                 return false;
             }
-            final InputParameters otherInputParameters = (InputParameters) obj;
+            final SystemParameters otherInputParameters = (SystemParameters) obj;
             final boolean externalEnergyCalculatorEquals = externalEnergyCalculator == null
                     ? otherInputParameters.externalEnergyCalculator == null
                     : externalEnergyCalculator.equals(otherInputParameters.externalEnergyCalculator);
@@ -88,7 +88,7 @@ public class SurfaceTensionFinder {
 
     public static void main(String[] args) {
 
-        final InputParameters inputParameters;
+        final SystemParameters inputParameters;
         inputParameters = parseInput(args);
 
         final int jobNumber;
@@ -114,7 +114,7 @@ public class SurfaceTensionFinder {
         }
     }
 
-    static private InputParameters parseInput(String[] args) {
+    static private SystemParameters parseInput(String[] args) {
         final int numChains;
         final ExternalEnergyCalculator externalEnergyCalculator;
         final double density;
@@ -135,18 +135,16 @@ public class SurfaceTensionFinder {
             density = .05; //.15
         }
 
-        return new InputParameters(numChains, externalEnergyCalculator, density);
+        return new SystemParameters(numChains, externalEnergyCalculator, density);
     }
 
-    static public DescriptiveStatistics generateLengthStatistics(int numSamples, PolymerSimulator polymerSimulator) {
-        final int iterationsPerSample = 100000;
+    public DescriptiveStatistics generateLengthStatistics(int numSamples, PolymerSimulator polymerSimulator) {
         int numSamplesTaken = 0;
         SystemAnalyzer systemAnalyzer = polymerSimulator.getSystemAnalyzer();
 
         DescriptiveStatistics lengthStatistics = new DescriptiveStatistics(numSamples);
         while (numSamplesTaken < numSamples) {
-//            System.out.println(Integer.toString(100 * numSamplesTaken / numSamples) + "% done collecting statisitcs.");
-            polymerSimulator.doIterations(iterationsPerSample);
+            polymerSimulator.doIterations(numIterationsPerSample);
             lengthStatistics.addValue(systemAnalyzer.getSystemGeometry().getSizeOfDimension(0));
             numSamplesTaken++;
         }
@@ -171,7 +169,7 @@ public class SurfaceTensionFinder {
     }
 
     //<editor-fold defaultstate="expanded" desc="makePolymerSimulator">
-    static private PolymerSimulator makePolymerSimulator(InputParameters inputParameters) {
+    static private PolymerSimulator makePolymerSimulator(SystemParameters inputParameters) {
         final double interactionLength = 4;
 
         EnergeticsConstantsBuilder energeticsConstantsBuilder = makeEnergeticsConstantsBuilder(inputParameters.externalEnergyCalculator);
@@ -220,22 +218,25 @@ public class SurfaceTensionFinder {
     }
 
     private final int numAnneals = 10; //50
-    private final int numSurfaceTensionTrials = 70; //70
+    private final int numSurfaceTensionTrials = 150; //70
+    private final int numSamplesPerTrial = 100;
+    private final int numIterationsPerSample = 100_000;
+    private final int numIterationsPerAnneal = 3_000_000;//3_000_000
     private final int jobNumber;
-    private final InputParameters inputParameters;
+    private final SystemParameters systemParameters;
     private final OutputWriter outputWriter;
     private final List<MeasuredSurfaceTension> measuredSurfaceTensions;
 
-    private SurfaceTensionFinder(int jobNumber, InputParameters input) throws FileNotFoundException {
+    private SurfaceTensionFinder(int jobNumber, SystemParameters input) throws FileNotFoundException {
         this.jobNumber = jobNumber;
-        this.inputParameters = input;
+        this.systemParameters = input;
         outputWriter = new OutputWriter(this);
         measuredSurfaceTensions = new ArrayList<>();
     }
 
     public void findSurfaceTension() {
         outputWriter.printParameters();
-        PolymerSimulator polymerSimulator = makePolymerSimulator(inputParameters);
+        PolymerSimulator polymerSimulator = makePolymerSimulator(systemParameters);
         polymerSimulator.columnRandomizePositions();
         try {
             SystemViewer systemViewer = new SystemViewer(polymerSimulator);
@@ -247,7 +248,7 @@ public class SurfaceTensionFinder {
         System.out.println("System is initialized.");
 
         for (int i = 0; i < numAnneals; i++) {
-            polymerSimulator.doIterations(3000000);//3000000
+            polymerSimulator.doIterations(numIterationsPerAnneal);
             polymerSimulator.anneal();
             System.out.println("equilibrate anneal iteration done.");
         }
@@ -272,8 +273,7 @@ public class SurfaceTensionFinder {
         System.out.println("System equilibrated.");
         System.out.println("Gathering statistics to find equilibrium length.");
 
-        final int numSamples = 100;
-        DescriptiveStatistics lengthStatistics = generateLengthStatistics(numSamples, polymerSimulator);
+        DescriptiveStatistics lengthStatistics = generateLengthStatistics(numSamplesPerTrial, polymerSimulator);
         MeasuredSurfaceTension measuredSurfaceTension = calculateSurfaceTension(lengthStatistics, polymerSimulator);
         outputWriter.printSurfaceTension(measuredSurfaceTension);
         measuredSurfaceTensions.add(measuredSurfaceTension);
@@ -306,8 +306,8 @@ public class SurfaceTensionFinder {
         return numSurfaceTensionTrials;
     }
 
-    public InputParameters getInputParameters() {
-        return inputParameters;
+    public SystemParameters getInputParameters() {
+        return systemParameters;
     }
 
     public int getJobNumber() {
