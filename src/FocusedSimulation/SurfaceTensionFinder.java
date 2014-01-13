@@ -16,7 +16,11 @@ import Engine.PolymerState.SystemGeometry.Implementations.AbstractGeometry.Abstr
 import Engine.PolymerState.SystemGeometry.GeometricalParameters;
 import Engine.PolymerState.SystemGeometry.Implementations.PeriodicGeometry;
 import Engine.PolymerState.SystemGeometry.Interfaces.SystemGeometry;
+import FocusedSimulation.SimulationRunner.DoubleWithUncertainty;
+import FocusedSimulation.SimulationRunner.SimulationRunnerParameters;
+import FocusedSimulation.StatisticsTracker.TrackableVariable;
 import Gui.SystemViewer;
+import com.sun.xml.internal.ws.message.saaj.SAAJHeader;
 import java.io.FileNotFoundException;
 import java.util.ArrayList;
 import java.util.List;
@@ -84,7 +88,7 @@ public class SurfaceTensionFinder {
 
     }
 
-    static private final int numBeadsPerChain = 15;
+    static private final int defaultNumBeadsPerChain = 15;
 
     public static void main(String[] args) {
 
@@ -96,7 +100,6 @@ public class SurfaceTensionFinder {
 
         final SurfaceTensionFinder surfaceTensionFinder;
         try {
-//            surfaceTensionFinder = new SurfaceTensionFinder(input.externalEnergyCalculator, input.density, input.numChains);
             surfaceTensionFinder = new SurfaceTensionFinder(jobNumber, inputParameters);
             surfaceTensionFinder.findSurfaceTension();
             surfaceTensionFinder.closeOutputWriter();
@@ -130,42 +133,12 @@ public class SurfaceTensionFinder {
         } else {
             numChains = 100;//100
             final ExternalEnergyCalculatorBuilder externalEnergyCalculatorBuilder = new ExternalEnergyCalculatorBuilder();
-            externalEnergyCalculatorBuilder.setXPositionAndSpringConstant(66, 3.); //66 and .2 or 1.8
+            externalEnergyCalculatorBuilder.setXPositionAndSpringConstant(50, 10.); //66 and 3
             externalEnergyCalculator = externalEnergyCalculatorBuilder.build();
             density = .05; //.15
         }
 
         return new SystemParameters(numChains, externalEnergyCalculator, density);
-    }
-
-    public DescriptiveStatistics generateLengthStatistics(int numSamples, PolymerSimulator polymerSimulator) {
-        int numSamplesTaken = 0;
-        SystemAnalyzer systemAnalyzer = polymerSimulator.getSystemAnalyzer();
-
-        DescriptiveStatistics lengthStatistics = new DescriptiveStatistics(numSamples);
-        while (numSamplesTaken < numSamples) {
-            polymerSimulator.doIterations(numIterationsPerSample);
-            lengthStatistics.addValue(systemAnalyzer.getSystemGeometry().getSizeOfDimension(0));
-            numSamplesTaken++;
-        }
-
-        return lengthStatistics;
-    }
-
-    static public MeasuredSurfaceTension calculateSurfaceTension(DescriptiveStatistics lengthStatistics, PolymerSimulator polymerSimulator) {
-        final long numLengthSamples = lengthStatistics.getN();
-
-        final double averageLength = lengthStatistics.getMean();
-        final double lengthStandardDeviation = lengthStatistics.getStandardDeviation();
-
-        final ExternalEnergyCalculator externalEnergyCalculator = polymerSimulator.getSystemAnalyzer().getEnergeticsConstants().getExternalEnergyCalculator();
-        final double xEquilibriumPosition = externalEnergyCalculator.getxEquilibriumPosition();
-        final double xSpringConstant = externalEnergyCalculator.getxSpringConstant();
-
-        final double surfaceTension = xSpringConstant * (xEquilibriumPosition - averageLength); //should divide by two since there are two surfaces
-        final double surfaceTensionStandardDeviation = xSpringConstant * lengthStandardDeviation;
-        final double surfaceTensionStandardError = surfaceTensionStandardDeviation / Math.sqrt(numLengthSamples - 1);
-        return new MeasuredSurfaceTension(surfaceTension, surfaceTensionStandardError);
     }
 
     //<editor-fold defaultstate="expanded" desc="makePolymerSimulator">
@@ -184,7 +157,7 @@ public class SurfaceTensionFinder {
     }
 
     static private PolymerCluster makePolymerCluster(int numChains, double density) {
-        PolymerChain polymerChain = PolymerChain.makeChainStartingWithA(0, numBeadsPerChain);
+        PolymerChain polymerChain = PolymerChain.makeChainStartingWithA(0, defaultNumBeadsPerChain);
         PolymerCluster polymerCluster = PolymerCluster.makeRepeatedChainCluster(polymerChain, numChains);
         polymerCluster.setConcentrationInWater(density);
         return polymerCluster;
@@ -213,31 +186,45 @@ public class SurfaceTensionFinder {
     }
 //</editor-fold>
 
+    static private MeasuredSurfaceTension getMeasuredSurfaceTensionFromWidth(DoubleWithUncertainty width, PolymerSimulator polymerSimulator) {
+        final ExternalEnergyCalculator externalEnergyCalculator = polymerSimulator.getSystemAnalyzer().getEnergeticsConstants().getExternalEnergyCalculator();
+        final double xEquilibriumPosition = externalEnergyCalculator.getxEquilibriumPosition();
+        final double xSpringConstant = externalEnergyCalculator.getxSpringConstant();
+
+        final double surfaceTension = xSpringConstant * (xEquilibriumPosition - width.getValue()); //should divide by two since there are two surfaces
+        final double surfaceTensionError = Math.abs(xSpringConstant * width.getUncertainty()); //should divide by two since there are two surfaces
+        return new MeasuredSurfaceTension(surfaceTension, surfaceTensionError);
+    }
+
     public static int getNumBeadsPerChain() {
-        return numBeadsPerChain;
+        return defaultNumBeadsPerChain;
     }
 
     private final int numAnneals = 10; //50
     private final int numSurfaceTensionTrials = 150; //70
-    private final int numSamplesPerTrial = 100;
-    private final int numIterationsPerSample = 100_000;
-    private final int numIterationsPerAnneal = 3_000_000;//3_000_000
     private final int jobNumber;
     private final SystemParameters systemParameters;
     private final OutputWriter outputWriter;
-    private final List<MeasuredSurfaceTension> measuredSurfaceTensions;
 
     private SurfaceTensionFinder(int jobNumber, SystemParameters input) throws FileNotFoundException {
         this.jobNumber = jobNumber;
         this.systemParameters = input;
         outputWriter = new OutputWriter(this);
-        measuredSurfaceTensions = new ArrayList<>();
     }
 
     public void findSurfaceTension() {
         outputWriter.printParameters();
         PolymerSimulator polymerSimulator = makePolymerSimulator(systemParameters);
         polymerSimulator.columnRandomizePositions();
+        SimulationRunner simulationRunner = new SimulationRunner(polymerSimulator, SimulationRunnerParameters.defaultSimulationRunnerParameters());
+        final TrackableVariable systemWidth = new TrackableVariable() {
+            @Override
+            public double getValue(PolymerSimulator polymerSimulator) {
+                return polymerSimulator.getSystemAnalyzer().getSystemGeometry().getSizeOfDimension(0);
+            }
+
+        };
+        simulationRunner.trackVariable(systemWidth);
         try {
             SystemViewer systemViewer = new SystemViewer(polymerSimulator);
             systemViewer.setVisible(true);
@@ -247,50 +234,24 @@ public class SurfaceTensionFinder {
 
         System.out.println("System is initialized.");
 
-        for (int i = 0; i < numAnneals; i++) {
-            polymerSimulator.doIterations(numIterationsPerAnneal);
-            polymerSimulator.anneal();
-            System.out.println("equilibrate anneal iteration done.");
-        }
+        simulationRunner.doEquilibrateAnnealIterations(numAnneals);
 
         for (int i = 0; i < numSurfaceTensionTrials; i++) {
-            doSurfaceTensionIteration(polymerSimulator);
+            doMeasurementTrial(simulationRunner, systemWidth, polymerSimulator);
         }
 
-        while (!isConverged(measuredSurfaceTensions)) {
-            doSurfaceTensionIteration(polymerSimulator);
+        while (!simulationRunner.isConverged(systemWidth)) {
+            doMeasurementTrial(simulationRunner, systemWidth, polymerSimulator);
         }
 
         outputWriter.printFinalOutput(polymerSimulator);
     }
 
-    private void doSurfaceTensionIteration(PolymerSimulator polymerSimulator) {
-        System.out.println("Equilibrating System");
-
-        polymerSimulator.anneal();
-        polymerSimulator.equilibrate();
-
-        System.out.println("System equilibrated.");
-        System.out.println("Gathering statistics to find equilibrium length.");
-
-        DescriptiveStatistics lengthStatistics = generateLengthStatistics(numSamplesPerTrial, polymerSimulator);
-        MeasuredSurfaceTension measuredSurfaceTension = calculateSurfaceTension(lengthStatistics, polymerSimulator);
+    private void doMeasurementTrial(SimulationRunner simulationRunner, TrackableVariable trackableVariable, PolymerSimulator polymerSimulator) {
+        simulationRunner.doMeasurementRun();
+        DoubleWithUncertainty measuredWidth = simulationRunner.getRecentMeasurementForTrackedVariable(trackableVariable);
+        MeasuredSurfaceTension measuredSurfaceTension = getMeasuredSurfaceTensionFromWidth(measuredWidth, polymerSimulator);
         outputWriter.printSurfaceTension(measuredSurfaceTension);
-        measuredSurfaceTensions.add(measuredSurfaceTension);
-    }
-
-    private boolean isConverged(List<MeasuredSurfaceTension> measuredSurfaceTensions) {
-        final int windowSize = 10;
-        final int numMeasurements = measuredSurfaceTensions.size();
-        if (numMeasurements < windowSize) {
-            return false;
-        }
-        int comparisonCount = 0;
-        for (int offset = 1; offset < windowSize; offset++) {
-            final int comparison = measuredSurfaceTensions.get(numMeasurements - offset).surfaceTension > measuredSurfaceTensions.get(numMeasurements - offset - 1).surfaceTension ? 1 : -1;
-            comparisonCount += comparison;
-        }
-        return Math.abs(comparisonCount) < windowSize / 3;
     }
 
     public void closeOutputWriter() {
@@ -313,6 +274,6 @@ public class SurfaceTensionFinder {
     public int getJobNumber() {
         return jobNumber;
     }
-
     //</editor-fold>
+
 }

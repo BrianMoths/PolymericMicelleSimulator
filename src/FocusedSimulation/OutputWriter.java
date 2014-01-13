@@ -92,7 +92,7 @@ public class OutputWriter {
 
     public void printParameters() {
         String parametersString = makeParametersString();
-        System.out.println(parametersString);
+        System.out.print(parametersString);
         dataWriter.print(parametersString);
         dataWriter.flush();
     }
@@ -121,7 +121,7 @@ public class OutputWriter {
         String surfaceTensionString = makeSurfaceTensionString(measuredSurfaceTension);
         dataWriter.print(surfaceTensionString);
         dataWriter.flush();
-        System.out.println(surfaceTensionString);
+        System.out.print(surfaceTensionString);
     }
 
     private String makeSurfaceTensionString(MeasuredSurfaceTension measuredSurfaceTension) {
@@ -137,7 +137,7 @@ public class OutputWriter {
 
     public void printFinalOutput(PolymerSimulator polymerSimulator) {
         String finalOutputString = makeFinalOutputString(polymerSimulator);
-        System.out.println(finalOutputString);
+        System.out.print(finalOutputString);
         dataWriter.print(finalOutputString);
         dataWriter.flush();
     }

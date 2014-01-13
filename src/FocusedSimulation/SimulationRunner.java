@@ -40,16 +40,24 @@ public class SimulationRunner {
 
     static public class SimulationRunnerParameters {
 
+        static private final int defaultNumIterationsPerSample = 100_000;
+        static private final int defaultNumSamples = 100;
+        static private final int defaultNumIterationsPerAnneal = 3_000_000;
+
+        static public SimulationRunnerParameters defaultSimulationRunnerParameters() {
+            final SimulationRunnerParameters defaultSimulationRunnerParameters;
+            defaultSimulationRunnerParameters = new SimulationRunnerParameters(defaultNumIterationsPerSample, defaultNumSamples, defaultNumIterationsPerAnneal);
+            return defaultSimulationRunnerParameters;
+        }
+
         private final int numIterationsPerSample;
         private final int numSamples;
         private final int numIterationsPerAnneal;
-        private final int windowSize;
 
-        public SimulationRunnerParameters(int numIterationsPerSample, int numSamples, int numIterationsPerAnneal, int windowSize) {
+        public SimulationRunnerParameters(int numIterationsPerSample, int numSamples, int numIterationsPerAnneal) {
             this.numIterationsPerSample = numIterationsPerSample;
             this.numSamples = numSamples;
             this.numIterationsPerAnneal = numIterationsPerAnneal;
-            this.windowSize = windowSize;
         }
 
         public int getNumIterationsPerSample() {
@@ -64,10 +72,6 @@ public class SimulationRunner {
             return numIterationsPerAnneal;
         }
 
-        public int getWindowSize() {
-            return windowSize;
-        }
-
     }
 
     private final PolymerSimulator polymerSimulator;
@@ -78,7 +82,7 @@ public class SimulationRunner {
     public SimulationRunner(PolymerSimulator polymerSimulator, SimulationRunnerParameters simulationRunnerParameters) {
         this.polymerSimulator = polymerSimulator;
         this.simulationRunnerParameters = simulationRunnerParameters;
-        statisticsTracker = new StatisticsTracker(simulationRunnerParameters.getWindowSize());
+        statisticsTracker = new StatisticsTracker(simulationRunnerParameters.getNumSamples());
         measuredValues = new HashMap<>();
     }
 
