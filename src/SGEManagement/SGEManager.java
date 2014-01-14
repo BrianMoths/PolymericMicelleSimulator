@@ -107,7 +107,7 @@ public class SGEManager {
     static private void submitJob(String commandExceptInput, Input input) {
         final String inputString = makeInputString(input);
         final String completeCommand = makeCompleteCommand(commandExceptInput, inputString);
-        runCommandForQsub(completeCommand);
+        QSubAdapter.runCommandForQsub(completeCommand);
     }
 
     static private String makeInputString(Input input) {
@@ -131,33 +131,6 @@ public class SGEManager {
                 .append(" ")
                 .append(inputString);
         return completeCommandBuilder.toString();
-    }
-
-    static private void runCommandForQsub(String qsubCommand) {
-        if (qsubCommand.contains("\"")) {
-            throw new IllegalArgumentException("command submitted to qsub must not contain double quotes. Use single quotes if necessary.");
-        }
-        String qsubWrappedCommand = "qsub -e /dev/null -o /dev/null <<< \"" + qsubCommand + "\"";
-        try {
-            runCommandForBash(qsubWrappedCommand);
-        } catch (IOException ex) {
-            Logger.getLogger(SGEManager.class.getName()).log(Level.SEVERE, null, ex);
-        }
-    }
-
-    static private Process runCommandForBash(String commandForBash) throws IOException {
-        Runtime runtime = Runtime.getRuntime();
-        String[] bashWrappedCommand = makeBashWrappedCommand(commandForBash);
-        System.out.println("attempted to run command---" + bashWrappedCommand[0] + " " + bashWrappedCommand[1] + " " + bashWrappedCommand[2]);
-        return runtime.exec(bashWrappedCommand);
-    }
-
-    static private String[] makeBashWrappedCommand(String commandForBash) {
-        String[] bashWrappedCommand = new String[3];
-        bashWrappedCommand[0] = "bash";
-        bashWrappedCommand[1] = "-c";
-        bashWrappedCommand[2] = commandForBash;
-        return bashWrappedCommand;
     }
 
 }

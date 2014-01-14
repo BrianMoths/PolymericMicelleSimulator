@@ -157,18 +157,18 @@ public class SimulationRunner {
     public boolean isConverged(TrackableVariable trackableVariable) {
         final List<DoubleWithUncertainty> measurements = getMeasurementsForTrackedVariable(trackableVariable);
         final int numMeasurements = measurements.size();
-        final int windowSIze = 10;
+        final int windowSize = 10;
 
-        if (numMeasurements < windowSIze) {
+        if (numMeasurements + 1 < windowSize) {
             return false;
         }
 
         int comparisonCount = 0;
-        for (int offset = 0; offset < windowSIze; offset++) {
-            final int comparison = measurements.get(numMeasurements - offset).getValue() > measurements.get(numMeasurements - offset - 1).getValue() ? 1 : -1;
+        for (int i = numMeasurements - windowSize; i < numMeasurements; i++) {
+            final int comparison = measurements.get(i).getValue() > measurements.get(i - 1).getValue() ? 1 : -1;
             comparisonCount += comparison;
         }
-        return Math.abs(comparisonCount) < windowSIze / 3;
+        return Math.abs(comparisonCount) < windowSize / 3;
     }
 
     public void showViewer() {

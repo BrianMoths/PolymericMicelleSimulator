@@ -26,11 +26,6 @@ public abstract class AbstractGeometry implements SystemGeometry {
         protected int dimension;
         protected double[] fullRMax;
         protected GeometricalParameters parameters;
-        private double aspectRatio;
-
-        {
-            aspectRatio = 1;
-        }
 
         public AbstractGeometryBuilder() {
             this.dimension = 2;
@@ -70,6 +65,19 @@ public abstract class AbstractGeometry implements SystemGeometry {
         }
 
         @Override
+        public double getDimensionSize(int dimension) {
+            return fullRMax[dimension];
+        }
+
+        public void resizeAccordingToAspectRatio(double aspectRatio) {
+            final double area = getDimensionSize(0) * getDimensionSize(1);
+            final double xBoxLength = Math.sqrt(area * aspectRatio);
+            setDimensionSize(0, xBoxLength);
+            final double yBoxLength = Math.sqrt(area / aspectRatio);
+            setDimensionSize(1, yBoxLength);
+        }
+
+        @Override
         public GeometricalParameters getParameters() {
             return parameters;
         }
@@ -104,21 +112,8 @@ public abstract class AbstractGeometry implements SystemGeometry {
 
         @Override
         public void makeConsistentWith(double numBeadsIncludingWater, GeometricalParameters geometricalParameters, double aspectRatio) {
-            if (dimension < 2) {
-                makeConsistentWith(numBeadsIncludingWater, geometricalParameters);
-            } else {
-                this.parameters = geometricalParameters;
-                double boxLength;
-                boxLength = findBoxLength(numBeadsIncludingWater, geometricalParameters);
-                final double boxArea = boxLength * boxLength;
-                final double xBoxLength = Math.sqrt(boxArea * aspectRatio);
-                setDimensionSize(0, xBoxLength);
-                final double yBoxLength = Math.sqrt(boxArea / aspectRatio);
-                setDimensionSize(1, yBoxLength);
-                for (int i = 2; i < dimension; i++) {
-                    setDimensionSize(i, boxLength);
-                }
-            }
+            makeConsistentWith(numBeadsIncludingWater, geometricalParameters);
+            resizeAccordingToAspectRatio(aspectRatio);
         }
 
         private double findBoxLength(double numBeadsIncludingWater, GeometricalParameters geometricalParameters) {

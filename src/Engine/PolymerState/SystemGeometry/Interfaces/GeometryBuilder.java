@@ -20,6 +20,8 @@ public interface GeometryBuilder {
 
     public GeometryBuilder setDimensionSize(int dimension, double size);
 
+    public double getDimensionSize(int dimension);
+
     public GeometricalParameters getParameters();
 
     public GeometryBuilder setParameters(GeometricalParameters parameters);
