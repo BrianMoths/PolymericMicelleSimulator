@@ -4,11 +4,13 @@
  */
 package Engine.Energetics;
 
+import java.io.Serializable;
+
 /**
  *
  * @author bmoths
  */
-public class ExternalEnergyCalculator {
+public class ExternalEnergyCalculator implements Serializable {
 
     //<editor-fold defaultstate="collapsed" desc="builder class">
     static public class ExternalEnergyCalculatorBuilder {

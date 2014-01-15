@@ -6,7 +6,12 @@ package SGEManagement;
 
 import Engine.Energetics.ExternalEnergyCalculator;
 import Engine.Energetics.ExternalEnergyCalculator.ExternalEnergyCalculatorBuilder;
+import FocusedSimulation.OutputWriter;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.ObjectOutputStream;
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
@@ -18,7 +23,7 @@ import java.util.logging.Logger;
  */
 public class SGEManager {
 
-    static private class Input {
+    static public class Input implements Serializable {
 
         public int jobNumber;
         public int numChains;
@@ -34,6 +39,22 @@ public class SGEManager {
             this.numChains = numChains;
             this.externalEnergyCalculator = externalEnergyCalculator;
             this.density = density;
+        }
+
+        public int getJobNumber() {
+            return jobNumber;
+        }
+
+        public int getNumChains() {
+            return numChains;
+        }
+
+        public ExternalEnergyCalculator getExternalEnergyCalculator() {
+            return externalEnergyCalculator;
+        }
+
+        public double getDensity() {
+            return density;
         }
 
     }
@@ -76,25 +97,16 @@ public class SGEManager {
     //</editor-fold>
 
     static private void submitJobs(List<Input> inputs) {
-        String path = getPath();
-        String className = getJarName();
-
-        String commandExceptInput = makeCommandExceptInput(path, className);
-
+        final String commandExceptInput = makeCommandExceptInput();
         for (Input input : inputs) {
             submitJob(commandExceptInput, input);
         }
     }
 
-    static private String getPath() {
-        return "/home/bmoths/Desktop/projects/polymerMicelles/simulation/PolymericMicelles/dist";
-    }
-
-    static private String getJarName() {
-        return "PolymericMicelles.jar";
-    }
-
-    static private String makeCommandExceptInput(String path, String jarName) {
+    //<editor-fold defaultstate="collapsed" desc="makeCommandExceptInput">
+    static private String makeCommandExceptInput() {
+        final String path = getPath();
+        final String jarName = getJarName();
         StringBuilder commandBuilder = new StringBuilder();
         commandBuilder.append("java -jar ")
                 .append(path)
@@ -104,25 +116,21 @@ public class SGEManager {
         return commandBuilder.toString();
     }
 
-    static private void submitJob(String commandExceptInput, Input input) {
-        final String inputString = makeInputString(input);
-        final String completeCommand = makeCompleteCommand(commandExceptInput, inputString);
-        QSubAdapter.runCommandForQsub(completeCommand);
+    static private String getPath() {
+        return "/home/bmoths/Desktop/projects/polymerMicelles/simulation/PolymericMicelles/dist";
     }
 
-    static private String makeInputString(Input input) {
-        StringBuilder inputStringBuilder = new StringBuilder();
-        inputStringBuilder
-                .append(input.jobNumber)
-                .append(" ")
-                .append(input.numChains)
-                .append(" ")
-                .append(input.externalEnergyCalculator.getxSpringConstant())
-                .append(" ")
-                .append(input.externalEnergyCalculator.getxEquilibriumPosition())
-                .append(" ")
-                .append(input.density);
-        return inputStringBuilder.toString();
+    static private String getJarName() {
+        return "PolymericMicelles.jar";
+    }
+    //</editor-fold>
+
+    static private void submitJob(String commandExceptInput, Input input) {
+        final String fileName = makeFileName(input);
+        final String path = makePath(fileName);
+        makeInputFIle(path, input);
+        final String completeCommand = makeCompleteCommand(commandExceptInput, path);
+        QSubAdapter.runCommandForQsub(completeCommand);
     }
 
     static private String makeCompleteCommand(String commandExceptInput, String inputString) {
@@ -131,6 +139,27 @@ public class SGEManager {
                 .append(" ")
                 .append(inputString);
         return completeCommandBuilder.toString();
+    }
+
+    static private String makeFileName(Input input) {
+        return OutputWriter.makeDatePrefix() + "_" + OutputWriter.makeDoubleDigitString(input.getJobNumber());
+    }
+
+    static private String makePath(String fileName) {
+        return "../simulationInputs/" + fileName;
+    }
+
+    private static void makeInputFIle(String relativePath, Input input) {
+        try {
+            final String absolutePath = OutputWriter.getProjectPath() + relativePath;
+            FileOutputStream fileOutputStream = new FileOutputStream(absolutePath);
+            ObjectOutputStream objectOutputStream = new ObjectOutputStream(fileOutputStream);
+            objectOutputStream.writeObject(input);
+        } catch (FileNotFoundException ex) {
+            throw new AssertionError("input file could not be made", ex);
+        } catch (IOException ex) {
+            Logger.getLogger(SGEManager.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }
 
 }

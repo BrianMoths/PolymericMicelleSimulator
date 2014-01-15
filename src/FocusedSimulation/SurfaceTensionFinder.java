@@ -8,25 +8,24 @@ import Engine.Energetics.EnergeticsConstants;
 import Engine.Energetics.EnergeticsConstants.EnergeticsConstantsBuilder;
 import Engine.Energetics.ExternalEnergyCalculator;
 import Engine.Energetics.ExternalEnergyCalculator.ExternalEnergyCalculatorBuilder;
-import Engine.PolymerTopology.PolymerChain;
-import Engine.PolymerTopology.PolymerCluster;
 import Engine.PolymerSimulator;
-import Engine.SystemAnalyzer;
-import Engine.PolymerState.SystemGeometry.Implementations.AbstractGeometry.AbstractGeometryBuilder;
 import Engine.PolymerState.SystemGeometry.GeometricalParameters;
+import Engine.PolymerState.SystemGeometry.Implementations.AbstractGeometry.AbstractGeometryBuilder;
 import Engine.PolymerState.SystemGeometry.Implementations.PeriodicGeometry;
 import Engine.PolymerState.SystemGeometry.Interfaces.SystemGeometry;
+import Engine.PolymerTopology.PolymerChain;
+import Engine.PolymerTopology.PolymerCluster;
 import FocusedSimulation.SimulationRunner.DoubleWithUncertainty;
 import FocusedSimulation.SimulationRunner.SimulationRunnerParameters;
 import FocusedSimulation.StatisticsTracker.TrackableVariable;
 import Gui.SystemViewer;
-import com.sun.xml.internal.ws.message.saaj.SAAJHeader;
+import SGEManagement.SGEManager.Input;
+import java.io.FileInputStream;
 import java.io.FileNotFoundException;
-import java.util.ArrayList;
-import java.util.List;
+import java.io.IOException;
+import java.io.ObjectInputStream;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import org.apache.commons.math3.stat.descriptive.DescriptiveStatistics;
 
 /**
  *
@@ -56,6 +55,12 @@ public class SurfaceTensionFinder {
             this.numChains = numChains;
             this.externalEnergyCalculator = externalEnergyCalculator;
             this.density = density;
+        }
+
+        public SystemParameters(Input input) {
+            this.numChains = input.getNumChains();
+            this.externalEnergyCalculator = input.getExternalEnergyCalculator();
+            this.density = input.getDensity();
         }
 
         //<editor-fold defaultstate="collapsed" desc="equals and hashcode">
@@ -92,11 +97,13 @@ public class SurfaceTensionFinder {
 
     public static void main(String[] args) {
 
+        final Input input = readInput(args);
+
         final SystemParameters inputParameters;
-        inputParameters = parseInput(args);
+        inputParameters = new SystemParameters(input);
 
         final int jobNumber;
-        jobNumber = parseJobNumber(args);
+        jobNumber = input.getJobNumber();
 
         final SurfaceTensionFinder surfaceTensionFinder;
         try {
@@ -107,38 +114,6 @@ public class SurfaceTensionFinder {
             Logger.getLogger(SurfaceTensionFinder.class.getName()).log(Level.SEVERE, null, ex);
             System.out.println("File not able to be opened");
         }
-    }
-
-    static private int parseJobNumber(String[] args) {
-        if (args.length > 0) {
-            return Integer.parseInt(args[0]);
-        } else {
-            return 0;
-        }
-    }
-
-    static private SystemParameters parseInput(String[] args) {
-        final int numChains;
-        final ExternalEnergyCalculator externalEnergyCalculator;
-        final double density;
-
-        if (args.length == 5) {
-            numChains = Integer.parseInt(args[1]);
-            final double xSpringConstant = Double.parseDouble(args[2]);
-            final double xEquilibriumPosition = Double.parseDouble(args[3]);
-            ExternalEnergyCalculatorBuilder externalEnergyCalculatorBuilder = new ExternalEnergyCalculatorBuilder();
-            externalEnergyCalculatorBuilder.setXPositionAndSpringConstant(xEquilibriumPosition, xSpringConstant);
-            externalEnergyCalculator = externalEnergyCalculatorBuilder.build();
-            density = Double.parseDouble(args[4]);
-        } else {
-            numChains = 100;//100
-            final ExternalEnergyCalculatorBuilder externalEnergyCalculatorBuilder = new ExternalEnergyCalculatorBuilder();
-            externalEnergyCalculatorBuilder.setXPositionAndSpringConstant(50, 10.); //66 and 3
-            externalEnergyCalculator = externalEnergyCalculatorBuilder.build();
-            density = .05; //.15
-        }
-
-        return new SystemParameters(numChains, externalEnergyCalculator, density);
     }
 
     //<editor-fold defaultstate="expanded" desc="makePolymerSimulator">
@@ -198,6 +173,52 @@ public class SurfaceTensionFinder {
 
     public static int getNumBeadsPerChain() {
         return defaultNumBeadsPerChain;
+    }
+
+    private static Input readInput(String[] args) {
+        if (args.length == 0) {
+            return makeDefaultInput();
+        } else if (args.length == 1) {
+            final String fileName = args[0];
+            return readInputFromFile(fileName);
+        } else {
+            throw new AssertionError("At most one input allowed", null);
+        }
+    }
+
+    static private Input readInputFromFile(String fileName) {
+        ObjectInputStream objectInputStream = getObjectOutputStream(fileName);
+        try {
+            return (Input) objectInputStream.readObject();
+        } catch (IOException | ClassNotFoundException ex) {
+            throw new AssertionError("could not load input from file: " + fileName, ex);
+        }
+    }
+
+    public static Input makeDefaultInput() {
+        int numChains;
+        ExternalEnergyCalculator externalEnergyCalculator;
+        double density;
+        numChains = 100;//100
+        ExternalEnergyCalculatorBuilder externalEnergyCalculatorBuilder = new ExternalEnergyCalculatorBuilder();
+        externalEnergyCalculatorBuilder.setXPositionAndSpringConstant(50, 10.); //66 and 3
+        externalEnergyCalculator = externalEnergyCalculatorBuilder.build();
+        density = .05; //.15
+        Input input = new Input(numChains, externalEnergyCalculator, density);
+        return input;
+    }
+
+    private static ObjectInputStream getObjectOutputStream(String fileName) {
+        try {
+            final String absolutePath = OutputWriter.getProjectPath() + fileName;
+            FileInputStream fileInputStream = new FileInputStream(absolutePath);
+            final ObjectInputStream objectInputStream = new ObjectInputStream(fileInputStream);
+            return objectInputStream;
+        } catch (FileNotFoundException ex) {
+            throw new AssertionError("file not found: " + fileName, null);
+        } catch (IOException ex) {
+            throw new AssertionError("could not load input from file: " + fileName, ex);
+        }
     }
 
     private final int numAnneals = 10; //50

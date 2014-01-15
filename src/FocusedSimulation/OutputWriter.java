@@ -20,41 +20,7 @@ import java.util.Calendar;
  */
 public class OutputWriter {
 
-    private final PrintWriter dataWriter;
-    private final SurfaceTensionFinder surfaceTensionFinder;
-
-    public OutputWriter(final SurfaceTensionFinder surfaceTensionFinder) throws FileNotFoundException {
-        this.surfaceTensionFinder = surfaceTensionFinder;
-        dataWriter = makeDataWriter();
-    }
-
-    //<editor-fold defaultstate="collapsed" desc="makeDataWriter and helpers">
-    private PrintWriter makeDataWriter() throws FileNotFoundException {
-        String jarPath = OutputWriter.class.getProtectionDomain().getCodeSource().getLocation().getPath();
-        System.out.println(jarPath);
-        if (jarPath.contains("build/")) {
-            jarPath = jarPath.substring(0, jarPath.lastIndexOf("build/") + "build/".length());
-        } else if (jarPath.contains("dist/")) {
-            jarPath = jarPath.substring(0, jarPath.lastIndexOf("dist/") + "dist/".length());
-        }
-        final String path = jarPath + "../../simulationResults/";
-        File file;
-        int fileNameNumber = surfaceTensionFinder.getJobNumber();
-        String fileName;
-        fileName = makeFileName(fileNameNumber);
-
-        return new PrintWriter(path + fileName);
-    }
-
-    private String makeFileName(int fileNameNumber) {
-        StringBuilder fileNameBuilder = new StringBuilder();
-        String datePrefix = makeDatePrefix();
-        fileNameBuilder.append(datePrefix);
-        fileNameBuilder.append("_").append(makeDoubleDigitString(fileNameNumber));
-        return fileNameBuilder.toString();
-    }
-
-    private String makeDatePrefix() {
+    static public String makeDatePrefix() {
         StringBuilder fileNameBuilder = new StringBuilder();
         Calendar calendar = Calendar.getInstance();
         final int year = calendar.get(Calendar.YEAR);
@@ -79,7 +45,7 @@ public class OutputWriter {
         return fileNameBuilder.toString();
     }
 
-    private String makeDoubleDigitString(int num) {
+    static public String makeDoubleDigitString(int num) {
         num %= 100;
         StringBuilder stringBuilder = new StringBuilder();
         if (num < 10) {
@@ -88,7 +54,45 @@ public class OutputWriter {
         stringBuilder.append(Integer.toString(num));
         return stringBuilder.toString();
     }
-    //</editor-fold>
+
+    static public String getProjectPath() throws AssertionError {
+        String jarPath = OutputWriter.class.getProtectionDomain().getCodeSource().getLocation().getPath();
+        if (jarPath.contains("build/")) {
+            jarPath = jarPath.substring(0, jarPath.lastIndexOf("build/"));
+        } else if (jarPath.contains("dist/")) {
+            jarPath = jarPath.substring(0, jarPath.lastIndexOf("dist/"));
+        } else {
+            throw new AssertionError("jar is neither in build/ or dist/", null);
+        }
+        return jarPath;
+    }
+
+    private final PrintWriter dataWriter;
+    private final SurfaceTensionFinder surfaceTensionFinder;
+
+    public OutputWriter(final SurfaceTensionFinder surfaceTensionFinder) throws FileNotFoundException {
+        this.surfaceTensionFinder = surfaceTensionFinder;
+        dataWriter = makeDataWriter();
+    }
+
+    private PrintWriter makeDataWriter() throws FileNotFoundException {
+        String projectPath = getProjectPath();
+        System.out.println(projectPath);
+        final String path = projectPath + "../simulationResults/";
+        int fileNameNumber = surfaceTensionFinder.getJobNumber();
+        String fileName;
+        fileName = makeFileName(fileNameNumber);
+
+        return new PrintWriter(path + fileName);
+    }
+
+    private String makeFileName(int fileNameNumber) {
+        StringBuilder fileNameBuilder = new StringBuilder();
+        String datePrefix = makeDatePrefix();
+        fileNameBuilder.append(datePrefix);
+        fileNameBuilder.append("_").append(makeDoubleDigitString(fileNameNumber));
+        return fileNameBuilder.toString();
+    }
 
     public void printParameters() {
         String parametersString = makeParametersString();
