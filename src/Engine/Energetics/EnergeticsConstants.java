@@ -4,8 +4,8 @@
  */
 package Engine.Energetics;
 
-import Engine.PolymerState.SystemGeometry.GeometricalParameters;
 import Engine.PolymerState.SystemGeometry.AreaOverlap;
+import Engine.PolymerState.SystemGeometry.GeometricalParameters;
 import Engine.PolymerState.SystemGeometry.Interfaces.ImmutableSystemGeometry;
 import java.io.Serializable;
 import java.util.Random;
@@ -25,8 +25,8 @@ public final class EnergeticsConstants implements Serializable {
             energeticsConstantsBuilder.AAOverlapCoefficient = 0;
             energeticsConstantsBuilder.ABOverlapCoefficient = 0;
             energeticsConstantsBuilder.BBOverlapCoefficient = 0;
-            energeticsConstantsBuilder.temperature = 0;
-            energeticsConstantsBuilder.springCoefficient = 0;
+            energeticsConstantsBuilder.temperature = 1;
+            energeticsConstantsBuilder.springCoefficient = 1;
             energeticsConstantsBuilder.hardOverlapCoefficient = 0;
             return energeticsConstantsBuilder;
         }

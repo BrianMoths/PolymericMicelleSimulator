@@ -7,6 +7,8 @@ package SGEManagement;
 import Engine.Energetics.ExternalEnergyCalculator;
 import Engine.Energetics.ExternalEnergyCalculator.ExternalEnergyCalculatorBuilder;
 import FocusedSimulation.OutputWriter;
+import FocusedSimulation.SurfaceTensionFinder.JobParameters;
+import FocusedSimulation.SurfaceTensionFinder.SystemParameters;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -25,36 +27,24 @@ public class SGEManager {
 
     static public class Input implements Serializable {
 
-        public int jobNumber;
-        public int numChains;
-        public ExternalEnergyCalculator externalEnergyCalculator;
-        public double density;
+        public final SystemParameters systemParameters;
+        public final JobParameters jobParameters;
 
-        public Input(int numChains, ExternalEnergyCalculator externalEnergyCalculator, double density) {
-            this(0, numChains, externalEnergyCalculator, density);
+        public Input(SystemParameters systemParameters, JobParameters jobParameters) {
+            this.systemParameters = systemParameters;
+            this.jobParameters = jobParameters;
         }
 
-        public Input(int jobNumber, int numChains, ExternalEnergyCalculator externalEnergyCalculator, double density) {
-            this.jobNumber = jobNumber;
-            this.numChains = numChains;
-            this.externalEnergyCalculator = externalEnergyCalculator;
-            this.density = density;
+        public SystemParameters getSystemParameters() {
+            return systemParameters;
+        }
+
+        public JobParameters getJobParameters() {
+            return jobParameters;
         }
 
         public int getJobNumber() {
-            return jobNumber;
-        }
-
-        public int getNumChains() {
-            return numChains;
-        }
-
-        public ExternalEnergyCalculator getExternalEnergyCalculator() {
-            return externalEnergyCalculator;
-        }
-
-        public double getDensity() {
-            return density;
+            return jobParameters.getJobNumber();
         }
 
     }

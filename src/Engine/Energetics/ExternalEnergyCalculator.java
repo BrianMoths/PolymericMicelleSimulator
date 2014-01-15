@@ -29,28 +29,33 @@ public class ExternalEnergyCalculator implements Serializable {
             return new ExternalEnergyCalculator(this);
         }
 
-        public void setxTensionAndQuadratic(double xTension, double xQuadratic) {
+        public ExternalEnergyCalculatorBuilder setxTensionAndQuadratic(double xTension, double xQuadratic) {
             this.xTension = xTension;
             this.xQuadratic = xQuadratic;
+            return this;
         }
 
-        public void setyTensionAndQuadratic(double yTension, double yQuadratic) {
+        public ExternalEnergyCalculatorBuilder setyTensionAndQuadratic(double yTension, double yQuadratic) {
             this.yTension = yTension;
             this.yQuadratic = yQuadratic;
+            return this;
         }
 
-        public void setXPositionAndSpringConstant(double xPosition, double xSpringConstant) {
+        public ExternalEnergyCalculatorBuilder setXPositionAndSpringConstant(double xPosition, double xSpringConstant) {
             this.xTension = tensionFromPositionAndSpringConstant(xPosition, xSpringConstant);
             this.xQuadratic = quadraticFromPositionAndSpringConstant(xPosition, xSpringConstant);
+            return this;
         }
 
-        public void setYPositionAndSpringConstant(double yPosition, double ySpringConstant) {
+        public ExternalEnergyCalculatorBuilder setYPositionAndSpringConstant(double yPosition, double ySpringConstant) {
             this.yTension = tensionFromPositionAndSpringConstant(yPosition, ySpringConstant);
             this.yQuadratic = quadraticFromPositionAndSpringConstant(yPosition, ySpringConstant);
+            return this;
         }
 
-        public void setPressure(double pressure) {
+        public ExternalEnergyCalculatorBuilder setPressure(double pressure) {
             this.pressure = pressure;
+            return this;
         }
 
         public double getxEquilibriumPosition() {
