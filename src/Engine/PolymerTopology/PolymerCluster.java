@@ -4,6 +4,7 @@
  */
 package Engine.PolymerTopology;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -11,7 +12,7 @@ import java.util.List;
  *
  * @author bmoths
  */
-public class PolymerCluster {
+public class PolymerCluster implements Serializable {
 
     static public PolymerCluster makeEmptyPolymerCluster() {
         return new PolymerCluster();
@@ -133,12 +134,20 @@ public class PolymerCluster {
         return numBeads / concentrationInWater;
     }
 
+    public int getNumChains() {
+        return polymerChainList.size();
+    }
+
     public int getNumBeads() {
         return numBeads;
     }
 
     public int getNumABeads() {
         return numABeads;
+    }
+
+    public double getNumBeadsPerChain() {
+        return getNumBeads() / getNumChains();
     }
 
 }

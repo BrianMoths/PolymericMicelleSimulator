@@ -12,6 +12,7 @@ import Engine.PolymerSimulator;
 import Engine.PolymerState.SystemGeometry.GeometricalParameters;
 import Engine.PolymerState.SystemGeometry.Implementations.AbstractGeometry.AbstractGeometryBuilder;
 import Engine.PolymerState.SystemGeometry.Implementations.PeriodicGeometry;
+import Engine.PolymerState.SystemGeometry.Implementations.PeriodicGeometry.PeriodicGeometryBuilder;
 import Engine.PolymerState.SystemGeometry.Interfaces.SystemGeometry;
 import Engine.PolymerTopology.PolymerChain;
 import Engine.PolymerTopology.PolymerCluster;
@@ -19,6 +20,7 @@ import FocusedSimulation.SimulationRunner.DoubleWithUncertainty;
 import FocusedSimulation.SimulationRunner.SimulationRunnerParameters;
 import FocusedSimulation.StatisticsTracker.TrackableVariable;
 import Gui.SystemViewer;
+import SGEManagement.SGEManager;
 import SGEManagement.SGEManager.Input;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -31,7 +33,65 @@ import java.io.ObjectInputStream;
  */
 public class SurfaceTensionFinder {
 
-    static public class JobParameters {
+    static public class JobParameters implements java.io.Serializable {
+
+        static public class JobParametersBuilder {
+
+            static private final int defaultNumAnneals = 50;
+            static private final int defaultNumSurfaceTensionTrials = 70;
+            static private final int defaultJobNumber = 0;
+
+            static public JobParametersBuilder getDefaultJobParametersBuilder() {
+                JobParametersBuilder jobParametersBuilder = new JobParametersBuilder();
+                jobParametersBuilder.setNumAnneals(defaultNumAnneals);
+                jobParametersBuilder.setNumSurfaceTensionTrials(defaultNumSurfaceTensionTrials);
+                jobParametersBuilder.setJobNumber(defaultJobNumber);
+                return jobParametersBuilder;
+            }
+
+            static public JobParameters getDefaultJobParameters() {
+                return new JobParameters(defaultNumAnneals, defaultNumSurfaceTensionTrials, defaultJobNumber);
+            }
+
+            private int numAnneals; //50
+            private int numSurfaceTensionTrials; //70
+            private int jobNumber;
+
+            public JobParametersBuilder() {
+            }
+
+            public JobParameters buildJobParameters() {
+                return new JobParameters(this);
+            }
+
+            public int getNumAnneals() {
+                return numAnneals;
+            }
+
+            public JobParametersBuilder setNumAnneals(int numAnneals) {
+                this.numAnneals = numAnneals;
+                return this;
+            }
+
+            public int getNumSurfaceTensionTrials() {
+                return numSurfaceTensionTrials;
+            }
+
+            public JobParametersBuilder setNumSurfaceTensionTrials(int numSurfaceTensionTrials) {
+                this.numSurfaceTensionTrials = numSurfaceTensionTrials;
+                return this;
+            }
+
+            public int getJobNumber() {
+                return jobNumber;
+            }
+
+            public JobParametersBuilder setJobNumber(int jobNumber) {
+                this.jobNumber = jobNumber;
+                return this;
+            }
+
+        }
 
         static private final int defaultNumAnneals = 50;
         static private final int defaultNumSurfaceTensionTrials = 70;
@@ -49,6 +109,12 @@ public class SurfaceTensionFinder {
             this.numAnneals = numAnneals;
             this.numSurfaceTensionTrials = numSurfaceTensionTrials;
             this.jobNumber = jobNumber;
+        }
+
+        private JobParameters(JobParametersBuilder jobParametersBuilder) {
+            numAnneals = jobParametersBuilder.getNumAnneals();
+            numSurfaceTensionTrials = jobParametersBuilder.getNumSurfaceTensionTrials();
+            jobNumber = jobParametersBuilder.getJobNumber();
         }
 
         public int getNumAnneals() {
@@ -77,8 +143,67 @@ public class SurfaceTensionFinder {
 
     }
 
-    static public final class SystemParameters {
+    static public final class SystemParameters implements java.io.Serializable {
 
+        static public class SystemParametersBuilder {
+
+            private double interactionLength;
+            private EnergeticsConstantsBuilder energeticsConstantsBuilder;
+            private PolymerCluster polymerCluster;
+            private double aspectRatio;
+
+            public SystemParameters buildSystemParameters() {
+                GeometricalParameters geometricalParameters = new GeometricalParameters(interactionLength, energeticsConstantsBuilder);
+                energeticsConstantsBuilder.setHardOverlapCoefficientFromParameters(geometricalParameters);
+                SystemGeometry systemGeometry = makeSystemGeometry(geometricalParameters);
+                final EnergeticsConstants energeticsConstants = energeticsConstantsBuilder.buildEnergeticsConstants();
+                return new SystemParameters(systemGeometry, polymerCluster, energeticsConstants);
+            }
+
+            public double getInteractionLength() {
+                return interactionLength;
+            }
+
+            public void setInteractionLength(double interactionLength) {
+                this.interactionLength = interactionLength;
+            }
+
+            public EnergeticsConstantsBuilder getEnergeticsConstantsBuilder() {
+                return energeticsConstantsBuilder;
+            }
+
+            public void setEnergeticsConstantsBuilder(EnergeticsConstantsBuilder energeticsConstantsBuilder) {
+                this.energeticsConstantsBuilder = energeticsConstantsBuilder;
+            }
+
+            public PolymerCluster getPolymerCluster() {
+                return polymerCluster;
+            }
+
+            public void setPolymerCluster(PolymerCluster polymerCluster) {
+                this.polymerCluster = polymerCluster;
+            }
+
+            public double getAspectRatio() {
+                return aspectRatio;
+            }
+
+            public void setAspectRatio(double aspectRatio) {
+                this.aspectRatio = aspectRatio;
+            }
+
+            private SystemGeometry makeSystemGeometry(GeometricalParameters geometricalParameters) {
+                final AbstractGeometryBuilder systemGeometryBuilder = new PeriodicGeometryBuilder();
+                final int numDimensions = 2;
+                systemGeometryBuilder.setDimension(numDimensions);
+                systemGeometryBuilder.makeConsistentWith(polymerCluster.getNumBeadsIncludingWater(), geometricalParameters, aspectRatio);
+                SystemGeometry systemGeometry = systemGeometryBuilder.buildGeometry();
+                return systemGeometry;
+            }
+
+        }
+
+        //<editor-fold defaultstate="collapsed" desc="default system parameters">
         static public SystemParameters getTensionDefaultParamters() {
             final double interactionLength = 4;
 
@@ -123,6 +248,7 @@ public class SurfaceTensionFinder {
             SystemGeometry systemGeometry = systemGeometryBuilder.buildGeometry();
             return systemGeometry;
         }
+        //</editor-fold>
 
         public final SystemGeometry systemGeometry;
         public final PolymerCluster polymerCluster;
@@ -136,6 +262,18 @@ public class SurfaceTensionFinder {
 
         public PolymerSimulator makePolymerSimulator() {
             return new PolymerSimulator(systemGeometry, polymerCluster, energeticsConstants);
+        }
+
+        public SystemGeometry getSystemGeometry() {
+            return systemGeometry;
+        }
+
+        public PolymerCluster getPolymerCluster() {
+            return polymerCluster;
+        }
+
+        public EnergeticsConstants getEnergeticsConstants() {
+            return energeticsConstants;
         }
 
     }
@@ -164,7 +302,23 @@ public class SurfaceTensionFinder {
 
     private static Input readInput(String[] args) {
         if (args.length == 0) {
-            return makeDefaultInput();
+//            return makeDefaultInput();
+//            return SGEManagement.SGEManager.Input.InputBuilder.getDefaultInputBuilder().buildInput();
+            final double scaleFactor = .1;
+//            InputBuilder inputBuilder = SGEManagement.SGEManager.Input.InputBuilder.getDefaultInputBuilder();
+//            final double aspectRatio = inputBuilder.getSystemParametersBuilder().getAspectRatio() / 3.5;
+//            inputBuilder.getSystemParametersBuilder().setAspectRatio(aspectRatio / scaleFactor);
+//            final int numChains = inputBuilder.getSystemParametersBuilder().getPolymerCluster().getNumChains();
+//            final int numBeadsPerChain = (int) Math.round(inputBuilder.getSystemParametersBuilder().getPolymerCluster().getNumBeadsPerChain());
+//            final PolymerChain polymerChain = PolymerChain.makeChainOfType(false, numBeadsPerChain);
+//            final PolymerCluster polymerCluster = PolymerCluster.makeRepeatedChainCluster(polymerChain, (int) (numChains * scaleFactor));
+//            polymerCluster.setConcentrationInWater(.05 * 3.5);
+//            inputBuilder.getSystemParametersBuilder().setPolymerCluster(polymerCluster);
+//            final ExternalEnergyCalculatorBuilder externalEnergyCalculatorBuilder = new ExternalEnergyCalculatorBuilder();
+//            externalEnergyCalculatorBuilder.setXPositionAndSpringConstant(16, 50);
+//            inputBuilder.getSystemParametersBuilder().getEnergeticsConstantsBuilder().setExternalEnergyCalculator(externalEnergyCalculatorBuilder.build());
+//            return inputBuilder.buildInput();
+            return SGEManager.makeRescaleInput(scaleFactor, 0);
         } else if (args.length == 1) {
             final String fileName = args[0];
             return readInputFromFile(fileName);
@@ -183,15 +337,6 @@ public class SurfaceTensionFinder {
     }
 
     public static Input makeDefaultInput() {
-//        int numChains;
-//        ExternalEnergyCalculator externalEnergyCalculator;
-//        double density;
-//        numChains = 100;//100
-//        ExternalEnergyCalculatorBuilder externalEnergyCalculatorBuilder = new ExternalEnergyCalculatorBuilder();
-//        externalEnergyCalculatorBuilder.setXPositionAndSpringConstant(50, 10.); //66 and 3
-//        externalEnergyCalculator = externalEnergyCalculatorBuilder.build();
-//        density = .05; //.15
-//        Input input = new Input(numChains, externalEnergyCalculator, density);
         JobParameters jobParameters = JobParameters.getDefaultJobParameters();
         SystemParameters systemParameters = SystemParameters.getTensionDefaultParamters();
         return new Input(systemParameters, jobParameters);
@@ -245,6 +390,8 @@ public class SurfaceTensionFinder {
 
         System.out.println("System is initialized.");
 
+        outputWriter.printInitializationInfo(polymerSimulator);
+
         simulationRunner.doEquilibrateAnnealIterations(jobParameters.getNumAnneals());
 
         for (int i = 0; i < jobParameters.getNumSurfaceTensionTrials(); i++) {
@@ -273,6 +420,38 @@ public class SurfaceTensionFinder {
     public SystemParameters getInputParameters() {
         return systemParameters;
     }
-    //</editor-fold>
 
+    public int getJobNumber() {
+        return jobParameters.getJobNumber();
+    }
+
+    public int getNumBeadsPerChain() {
+        return (int) Math.round(systemParameters.getPolymerCluster().getNumBeadsPerChain());
+    }
+
+    public int getNumChains() {
+        return systemParameters.getPolymerCluster().getNumChains();
+    }
+
+    public double getDensity() {
+        return systemParameters.getPolymerCluster().getConcentrationInWater();
+    }
+
+    public int getNumAnneals() {
+        return jobParameters.getNumAnneals();
+    }
+
+    public int getNumSurfaceTensionTrials() {
+        return jobParameters.getNumSurfaceTensionTrials();
+    }
+
+    public ExternalEnergyCalculator getExternalEnergyCalculator() {
+        return systemParameters.getEnergeticsConstants().getExternalEnergyCalculator();
+    }
+
+    public double getBeadSize() {
+        return systemParameters.systemGeometry.getParameters().getInteractionLength();
+    }
+
+    //</editor-fold>
 }

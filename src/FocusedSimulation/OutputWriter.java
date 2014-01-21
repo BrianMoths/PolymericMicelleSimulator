@@ -7,9 +7,7 @@ package FocusedSimulation;
 import Engine.PolymerSimulator;
 import Engine.PolymerState.SystemGeometry.Interfaces.ImmutableSystemGeometry;
 import Engine.SystemAnalyzer;
-import FocusedSimulation.SurfaceTensionFinder.SystemParameters;
 import FocusedSimulation.SurfaceTensionFinder.MeasuredSurfaceTension;
-import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.PrintWriter;
 import java.util.Calendar;
@@ -102,18 +100,20 @@ public class OutputWriter {
     }
 
     private String makeParametersString() {
-        final SystemParameters inputParameters = surfaceTensionFinder.getInputParameters();
-        final int numBeadsPerChain = SurfaceTensionFinder.getNumBeadsPerChain();
+        final int numBeadsPerChain = surfaceTensionFinder.getNumBeadsPerChain();
         final int numAnneals = surfaceTensionFinder.getNumAnneals();
         final int numSurfaceTensionTrials = surfaceTensionFinder.getNumSurfaceTensionTrials();
+        final double beadSideLength = surfaceTensionFinder.getBeadSize();
 
         StringBuilder parametersStringBuilder = new StringBuilder();
         parametersStringBuilder
-                .append("Number of Chains: ").append(Integer.toString(inputParameters.numChains)).append("\n")
+                .append("Number of Chains: ").append(Integer.toString(surfaceTensionFinder.getNumChains())).append("\n")
                 .append("Number of Beads per Chain: ").append(Integer.toString(numBeadsPerChain)).append("\n")
-                .append("E=(1/2)a(L-b)^2 with a: ").append(Double.toString(inputParameters.externalEnergyCalculator.getxSpringConstant())).append("\n")
-                .append("b: ").append(Double.toString(inputParameters.externalEnergyCalculator.getxEquilibriumPosition())).append("\n")
-                .append("Density: ").append(Double.toString(inputParameters.density)).append("\n")
+                .append("E=(1/2)a(L-b)^2 with a: ").append(Double.toString(surfaceTensionFinder.getExternalEnergyCalculator().getxSpringConstant())).append("\n")
+                .append("b: ").append(Double.toString(surfaceTensionFinder.getExternalEnergyCalculator().getxEquilibriumPosition())).append("\n")
+                .append("Density: ").append(Double.toString(surfaceTensionFinder.getDensity())).append("\n")
+                .append("Side length of beads: ")
+                .append(Double.toString(beadSideLength)).append("\n")
                 .append("number  of anneals: ").append(Integer.toString(numAnneals)).append("\n")
                 .append("number of iterations finding surface tension: ").append(Integer.toString(numSurfaceTensionTrials)).append("\n")
                 .append("=====================").append("\n")
@@ -155,7 +155,6 @@ public class OutputWriter {
         final double totalArea = systemGeometry.getVolume();
         final double width = systemGeometry.getSizeOfDimension(0);
         final double height = systemGeometry.getSizeOfDimension(1);
-        final double beadSideLength = systemGeometry.getParameters().getInteractionLength();
 
         StringBuilder parametersStringBuilder = new StringBuilder();
         parametersStringBuilder
@@ -165,15 +164,22 @@ public class OutputWriter {
                 .append("horizontal size of system at end of simulation: ")
                 .append(Double.toString(width)).append("\n")
                 .append("vertical size of system at end of simulation: ")
-                .append(Double.toString(height)).append("\n")
-                .append("Side length of beads: ")
-                .append(Double.toString(beadSideLength)).append("\n");
+                .append(Double.toString(height)).append("\n");
 
         return parametersStringBuilder.toString();
     }
 
     public void closeWriter() {
         dataWriter.close();
+    }
+
+    void printInitializationInfo(PolymerSimulator polymerSimulator) {
+        dataWriter.println("Initial Horizontal Size of System: " + polymerSimulator.getGeometry().getSizeOfDimension(0));
+        dataWriter.println();
+        dataWriter.flush();
+
+        System.out.println("Initial Horizontal Size of System: " + polymerSimulator.getGeometry().getSizeOfDimension(0));
+        System.out.println();
     }
 
 }

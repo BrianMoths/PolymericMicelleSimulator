@@ -4,6 +4,7 @@
  */
 package Engine.PolymerTopology;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -11,7 +12,7 @@ import java.util.List;
  *
  * @author bmoths
  */
-public class PolymerChain {
+public class PolymerChain implements Serializable {
 
     static public PolymerChain makeSingletChainOfType(boolean isTypeA) {
         PolymerChain polymerChain = new PolymerChain();
