@@ -5,15 +5,14 @@
 package SGEManagement;
 
 import Engine.Energetics.EnergeticsConstants.EnergeticsConstantsBuilder;
-import Engine.Energetics.ExternalEnergyCalculator;
 import Engine.Energetics.ExternalEnergyCalculator.ExternalEnergyCalculatorBuilder;
 import Engine.PolymerTopology.PolymerChain;
 import Engine.PolymerTopology.PolymerCluster;
 import FocusedSimulation.OutputWriter;
 import FocusedSimulation.SurfaceTensionFinder.JobParameters;
 import FocusedSimulation.SurfaceTensionFinder.JobParameters.JobParametersBuilder;
-import FocusedSimulation.SurfaceTensionFinder.SystemParameters;
-import FocusedSimulation.SurfaceTensionFinder.SystemParameters.SystemParametersBuilder;
+import FocusedSimulation.SurfaceTensionFinder.SimulatorParameters;
+import FocusedSimulation.SurfaceTensionFinder.SimulatorParameters.SystemParametersBuilder;
 import SGEManagement.SGEManager.Input.InputBuilder;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
@@ -98,15 +97,15 @@ public class SGEManager {
 
         }
 
-        public SystemParameters systemParameters;
+        public SimulatorParameters systemParameters;
         public JobParameters jobParameters;
 
-        public Input(SystemParameters systemParameters, JobParameters jobParameters) {
+        public Input(SimulatorParameters systemParameters, JobParameters jobParameters) {
             this.systemParameters = systemParameters;
             this.jobParameters = jobParameters;
         }
 
-        public SystemParameters getSystemParameters() {
+        public SimulatorParameters getSystemParameters() {
             return systemParameters;
         }
 
@@ -136,6 +135,7 @@ public class SGEManager {
         Input input;
         double scaleFactor;
 
+///////////Different vertical sizes of the bridge.
         scaleFactor = 1. / 10.;
         input = makeRescaleInput(scaleFactor, jobNumber);
         inputs.add(input);
@@ -179,54 +179,130 @@ public class SGEManager {
         return inputs;
 
 
-//        List<Input> inputs = new ArrayList<>();
-//
-//        int jobNumber = 1;
-//        int numChains = 100 / 3;
-//        double a = 10;
-//        double b = 50 / 3;
-//        double density = .05;
+///////////////////Repeatability
 //        InputBuilder inputBuilder;
 //
-//        inputBuilder = InputBuilder.getDefaultInputBuilder();
-//        inputBuilder.getSystemParametersBuilder().getPolymerCluster().setConcentrationInWater(density / 10);
-//        inputBuilder.getJobParametersBuilder().setJobNumber(jobNumber);
+//        inputBuilder = SGEManager.makeRescaleInputBuilder(.5, jobNumber);
+//        inputBuilder.getSystemParametersBuilder().getPolymerCluster().setConcentrationInWater(1);
+//        inputBuilder.getSystemParametersBuilder().getEnergeticsConstantsBuilder().setExternalEnergyCalculator(new ExternalEnergyCalculator());
+//        inputBuilder.getSystemParametersBuilder().setAspectRatio(1);
+//        inputBuilder.getJobParametersBuilder().setNumAnneals(10);
+//        inputBuilder.getJobParametersBuilder().setNumSurfaceTensionTrials(10);
+//        inputBuilder.getJobParametersBuilder().setShouldIterateUntilConvergence(false);
 //        inputs.add(inputBuilder.buildInput());
 //        jobNumber++;
 //
-//        inputBuilder = InputBuilder.getDefaultInputBuilder();
-//        inputBuilder.getSystemParametersBuilder().getPolymerCluster().setConcentrationInWater(density / 2);
-//        inputBuilder.getJobParametersBuilder().setJobNumber(jobNumber);
+//        inputBuilder = SGEManager.makeRescaleInputBuilder(.5, jobNumber);
+//        inputBuilder.getSystemParametersBuilder().getPolymerCluster().setConcentrationInWater(1);
+//        inputBuilder.getSystemParametersBuilder().getEnergeticsConstantsBuilder().setExternalEnergyCalculator(new ExternalEnergyCalculator());
+//        inputBuilder.getSystemParametersBuilder().setAspectRatio(1);
+//        inputBuilder.getJobParametersBuilder().setNumAnneals(10);
+//        inputBuilder.getJobParametersBuilder().setNumSurfaceTensionTrials(10);
+//        inputBuilder.getJobParametersBuilder().setShouldIterateUntilConvergence(false);
 //        inputs.add(inputBuilder.buildInput());
 //        jobNumber++;
 //
-//        inputBuilder = InputBuilder.getDefaultInputBuilder();
-//        inputBuilder.getSystemParametersBuilder().getPolymerCluster().setConcentrationInWater(density * 2 / 3);
-//        inputBuilder.getJobParametersBuilder().setJobNumber(jobNumber);
+//        inputBuilder = SGEManager.makeRescaleInputBuilder(.5, jobNumber);
+//        inputBuilder.getSystemParametersBuilder().getPolymerCluster().setConcentrationInWater(1);
+//        inputBuilder.getSystemParametersBuilder().getEnergeticsConstantsBuilder().setExternalEnergyCalculator(new ExternalEnergyCalculator());
+//        inputBuilder.getSystemParametersBuilder().setAspectRatio(1);
+//        inputBuilder.getJobParametersBuilder().setNumAnneals(10);
+//        inputBuilder.getJobParametersBuilder().setNumSurfaceTensionTrials(10);
+//        inputBuilder.getJobParametersBuilder().setShouldIterateUntilConvergence(false);
 //        inputs.add(inputBuilder.buildInput());
 //        jobNumber++;
 //
-//        inputBuilder = InputBuilder.getDefaultInputBuilder();
-//        inputBuilder.getJobParametersBuilder().setJobNumber(jobNumber);
+//        inputBuilder = SGEManager.makeRescaleInputBuilder(.5, jobNumber);
+//        inputBuilder.getSystemParametersBuilder().getPolymerCluster().setConcentrationInWater(1);
+//        inputBuilder.getSystemParametersBuilder().getEnergeticsConstantsBuilder().setExternalEnergyCalculator(new ExternalEnergyCalculator());
+//        inputBuilder.getSystemParametersBuilder().setAspectRatio(1);
+//        inputBuilder.getJobParametersBuilder().setNumAnneals(10);
+//        inputBuilder.getJobParametersBuilder().setNumSurfaceTensionTrials(10);
+//        inputBuilder.getJobParametersBuilder().setShouldIterateUntilConvergence(false);
 //        inputs.add(inputBuilder.buildInput());
 //        jobNumber++;
 //
-//        inputBuilder = InputBuilder.getDefaultInputBuilder();
-//        inputBuilder.getSystemParametersBuilder().getPolymerCluster().setConcentrationInWater(density * 3 / 2);
-//        inputBuilder.getJobParametersBuilder().setJobNumber(jobNumber);
+//        inputBuilder = SGEManager.makeRescaleInputBuilder(.5, jobNumber);
+//        inputBuilder.getSystemParametersBuilder().getPolymerCluster().setConcentrationInWater(1);
+//        inputBuilder.getSystemParametersBuilder().getEnergeticsConstantsBuilder().setExternalEnergyCalculator(new ExternalEnergyCalculator());
+//        inputBuilder.getSystemParametersBuilder().setAspectRatio(1);
+//        inputBuilder.getJobParametersBuilder().setNumAnneals(10);
+//        inputBuilder.getJobParametersBuilder().setNumSurfaceTensionTrials(10);
+//        inputBuilder.getJobParametersBuilder().setShouldIterateUntilConvergence(false);
 //        inputs.add(inputBuilder.buildInput());
 //        jobNumber++;
 //
-//        inputBuilder = InputBuilder.getDefaultInputBuilder();
-//        inputBuilder.getSystemParametersBuilder().getPolymerCluster().setConcentrationInWater(density * 2);
-//        inputBuilder.getJobParametersBuilder().setJobNumber(jobNumber);
+//        inputBuilder = SGEManager.makeRescaleInputBuilder(.5, jobNumber);
+//        inputBuilder.getSystemParametersBuilder().getPolymerCluster().setConcentrationInWater(1);
+//        inputBuilder.getSystemParametersBuilder().getEnergeticsConstantsBuilder().setExternalEnergyCalculator(new ExternalEnergyCalculator());
+//        inputBuilder.getSystemParametersBuilder().setAspectRatio(1);
+//        inputBuilder.getJobParametersBuilder().setNumAnneals(10);
+//        inputBuilder.getJobParametersBuilder().setNumSurfaceTensionTrials(10);
+//        inputBuilder.getJobParametersBuilder().setShouldIterateUntilConvergence(false);
+//        inputs.add(inputBuilder.buildInput());
+//        jobNumber++;
+
+
+
+
+/////////////Effect of aspect ratio on natural density.
+//        inputBuilder = SGEManager.makeRescaleInputBuilder(.5, jobNumber);
+//        inputBuilder.getSystemParametersBuilder().getPolymerCluster().setConcentrationInWater(1);
+//        inputBuilder.getSystemParametersBuilder().getEnergeticsConstantsBuilder().setExternalEnergyCalculator(new ExternalEnergyCalculator());
+//        inputBuilder.getSystemParametersBuilder().setAspectRatio(.1);
+//        inputBuilder.getJobParametersBuilder().setNumAnneals(10);
+//        inputBuilder.getJobParametersBuilder().setNumSurfaceTensionTrials(10);
+//        inputBuilder.getJobParametersBuilder().setShouldIterateUntilConvergence(false);
 //        inputs.add(inputBuilder.buildInput());
 //        jobNumber++;
 //
+//        inputBuilder = SGEManager.makeRescaleInputBuilder(.5, jobNumber);
+//        inputBuilder.getSystemParametersBuilder().getPolymerCluster().setConcentrationInWater(1);
+//        inputBuilder.getSystemParametersBuilder().getEnergeticsConstantsBuilder().setExternalEnergyCalculator(new ExternalEnergyCalculator());
+//        inputBuilder.getSystemParametersBuilder().setAspectRatio(.1);
+//        inputBuilder.getJobParametersBuilder().setNumAnneals(10);
+//        inputBuilder.getJobParametersBuilder().setNumSurfaceTensionTrials(10);
+//        inputBuilder.getJobParametersBuilder().setShouldIterateUntilConvergence(false);
+//        inputs.add(inputBuilder.buildInput());
+//        jobNumber++;
 //
-//        inputBuilder = InputBuilder.getDefaultInputBuilder();
-//        inputBuilder.getSystemParametersBuilder().getPolymerCluster().setConcentrationInWater(density * 10);
-//        inputBuilder.getJobParametersBuilder().setJobNumber(jobNumber);
+//        inputBuilder = SGEManager.makeRescaleInputBuilder(.5, jobNumber);
+//        inputBuilder.getSystemParametersBuilder().getPolymerCluster().setConcentrationInWater(1);
+//        inputBuilder.getSystemParametersBuilder().getEnergeticsConstantsBuilder().setExternalEnergyCalculator(new ExternalEnergyCalculator());
+//        inputBuilder.getSystemParametersBuilder().setAspectRatio(.1);
+//        inputBuilder.getJobParametersBuilder().setNumAnneals(10);
+//        inputBuilder.getJobParametersBuilder().setNumSurfaceTensionTrials(10);
+//        inputBuilder.getJobParametersBuilder().setShouldIterateUntilConvergence(false);
+//        inputs.add(inputBuilder.buildInput());
+//        jobNumber++;
+//
+//        inputBuilder = SGEManager.makeRescaleInputBuilder(.5, jobNumber);
+//        inputBuilder.getSystemParametersBuilder().getPolymerCluster().setConcentrationInWater(1);
+//        inputBuilder.getSystemParametersBuilder().getEnergeticsConstantsBuilder().setExternalEnergyCalculator(new ExternalEnergyCalculator());
+//        inputBuilder.getSystemParametersBuilder().setAspectRatio(.1);
+//        inputBuilder.getJobParametersBuilder().setNumAnneals(10);
+//        inputBuilder.getJobParametersBuilder().setNumSurfaceTensionTrials(10);
+//        inputBuilder.getJobParametersBuilder().setShouldIterateUntilConvergence(false);
+//        inputs.add(inputBuilder.buildInput());
+//        jobNumber++;
+//
+//        inputBuilder = SGEManager.makeRescaleInputBuilder(.5, jobNumber);
+//        inputBuilder.getSystemParametersBuilder().getPolymerCluster().setConcentrationInWater(1);
+//        inputBuilder.getSystemParametersBuilder().getEnergeticsConstantsBuilder().setExternalEnergyCalculator(new ExternalEnergyCalculator());
+//        inputBuilder.getSystemParametersBuilder().setAspectRatio(.3);
+//        inputBuilder.getJobParametersBuilder().setNumAnneals(10);
+//        inputBuilder.getJobParametersBuilder().setNumSurfaceTensionTrials(10);
+//        inputBuilder.getJobParametersBuilder().setShouldIterateUntilConvergence(false);
+//        inputs.add(inputBuilder.buildInput());
+//        jobNumber++;
+//
+//        inputBuilder = SGEManager.makeRescaleInputBuilder(.5, jobNumber);
+//        inputBuilder.getSystemParametersBuilder().getPolymerCluster().setConcentrationInWater(1);
+//        inputBuilder.getSystemParametersBuilder().getEnergeticsConstantsBuilder().setExternalEnergyCalculator(new ExternalEnergyCalculator());
+//        inputBuilder.getSystemParametersBuilder().setAspectRatio(.3);
+//        inputBuilder.getJobParametersBuilder().setNumAnneals(10);
+//        inputBuilder.getJobParametersBuilder().setNumSurfaceTensionTrials(10);
+//        inputBuilder.getJobParametersBuilder().setShouldIterateUntilConvergence(false);
 //        inputs.add(inputBuilder.buildInput());
 //        jobNumber++;
 //
@@ -234,6 +310,12 @@ public class SGEManager {
     }
 
     public static Input makeRescaleInput(final double scaleFactor, int jobNumber) {
+        InputBuilder inputBuilder = makeRescaleInputBuilder(scaleFactor, jobNumber);
+        final Input input = inputBuilder.buildInput();
+        return input;
+    }
+
+    public static InputBuilder makeRescaleInputBuilder(final double scaleFactor, int jobNumber) {
         InputBuilder inputBuilder;
         inputBuilder = InputBuilder.getDefaultInputBuilder();
         final double aspectRatio = inputBuilder.getSystemParametersBuilder().getAspectRatio() / 3.5;
@@ -248,18 +330,10 @@ public class SGEManager {
         externalEnergyCalculatorBuilder.setXPositionAndSpringConstant(16, 50);
         inputBuilder.getSystemParametersBuilder().getEnergeticsConstantsBuilder().setExternalEnergyCalculator(externalEnergyCalculatorBuilder.build());
         inputBuilder.getJobParametersBuilder().setJobNumber(jobNumber);
-        inputBuilder.getJobParametersBuilder().setNumSurfaceTensionTrials(300);
-        final Input input = inputBuilder.buildInput();
-        return input;
+        inputBuilder.getJobParametersBuilder().setNumSurfaceTensionTrials(1);
+        inputBuilder.getJobParametersBuilder().setNumSurfaceTensionTrials(600);
+        return inputBuilder;
     }
-
-    //<editor-fold defaultstate="collapsed" desc="makeInputsHelper">
-    static private ExternalEnergyCalculator makeCalculatorAB(double a, double b) {
-        ExternalEnergyCalculatorBuilder externalEnergyCalculatorBuilder = new ExternalEnergyCalculatorBuilder();
-        externalEnergyCalculatorBuilder.setXPositionAndSpringConstant(b, a);
-        return externalEnergyCalculatorBuilder.build();
-    }
-    //</editor-fold>
 
     static private void submitJobs(List<Input> inputs) {
         final String commandExceptInput = makeCommandExceptInput();

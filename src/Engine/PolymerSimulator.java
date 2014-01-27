@@ -4,19 +4,19 @@
  */
 package Engine;
 
-import Engine.PolymerTopology.PolymerCluster;
 import Engine.Energetics.EnergeticsConstants;
 import Engine.Energetics.EnergyEntropyChange;
 import Engine.PolymerState.DiscretePolymerState;
 import Engine.PolymerState.PolymerPosition;
 import Engine.PolymerState.PolymerState;
 import Engine.PolymerState.SystemGeometry.GeometricalParameters;
-import Engine.SimulationStepping.StepTypes.StepType;
-import Engine.SimulationStepping.StepTypes.SimulationStep;
-import Engine.SimulationStepping.StepGenerators.StepGenerator;
 import Engine.PolymerState.SystemGeometry.Implementations.PeriodicGeometry.PeriodicGeometryBuilder;
 import Engine.PolymerState.SystemGeometry.Interfaces.SystemGeometry;
+import Engine.PolymerTopology.PolymerCluster;
 import Engine.SimulationStepping.StepGenerators.CompoundStepGenerators.GeneralStepGenerator;
+import Engine.SimulationStepping.StepGenerators.StepGenerator;
+import Engine.SimulationStepping.StepTypes.SimulationStep;
+import Engine.SimulationStepping.StepTypes.StepType;
 import SystemAnalysis.GeometryAnalyzer;
 import java.io.Serializable;
 
@@ -58,7 +58,7 @@ public class PolymerSimulator implements Serializable {
     private final PolymerPosition polymerPosition;
     private final PolymerState polymerState;
     private final SystemAnalyzer systemAnalyzer;
-    private final StepGenerator stepGenerator = GeneralStepGenerator.defaultStepGenerator();
+    private StepGenerator stepGenerator = GeneralStepGenerator.defaultStepGenerator();
     private double energy;
     private AcceptanceStatistics acceptanceStatistics;
 
@@ -180,6 +180,14 @@ public class PolymerSimulator implements Serializable {
 
     public synchronized void setBeadPositions(double[][] beadPositions) {
         polymerPosition.setBeadPositions(beadPositions);
+    }
+
+    public StepGenerator getStepGenerator() {
+        return stepGenerator;
+    }
+
+    public void setStepGenerator(StepGenerator stepGenerator) {
+        this.stepGenerator = stepGenerator;
     }
 
     // <editor-fold defaultstate="collapsed" desc="getters">

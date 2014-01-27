@@ -5,8 +5,8 @@
 package Engine.SimulationStepping.StepGenerators.CompoundStepGenerators;
 
 import Engine.SimulationStepping.StepGenerators.StepGenerator;
-import Engine.SimulationStepping.StepTypes.StepType;
 import Engine.SimulationStepping.StepTypes.SimulationStep;
+import Engine.SimulationStepping.StepTypes.StepType;
 import Engine.SystemAnalyzer;
 import java.util.EnumMap;
 import java.util.Map.Entry;
@@ -34,7 +34,7 @@ public class GeneralStepGenerator implements StepGenerator {
         weights.put(StepType.SINGLE_BEAD, 1.);//1
         weights.put(StepType.SINGLE_CHAIN, .00);//.01
         weights.put(StepType.SINGLE_WALL_RESIZE, .0001);//.0001
-        weights.put(StepType.REPTATION, .00);//.01
+        weights.put(StepType.REPTATION, .0);//.01
         weights.put(StepType.NO_STRETCH_WALL, .0000);//.0001
         return weights;
     }
@@ -57,7 +57,7 @@ public class GeneralStepGenerator implements StepGenerator {
         double randomDouble = random.nextDouble() * weightSum;
 
         for (Entry<StepType, Double> entry : weights.entrySet()) {
-            double weight = entry.getValue();
+            final double weight = entry.getValue();
             if (randomDouble <= weight) {
                 return entry.getKey();
             }

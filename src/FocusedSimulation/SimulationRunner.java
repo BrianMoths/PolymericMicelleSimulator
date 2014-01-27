@@ -5,6 +5,7 @@
 package FocusedSimulation;
 
 import Engine.PolymerSimulator;
+import Engine.SimulationStepping.StepGenerators.StepGenerator;
 import FocusedSimulation.StatisticsTracker.TrackableVariable;
 import Gui.SystemViewer;
 import java.util.ArrayList;
@@ -187,6 +188,14 @@ public class SimulationRunner {
 
     public List<DoubleWithUncertainty> getMeasurementsForTrackedVariable(TrackableVariable trackableVariable) {
         return measuredValues.get(trackableVariable);
+    }
+
+    public StepGenerator getStepGenerator() {
+        return polymerSimulator.getStepGenerator();
+    }
+
+    public void setStepGenerator(StepGenerator stepGenerator) {
+        polymerSimulator.setStepGenerator(stepGenerator);
     }
 
 }
