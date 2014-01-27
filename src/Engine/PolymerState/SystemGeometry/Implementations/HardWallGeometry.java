@@ -6,7 +6,6 @@ package Engine.PolymerState.SystemGeometry.Implementations;
 
 import Engine.PolymerState.SystemGeometry.GeometricalParameters;
 import Engine.PolymerState.SystemGeometry.Interfaces.GeometryBuilder;
-import Engine.Energetics.TwoBeadOverlap;
 import SystemAnalysis.AreaPerimeter.BeadRectangle;
 import SystemAnalysis.AreaPerimeter.RectangleSplitting.HardWallRectangleSplitter;
 import SystemAnalysis.AreaPerimeter.RectangleSplitting.RectangleSplitter;
@@ -69,7 +68,7 @@ public final class HardWallGeometry extends AbstractGeometry {
 
     @Override
     public boolean isPositionValid(double[] position) {
-        for (int i = 0; i < dimension; i++) {
+        for (int i = 0; i < numDimensions; i++) {
             if (!isComponentValid(position[i], i)) {
                 return false;
             }
@@ -82,30 +81,8 @@ public final class HardWallGeometry extends AbstractGeometry {
     }
 
     @Override
-    public double sqDist(double[] position1, double[] position2) {
-        double sqDist = 0;
-        for (int i = 0; i < dimension; i++) {
-            sqDist += (position1[i] - position2[i]) * (position1[i] - position2[i]);
-        }
-        return sqDist;
-    }
-
-    @Override
-    public TwoBeadOverlap twoBeadOverlap(double[] position1, double[] position2) {
-        TwoBeadOverlap twoBeadOverlap = new TwoBeadOverlap(1, 1);
-
-        for (int i = 0; i < dimension; i++) {
-            double componentDistance = Math.abs(position1[i] - position2[i]);
-            twoBeadOverlap.softOverlap *= Math.max(parameters.getInteractionLength() - componentDistance, 0.0);
-            twoBeadOverlap.hardOverlap *= Math.max(parameters.getCoreLength() - componentDistance, 0.0);
-        }
-
-        return twoBeadOverlap;
-    }
-
-    @Override
     public boolean incrementFirstVector(double[] toStep, double[] stepVector) {
-        for (int i = 0; i < dimension; i++) {
+        for (int i = 0; i < numDimensions; i++) {
             toStep[i] += stepVector[i];
             if (!isComponentValid(toStep[i], i)) {
                 for (int j = i; j >= 0; j--) {
@@ -119,7 +96,7 @@ public final class HardWallGeometry extends AbstractGeometry {
 
     @Override
     public void decrementFirstVector(double[] toStep, double[] stepVector) {
-        for (int i = 0; i < dimension; i++) {
+        for (int i = 0; i < numDimensions; i++) {
             toStep[i] -= stepVector[i];
         }
     }
@@ -129,7 +106,12 @@ public final class HardWallGeometry extends AbstractGeometry {
         if (!isPositionValid(src)) {
             return;
         }
-        System.arraycopy(src, 0, dest, 0, dimension);
+        System.arraycopy(src, 0, dest, 0, numDimensions);
+    }
+
+    @Override
+    protected double calculateComponentDistance(double component1, double component2, int dimension) {
+        return Math.abs(component1 - component2);
     }
 
 }

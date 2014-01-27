@@ -4,8 +4,8 @@
  */
 package Engine.PolymerState.SystemGeometry.Interfaces;
 
-import Engine.PolymerState.SystemGeometry.GeometricalParameters;
 import Engine.Energetics.TwoBeadOverlap;
+import Engine.PolymerState.SystemGeometry.GeometricalParameters;
 import SystemAnalysis.AreaPerimeter.BeadRectangle;
 import SystemAnalysis.AreaPerimeter.RectangleSplitting.RectanglesAndGluedPerimeter;
 import java.util.List;
@@ -32,7 +32,7 @@ public interface ImmutableSystemGeometry {
 
     public double sqDist(double[] position1, double[] position2);
 
-    public TwoBeadOverlap twoBeadOverlap(double[] position1, double[] position2);
+    public TwoBeadOverlap twoBeadRectangularOverlap(double[] position1, double[] position2);
 
     public double[] randomPosition();
 

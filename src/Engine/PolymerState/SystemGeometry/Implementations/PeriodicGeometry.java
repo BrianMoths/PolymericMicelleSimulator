@@ -6,7 +6,6 @@ package Engine.PolymerState.SystemGeometry.Implementations;
 
 import Engine.PolymerState.SystemGeometry.GeometricalParameters;
 import Engine.PolymerState.SystemGeometry.Interfaces.GeometryBuilder;
-import Engine.Energetics.TwoBeadOverlap;
 import SystemAnalysis.AreaPerimeter.BeadRectangle;
 import SystemAnalysis.AreaPerimeter.OverlappingIntervalLengthFinder;
 import SystemAnalysis.AreaPerimeter.RectangleSplitting.PeriodicRectangleSplitter;
@@ -78,32 +77,8 @@ public final class PeriodicGeometry extends AbstractGeometry {
     }
 
     @Override
-    public double sqDist(double[] position1, double[] position2) {
-        double sqDist = 0;
-        double distance;
-        for (int i = 0; i < dimension; i++) {
-            distance = componentDistance(position1[i], position2[i], i);
-            sqDist += distance * distance;
-        }
-        return sqDist;
-    }
-
-    @Override
-    public TwoBeadOverlap twoBeadOverlap(double[] position1, double[] position2) {
-        TwoBeadOverlap twoBeadOverlap = new TwoBeadOverlap(1, 1);
-
-        for (int i = 0; i < dimension; i++) {
-            final double componentDistance = componentDistance(position1[i], position2[i], i);
-            twoBeadOverlap.softOverlap *= Math.max(parameters.getInteractionLength() - componentDistance, 0.0);
-            twoBeadOverlap.hardOverlap *= Math.max(parameters.getCoreLength() - componentDistance, 0.0);
-        }
-
-        return twoBeadOverlap;
-    }
-
-    @Override
     public boolean incrementFirstVector(double[] toStep, double[] stepVector) {
-        for (int i = 0; i < dimension; i++) {
+        for (int i = 0; i < numDimensions; i++) {
             toStep[i] += stepVector[i];
             toStep[i] = projectComponent(toStep[i], i);
         }
@@ -112,7 +87,7 @@ public final class PeriodicGeometry extends AbstractGeometry {
 
     @Override
     public void decrementFirstVector(double[] toStep, double[] stepVector) {
-        for (int i = 0; i < dimension; i++) {
+        for (int i = 0; i < numDimensions; i++) {
             toStep[i] -= stepVector[i];
             toStep[i] = projectComponent(toStep[i], i);
         }
@@ -127,7 +102,8 @@ public final class PeriodicGeometry extends AbstractGeometry {
         return component;
     }
 
-    private double componentDistance(double component1, double component2, int dimension) {
+    @Override
+    protected double calculateComponentDistance(double component1, double component2, int dimension) {
         double distance;
         distance = Math.abs(component1 - component2);
         distance = Math.min(distance, fullRMax[dimension] - distance);
@@ -139,7 +115,7 @@ public final class PeriodicGeometry extends AbstractGeometry {
         if (!isPositionValid(src)) {
             return;
         }
-        System.arraycopy(src, 0, dest, 0, dimension);
+        System.arraycopy(src, 0, dest, 0, numDimensions);
         projectVector(dest);
     }
 
@@ -149,7 +125,7 @@ public final class PeriodicGeometry extends AbstractGeometry {
     }
 
     private void projectVector(double[] position) {
-        for (int i = 0; i < dimension; i++) {
+        for (int i = 0; i < numDimensions; i++) {
             position[i] = projectComponent(position[i], i);
         }
     }

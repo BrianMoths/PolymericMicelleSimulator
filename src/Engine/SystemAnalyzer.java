@@ -176,9 +176,9 @@ public class SystemAnalyzer implements Serializable {
         while (nearbyBeadIterator.hasNext()) {
             final int currentBead = nearbyBeadIterator.next();
             if (isTypeA(currentBead)) {
-                AOverlap.increment(systemGeometry.twoBeadOverlap(beadPosition, beadPositions[currentBead]));
+                AOverlap.increment(systemGeometry.twoBeadRectangularOverlap(beadPosition, beadPositions[currentBead]));
             } else {
-                BOverlap.increment(systemGeometry.twoBeadOverlap(beadPosition, beadPositions[currentBead]));
+                BOverlap.increment(systemGeometry.twoBeadRectangularOverlap(beadPosition, beadPositions[currentBead]));
             }
         }
 

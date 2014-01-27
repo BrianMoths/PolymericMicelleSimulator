@@ -4,6 +4,7 @@
  */
 package Engine.PolymerState.SystemGeometry.Implementations;
 
+import Engine.Energetics.TwoBeadOverlap;
 import Engine.PolymerState.SystemGeometry.GeometricalParameters;
 import Engine.PolymerState.SystemGeometry.Interfaces.GeometryBuilder;
 import Engine.PolymerState.SystemGeometry.Interfaces.SystemGeometry;
@@ -125,12 +126,12 @@ public abstract class AbstractGeometry implements SystemGeometry {
     //</editor-fold>
 
     public static final Random randomNumberGenerator = new Random();
-    protected final int dimension;
+    protected final int numDimensions;
     protected final double[] fullRMax;
     protected final GeometricalParameters parameters;
 
     protected AbstractGeometry(int dimension, double[] fullRMax, GeometricalParameters parameters) {
-        this.dimension = dimension;
+        this.numDimensions = dimension;
         this.fullRMax = new double[dimension];
         System.arraycopy(fullRMax, 0, this.fullRMax, 0, dimension);
         this.parameters = parameters;
@@ -139,7 +140,7 @@ public abstract class AbstractGeometry implements SystemGeometry {
     @Override
     public String toString() {
         StringBuilder stringBuilder = new StringBuilder();
-        stringBuilder.append("Dimension: ").append(Double.toString(dimension)).append("\n");
+        stringBuilder.append("Dimension: ").append(Double.toString(numDimensions)).append("\n");
         stringBuilder.append("R Max: ").append(Arrays.toString(fullRMax)).append("\n");
         stringBuilder.append("Simulation Parameters: \n").append(parameters.toString()).append("\n");
         return stringBuilder.toString();
@@ -147,8 +148,8 @@ public abstract class AbstractGeometry implements SystemGeometry {
 
     @Override
     public double[] randomPosition() {
-        double[] position = new double[dimension];
-        for (int i = 0; i < dimension; i++) {
+        double[] position = new double[numDimensions];
+        for (int i = 0; i < numDimensions; i++) {
             position[i] = (randomNumberGenerator.nextDouble() / 3 + 1. / 3) * fullRMax[i];
         }
         return position;
@@ -174,7 +175,7 @@ public abstract class AbstractGeometry implements SystemGeometry {
 
     @Override
     public double[] randomColumnPosition() {
-        double[] position = new double[dimension];
+        double[] position = new double[numDimensions];
         position[0] = randomNumberGenerator.nextDouble() * fullRMax[0];
         position[1] = (randomNumberGenerator.nextDouble() / 3 + 1. / 3) * fullRMax[1];
         return position;
@@ -182,8 +183,8 @@ public abstract class AbstractGeometry implements SystemGeometry {
 
     @Override
     public double[] randomGaussian() {
-        double[] randomVector = new double[dimension];
-        for (int i = 0; i < dimension; i++) {
+        double[] randomVector = new double[numDimensions];
+        for (int i = 0; i < numDimensions; i++) {
             randomVector[i] = randomNumberGenerator.nextGaussian() * parameters.getStepLength();
         }
         return randomVector;
@@ -191,8 +192,8 @@ public abstract class AbstractGeometry implements SystemGeometry {
 
     @Override
     public double[] randomGaussian(double scaleFactor) {
-        double[] randomVector = new double[dimension];
-        for (int i = 0; i < dimension; i++) {
+        double[] randomVector = new double[numDimensions];
+        for (int i = 0; i < numDimensions; i++) {
             randomVector[i] = randomNumberGenerator.nextGaussian() * parameters.getStepLength() * scaleFactor;
         }
         return randomVector;
@@ -201,7 +202,7 @@ public abstract class AbstractGeometry implements SystemGeometry {
     @Override
     public double getVolume() {
         double volume = 1;
-        for (int i = 0; i < dimension; i++) {
+        for (int i = 0; i < numDimensions; i++) {
             volume *= fullRMax[i];
         }
         return volume;
@@ -235,7 +236,7 @@ public abstract class AbstractGeometry implements SystemGeometry {
     final protected BeadRectangle makeLimits() {
         BeadRectangle limits = new BeadRectangle(0, 0, 0, 0);
 
-        for (int currentDimension = 0; currentDimension < dimension; currentDimension++) {
+        for (int currentDimension = 0; currentDimension < numDimensions; currentDimension++) {
             limits.setIntervalOfDimension(makeLimit(currentDimension), currentDimension);
         }
 
@@ -268,16 +269,42 @@ public abstract class AbstractGeometry implements SystemGeometry {
         this.fullRMax[index] = rMax;
     }
 
+    @Override
+    public double sqDist(double[] position1, double[] position2) {
+        double sqDist = 0;
+        double distance;
+        for (int dimension = 0; dimension < numDimensions; dimension++) {
+            distance = calculateComponentDistance(position1[dimension], position2[dimension], dimension);
+            sqDist += distance * distance;
+        }
+        return sqDist;
+    }
+
+    @Override
+    public TwoBeadOverlap twoBeadRectangularOverlap(double[] position1, double[] position2) {
+        TwoBeadOverlap twoBeadOverlap = new TwoBeadOverlap(1, 1);
+
+        for (int i = 0; i < numDimensions; i++) {
+            final double componentDistance = calculateComponentDistance(position1[i], position2[i], i);
+            twoBeadOverlap.softOverlap *= Math.max(parameters.getInteractionLength() - componentDistance, 0.0);
+            twoBeadOverlap.hardOverlap *= Math.max(parameters.getCoreLength() - componentDistance, 0.0);
+        }
+
+        return twoBeadOverlap;
+    }
+
+    protected abstract double calculateComponentDistance(double component1, double component2, int dimension);
+
     //<editor-fold defaultstate="collapsed" desc="getters">
     @Override
     public int getNumDimensions() {
-        return dimension;
+        return numDimensions;
     }
 
     @Override
     public double[] getRMax() {
-        double[] rMax = new double[dimension];
-        System.arraycopy(fullRMax, 0, rMax, 0, dimension);
+        double[] rMax = new double[numDimensions];
+        System.arraycopy(fullRMax, 0, rMax, 0, numDimensions);
         return rMax;
     }
 
