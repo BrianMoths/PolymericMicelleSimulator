@@ -34,6 +34,8 @@ public interface ImmutableSystemGeometry {
 
     public TwoBeadOverlap twoBeadRectangularOverlap(double[] position1, double[] position2);
 
+    public TwoBeadOverlap twoBeadCircularOverlap(double[] position1, double[] position2);
+
     public double[] randomPosition();
 
     public double[][] randomPositions(int numPositions);

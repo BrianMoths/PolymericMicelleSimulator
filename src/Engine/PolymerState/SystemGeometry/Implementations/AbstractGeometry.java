@@ -293,6 +293,17 @@ public abstract class AbstractGeometry implements SystemGeometry {
         return twoBeadOverlap;
     }
 
+    @Override
+    public TwoBeadOverlap twoBeadCircularOverlap(double[] position1, double[] position2) {
+        TwoBeadOverlap twoBeadOverlap = new TwoBeadOverlap();
+
+        final double distanceBetweenCenters = Math.sqrt(sqDist(position1, position2));
+        twoBeadOverlap.softOverlap = calculateCircularOverlap(distanceBetweenCenters, parameters.getInteractionLength());
+        twoBeadOverlap.hardOverlap = calculateCircularOverlap(distanceBetweenCenters, parameters.getCoreLength());
+
+        return twoBeadOverlap;
+    }
+
     protected abstract double calculateComponentDistance(double component1, double component2, int dimension);
 
     //<editor-fold defaultstate="collapsed" desc="getters">
@@ -318,5 +329,14 @@ public abstract class AbstractGeometry implements SystemGeometry {
         return parameters;
     }
     //</editor-fold>
+
+    private double calculateCircularOverlap(final double distanceBetweenCenters, double interactionDistance) {
+        final double ratio = distanceBetweenCenters / interactionDistance;
+        if (ratio >= 1) {
+            return 0;
+        } else {
+            return 0.5 * interactionDistance * interactionDistance * (Math.acos(ratio) - ratio * Math.sqrt(1 - ratio * ratio));
+        }
+    }
 
 }
