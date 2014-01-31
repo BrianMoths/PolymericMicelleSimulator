@@ -110,8 +110,8 @@ public final class HardWallGeometry extends AbstractGeometry {
     }
 
     @Override
-    protected double calculateComponentDistance(double component1, double component2, int dimension) {
-        return Math.abs(component1 - component2);
+    protected double calculateComponentDisplacement(double component1, double component2, int dimension) {
+        return component1 - component2;
     }
 
 }

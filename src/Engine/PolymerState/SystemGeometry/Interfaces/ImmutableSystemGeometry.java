@@ -30,6 +30,8 @@ public interface ImmutableSystemGeometry {
 
     public GeometricalParameters getParameters();
 
+    public double[] getDisplacement(double[] position1, double[] position2);
+
     public double sqDist(double[] position1, double[] position2);
 
     public TwoBeadOverlap twoBeadRectangularOverlap(double[] position1, double[] position2);

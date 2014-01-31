@@ -331,7 +331,7 @@ public class SGEManager {
         inputBuilder.getSystemParametersBuilder().getEnergeticsConstantsBuilder().setExternalEnergyCalculator(externalEnergyCalculatorBuilder.build());
         inputBuilder.getJobParametersBuilder().setJobNumber(jobNumber);
         inputBuilder.getJobParametersBuilder().setNumSurfaceTensionTrials(1);
-        inputBuilder.getJobParametersBuilder().setNumSurfaceTensionTrials(600);
+        inputBuilder.getJobParametersBuilder().setNumSurfaceTensionTrials(70);
         return inputBuilder;
     }
 

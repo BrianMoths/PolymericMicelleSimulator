@@ -4,18 +4,18 @@
  */
 package Engine;
 
-import Engine.Energetics.EnergeticsConstants;
-import Engine.Energetics.TwoBeadOverlap;
 import Engine.BeadBinning.BeadBinner;
+import Engine.Energetics.EnergeticsConstants;
 import Engine.Energetics.EnergyEntropyChange;
+import Engine.Energetics.TwoBeadOverlap;
 import Engine.PolymerState.ImmutableDiscretePolymerState;
 import Engine.PolymerState.ImmutablePolymerState;
 import Engine.PolymerState.SystemGeometry.AreaOverlap;
 import Engine.PolymerState.SystemGeometry.Interfaces.ImmutableSystemGeometry;
 import SystemAnalysis.AreaPerimeter.BeadRectangle;
+import SystemAnalysis.AreaPerimeter.RectangleSplitting.RectanglesAndGluedPerimeter;
 import SystemAnalysis.GeometryAnalyzer;
 import SystemAnalysis.GeometryAnalyzer.AreaPerimeter;
-import SystemAnalysis.AreaPerimeter.RectangleSplitting.RectanglesAndGluedPerimeter;
 import SystemAnalysis.SimulationHistory;
 import SystemAnalysis.SimulationHistory.TrackedVariable;
 import java.io.Serializable;
@@ -176,9 +176,11 @@ public class SystemAnalyzer implements Serializable {
         while (nearbyBeadIterator.hasNext()) {
             final int currentBead = nearbyBeadIterator.next();
             if (isTypeA(currentBead)) {
-                AOverlap.increment(systemGeometry.twoBeadRectangularOverlap(beadPosition, beadPositions[currentBead]));
+//                AOverlap.increment(systemGeometry.twoBeadRectangularOverlap(beadPosition, beadPositions[currentBead]));
+                AOverlap.increment(systemGeometry.twoBeadCircularOverlap(beadPosition, beadPositions[currentBead]));
             } else {
-                BOverlap.increment(systemGeometry.twoBeadRectangularOverlap(beadPosition, beadPositions[currentBead]));
+//                BOverlap.increment(systemGeometry.twoBeadRectangularOverlap(beadPosition, beadPositions[currentBead]));
+                BOverlap.increment(systemGeometry.twoBeadCircularOverlap(beadPosition, beadPositions[currentBead]));
             }
         }
 
@@ -268,6 +270,13 @@ public class SystemAnalyzer implements Serializable {
             return immutableDiscretePolymerState.getNeighborToRightOfBead(bead);
         }
         throw new IllegalArgumentException("direction must be 0 or 1");
+    }
+
+    public double[] getBeadPosition(int bead) {
+        final int numDimensions = beadPositions[0].length;
+        double[] position = new double[numDimensions];
+        System.arraycopy(beadPositions[bead], 0, position, 0, numDimensions);
+        return position;
     }
 
     public double getBeadPositionComponent(int bead, int component) {

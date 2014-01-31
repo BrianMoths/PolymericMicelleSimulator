@@ -26,6 +26,7 @@ import Gui.SystemViewer;
 import SGEManagement.SGEManager;
 import SGEManagement.SGEManager.Input;
 import SGEManagement.SGEManager.Input.InputBuilder;
+import SystemAnalysis.StressFinder;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -332,12 +333,10 @@ public class SurfaceTensionFinder {
 
     private static Input readInput(String[] args) {
         if (args.length == 0) {
-            final double scaleFactor = 2;
+            final double scaleFactor = .2;
 
-            InputBuilder inputBuilder = SGEManager.makeRescaleInputBuilder(scaleFactor, 2);
-//            inputBuilder.getSystemParametersBuilder().getPolymerCluster().setConcentrationInWater(1);
-//            inputBuilder.getSystemParametersBuilder().getEnergeticsConstantsBuilder().setExternalEnergyCalculator(new ExternalEnergyCalculator());
-//            inputBuilder.getSystemParametersBuilder().setAspectRatio(1);
+            InputBuilder inputBuilder = SGEManager.makeRescaleInputBuilder(scaleFactor, 0);
+            inputBuilder.getJobParametersBuilder().numAnneals = 0;
             return inputBuilder.buildInput();
         } else if (args.length == 1) {
             final String fileName = args[0];
@@ -417,6 +416,15 @@ public class SurfaceTensionFinder {
 
         for (int i = 0; i < jobParameters.getNumSurfaceTensionTrials(); i++) {
             doMeasurementTrial(simulationRunner, systemWidth, polymerSimulator);
+            double[][] stress = StressFinder.calculateStress(polymerSimulator);
+            for (int j = 0; j < stress.length; j++) {
+                double[] stressRow = stress[j];
+                for (int k = 0; k < stressRow.length; k++) {
+                    System.out.print(stressRow[k] + " ");
+                }
+                System.out.print("\n");
+            }
+            System.out.println();
         }
 
         while (jobParameters.getShouldIterateUntilConvergence() && !simulationRunner.isConverged(systemWidth)) {

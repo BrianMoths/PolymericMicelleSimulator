@@ -270,6 +270,15 @@ public abstract class AbstractGeometry implements SystemGeometry {
     }
 
     @Override
+    public double[] getDisplacement(double[] position1, double[] position2) {
+        double[] displacement = new double[numDimensions];
+        for (int dimension = 0; dimension < numDimensions; dimension++) {
+            displacement[dimension] = calculateComponentDisplacement(position1[dimension], position2[dimension], dimension);
+        }
+        return displacement;
+    }
+
+    @Override
     public double sqDist(double[] position1, double[] position2) {
         double sqDist = 0;
         double distance;
@@ -304,7 +313,11 @@ public abstract class AbstractGeometry implements SystemGeometry {
         return twoBeadOverlap;
     }
 
-    protected abstract double calculateComponentDistance(double component1, double component2, int dimension);
+    protected double calculateComponentDistance(double component1, double component2, int dimension) {
+        return Math.abs(calculateComponentDisplacement(component1, component2, dimension));
+    }
+
+    protected abstract double calculateComponentDisplacement(double component1, double component2, int dimension);
 
     //<editor-fold defaultstate="collapsed" desc="getters">
     @Override

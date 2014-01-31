@@ -134,6 +134,19 @@ public class BeadRectangle {
         return splitBeadRectangles;
     }
 
+    public boolean isPointContained(double[] point) {
+        if (point.length != getDimension()) {
+            return false;
+        }
+        for (int dimension = 0; dimension < getDimension(); dimension++) {
+            final Interval intervalOfDimension = getIntervalOfDimensionReference(dimension);
+            if (!intervalOfDimension.isPointContained(point[dimension])) {
+                return false;
+            }
+        }
+        return true;
+    }
+
     public void setBeginningOfDimension(double start, int dimension) {
         setExtremeOfDimension(start, Extreme.BEGINNING, dimension);
     }
@@ -150,11 +163,6 @@ public class BeadRectangle {
     public void setIntervalOfDimension(Interval interval, int dimension) {
         final Interval intervalOfDimension = getIntervalOfDimensionReference(dimension);
         intervalOfDimension.setInterval(interval);
-    }
-
-    public boolean isOutOfExtremeBoundaryInDimension(Extreme extreme, double boundary, int dimension) {
-        final Interval interval = getIntervalOfDimension(dimension);
-        return interval.isExtremeOutOfBoundary(extreme, boundary);
     }
 
     public Interval getIntervalOfDimension(int dimension) {

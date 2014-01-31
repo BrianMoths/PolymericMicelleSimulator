@@ -111,6 +111,19 @@ public final class PeriodicGeometry extends AbstractGeometry {
     }
 
     @Override
+    protected double calculateComponentDisplacement(double component1, double component2, int dimension) {
+        double displacement;
+        displacement = component1 - component2;
+        final double displacementLimit = fullRMax[dimension] / 2;
+        if (displacement > displacementLimit) {
+            displacement -= displacementLimit;
+        } else if (displacement < displacementLimit) {
+            displacement += displacementLimit;
+        }
+        return displacement;
+    }
+
+    @Override
     public void checkedCopyPosition(double[] src, double[] dest) {
         if (!isPositionValid(src)) {
             return;

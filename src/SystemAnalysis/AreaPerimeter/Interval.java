@@ -58,6 +58,15 @@ public class Interval {
         return true;
     }
 
+    public boolean isPointContained(double point) {
+        for (BeadRectangle.Extreme extreme : BeadRectangle.Extreme.values()) {
+            if (!isExtremePastBoundary(extreme, point)) {
+                return false;
+            }
+        }
+        return true;
+    }
+
     public Interval getIntersectionWIth(Interval boundary) {
         Interval interval = new Interval(this);
         interval.intersectWith(boundary);
@@ -147,10 +156,10 @@ public class Interval {
     }
 
     public boolean isExtremeOutOfBounds(BeadRectangle.Extreme extreme, Interval boundary) {
-        return extreme.isPositionOutOfBounds(getExtreme(extreme), boundary.getExtreme(extreme));
+        return isExtremePastBoundary(extreme, boundary.getExtreme(extreme));
     }
 
-    public boolean isExtremeOutOfBoundary(BeadRectangle.Extreme extreme, double boundary) {
+    public boolean isExtremePastBoundary(BeadRectangle.Extreme extreme, double boundary) {
         return extreme.isPositionOutOfBounds(getExtreme(extreme), boundary);
     }
 
