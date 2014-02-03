@@ -14,48 +14,104 @@ import SystemAnalysis.AreaPerimeter.BeadRectangle;
  */
 public class StressFinder {
 
-    static private final double defaultFractionalSize = .1;
+    static private interface ForceCalculator {
 
-    static public double[][] calculateStress(PolymerSimulator polymerSimulator) {
-//        final int numDimensions = polymerSimulator.getSystemAnalyzer().getSystemGeometry().getNumDimensions();
-//        double[][] stress = new double[numDimensions][numDimensions];
-//        final int numBeads = polymerSimulator.getNumBeads();
-//        final BeadRectangle boundaryRectangle = makeBoundaryRectangle(polymerSimulator);
-//        for (int bead = 0; bead < numBeads; bead++) {
-//            if (!isBeadInRectangle(bead, boundaryRectangle, polymerSimulator)) {
-//                continue;
-//            } else {
-//                incrementStress(stress, calculateStressFromBead(bead, polymerSimulator));
-//            }
-//        }
-//        return stress;
-        StressFinder stressFinder = new StressFinder(polymerSimulator, defaultFractionalSize);
+        public double[] calculateForce(double[] displacment, PolymerSimulator polymerSimulator);
+
+    }
+
+    static private final double defaultFractionalSize = .1;
+    static private final ForceCalculator springForceFinder = new ForceCalculator() {
+        @Override
+        public double[] calculateForce(double[] displacement, PolymerSimulator polymerSimulator) {
+            final double springCoefficient = polymerSimulator.getEnergeticsConstants().getSpringCoefficient();
+            for (int dimension = 0; dimension < displacement.length; dimension++) {
+                displacement[dimension] *= -springCoefficient;
+            }
+            return displacement;
+        }
+
+    };
+    static private final ForceCalculator overlapForceFinder = new ForceCalculator() {
+        @Override
+        public double[] calculateForce(double[] displacement, PolymerSimulator polymerSimulator) {
+            double[] outerForce = calculateOuterForce(displacement, polymerSimulator);
+            double[] innerForce = calculateInnerForce(displacement, polymerSimulator);
+
+            for (int i = 0; i < innerForce.length; i++) {
+                outerForce[i] += innerForce[i];
+            }
+            return outerForce;
+        }
+
+        private double[] calculateOverlapForce(double[] displacement, double interactionLength, double overlapCoefficient) {
+            final double squareDisplacementRatio = calculateSquareDisplacement(displacement) / (interactionLength * interactionLength);
+            final double forceMagnitude = calculateForceMagnitude(squareDisplacementRatio, interactionLength);
+            return calculateScaledDisplacement(displacement, forceMagnitude);
+        }
+
+        private double calculateSquareDisplacement(double[] displacement) {
+            double sum = 0;
+            for (int i = 0; i < displacement.length; i++) {
+                sum += displacement[i] * displacement[i];
+            }
+            return sum;
+        }
+
+        private double calculateForceMagnitude(final double squareDisplacementRatio, double interactionLength) {
+            final double forceMagnitude;
+            if (squareDisplacementRatio >= 1) {
+                forceMagnitude = 0;
+            } else {
+                forceMagnitude = interactionLength * Math.sqrt(1 - squareDisplacementRatio);
+            }
+            return forceMagnitude;
+        }
+
+        private double[] calculateScaledDisplacement(double[] displacement, final double forceMagnitude) {
+            double[] force = new double[displacement.length];
+            for (int i = 0; i < displacement.length; i++) {
+                force[i] = displacement[i] * forceMagnitude;
+            }
+            return force;
+        }
+
+        private double[] calculateOuterForce(double[] displacement, PolymerSimulator polymerSimulator) {
+            final double interactionLength = polymerSimulator.getGeometry().getParameters().getInteractionLength();
+            final double outerOverlapCoefficient = polymerSimulator.getEnergeticsConstants().getBBOverlapCoefficient();
+            final double[] outerForce = calculateOverlapForce(displacement, interactionLength, outerOverlapCoefficient);
+            return outerForce;
+        }
+
+        private double[] calculateInnerForce(double[] displacement, PolymerSimulator polymerSimulator) {
+            final double coreLength = polymerSimulator.getGeometry().getParameters().getCoreLength();
+            final double innerOverlapCoefficient = polymerSimulator.getEnergeticsConstants().getHardOverlapCoefficient();
+            final double[] innerForce = calculateOverlapForce(displacement, coreLength, innerOverlapCoefficient);
+            return innerForce;
+        }
+
+    };
+    static private final ForceCalculator totalForceCalculator = new ForceCalculator() {
+        @Override
+        public double[] calculateForce(double[] displacment, PolymerSimulator polymerSimulator) {
+            double[] springForce = springForceFinder.calculateForce(displacment, polymerSimulator);
+            double[] overlapForce = overlapForceFinder.calculateForce(displacment, polymerSimulator);
+            for (int i = 0; i < overlapForce.length; i++) {
+                overlapForce[i] += springForce[i];
+            }
+            return overlapForce;
+        }
+
+    };
+
+    static public double[][] calculateSpringStress(PolymerSimulator polymerSimulator) {
+        StressFinder stressFinder = new StressFinder(polymerSimulator, springForceFinder, defaultFractionalSize);
         return stressFinder.calculateStress();
     }
 
-    static private void incrementStress(double[][] stress, double[][] summandStress) {
-        for (int i = 0; i < summandStress.length; i++) {
-            final double[] stressRow = stress[i];
-            final double[] summandStressRow = summandStress[i];
-            for (int j = 0; j < stressRow.length; j++) {
-                stressRow[j] += summandStressRow[j];
-            }
-        }
-    }
-
-    static private double[][] calculateStressFromBead(int bead, PolymerSimulator polymerSimulator) {
-        final double[] beadPosition = polymerSimulator.getSystemAnalyzer().getBeadPosition(bead);
-        final int numDimensions = polymerSimulator.getSystemAnalyzer().getSystemGeometry().getNumDimensions();
-        double[][] stress = new double[numDimensions][numDimensions];
-        final int leftNeighbor = polymerSimulator.getSystemAnalyzer().getNeighbor(bead, 0); //check -1 case
-        if (leftNeighbor > 0) {
-            incrementStress(stress, calculateStressFromNeighbor(polymerSimulator, leftNeighbor, beadPosition));
-        }
-        final int rightNeighbor = polymerSimulator.getSystemAnalyzer().getNeighbor(bead, 0);
-        if (rightNeighbor > 0) {
-            incrementStress(stress, calculateStressFromNeighbor(polymerSimulator, leftNeighbor, beadPosition));
-        }
-        return stress;
+    static public double[][] calculateTotalStress(PolymerSimulator polymerSimulator) {
+        StressFinder stressFinder = new StressFinder(polymerSimulator, totalForceCalculator, defaultFractionalSize);
+        return stressFinder.calculateStress();
     }
 
     static private double calculateDistance(final double[] displacement) {
@@ -72,13 +128,6 @@ public class StressFinder {
             normalizedDisplacement[dimension] = displacement[dimension] / distance;
         }
         return normalizedDisplacement;
-    }
-
-    static private double[] calculateForce(double[] displacement, PolymerSimulator polymerSimulator) {
-        for (int dimension = 0; dimension < displacement.length; dimension++) {
-            displacement[dimension] *= polymerSimulator.getEnergeticsConstants().getSpringCoefficient();
-        }
-        return displacement;
     }
 
     static private double[][] makeStressFromDirection(double[] displacementDirection, double[] force) {
@@ -99,56 +148,20 @@ public class StressFinder {
         return displacementDirection;
     }
 
-    private static double[][] calculateStressFromNeighbor(PolymerSimulator polymerSimulator, final int leftNeighbor, final double[] beadPosition) {
-        final double[] neighborPosition = polymerSimulator.getSystemAnalyzer().getBeadPosition(leftNeighbor);
-        final double[] displacement = polymerSimulator.getSystemAnalyzer().getSystemGeometry().getDisplacement(neighborPosition, beadPosition);
-        final double[] force = calculateForce(displacement, polymerSimulator);
-        double[] displacementDirection = calculateDisplacementDirection(displacement);
-        double[][] stress = makeStressFromDirection(displacementDirection, force);
-        return stress;
-    }
-
-    private static boolean isBeadInRectangle(int bead, BeadRectangle boundaryRectangle, PolymerSimulator polymerSimulator) {
-        final double[] beadPosition = polymerSimulator.getSystemAnalyzer().getBeadPosition(bead);
-        return boundaryRectangle.isPointContained(beadPosition);
-    }
-
-    private static BeadRectangle makeBoundaryRectangle(PolymerSimulator polymerSimulator) {
-        SystemGeometry systemGeometry = polymerSimulator.getGeometry();
-        final double fractionalSize = .1;
-        final double lowerFraction = .5 - fractionalSize / 2;
-        final double upperFraction = .5 + fractionalSize / 2;
-        final double left = systemGeometry.getSizeOfDimension(0) * lowerFraction;
-        final double right = systemGeometry.getSizeOfDimension(0) * upperFraction;
-        final double top = systemGeometry.getSizeOfDimension(1) * upperFraction;
-        final double bottom = systemGeometry.getSizeOfDimension(1) * lowerFraction;
-        return new BeadRectangle(left, right, top, bottom);
-    }
-
     private final PolymerSimulator polymerSimulator;
     private final double[][] accumulatedStress;
     private final int numDimensions;
     private final double fractionalSize;
     private final BeadRectangle boundaryRectangle;
+    private final ForceCalculator forceCalculator;
 
-    private StressFinder(PolymerSimulator polymerSimulator, double rectangleFraction) {
+    private StressFinder(PolymerSimulator polymerSimulator, ForceCalculator forceCalculator, double rectangleFraction) {
         this.polymerSimulator = polymerSimulator;
+        this.forceCalculator = forceCalculator;
         this.fractionalSize = rectangleFraction;
         numDimensions = polymerSimulator.getGeometry().getNumDimensions();
         accumulatedStress = new double[numDimensions][numDimensions];
         boundaryRectangle = makeBoundaryRectangle();
-    }
-
-    private BeadRectangle makeBoundaryRectangle() {
-        final SystemGeometry systemGeometry = polymerSimulator.getGeometry();
-//        final double fractionalSize = .1;
-        final double lowerFraction = .5 - fractionalSize / 2;
-        final double upperFraction = .5 + fractionalSize / 2;
-        final double left = systemGeometry.getSizeOfDimension(0) * lowerFraction;
-        final double right = systemGeometry.getSizeOfDimension(0) * upperFraction;
-        final double top = systemGeometry.getSizeOfDimension(1) * upperFraction;
-        final double bottom = systemGeometry.getSizeOfDimension(1) * lowerFraction;
-        return new BeadRectangle(left, right, top, bottom);
     }
 
     private double[][] calculateStress() {
@@ -171,7 +184,7 @@ public class StressFinder {
 
     private void incrementByBeadNeighborStress(final int bead, final int neighborDirection, final double[] beadPosition) {
         final int neighbor = polymerSimulator.getSystemAnalyzer().getNeighbor(bead, neighborDirection);
-        if (neighbor > 0) {
+        if (neighbor >= 0) {
             incrementByStressFromNeighbor(neighbor, beadPosition);
         }
     }
@@ -179,17 +192,21 @@ public class StressFinder {
     private void incrementByStressFromNeighbor(final int neighbor, final double[] beadPosition) {
         final double[] neighborPosition = polymerSimulator.getSystemAnalyzer().getBeadPosition(neighbor);
         final double[] displacement = polymerSimulator.getSystemAnalyzer().getSystemGeometry().getDisplacement(neighborPosition, beadPosition);
-        final double[] force = calculateForce(displacement);
+        final double[] force = forceCalculator.calculateForce(displacement, polymerSimulator);
         double[] displacementDirection = calculateDisplacementDirection(displacement);
         incrementStressBy(makeStressFromDirection(displacementDirection, force));
     }
 
-    private double[] calculateForce(double[] displacement) {
-        final double springCoefficient = polymerSimulator.getEnergeticsConstants().getSpringCoefficient();
-        for (int dimension = 0; dimension < displacement.length; dimension++) {
-            displacement[dimension] *= springCoefficient;
-        }
-        return displacement;
+    private BeadRectangle makeBoundaryRectangle() {
+        final SystemGeometry systemGeometry = polymerSimulator.getGeometry();
+//        final double fractionalSize = .1;
+        final double lowerFraction = .5 - fractionalSize / 2;
+        final double upperFraction = .5 + fractionalSize / 2;
+        final double left = systemGeometry.getSizeOfDimension(0) * lowerFraction;
+        final double right = systemGeometry.getSizeOfDimension(0) * upperFraction;
+        final double top = systemGeometry.getSizeOfDimension(1) * upperFraction;
+        final double bottom = systemGeometry.getSizeOfDimension(1) * lowerFraction;
+        return new BeadRectangle(left, right, top, bottom);
     }
 
     private boolean isBeadInRectangle(int bead) {

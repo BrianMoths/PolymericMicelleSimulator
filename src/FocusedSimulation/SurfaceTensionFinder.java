@@ -416,7 +416,7 @@ public class SurfaceTensionFinder {
 
         for (int i = 0; i < jobParameters.getNumSurfaceTensionTrials(); i++) {
             doMeasurementTrial(simulationRunner, systemWidth, polymerSimulator);
-            double[][] stress = StressFinder.calculateStress(polymerSimulator);
+            double[][] stress = StressFinder.calculateSpringStress(polymerSimulator);
             for (int j = 0; j < stress.length; j++) {
                 double[] stressRow = stress[j];
                 for (int k = 0; k < stressRow.length; k++) {

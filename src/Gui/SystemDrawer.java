@@ -6,7 +6,6 @@ package Gui;
 
 import Engine.PolymerState.SystemGeometry.Interfaces.ImmutableSystemGeometry;
 import Engine.SystemAnalyzer;
-import Engine.PolymerState.SystemGeometry.Interfaces.SystemGeometry;
 import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Point;
@@ -52,10 +51,10 @@ public class SystemDrawer {
         final double xMax = systemGeometry.getSizeOfDimension(0);
         final double yMax = systemGeometry.getSizeOfDimension(1);
         scaleFactor = displaySize / Math.max(xMax, yMax);
-        diameter = (int)Math.round(systemGeometry.getParameters().getInteractionLength() * scaleFactor); //make diameter smaller
+        diameter = (int) Math.round(systemGeometry.getParameters().getInteractionLength() * scaleFactor) / 2; //make diameter smaller
         radius = diameter / 2;
-        maxX = (int)(xMax * scaleFactor);
-        maxY = (int)(yMax * scaleFactor);
+        maxX = (int) (xMax * scaleFactor);
+        maxY = (int) (yMax * scaleFactor);
     }
 
     public void setGraphics(Graphics graphics) {
@@ -105,7 +104,8 @@ public class SystemDrawer {
 
     private void drawBead(int i) {
         Point point = beadCenterPixel(i);
-        graphics.fillRect(point.x - radius, point.y - radius, diameter, diameter);
+//        graphics.fillRect(point.x - radius, point.y - radius, diameter, diameter);
+        graphics.fillOval(point.x - radius, point.y - radius, diameter, diameter);
     }
 
     private void drawBonds() {
@@ -134,8 +134,8 @@ public class SystemDrawer {
     }
 
     private Point beadCenterPixel(int i) {
-        return new Point((int)Math.round(beadPosition(i, 0) * scaleFactor),
-                (int)Math.round(beadPosition(i, 1) * scaleFactor));
+        return new Point((int) Math.round(beadPosition(i, 0) * scaleFactor),
+                (int) Math.round(beadPosition(i, 1) * scaleFactor));
     }
 
     private int numABeads() {
