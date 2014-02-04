@@ -425,6 +425,15 @@ public class SurfaceTensionFinder {
                 System.out.print("\n");
             }
             System.out.println();
+            stress = StressFinder.calculateTotalStress(polymerSimulator);
+            for (int j = 0; j < stress.length; j++) {
+                double[] stressRow = stress[j];
+                for (int k = 0; k < stressRow.length; k++) {
+                    System.out.print(stressRow[k] + " ");
+                }
+                System.out.print("\n");
+            }
+            System.out.println();
         }
 
         while (jobParameters.getShouldIterateUntilConvergence() && !simulationRunner.isConverged(systemWidth)) {

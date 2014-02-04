@@ -117,7 +117,7 @@ public final class PeriodicGeometry extends AbstractGeometry {
         final double displacementLimit = fullRMax[dimension] / 2;
         if (displacement > displacementLimit) {
             displacement -= displacementLimit;
-        } else if (displacement < displacementLimit) {
+        } else if (displacement < -displacementLimit) {
             displacement += displacementLimit;
         }
         return displacement;

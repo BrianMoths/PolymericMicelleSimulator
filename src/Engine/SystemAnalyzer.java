@@ -235,6 +235,10 @@ public class SystemAnalyzer implements Serializable {
     }
 
     //<editor-fold defaultstate="collapsed" desc="getters">
+    public Iterator<Integer> getNearbyBeadIterator(int bead) {
+        return beadBinner.getNearbyBeadIterator(bead);
+    }
+
     public boolean isEquilibrated() {
         return simulationHistory.isEquilibrated();
     }
