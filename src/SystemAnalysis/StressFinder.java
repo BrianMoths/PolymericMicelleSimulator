@@ -157,22 +157,6 @@ public class StressFinder {
         return overlapStress;
     }
 
-    static private double calculateDistance(final double[] displacement) {
-        double distance = 0;
-        for (int component = 0; component < displacement.length; component++) {
-            distance += component * component;
-        }
-        return Math.sqrt(distance);
-    }
-
-    static private double[] divideDisplacement(final double[] displacement, final double distance) {
-        final double[] normalizedDisplacement = new double[displacement.length];
-        for (int dimension = 0; dimension < normalizedDisplacement.length; dimension++) {
-            normalizedDisplacement[dimension] = displacement[dimension] / distance;
-        }
-        return normalizedDisplacement;
-    }
-
     static private double[][] makeStressFromDirection(double[] displacementDirection, double[] force) {
         final int numDimensions = displacementDirection.length;
         final double[][] stress = new double[numDimensions][numDimensions];
@@ -183,12 +167,6 @@ public class StressFinder {
             }
         }
         return stress;
-    }
-
-    private static double[] calculateDisplacementDirection(final double[] displacement) {
-        final double distance = calculateDistance(displacement);
-        final double[] displacementDirection = divideDisplacement(displacement, distance);
-        return displacementDirection;
     }
 
     private final PolymerSimulator polymerSimulator;
@@ -232,8 +210,8 @@ public class StressFinder {
         final double[] neighborPosition = polymerSimulator.getSystemAnalyzer().getBeadPosition(neighbor);
         final double[] displacement = polymerSimulator.getSystemAnalyzer().getSystemGeometry().getDisplacement(neighborPosition, beadPosition);
         final double[] force = forceCalculator.calculateForce(displacement, polymerSimulator);
-        double[] displacementDirection = calculateDisplacementDirection(displacement);
-        incrementStressBy(makeStressFromDirection(displacementDirection, force));
+//        double[] displacementDirection = calculateDisplacementDirection(displacement);
+        incrementStressBy(makeStressFromDirection(displacement, force));
     }
 
     private BeadRectangle makeBoundaryRectangle() {

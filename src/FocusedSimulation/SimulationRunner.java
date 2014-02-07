@@ -98,6 +98,7 @@ public class SimulationRunner {
     public void doEquilibrateAnnealIteration() {
         polymerSimulator.anneal();
         polymerSimulator.doIterations(simulationRunnerParameters.getNumIterationsPerAnneal());
+        System.out.println("Equilibrate and anneal iteration done.");
     }
 
     public void doEquilibrateAnnealIterations(int numIterations) {
@@ -136,9 +137,7 @@ public class SimulationRunner {
     }
 
     private DoubleWithUncertainty getAverageWithUncertainty(TrackableVariable trackableVariable) {
-        final double average = statisticsTracker.getAverage(trackableVariable);
-        final double standardError = statisticsTracker.getStandardDeviation(trackableVariable) / Math.sqrt(statisticsTracker.getNumSamples(trackableVariable));
-        return new DoubleWithUncertainty(average, standardError);
+        return statisticsTracker.getDoubleWithUncertainty(trackableVariable);
     }
 
     public void doTrialsUntilConverged() {

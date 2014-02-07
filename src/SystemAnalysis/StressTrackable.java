@@ -16,7 +16,7 @@ public class StressTrackable {
     private final PolymerSimulator polymerSimulator;
     private double[][] stress;
     private final TrackableVariable stress11, stress12, stress22;
-    private boolean is11Retrieved = false, is12Retrieved = false, is22Retrieved = false;
+    private boolean is11Retrieved = true, is12Retrieved = true, is22Retrieved = true;
 
     public StressTrackable(PolymerSimulator polymerSimulator) {
         this.polymerSimulator = polymerSimulator;
@@ -54,7 +54,7 @@ public class StressTrackable {
             calculateStress();
             resetBooleans();
         }
-        return stress[i][j];
+        return stress[i - 1][j - 1];
     }
 
     private void resetBooleans() {

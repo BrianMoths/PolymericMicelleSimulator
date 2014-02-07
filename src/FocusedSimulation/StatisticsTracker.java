@@ -5,6 +5,7 @@
 package FocusedSimulation;
 
 import Engine.PolymerSimulator;
+import FocusedSimulation.SimulationRunner.DoubleWithUncertainty;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
@@ -41,6 +42,12 @@ public class StatisticsTracker {
         }
     }
 
+    public DoubleWithUncertainty getDoubleWithUncertainty(TrackableVariable trackableVariable) {
+        final double average = getAverage(trackableVariable);
+        final double standardError = getStandardError(trackableVariable);
+        return new DoubleWithUncertainty(average, standardError);
+    }
+
     public long getNumSamples(TrackableVariable trackableVariable) {
         return getStatisticsFor(trackableVariable).getN();
     }
@@ -51,6 +58,10 @@ public class StatisticsTracker {
 
     public double getStandardDeviation(TrackableVariable trackableVariable) {
         return getStatisticsFor(trackableVariable).getStandardDeviation();
+    }
+
+    public double getStandardError(TrackableVariable trackableVariable) {
+        return getStandardDeviation(trackableVariable) / Math.sqrt(getNumSamples(trackableVariable));
     }
 
     public void clearAll() {

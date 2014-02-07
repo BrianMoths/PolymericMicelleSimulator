@@ -333,10 +333,10 @@ public class SurfaceTensionFinder {
 
     private static Input readInput(String[] args) {
         if (args.length == 0) {
-            final double scaleFactor = .2;
+            final double scaleFactor = 1;
 
             InputBuilder inputBuilder = SGEManager.makeRescaleInputBuilder(scaleFactor, 0);
-            inputBuilder.getJobParametersBuilder().numAnneals = 0;
+            inputBuilder.getJobParametersBuilder().numAnneals = 5;
             return inputBuilder.buildInput();
         } else if (args.length == 1) {
             final String fileName = args[0];
@@ -416,9 +416,14 @@ public class SurfaceTensionFinder {
 
         simulationRunner.setStepGenerator(makeInitialStepGenerator());
 
-        simulationRunner.doEquilibrateAnnealIterations(jobParameters.getNumAnneals());
+//        simulationRunner.doEquilibrateAnnealIterations(jobParameters.getNumAnneals());
+        simulationRunner.doEquilibrateAnnealIterations(Math.max(jobParameters.getNumAnneals(), 2));
 
         simulationRunner.setStepGenerator(makeMainStepGenerator());
+
+        if (jobParameters.getNumAnneals() > 2) {
+            simulationRunner.doEquilibrateAnnealIterations(jobParameters.getNumAnneals() - 2);
+        }
 
         for (int i = 0; i < jobParameters.getNumSurfaceTensionTrials(); i++) {
             doMeasurementTrial(simulationRunner, systemWidth, polymerSimulator);
