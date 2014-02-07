@@ -26,7 +26,7 @@ import Gui.SystemViewer;
 import SGEManagement.SGEManager;
 import SGEManagement.SGEManager.Input;
 import SGEManagement.SGEManager.Input.InputBuilder;
-import SystemAnalysis.StressFinder;
+import SystemAnalysis.StressTrackable;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -43,7 +43,7 @@ public class SurfaceTensionFinder {
 
         static public class JobParametersBuilder {
 
-            static private final int defaultNumAnneals = 1;//50
+            static private final int defaultNumAnneals = 50;//50
             static private final int defaultNumSurfaceTensionTrials = 70;
             static private final int defaultJobNumber = 0;
 
@@ -397,6 +397,12 @@ public class SurfaceTensionFinder {
 
         };
         simulationRunner.trackVariable(systemWidth);
+
+        StressTrackable stressTrackable = new StressTrackable(polymerSimulator);
+        simulationRunner.trackVariable(stressTrackable.getStress11Trackable());
+        simulationRunner.trackVariable(stressTrackable.getStress12Trackable());
+        simulationRunner.trackVariable(stressTrackable.getStress22Trackable());
+
         try {
             SystemViewer systemViewer = new SystemViewer(polymerSimulator);
             systemViewer.setVisible(true);
@@ -416,24 +422,7 @@ public class SurfaceTensionFinder {
 
         for (int i = 0; i < jobParameters.getNumSurfaceTensionTrials(); i++) {
             doMeasurementTrial(simulationRunner, systemWidth, polymerSimulator);
-            double[][] stress = StressFinder.calculateSpringStress(polymerSimulator);
-            for (int j = 0; j < stress.length; j++) {
-                double[] stressRow = stress[j];
-                for (int k = 0; k < stressRow.length; k++) {
-                    System.out.print(stressRow[k] + " ");
-                }
-                System.out.print("\n");
-            }
-            System.out.println();
-            stress = StressFinder.calculateTotalStress(polymerSimulator);
-            for (int j = 0; j < stress.length; j++) {
-                double[] stressRow = stress[j];
-                for (int k = 0; k < stressRow.length; k++) {
-                    System.out.print(stressRow[k] + " ");
-                }
-                System.out.print("\n");
-            }
-            System.out.println();
+            outputStress(simulationRunner, stressTrackable);
         }
 
         while (jobParameters.getShouldIterateUntilConvergence() && !simulationRunner.isConverged(systemWidth)) {
@@ -448,6 +437,13 @@ public class SurfaceTensionFinder {
         DoubleWithUncertainty measuredWidth = simulationRunner.getRecentMeasurementForTrackedVariable(trackableVariable);
         MeasuredSurfaceTension measuredSurfaceTension = getMeasuredSurfaceTensionFromWidth(measuredWidth, polymerSimulator);
         outputWriter.printSurfaceTension(measuredSurfaceTension);
+    }
+
+    private void outputStress(SimulationRunner simulationRunner, StressTrackable stressTrackable) {
+        final DoubleWithUncertainty stress11 = simulationRunner.getRecentMeasurementForTrackedVariable(stressTrackable.getStress11Trackable());
+        final DoubleWithUncertainty stress12 = simulationRunner.getRecentMeasurementForTrackedVariable(stressTrackable.getStress12Trackable());
+        final DoubleWithUncertainty stress22 = simulationRunner.getRecentMeasurementForTrackedVariable(stressTrackable.getStress22Trackable());
+        outputWriter.printStress(stress11, stress12, stress22);
     }
 
     public void closeOutputWriter() {

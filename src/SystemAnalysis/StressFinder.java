@@ -29,6 +29,7 @@ public class StressFinder {
 
     }
 
+    //<editor-fold defaultstate="collapsed" desc="neighbor iterators">
     static private NeighborIteratorFactory connectedNeighbors = new NeighborIteratorFactory() {
         @Override
         public Iterator<Integer> getNeighborIterator(int bead, PolymerSimulator polymerSimulator) {
@@ -58,7 +59,7 @@ public class StressFinder {
         }
 
     };
-    static private final double defaultFractionalSize = .1;
+    //</editor-fold>
     //<editor-fold defaultstate="collapsed" desc="force calculators">
     static private final ForceCalculator springForceFinder = new ForceCalculator() {
         @Override
@@ -100,7 +101,7 @@ public class StressFinder {
 
         private double[] calculateOverlapForce(double[] displacement, double interactionLength, double overlapCoefficient) {
             final double squareDisplacementRatio = calculateSquareDisplacement(displacement) / (interactionLength * interactionLength);
-            final double forceMagnitude = overlapCoefficient * calculateForceMagnitude(squareDisplacementRatio, interactionLength);
+            final double forceMagnitude = overlapCoefficient * calculateOverlapGradientMagnitude(squareDisplacementRatio, interactionLength);
             return calculateScaledDisplacement(displacement, forceMagnitude);
         }
 
@@ -112,7 +113,7 @@ public class StressFinder {
             return sum;
         }
 
-        private double calculateForceMagnitude(final double squareDisplacementRatio, double interactionLength) {
+        private double calculateOverlapGradientMagnitude(final double squareDisplacementRatio, double interactionLength) {
             final double forceMagnitude;
             if (squareDisplacementRatio >= 1.) {
                 forceMagnitude = 0;
@@ -132,6 +133,7 @@ public class StressFinder {
 
     };
 //</editor-fold>
+    static private final double defaultFractionalSize = 1. / 3.;
 
     static public double[][] calculateSpringStress(PolymerSimulator polymerSimulator) {
         StressFinder stressFinder = new StressFinder(polymerSimulator, connectedNeighbors, springForceFinder, defaultFractionalSize);
@@ -224,18 +226,8 @@ public class StressFinder {
             final Integer neighbor = neighborIterator.next();
             incrementByStressFromNeighbor(neighbor, beadPosition);
         }
-//        final int leftDirection = 0;
-//        final int rightDirection = 1;
-//        incrementByBeadNeighborStress(bead, leftDirection, beadPosition);
-//        incrementByBeadNeighborStress(bead, rightDirection, beadPosition);
     }
 
-//    private void incrementByBeadNeighborStress(final int bead, final int neighborDirection, final double[] beadPosition) {
-//        final int neighbor = polymerSimulator.getSystemAnalyzer().getNeighbor(bead, neighborDirection);
-//        if (neighbor >= 0) {
-//            incrementByStressFromNeighbor(neighbor, beadPosition);
-//        }
-//    }
     private void incrementByStressFromNeighbor(final int neighbor, final double[] beadPosition) {
         final double[] neighborPosition = polymerSimulator.getSystemAnalyzer().getBeadPosition(neighbor);
         final double[] displacement = polymerSimulator.getSystemAnalyzer().getSystemGeometry().getDisplacement(neighborPosition, beadPosition);

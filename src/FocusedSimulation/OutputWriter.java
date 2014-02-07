@@ -7,6 +7,7 @@ package FocusedSimulation;
 import Engine.PolymerSimulator;
 import Engine.PolymerState.SystemGeometry.Interfaces.ImmutableSystemGeometry;
 import Engine.SystemAnalyzer;
+import FocusedSimulation.SimulationRunner.DoubleWithUncertainty;
 import FocusedSimulation.SurfaceTensionFinder.MeasuredSurfaceTension;
 import java.io.FileNotFoundException;
 import java.io.PrintWriter;
@@ -137,6 +138,17 @@ public class OutputWriter {
                 .append(Double.toString(measuredSurfaceTension.surfaceTensionStandardError))
                 .append("\n");
         return parametersStringBuilder.toString();
+    }
+
+    public void printStress(DoubleWithUncertainty stress11, DoubleWithUncertainty stress12, DoubleWithUncertainty stress22) {
+        StringBuilder stringBuilder = new StringBuilder();
+        stringBuilder.append("[").append(stress11.getValue()).append("  ").append(stress12.getValue()).append("]  +/-  [").append(stress11.getUncertainty()).append(" ").append(stress12.getUncertainty()).append("]\n");
+        stringBuilder.append("[").append(stress12.getValue()).append("  ").append(stress22.getValue()).append("]  +/-  [").append(stress12.getUncertainty()).append(" ").append(stress22.getUncertainty()).append("]\n");
+        stringBuilder.append("\n");
+        final String outputString = stringBuilder.toString();
+        dataWriter.print(outputString);
+        dataWriter.flush();
+        System.out.println(outputString);
     }
 
     public void printFinalOutput(PolymerSimulator polymerSimulator) {

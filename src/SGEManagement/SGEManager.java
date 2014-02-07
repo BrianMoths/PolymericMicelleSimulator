@@ -136,35 +136,35 @@ public class SGEManager {
         double scaleFactor;
 
 ///////////Different vertical sizes of the bridge.
-        scaleFactor = 1. / 10.;
-        input = makeRescaleInput(scaleFactor, jobNumber);
-        inputs.add(input);
-        jobNumber++;
-
-        scaleFactor = 1. / 5.;
-        input = makeRescaleInput(scaleFactor, jobNumber);
-        inputs.add(input);
-        jobNumber++;
-
-        scaleFactor = 1. / 3.;
-        input = makeRescaleInput(scaleFactor, jobNumber);
-        inputs.add(input);
-        jobNumber++;
-
-        scaleFactor = 1. / 1.5;
-        input = makeRescaleInput(scaleFactor, jobNumber);
-        inputs.add(input);
-        jobNumber++;
-
-        scaleFactor = 1.;
-        input = makeRescaleInput(scaleFactor, jobNumber);
-        inputs.add(input);
-        jobNumber++;
-
-        scaleFactor = 1.5;
-        input = makeRescaleInput(scaleFactor, jobNumber);
-        inputs.add(input);
-        jobNumber++;
+//        scaleFactor = 1. / 10.;
+//        input = makeRescaleInput(scaleFactor, jobNumber);
+//        inputs.add(input);
+//        jobNumber++;
+//
+//        scaleFactor = 1. / 5.;
+//        input = makeRescaleInput(scaleFactor, jobNumber);
+//        inputs.add(input);
+//        jobNumber++;
+//
+//        scaleFactor = 1. / 3.;
+//        input = makeRescaleInput(scaleFactor, jobNumber);
+//        inputs.add(input);
+//        jobNumber++;
+//
+//        scaleFactor = 1. / 1.5;
+//        input = makeRescaleInput(scaleFactor, jobNumber);
+//        inputs.add(input);
+//        jobNumber++;
+//
+//        scaleFactor = 1.;
+//        input = makeRescaleInput(scaleFactor, jobNumber);
+//        inputs.add(input);
+//        jobNumber++;
+//
+//        scaleFactor = 1.5;
+//        input = makeRescaleInput(scaleFactor, jobNumber);
+//        inputs.add(input);
+//        jobNumber++;
 
         scaleFactor = 2;
         input = makeRescaleInput(scaleFactor, jobNumber);
@@ -176,6 +176,20 @@ public class SGEManager {
         inputs.add(input);
         jobNumber++;
 
+        scaleFactor = 10;
+        input = makeRescaleInput(scaleFactor, jobNumber);
+        inputs.add(input);
+        jobNumber++;
+
+        scaleFactor = 30;
+        input = makeRescaleInput(scaleFactor, jobNumber);
+        inputs.add(input);
+        jobNumber++;
+
+        scaleFactor = 100;
+        input = makeRescaleInput(scaleFactor, jobNumber);
+        inputs.add(input);
+        jobNumber++;
         return inputs;
 
 
@@ -330,7 +344,6 @@ public class SGEManager {
         externalEnergyCalculatorBuilder.setXPositionAndSpringConstant(16, 50);
         inputBuilder.getSystemParametersBuilder().getEnergeticsConstantsBuilder().setExternalEnergyCalculator(externalEnergyCalculatorBuilder.build());
         inputBuilder.getJobParametersBuilder().setJobNumber(jobNumber);
-        inputBuilder.getJobParametersBuilder().setNumSurfaceTensionTrials(1);
         inputBuilder.getJobParametersBuilder().setNumSurfaceTensionTrials(70);
         return inputBuilder;
     }
