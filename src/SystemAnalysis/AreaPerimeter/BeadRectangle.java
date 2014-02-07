@@ -74,7 +74,7 @@ public class BeadRectangle {
 
     public BeadRectangle(BeadRectangle beadRectangle) {
         this();
-        for (int currentDimension = 0; currentDimension < beadRectangle.getDimension(); currentDimension++) {
+        for (int currentDimension = 0; currentDimension < beadRectangle.getNumDimensions(); currentDimension++) {
             intervals.add(new Interval(beadRectangle.getIntervalOfDimension(currentDimension)));
         }
     }
@@ -86,7 +86,7 @@ public class BeadRectangle {
     }
 
     public void intersectWith(BeadRectangle boundary) {
-        final int dimension = getDimension();
+        final int dimension = getNumDimensions();
         for (int currentDimension = 0; currentDimension < dimension; currentDimension++) {
             intersectAlongDimension(boundary, dimension);
         }
@@ -102,7 +102,7 @@ public class BeadRectangle {
         List<BeadRectangle> oldSplitBeadRectangles = new ArrayList<>();
         oldSplitBeadRectangles.add(this);
         List<BeadRectangle> newSplitBeadRectangles = new ArrayList<>();
-        final int numDimensions = getDimension();
+        final int numDimensions = getNumDimensions();
 
         for (int dimension = 0; dimension < numDimensions; dimension++) {
             newSplitBeadRectangles = new ArrayList<>();
@@ -135,10 +135,10 @@ public class BeadRectangle {
     }
 
     public boolean isPointContained(double[] point) {
-        if (point.length != getDimension()) {
+        if (point.length != getNumDimensions()) {
             return false;
         }
-        for (int dimension = 0; dimension < getDimension(); dimension++) {
+        for (int dimension = 0; dimension < getNumDimensions(); dimension++) {
             final Interval intervalOfDimension = getIntervalOfDimensionReference(dimension);
             if (!intervalOfDimension.isPointContained(point[dimension])) {
                 return false;
@@ -173,7 +173,7 @@ public class BeadRectangle {
         return intervals.get(dimension);
     }
 
-    public int getDimension() {
+    public int getNumDimensions() {
         return intervals.size();
     }
 
@@ -212,6 +212,14 @@ public class BeadRectangle {
 
     public double getWidth() {
         return getRangeOfDimension(0);
+    }
+
+    public double getVolume() {
+        double volume = 1.;
+        for (int dimension = 0; dimension < getNumDimensions(); dimension++) {
+            volume *= getRangeOfDimension(dimension);
+        }
+        return volume;
     }
 
     public double getRangeOfDimension(int dimension) {

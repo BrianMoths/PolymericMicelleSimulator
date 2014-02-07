@@ -194,6 +194,7 @@ public class StressFinder {
                 incrementByStressFromBead(bead);
             }
         }
+        divideStressByVolume();
         return accumulatedStress;
     }
 
@@ -235,6 +236,15 @@ public class StressFinder {
         for (int i = 0; i < numDimensions; i++) {
             for (int j = 0; j < numDimensions; j++) {
                 accumulatedStress[i][j] += stressIncrement[i][j];
+            }
+        }
+    }
+
+    private void divideStressByVolume() {
+        final double volume = boundaryRectangle.getVolume();
+        for (int i = 0; i < numDimensions; i++) {
+            for (int j = 0; j < numDimensions; j++) {
+                accumulatedStress[i][j] /= volume;
             }
         }
     }
