@@ -37,7 +37,7 @@ public class SGEManager {
             static private final double defaultOverlapCoefficient = -.06;
             static private final double defaultInteractionLength = 4.;
             static private final int defaultNumBeadsPerChain = 15;
-            static private final int defaultNumChains = 100;
+            static private final int defaultNumChains = 75;
             static private final double defaultDensity = .05;
             static private final double defaultXPosition = 50;
             static private final double defaultSpringConstant = 10;
@@ -133,7 +133,8 @@ public class SGEManager {
         double b = 50 / 3;
         double density = .05;
         Input input;
-        double scaleFactor;
+        double verticalRescaleFactor;
+        final double horizontalRescaleFactor = 3;
 
 ///////////Different vertical sizes of the bridge.
 //        scaleFactor = 1. / 10.;
@@ -166,28 +167,33 @@ public class SGEManager {
 //        inputs.add(input);
 //        jobNumber++;
 
-        scaleFactor = 2;
-        input = makeRescaleInput(scaleFactor, jobNumber);
+        verticalRescaleFactor = .07;
+        input = makeRescaleInput(verticalRescaleFactor, horizontalRescaleFactor, jobNumber);
         inputs.add(input);
         jobNumber++;
 
-        scaleFactor = 3;
-        input = makeRescaleInput(scaleFactor, jobNumber);
+        verticalRescaleFactor = .18;
+        input = makeRescaleInput(verticalRescaleFactor, horizontalRescaleFactor, jobNumber);
         inputs.add(input);
         jobNumber++;
 
-        scaleFactor = 10;
-        input = makeRescaleInput(scaleFactor, jobNumber);
+        verticalRescaleFactor = .3;
+        input = makeRescaleInput(verticalRescaleFactor, horizontalRescaleFactor, jobNumber);
         inputs.add(input);
         jobNumber++;
 
-        scaleFactor = 30;
-        input = makeRescaleInput(scaleFactor, jobNumber);
+        verticalRescaleFactor = 1;
+        input = makeRescaleInput(verticalRescaleFactor, horizontalRescaleFactor, jobNumber);
         inputs.add(input);
         jobNumber++;
 
-        scaleFactor = 100;
-        input = makeRescaleInput(scaleFactor, jobNumber);
+        verticalRescaleFactor = 3;
+        input = makeRescaleInput(verticalRescaleFactor, horizontalRescaleFactor, jobNumber);
+        inputs.add(input);
+        jobNumber++;
+
+        verticalRescaleFactor = 10;
+        input = makeRescaleInput(verticalRescaleFactor, horizontalRescaleFactor, jobNumber);
         inputs.add(input);
         jobNumber++;
         return inputs;
@@ -342,6 +348,30 @@ public class SGEManager {
         inputBuilder.getSystemParametersBuilder().setPolymerCluster(polymerCluster);
         final ExternalEnergyCalculatorBuilder externalEnergyCalculatorBuilder = new ExternalEnergyCalculatorBuilder();
         externalEnergyCalculatorBuilder.setXPositionAndSpringConstant(16, 50);
+        inputBuilder.getSystemParametersBuilder().getEnergeticsConstantsBuilder().setExternalEnergyCalculator(externalEnergyCalculatorBuilder.build());
+        inputBuilder.getJobParametersBuilder().setJobNumber(jobNumber);
+        inputBuilder.getJobParametersBuilder().setNumSurfaceTensionTrials(70);
+        return inputBuilder;
+    }
+
+    public static Input makeRescaleInput(final double verticalScale, final double horizontalScale, final int jobNumber) {
+        final InputBuilder inputBuilder = makeRescaleInputBuilderWithHorizontalRescaling(verticalScale, horizontalScale, jobNumber);
+        return inputBuilder.buildInput();
+    }
+
+    public static InputBuilder makeRescaleInputBuilderWithHorizontalRescaling(final double verticalScale, final double horizontalScale, int jobNumber) {
+        InputBuilder inputBuilder;
+        inputBuilder = InputBuilder.getDefaultInputBuilder();
+        final double aspectRatio = inputBuilder.getSystemParametersBuilder().getAspectRatio() / 3.5;
+        inputBuilder.getSystemParametersBuilder().setAspectRatio(aspectRatio * horizontalScale / verticalScale);
+        final int numChains = inputBuilder.getSystemParametersBuilder().getPolymerCluster().getNumChains();
+        final int numBeadsPerChain = (int) Math.round(inputBuilder.getSystemParametersBuilder().getPolymerCluster().getNumBeadsPerChain());
+        final PolymerChain polymerChain = PolymerChain.makeChainOfType(false, numBeadsPerChain);
+        final PolymerCluster polymerCluster = PolymerCluster.makeRepeatedChainCluster(polymerChain, (int) (numChains * verticalScale * horizontalScale));
+        polymerCluster.setConcentrationInWater(.05 * 3.5);
+        inputBuilder.getSystemParametersBuilder().setPolymerCluster(polymerCluster);
+        final ExternalEnergyCalculatorBuilder externalEnergyCalculatorBuilder = new ExternalEnergyCalculatorBuilder();
+        externalEnergyCalculatorBuilder.setXPositionAndSpringConstant(16 * horizontalScale, 50);
         inputBuilder.getSystemParametersBuilder().getEnergeticsConstantsBuilder().setExternalEnergyCalculator(externalEnergyCalculatorBuilder.build());
         inputBuilder.getJobParametersBuilder().setJobNumber(jobNumber);
         inputBuilder.getJobParametersBuilder().setNumSurfaceTensionTrials(70);

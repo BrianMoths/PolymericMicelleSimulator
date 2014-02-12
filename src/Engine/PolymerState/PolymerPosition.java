@@ -4,9 +4,9 @@
  */
 package Engine.PolymerState;
 
-import Engine.SystemAnalyzer.AnalyzerListener;
 import Engine.PolymerState.SystemGeometry.Interfaces.SystemGeometry;
 import Engine.SystemAnalyzer;
+import Engine.SystemAnalyzer.AnalyzerListener;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -75,6 +75,39 @@ public class PolymerPosition implements ImmutablePolymerPosition, Serializable {
         resetAnalyzersHistory();
     }
 
+    public void reasonableColumnRandomize(ImmutableDiscretePolymerState immutableDiscretePolymerState) {
+        List<Boolean> isRandomized = new ArrayList<>(numBeads);
+        for (int bead = 0; bead < numBeads; bead++) {
+            isRandomized.add(false);
+        }
+        for (int bead = 0; bead < numBeads; bead++) {
+            if (!isRandomized.get(bead)) {
+                List<Integer> chainOfBead = immutableDiscretePolymerState.getChainOfBead(bead);
+                reasonableColumnChainRandomize(chainOfBead);
+                for (Integer randomizedBead : chainOfBead) {
+                    isRandomized.set(randomizedBead, true);
+                }
+            }
+
+        }
+
+    }
+
+    private void reasonableColumnChainRandomize(List<Integer> chainOfBead) {
+        double[] currentPosition = systemGeometry.randomColumnPosition();
+        for (int currentBead : chainOfBead) {
+            movePositionByStep(currentPosition);
+            setBeadPositionNoRebin(currentBead, currentPosition);
+        }
+    }
+
+    private void movePositionByStep(double[] currentPosition) {
+        boolean isStepped = false;
+        while (!isStepped) {
+            isStepped = systemGeometry.incrementFirstVector(currentPosition, systemGeometry.randomGaussian());
+        }
+    }
+
     private void randomizePrivate() {
         setBeadPositions(systemGeometry.randomPositions(numBeads));
         resetAnalyzersHistory();
@@ -138,6 +171,10 @@ public class PolymerPosition implements ImmutablePolymerPosition, Serializable {
     public void setBeadPositions(double[][] beadPositions) {
         systemGeometry.checkedCopyPositions(beadPositions, this.beadPositions);
         analyzersRebinBeads();
+    }
+
+    private void setBeadPositionNoRebin(int bead, double[] beadPosition) {
+        systemGeometry.checkedCopyPosition(beadPosition, this.beadPositions[bead]);
     }
     //</editor-fold>
 

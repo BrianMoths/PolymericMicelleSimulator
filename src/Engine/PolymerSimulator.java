@@ -133,6 +133,10 @@ public class PolymerSimulator implements Serializable {
         energy = systemAnalyzer.computeEnergy();
     }
 
+    public synchronized void reasonableColumnRandomize() {
+        polymerState.reasonableColumnRandomize();
+    }
+
     public synchronized void anneal() {
         resetCounters();
         polymerPosition.anneal();

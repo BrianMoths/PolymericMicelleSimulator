@@ -333,9 +333,10 @@ public class SurfaceTensionFinder {
 
     private static Input readInput(String[] args) {
         if (args.length == 0) {
-            final double scaleFactor = 1;
+            final double verticalScaleFactor = .25;
+            final double horizontalScaleFactor = 10;
 
-            InputBuilder inputBuilder = SGEManager.makeRescaleInputBuilder(scaleFactor, 0);
+            InputBuilder inputBuilder = SGEManager.makeRescaleInputBuilderWithHorizontalRescaling(verticalScaleFactor, horizontalScaleFactor, 0);
             inputBuilder.getJobParametersBuilder().numAnneals = 5;
             return inputBuilder.buildInput();
         } else if (args.length == 1) {
@@ -379,15 +380,16 @@ public class SurfaceTensionFinder {
     private final OutputWriter outputWriter;
 
     private SurfaceTensionFinder(Input input) throws FileNotFoundException {
-        this.jobParameters = input.getJobParameters();
-        this.systemParameters = input.getSystemParameters();
+        jobParameters = input.getJobParameters();
+        systemParameters = input.getSystemParameters();
         outputWriter = new OutputWriter(this);
     }
 
     public void findSurfaceTension() {
         outputWriter.printParameters();
         PolymerSimulator polymerSimulator = systemParameters.makePolymerSimulator();
-        polymerSimulator.columnRandomizePositions();
+//        polymerSimulator.columnRandomizePositions();
+        polymerSimulator.reasonableColumnRandomize();
         SimulationRunner simulationRunner = new SimulationRunner(polymerSimulator, SimulationRunnerParameters.defaultSimulationRunnerParameters());
         final TrackableVariable systemWidth = new TrackableVariable() {
             @Override
@@ -416,13 +418,12 @@ public class SurfaceTensionFinder {
 
         simulationRunner.setStepGenerator(makeInitialStepGenerator());
 
-//        simulationRunner.doEquilibrateAnnealIterations(jobParameters.getNumAnneals());
-        simulationRunner.doEquilibrateAnnealIterations(Math.max(jobParameters.getNumAnneals(), 2));
+        simulationRunner.doEquilibrateAnnealIterations(Math.min(jobParameters.getNumAnneals(), 1));
 
         simulationRunner.setStepGenerator(makeMainStepGenerator());
 
-        if (jobParameters.getNumAnneals() > 2) {
-            simulationRunner.doEquilibrateAnnealIterations(jobParameters.getNumAnneals() - 2);
+        if (jobParameters.getNumAnneals() > 1) {
+            simulationRunner.doEquilibrateAnnealIterations(jobParameters.getNumAnneals() - 1);
         }
 
         for (int i = 0; i < jobParameters.getNumSurfaceTensionTrials(); i++) {
