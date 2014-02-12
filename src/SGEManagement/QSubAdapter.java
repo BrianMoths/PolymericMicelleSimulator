@@ -4,6 +4,7 @@
  */
 package SGEManagement;
 
+import FocusedSimulation.surfacetension.SurfaceTensionJobMaker;
 import java.io.IOException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -22,7 +23,7 @@ public class QSubAdapter {
         try {
             runCommandForBash(qsubWrappedCommand);
         } catch (IOException ex) {
-            Logger.getLogger(SGEManager.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(SurfaceTensionJobMaker.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
 

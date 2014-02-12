@@ -4,6 +4,7 @@
  */
 package SGEManagement;
 
+import FocusedSimulation.surfacetension.SurfaceTensionJobMaker;
 import FocusedSimulation.OutputWriter;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
@@ -81,7 +82,7 @@ public class JobSubmitter {
         } catch (FileNotFoundException ex) {
             throw new AssertionError("input file could not be made", ex);
         } catch (IOException ex) {
-            Logger.getLogger(SGEManager.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(SurfaceTensionJobMaker.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
 

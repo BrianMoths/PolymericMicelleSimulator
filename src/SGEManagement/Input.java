@@ -8,6 +8,11 @@ import Engine.SimulatorParameters;
 import Engine.SimulatorParameters.SystemParametersBuilder;
 import FocusedSimulation.JobParameters;
 import FocusedSimulation.JobParameters.JobParametersBuilder;
+import FocusedSimulation.OutputWriter;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.ObjectInputStream;
 
 /**
  *
@@ -49,6 +54,28 @@ public class Input {
             this.jobParametersBuilder = jobParametersBuilder;
         }
 
+    }
+
+    static public Input readInputFromFile(String fileName) {
+        ObjectInputStream objectInputStream = getObjectOutputStream(fileName);
+        try {
+            return (Input) objectInputStream.readObject();
+        } catch (IOException | ClassNotFoundException ex) {
+            throw new AssertionError("could not load input from file: " + fileName, ex);
+        }
+    }
+
+    private static ObjectInputStream getObjectOutputStream(String fileName) {
+        try {
+            final String absolutePath = OutputWriter.getProjectPath() + fileName;
+            FileInputStream fileInputStream = new FileInputStream(absolutePath);
+            final ObjectInputStream objectInputStream = new ObjectInputStream(fileInputStream);
+            return objectInputStream;
+        } catch (FileNotFoundException ex) {
+            throw new AssertionError("file not found: " + fileName, null);
+        } catch (IOException ex) {
+            throw new AssertionError("could not load input from file: " + fileName, ex);
+        }
     }
 
     public SimulatorParameters systemParameters;
