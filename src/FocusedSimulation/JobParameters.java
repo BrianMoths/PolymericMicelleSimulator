@@ -24,10 +24,6 @@ public class JobParameters {
             return jobParametersBuilder;
         }
 
-        static public FocusedSimulation.JobParameters getDefaultJobParameters() {
-            return new FocusedSimulation.JobParameters(defaultNumAnneals, defaultNumSurfaceTensionTrials, true, defaultJobNumber);
-        }
-
         private int numAnneals; //50
         private int numSurfaceTensionTrials; //70
         private boolean shouldIterateUntilConvergence;

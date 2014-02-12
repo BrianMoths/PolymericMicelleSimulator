@@ -4,6 +4,7 @@
  */
 package Gui;
 
+import Gui.analysiswindow.AnalysisWindow;
 import Engine.PolymerSimulator;
 import Engine.SystemAnalyzer;
 import SystemAnalysis.GeometryAnalyzer.AreaPerimeter;

@@ -2,7 +2,7 @@
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
-package Gui;
+package Gui.analysiswindow;
 
 import java.util.Random;
 import java.util.logging.Level;
@@ -57,7 +57,7 @@ public class StripChart2Test extends javax.swing.JFrame {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        stripChart21 = new Gui.StripChart();
+        stripChart21 = new Gui.analysiswindow.StripChart();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -123,6 +123,6 @@ public class StripChart2Test extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private Gui.StripChart stripChart21;
+    private Gui.analysiswindow.StripChart stripChart21;
     // End of variables declaration//GEN-END:variables
 }

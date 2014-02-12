@@ -2,11 +2,12 @@
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
-package Gui;
+package Gui.analysiswindow;
 
 import Engine.PolymerSimulator;
 import Engine.SimulationStepping.StepTypes.StepType;
 import Engine.SystemAnalyzer;
+import Gui.MicelleGui;
 import SystemAnalysis.GeometryAnalyzer.AreaPerimeter;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -151,13 +152,13 @@ public class AnalysisWindow extends javax.swing.JFrame {
         perimeterLbl = new javax.swing.JLabel();
         energyCaptionLbl = new javax.swing.JLabel();
         energyLbl = new javax.swing.JLabel();
-        areaChart = new Gui.StripChart();
-        perimeterChart = new Gui.StripChart();
-        energyChart = new Gui.StripChart();
-        aggregateStatistics = new Gui.AcceptanceStatistics();
-        singleBeadStatistics = new Gui.AcceptanceStatistics();
-        wallMoveStatistics = new Gui.AcceptanceStatistics();
-        reptationStatistics = new Gui.AcceptanceStatistics();
+        areaChart = new Gui.analysiswindow.StripChart();
+        perimeterChart = new Gui.analysiswindow.StripChart();
+        energyChart = new Gui.analysiswindow.StripChart();
+        aggregateStatistics = new Gui.analysiswindow.AcceptanceStatistics();
+        singleBeadStatistics = new Gui.analysiswindow.AcceptanceStatistics();
+        wallMoveStatistics = new Gui.analysiswindow.AcceptanceStatistics();
+        reptationStatistics = new Gui.analysiswindow.AcceptanceStatistics();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
 
@@ -279,20 +280,20 @@ public class AnalysisWindow extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private Gui.AcceptanceStatistics aggregateStatistics;
-    private Gui.StripChart areaChart;
+    private Gui.analysiswindow.AcceptanceStatistics aggregateStatistics;
+    private Gui.analysiswindow.StripChart areaChart;
     private javax.swing.JLabel areaLbl;
     private javax.swing.JLabel energyCaptionLbl;
-    private Gui.StripChart energyChart;
+    private Gui.analysiswindow.StripChart energyChart;
     private javax.swing.JLabel energyLbl;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel mainPanel;
     private javax.swing.JLabel perimeterCaptionLbl;
-    private Gui.StripChart perimeterChart;
+    private Gui.analysiswindow.StripChart perimeterChart;
     private javax.swing.JLabel perimeterLbl;
-    private Gui.AcceptanceStatistics reptationStatistics;
-    private Gui.AcceptanceStatistics singleBeadStatistics;
+    private Gui.analysiswindow.AcceptanceStatistics reptationStatistics;
+    private Gui.analysiswindow.AcceptanceStatistics singleBeadStatistics;
     private javax.swing.JLabel volumeCaptionLbl;
-    private Gui.AcceptanceStatistics wallMoveStatistics;
+    private Gui.analysiswindow.AcceptanceStatistics wallMoveStatistics;
     // End of variables declaration//GEN-END:variables
 }

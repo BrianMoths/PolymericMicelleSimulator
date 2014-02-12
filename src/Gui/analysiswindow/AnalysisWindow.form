@@ -197,21 +197,21 @@
                 </Property>
               </Properties>
             </Component>
-            <Component class="Gui.StripChart" name="areaChart">
+            <Component class="Gui.analysiswindow.StripChart" name="areaChart">
             </Component>
-            <Component class="Gui.StripChart" name="perimeterChart">
+            <Component class="Gui.analysiswindow.StripChart" name="perimeterChart">
             </Component>
-            <Component class="Gui.StripChart" name="energyChart">
+            <Component class="Gui.analysiswindow.StripChart" name="energyChart">
             </Component>
           </SubComponents>
         </Container>
-        <Component class="Gui.AcceptanceStatistics" name="aggregateStatistics">
+        <Component class="Gui.analysiswindow.AcceptanceStatistics" name="aggregateStatistics">
         </Component>
-        <Component class="Gui.AcceptanceStatistics" name="singleBeadStatistics">
+        <Component class="Gui.analysiswindow.AcceptanceStatistics" name="singleBeadStatistics">
         </Component>
-        <Component class="Gui.AcceptanceStatistics" name="wallMoveStatistics">
+        <Component class="Gui.analysiswindow.AcceptanceStatistics" name="wallMoveStatistics">
         </Component>
-        <Component class="Gui.AcceptanceStatistics" name="reptationStatistics">
+        <Component class="Gui.analysiswindow.AcceptanceStatistics" name="reptationStatistics">
         </Component>
       </SubComponents>
     </Container>

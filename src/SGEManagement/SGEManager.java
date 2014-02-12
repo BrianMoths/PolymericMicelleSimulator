@@ -4,16 +4,11 @@
  */
 package SGEManagement;
 
-import Engine.Energetics.EnergeticsConstants.EnergeticsConstantsBuilder;
 import Engine.Energetics.ExternalEnergyCalculator.ExternalEnergyCalculatorBuilder;
 import Engine.PolymerTopology.PolymerChain;
 import Engine.PolymerTopology.PolymerCluster;
-import Engine.SimulatorParameters;
-import Engine.SimulatorParameters.SystemParametersBuilder;
-import FocusedSimulation.JobParameters;
-import FocusedSimulation.JobParameters.JobParametersBuilder;
 import FocusedSimulation.OutputWriter;
-import SGEManagement.SGEManager.Input.InputBuilder;
+import SGEManagement.Input.InputBuilder;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -28,96 +23,6 @@ import java.util.logging.Logger;
  * @author bmoths
  */
 public class SGEManager {
-
-    static public class Input implements java.io.Serializable {
-
-        static public class InputBuilder {
-
-            static private final double defaultAspectRatio = .1;
-            static private final double defaultOverlapCoefficient = -.06;
-            static private final double defaultInteractionLength = 4.;
-            static private final int defaultNumBeadsPerChain = 15;
-            static private final int defaultNumChains = 75;
-            static private final double defaultDensity = .05;
-            static private final double defaultXPosition = 50;
-            static private final double defaultSpringConstant = 10;
-
-            static public InputBuilder getDefaultInputBuilder() {
-                SystemParametersBuilder systemParametersBuilder = getDefaultSystemParametersBuilder();
-                JobParametersBuilder jobParametersBuilder = JobParametersBuilder.getDefaultJobParametersBuilder();
-                InputBuilder inputBuilder = new InputBuilder();
-                inputBuilder.setSystemParametersBuilder(systemParametersBuilder);
-                inputBuilder.setJobParametersBuilder(jobParametersBuilder);
-                return inputBuilder;
-            }
-
-            private static SystemParametersBuilder getDefaultSystemParametersBuilder() {
-                SystemParametersBuilder systemParametersBuilder = new SystemParametersBuilder();
-                systemParametersBuilder.setAspectRatio(defaultAspectRatio);
-                EnergeticsConstantsBuilder energeticsConstantsBuilder = EnergeticsConstantsBuilder.zeroEnergeticsConstantsBuilder();
-                energeticsConstantsBuilder.setBBOverlapCoefficient(defaultOverlapCoefficient);
-                ExternalEnergyCalculatorBuilder externalEnergyCalculatorBuilder = new ExternalEnergyCalculatorBuilder();
-                externalEnergyCalculatorBuilder.setXPositionAndSpringConstant(defaultXPosition, defaultSpringConstant);
-                energeticsConstantsBuilder.setExternalEnergyCalculator(externalEnergyCalculatorBuilder.build());
-                systemParametersBuilder.setEnergeticsConstantsBuilder(energeticsConstantsBuilder);
-                systemParametersBuilder.setInteractionLength(defaultInteractionLength);
-                systemParametersBuilder.setPolymerCluster(getDefaultPolymerCluster());
-                return systemParametersBuilder;
-            }
-
-            private static PolymerCluster getDefaultPolymerCluster() {
-                PolymerChain polymerChain = PolymerChain.makeChainStartingWithA(0, defaultNumBeadsPerChain);
-                PolymerCluster polymerCluster = PolymerCluster.makeRepeatedChainCluster(polymerChain, defaultNumChains);
-                polymerCluster.setConcentrationInWater(defaultDensity);
-                return polymerCluster;
-            }
-
-            public SystemParametersBuilder systemParametersBuilder;
-            public JobParametersBuilder jobParametersBuilder;
-
-            public Input buildInput() {
-                return new Input(systemParametersBuilder.buildSystemParameters(), jobParametersBuilder.buildJobParameters());
-            }
-
-            public SystemParametersBuilder getSystemParametersBuilder() {
-                return systemParametersBuilder;
-            }
-
-            public void setSystemParametersBuilder(SystemParametersBuilder systemParametersBuilder) {
-                this.systemParametersBuilder = systemParametersBuilder;
-            }
-
-            public JobParametersBuilder getJobParametersBuilder() {
-                return jobParametersBuilder;
-            }
-
-            public void setJobParametersBuilder(JobParametersBuilder jobParametersBuilder) {
-                this.jobParametersBuilder = jobParametersBuilder;
-            }
-
-        }
-
-        public SimulatorParameters systemParameters;
-        public JobParameters jobParameters;
-
-        public Input(SimulatorParameters systemParameters, JobParameters jobParameters) {
-            this.systemParameters = systemParameters;
-            this.jobParameters = jobParameters;
-        }
-
-        public SimulatorParameters getSystemParameters() {
-            return systemParameters;
-        }
-
-        public JobParameters getJobParameters() {
-            return jobParameters;
-        }
-
-        public int getJobNumber() {
-            return jobParameters.getJobNumber();
-        }
-
-    }
 
     public static void main(String[] args) {
         final List<Input> inputs = makeInputs();

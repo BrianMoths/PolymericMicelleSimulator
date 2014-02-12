@@ -6,10 +6,12 @@ package Engine;
 
 import Engine.Energetics.EnergeticsConstants;
 import Engine.Energetics.EnergeticsConstants.EnergeticsConstantsBuilder;
+import Engine.Energetics.ExternalEnergyCalculator.ExternalEnergyCalculatorBuilder;
 import Engine.PolymerState.SystemGeometry.GeometricalParameters;
 import Engine.PolymerState.SystemGeometry.Implementations.AbstractGeometry.AbstractGeometryBuilder;
 import Engine.PolymerState.SystemGeometry.Implementations.PeriodicGeometry.PeriodicGeometryBuilder;
 import Engine.PolymerState.SystemGeometry.Interfaces.SystemGeometry;
+import Engine.PolymerTopology.PolymerChain;
 import Engine.PolymerTopology.PolymerCluster;
 import Engine.SimulationStepping.StepGenerators.CompoundStepGenerators.GeneralStepGenerator;
 
@@ -20,6 +22,36 @@ import Engine.SimulationStepping.StepGenerators.CompoundStepGenerators.GeneralSt
 public class SimulatorParameters {
 
     static public class SystemParametersBuilder {
+
+        static private final double defaultAspectRatio = .1;
+        static private final double defaultOverlapCoefficient = -.06;
+        static private final double defaultInteractionLength = 4.;
+        static private final double defaultXPosition = 50;
+        static private final double defaultSpringConstant = 10;
+        static private final int defaultNumBeadsPerChain = 15;
+        static private final int defaultNumChains = 75;
+        static private final double defaultDensity = .05;
+
+        public static SystemParametersBuilder getDefaultSystemParametersBuilder() {
+            SystemParametersBuilder systemParametersBuilder = new SystemParametersBuilder();
+            systemParametersBuilder.setAspectRatio(defaultAspectRatio);
+            EnergeticsConstantsBuilder energeticsConstantsBuilder = EnergeticsConstantsBuilder.zeroEnergeticsConstantsBuilder();
+            energeticsConstantsBuilder.setBBOverlapCoefficient(defaultOverlapCoefficient);
+            ExternalEnergyCalculatorBuilder externalEnergyCalculatorBuilder = new ExternalEnergyCalculatorBuilder();
+            externalEnergyCalculatorBuilder.setXPositionAndSpringConstant(defaultXPosition, defaultSpringConstant);
+            energeticsConstantsBuilder.setExternalEnergyCalculator(externalEnergyCalculatorBuilder.build());
+            systemParametersBuilder.setEnergeticsConstantsBuilder(energeticsConstantsBuilder);
+            systemParametersBuilder.setInteractionLength(defaultInteractionLength);
+            systemParametersBuilder.setPolymerCluster(getDefaultPolymerCluster());
+            return systemParametersBuilder;
+        }
+
+        private static PolymerCluster getDefaultPolymerCluster() {
+            PolymerChain polymerChain = PolymerChain.makeChainStartingWithA(0, defaultNumBeadsPerChain);
+            PolymerCluster polymerCluster = PolymerCluster.makeRepeatedChainCluster(polymerChain, defaultNumChains);
+            polymerCluster.setConcentrationInWater(defaultDensity);
+            return polymerCluster;
+        }
 
         private double interactionLength;
         private EnergeticsConstantsBuilder energeticsConstantsBuilder;
