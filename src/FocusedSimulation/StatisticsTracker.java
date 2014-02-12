@@ -5,7 +5,6 @@
 package FocusedSimulation;
 
 import Engine.PolymerSimulator;
-import FocusedSimulation.SimulationRunner.DoubleWithUncertainty;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;

@@ -19,26 +19,6 @@ import java.util.Map;
  */
 public class SimulationRunner {
 
-    static public class DoubleWithUncertainty {
-
-        private final double value;
-        private final double uncertainty;
-
-        public DoubleWithUncertainty(double value, double uncertainty) {
-            this.value = value;
-            this.uncertainty = uncertainty;
-        }
-
-        public double getValue() {
-            return value;
-        }
-
-        public double getUncertainty() {
-            return uncertainty;
-        }
-
-    }
-
     static public class SimulationRunnerParameters {
 
         static private final int defaultNumIterationsPerSample = 100_000;

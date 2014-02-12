@@ -19,7 +19,6 @@ import Engine.PolymerTopology.PolymerCluster;
 import Engine.SimulationStepping.StepGenerators.CompoundStepGenerators.GeneralStepGenerator;
 import Engine.SimulationStepping.StepGenerators.StepGenerator;
 import Engine.SimulationStepping.StepTypes.StepType;
-import FocusedSimulation.SimulationRunner.DoubleWithUncertainty;
 import FocusedSimulation.SimulationRunner.SimulationRunnerParameters;
 import FocusedSimulation.StatisticsTracker.TrackableVariable;
 import Gui.SystemViewer;

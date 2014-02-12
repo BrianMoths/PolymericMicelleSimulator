@@ -7,7 +7,6 @@ package FocusedSimulation;
 import Engine.PolymerSimulator;
 import Engine.PolymerState.SystemGeometry.Interfaces.ImmutableSystemGeometry;
 import Engine.SystemAnalyzer;
-import FocusedSimulation.SimulationRunner.DoubleWithUncertainty;
 import FocusedSimulation.SurfaceTensionFinder.MeasuredSurfaceTension;
 import java.io.FileNotFoundException;
 import java.io.PrintWriter;
