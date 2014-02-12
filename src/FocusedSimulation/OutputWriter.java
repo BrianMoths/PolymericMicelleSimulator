@@ -7,7 +7,8 @@ package FocusedSimulation;
 import Engine.PolymerSimulator;
 import Engine.PolymerState.SystemGeometry.Interfaces.ImmutableSystemGeometry;
 import Engine.SystemAnalyzer;
-import FocusedSimulation.SurfaceTensionFinder.MeasuredSurfaceTension;
+import FocusedSimulation.surfacetension.SurfaceTensionFinder;
+import FocusedSimulation.surfacetension.SurfaceTensionFinder.MeasuredSurfaceTension;
 import java.io.FileNotFoundException;
 import java.io.PrintWriter;
 import java.util.Calendar;
@@ -184,7 +185,7 @@ public class OutputWriter {
         dataWriter.close();
     }
 
-    void printInitializationInfo(PolymerSimulator polymerSimulator) {
+    public void printInitializationInfo(PolymerSimulator polymerSimulator) {
         dataWriter.println("Initial Horizontal Size of System: " + polymerSimulator.getGeometry().getSizeOfDimension(0));
         dataWriter.println();
         dataWriter.flush();
