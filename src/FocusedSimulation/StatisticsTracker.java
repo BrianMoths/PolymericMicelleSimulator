@@ -25,6 +25,13 @@ public class StatisticsTracker {
             }
 
         };
+        public static final TrackableVariable SYSTEM_VOLUME = new TrackableVariable() {
+            @Override
+            public double getValue(PolymerSimulator polymerSimulator) {
+                return polymerSimulator.getGeometry().getVolume();
+            }
+
+        };
 
         public double getValue(PolymerSimulator polymerSimulator);
 

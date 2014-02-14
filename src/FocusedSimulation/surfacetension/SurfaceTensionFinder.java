@@ -106,7 +106,6 @@ public class SurfaceTensionFinder {
         registerTrackablesToSimulationRunner();
         tryInitializeSystemViewer();
         printInitialOutput();
-        System.out.println("System is initialized.");
     }
 
     private void randomizePositions() {
@@ -131,8 +130,8 @@ public class SurfaceTensionFinder {
 
     private void printInitialOutput() {
         outputWriter.printParameters();
-
         outputWriter.printInitializationInfo(polymerSimulator);
+        System.out.println("System is initialized.");
     }
     //</editor-fold>
 
