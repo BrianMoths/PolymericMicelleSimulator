@@ -58,8 +58,8 @@ public class SurfaceTensionFinder {
         final double xEquilibriumPosition = externalEnergyCalculator.getxEquilibriumPosition();
         final double xSpringConstant = externalEnergyCalculator.getxSpringConstant();
 
-        final double surfaceTension = xSpringConstant * (xEquilibriumPosition - width.getValue()) / 2; //should divide by two since there are two surfaces
-        final double surfaceTensionError = Math.abs(xSpringConstant * width.getUncertainty()) / 2; //should divide by two since there are two surfaces
+        final double surfaceTension = xSpringConstant * (xEquilibriumPosition - width.getValue()) / 2;
+        final double surfaceTensionError = Math.abs(xSpringConstant * width.getUncertainty()) / 2;
         return new MeasuredSurfaceTension(surfaceTension, surfaceTensionError);
     }
 
@@ -75,52 +75,70 @@ public class SurfaceTensionFinder {
             final String fileName = args[0];
             return Input.readInputFromFile(fileName);
         } else {
-            throw new AssertionError("At most one input allowed", null);
+            throw new IllegalArgumentException("At most one input allowed");
         }
     }
 
     private final JobParameters jobParameters;
     private final SimulatorParameters systemParameters;
     private final OutputWriter outputWriter;
+    private final PolymerSimulator polymerSimulator;
+    private final SimulationRunner simulationRunner;
 
     private SurfaceTensionFinder(Input input) throws FileNotFoundException {
         jobParameters = input.getJobParameters();
         systemParameters = input.getSystemParameters();
         outputWriter = new OutputWriter(this);
+        polymerSimulator = systemParameters.makePolymerSimulator();
+        simulationRunner = new SimulationRunner(polymerSimulator, SimulationRunnerParameters.defaultSimulationRunnerParameters());
     }
 
     public void findSurfaceTension() {
-        outputWriter.printParameters();
-        PolymerSimulator polymerSimulator = systemParameters.makePolymerSimulator();
+        initialize();
+        doInitialEquilibrateAndAnneal();
+        doMeasurementTrials();
+        doTrialsUntilConvergence();
+        printFinalOutput();
+    }
+
+    //<editor-fold defaultstate="collapsed" desc="initialize">
+    private void initialize() {
+        randomizePositions();
+        registerTrackablesToSimulationRunner();
+        tryInitializeSystemViewer();
+        printInitialOutput();
+        System.out.println("System is initialized.");
+    }
+
+    private void randomizePositions() {
         polymerSimulator.reasonableColumnRandomize();
-        SimulationRunner simulationRunner = new SimulationRunner(polymerSimulator, SimulationRunnerParameters.defaultSimulationRunnerParameters());
-        final TrackableVariable systemWidth = new TrackableVariable() {
-            @Override
-            public double getValue(PolymerSimulator polymerSimulator) {
-                return polymerSimulator.getSystemAnalyzer().getSystemGeometry().getSizeOfDimension(0);
-            }
+    }
 
-        };
-        simulationRunner.trackVariable(systemWidth);
+    private void registerTrackablesToSimulationRunner() {
+        simulationRunner.trackVariable(TrackableVariable.SYSTEM_WIDTH);
+        simulationRunner.trackVariable((StressTrackable.STRESS_TRACKABLE).getStress11Trackable());
+        simulationRunner.trackVariable((StressTrackable.STRESS_TRACKABLE).getStress12Trackable());
+        simulationRunner.trackVariable((StressTrackable.STRESS_TRACKABLE).getStress22Trackable());
+    }
 
-        StressTrackable stressTrackable = new StressTrackable(polymerSimulator);
-        simulationRunner.trackVariable(stressTrackable.getStress11Trackable());
-        simulationRunner.trackVariable(stressTrackable.getStress12Trackable());
-        simulationRunner.trackVariable(stressTrackable.getStress22Trackable());
-
+    private void tryInitializeSystemViewer() {
         try {
             SystemViewer systemViewer = new SystemViewer(polymerSimulator);
             systemViewer.setVisible(true);
         } catch (java.awt.HeadlessException e) {
             System.out.println("Headless exception thrown when creating system viewer. I am unable to create system viewer.");
         }
+    }
 
-        System.out.println("System is initialized.");
+    private void printInitialOutput() {
+        outputWriter.printParameters();
 
         outputWriter.printInitializationInfo(polymerSimulator);
+    }
+    //</editor-fold>
 
+    private void doInitialEquilibrateAndAnneal() {
         simulationRunner.setStepGenerator(makeInitialStepGenerator());
-
         simulationRunner.doEquilibrateAnnealIterations(Math.min(jobParameters.getNumAnneals(), 1));
 
         simulationRunner.setStepGenerator(makeMainStepGenerator());
@@ -128,17 +146,18 @@ public class SurfaceTensionFinder {
         if (jobParameters.getNumAnneals() > 1) {
             simulationRunner.doEquilibrateAnnealIterations(jobParameters.getNumAnneals() - 1);
         }
+    }
 
+    private void doMeasurementTrials() {
         for (int i = 0; i < jobParameters.getNumSurfaceTensionTrials(); i++) {
-            doMeasurementTrial(simulationRunner, systemWidth, polymerSimulator);
-            outputStress(simulationRunner, stressTrackable);
+            doMeasurementTrial(simulationRunner, TrackableVariable.SYSTEM_WIDTH, polymerSimulator);
         }
+    }
 
-        while (jobParameters.getShouldIterateUntilConvergence() && !simulationRunner.isConverged(systemWidth)) {
-            doMeasurementTrial(simulationRunner, systemWidth, polymerSimulator);
+    private void doTrialsUntilConvergence() {
+        while (jobParameters.getShouldIterateUntilConvergence() && !simulationRunner.isConverged(TrackableVariable.SYSTEM_WIDTH)) {
+            doMeasurementTrial(simulationRunner, TrackableVariable.SYSTEM_WIDTH, polymerSimulator);
         }
-
-        outputWriter.printFinalOutput(polymerSimulator);
     }
 
     private void doMeasurementTrial(SimulationRunner simulationRunner, TrackableVariable trackableVariable, PolymerSimulator polymerSimulator) {
@@ -146,13 +165,11 @@ public class SurfaceTensionFinder {
         DoubleWithUncertainty measuredWidth = simulationRunner.getRecentMeasurementForTrackedVariable(trackableVariable);
         MeasuredSurfaceTension measuredSurfaceTension = getMeasuredSurfaceTensionFromWidth(measuredWidth, polymerSimulator);
         outputWriter.printSurfaceTension(measuredSurfaceTension);
+        outputWriter.printStress(simulationRunner);
     }
 
-    private void outputStress(SimulationRunner simulationRunner, StressTrackable stressTrackable) {
-        final DoubleWithUncertainty stress11 = simulationRunner.getRecentMeasurementForTrackedVariable(stressTrackable.getStress11Trackable());
-        final DoubleWithUncertainty stress12 = simulationRunner.getRecentMeasurementForTrackedVariable(stressTrackable.getStress12Trackable());
-        final DoubleWithUncertainty stress22 = simulationRunner.getRecentMeasurementForTrackedVariable(stressTrackable.getStress22Trackable());
-        outputWriter.printStress(stress11, stress12, stress22);
+    private void printFinalOutput() {
+        outputWriter.printFinalOutput(polymerSimulator);
     }
 
     public void closeOutputWriter() {
@@ -174,8 +191,8 @@ public class SurfaceTensionFinder {
         stepweights.put(StepType.SINGLE_CHAIN, .01);
         return new GeneralStepGenerator(stepweights);
     }
-    //<editor-fold defaultstate="collapsed" desc="getters">
 
+    //<editor-fold defaultstate="collapsed" desc="getters">
     public SimulatorParameters getInputParameters() {
         return systemParameters;
     }
@@ -211,6 +228,5 @@ public class SurfaceTensionFinder {
     public double getBeadSize() {
         return systemParameters.systemGeometry.getParameters().getInteractionLength();
     }
-
     //</editor-fold>
 }

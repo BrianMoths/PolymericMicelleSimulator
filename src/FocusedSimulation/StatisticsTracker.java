@@ -18,6 +18,14 @@ public class StatisticsTracker {
 
     public interface TrackableVariable {
 
+        public static final TrackableVariable SYSTEM_WIDTH = new TrackableVariable() {
+            @Override
+            public double getValue(PolymerSimulator polymerSimulator) {
+                return polymerSimulator.getSystemAnalyzer().getSystemGeometry().getSizeOfDimension(0);
+            }
+
+        };
+
         public double getValue(PolymerSimulator polymerSimulator);
 
     }

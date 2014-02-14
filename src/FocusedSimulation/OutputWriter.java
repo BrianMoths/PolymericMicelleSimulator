@@ -9,6 +9,7 @@ import Engine.PolymerState.SystemGeometry.Interfaces.ImmutableSystemGeometry;
 import Engine.SystemAnalyzer;
 import FocusedSimulation.surfacetension.SurfaceTensionFinder;
 import FocusedSimulation.surfacetension.SurfaceTensionFinder.MeasuredSurfaceTension;
+import SystemAnalysis.StressTrackable;
 import java.io.FileNotFoundException;
 import java.io.PrintWriter;
 import java.util.Calendar;
@@ -140,8 +141,11 @@ public class OutputWriter {
         return parametersStringBuilder.toString();
     }
 
-    public void printStress(DoubleWithUncertainty stress11, DoubleWithUncertainty stress12, DoubleWithUncertainty stress22) {
+    public void printStress(SimulationRunner simulationRunner) {
         StringBuilder stringBuilder = new StringBuilder();
+        final DoubleWithUncertainty stress11 = simulationRunner.getRecentMeasurementForTrackedVariable(StressTrackable.STRESS_TRACKABLE.getStress11Trackable());
+        final DoubleWithUncertainty stress12 = simulationRunner.getRecentMeasurementForTrackedVariable(StressTrackable.STRESS_TRACKABLE.getStress12Trackable());
+        final DoubleWithUncertainty stress22 = simulationRunner.getRecentMeasurementForTrackedVariable(StressTrackable.STRESS_TRACKABLE.getStress22Trackable());
         stringBuilder.append("[").append(stress11.getValue()).append("  ").append(stress12.getValue()).append("]  +/-  [").append(stress11.getUncertainty()).append(" ").append(stress12.getUncertainty()).append("]\n");
         stringBuilder.append("[").append(stress12.getValue()).append("  ").append(stress22.getValue()).append("]  +/-  [").append(stress12.getUncertainty()).append(" ").append(stress22.getUncertainty()).append("]\n");
         stringBuilder.append("\n");

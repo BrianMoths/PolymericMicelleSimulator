@@ -11,19 +11,18 @@ import FocusedSimulation.StatisticsTracker.TrackableVariable;
  *
  * @author bmoths
  */
-public class StressTrackable {
+public final class StressTrackable {
 
-    private final PolymerSimulator polymerSimulator;
+    static public final StressTrackable STRESS_TRACKABLE = new StressTrackable();
     private double[][] stress;
     private final TrackableVariable stress11, stress12, stress22;
     private boolean is11Retrieved = true, is12Retrieved = true, is22Retrieved = true;
 
-    public StressTrackable(PolymerSimulator polymerSimulator) {
-        this.polymerSimulator = polymerSimulator;
+    private StressTrackable() {
         stress11 = new TrackableVariable() {
             @Override
             public double getValue(PolymerSimulator polymerSimulator) {
-                final double stressComponent = getStress(1, 1);
+                final double stressComponent = getStress(1, 1, polymerSimulator);
                 is11Retrieved = true;
                 return stressComponent;
             }
@@ -32,7 +31,7 @@ public class StressTrackable {
         stress12 = new TrackableVariable() {
             @Override
             public double getValue(PolymerSimulator polymerSimulator) {
-                final double stressComponent = getStress(1, 2);
+                final double stressComponent = getStress(1, 2, polymerSimulator);
                 is12Retrieved = true;
                 return stressComponent;
             }
@@ -41,7 +40,7 @@ public class StressTrackable {
         stress22 = new TrackableVariable() {
             @Override
             public double getValue(PolymerSimulator polymerSimulator) {
-                final double stressComponent = getStress(2, 2);
+                final double stressComponent = getStress(2, 2, polymerSimulator);
                 is22Retrieved = true;
                 return stressComponent;
             }
@@ -49,9 +48,9 @@ public class StressTrackable {
         };
     }
 
-    private double getStress(int i, int j) {
+    private double getStress(int i, int j, PolymerSimulator polymerSimulator) {
         if (isCalculationNeeded()) {
-            calculateStress();
+            calculateStress(polymerSimulator);
             resetBooleans();
         }
         return stress[i - 1][j - 1];
@@ -63,7 +62,7 @@ public class StressTrackable {
         is22Retrieved = false;
     }
 
-    private void calculateStress() {
+    private void calculateStress(PolymerSimulator polymerSimulator) {
         stress = StressFinder.calculateTotalStress(polymerSimulator);
     }
 
