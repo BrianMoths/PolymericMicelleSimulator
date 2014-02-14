@@ -4,12 +4,7 @@
  */
 package FocusedSimulation.compressibility;
 
-import Engine.PolymerSimulator;
-import Engine.SimulatorParameters;
-import FocusedSimulation.JobParameters;
-import FocusedSimulation.SimulationRunner;
 import FocusedSimulation.surfacetension.SurfaceTensionJobMaker;
-import FocusedSimulation.surfacetension.SurfaceTensionOutputWriter;
 import SGEManagement.Input;
 import SGEManagement.Input.InputBuilder;
 
@@ -38,12 +33,11 @@ public class CompressibilityFinder {
         }
     }
 
-    private final JobParameters jobParameters;
-    private final SimulatorParameters systemParameters;
-    private final SurfaceTensionOutputWriter outputWriter;
-    private final PolymerSimulator polymerSimulator;
-    private final SimulationRunner simulationRunner;
-
+//    private final JobParameters jobParameters;
+//    private final SimulatorParameters systemParameters;
+//    private final SurfaceTensionOutputWriter outputWriter;
+//    private final PolymerSimulator polymerSimulator;
+//    private final SimulationRunner simulationRunner;
     public CompressibilityFinder(Input input) {
     }
 

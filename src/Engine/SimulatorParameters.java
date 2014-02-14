@@ -14,12 +14,13 @@ import Engine.PolymerState.SystemGeometry.Interfaces.SystemGeometry;
 import Engine.PolymerTopology.PolymerChain;
 import Engine.PolymerTopology.PolymerCluster;
 import Engine.SimulationStepping.StepGenerators.CompoundStepGenerators.GeneralStepGenerator;
+import java.io.Serializable;
 
 /**
  *
  * @author bmoths
  */
-public class SimulatorParameters {
+public class SimulatorParameters implements Serializable {
 
     static public class SystemParametersBuilder {
 

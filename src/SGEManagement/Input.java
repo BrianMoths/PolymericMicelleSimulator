@@ -13,12 +13,13 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.ObjectInputStream;
+import java.io.Serializable;
 
 /**
  *
  * @author bmoths
  */
-public class Input {
+public class Input implements Serializable {
 
     static public class InputBuilder {
 

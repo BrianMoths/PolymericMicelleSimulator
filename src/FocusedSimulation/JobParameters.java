@@ -4,11 +4,13 @@
  */
 package FocusedSimulation;
 
+import java.io.Serializable;
+
 /**
  *
  * @author bmoths
  */
-public class JobParameters {
+public class JobParameters implements Serializable {
 
     static public class JobParametersBuilder {
 

@@ -29,7 +29,7 @@ public class SurfaceTensionJobMaker {
     }
 
     static private List<Input> makeInputs() {
-        return testAspectRatioEffectOnDensity();
+        return makeWideVerticalScalingInputs();
     }
 
     public static Input makeRescaleInput(final double scaleFactor, int jobNumber) {

@@ -12,8 +12,6 @@ import Engine.SimulatorParameters.SystemParametersBuilder;
 import FocusedSimulation.JobParameters.JobParametersBuilder;
 import SGEManagement.Input;
 import SGEManagement.Input.InputBuilder;
-import SGEManagement.JobSubmitter;
-import java.util.List;
 
 /**
  *
@@ -21,15 +19,13 @@ import java.util.List;
  */
 public class CompressibilityJobMaker {
 
-    public static void main(String[] args) {
-        final List<Input> inputs = makeInputs();
-        JobSubmitter.submitJobs(inputs);
-    }
-
-    static private List<Input> makeInputs() {
-        return testAspectRatioEffectOnDensity();
-    }
-
+//    public static void main(String[] args) {
+//        final List<Input> inputs = makeInputs();
+//        JobSubmitter.submitJobs(inputs);
+//    }
+//    static private List<Input> makeInputs() {
+//        return testAspectRatioEffectOnDensity();
+//    }
     //<editor-fold defaultstate="collapsed" desc="default input">
     static private InputBuilder getDefaultInputSurfaceTensionBuilder() {
         SystemParametersBuilder systemParametersBuilder = getDefaultSystemParametersBuilder();
