@@ -12,6 +12,9 @@ import Engine.SimulatorParameters.SystemParametersBuilder;
 import FocusedSimulation.JobParameters.JobParametersBuilder;
 import SGEManagement.Input;
 import SGEManagement.Input.InputBuilder;
+import SGEManagement.JobSubmitter;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  *
@@ -19,13 +22,88 @@ import SGEManagement.Input.InputBuilder;
  */
 public class CompressibilityJobMaker {
 
-//    public static void main(String[] args) {
-//        final List<Input> inputs = makeInputs();
-//        JobSubmitter.submitJobs(inputs);
-//    }
-//    static private List<Input> makeInputs() {
-//        return testAspectRatioEffectOnDensity();
-//    }
+    public static void main(String[] args) {
+        final List<Input> inputs = makeInputs();
+        JobSubmitter.submitJobs(inputs);
+    }
+
+    static private List<Input> makeInputs() {
+        return makeHorizontalRescalingInputs();
+    }
+
+    public static Input makeRescaleInput(final double scaleFactor, int jobNumber) {
+        InputBuilder inputBuilder = makeRescaleInputBuilder(scaleFactor, jobNumber);
+        final Input input = inputBuilder.buildInput();
+        return input;
+    }
+
+    public static InputBuilder makeRescaleInputBuilder(final double scaleFactor, int jobNumber) {
+        return makeRescaleInputBuilderWithHorizontalRescaling(scaleFactor, 1, jobNumber);
+    }
+
+    public static Input makeRescaleInput(final double verticalScale, final double horizontalScale, final int jobNumber) {
+        final InputBuilder inputBuilder = makeRescaleInputBuilderWithHorizontalRescaling(verticalScale, horizontalScale, jobNumber);
+        return inputBuilder.buildInput();
+    }
+
+    public static InputBuilder makeRescaleInputBuilderWithHorizontalRescaling(final double verticalScale, final double horizontalScale, int jobNumber) {
+        InputBuilder inputBuilder;
+        inputBuilder = getDefaultInputSurfaceTensionBuilder();
+        final double aspectRatio = inputBuilder.getSystemParametersBuilder().getAspectRatio();
+        inputBuilder.getSystemParametersBuilder().setAspectRatio(aspectRatio * horizontalScale / verticalScale);
+        final int numChains = inputBuilder.getSystemParametersBuilder().getPolymerCluster().getNumChains();
+        final int numBeadsPerChain = (int) Math.round(inputBuilder.getSystemParametersBuilder().getPolymerCluster().getNumBeadsPerChain());
+        final PolymerChain polymerChain = PolymerChain.makeChainOfType(false, numBeadsPerChain);
+        final PolymerCluster polymerCluster = PolymerCluster.makeRepeatedChainCluster(polymerChain, 3 * (int) (numChains * verticalScale * horizontalScale));
+        inputBuilder.getSystemParametersBuilder().setPolymerCluster(polymerCluster);
+        final ExternalEnergyCalculatorBuilder externalEnergyCalculatorBuilder = new ExternalEnergyCalculatorBuilder();
+        externalEnergyCalculatorBuilder.setPressure(25);
+        inputBuilder.getSystemParametersBuilder().getEnergeticsConstantsBuilder().setExternalEnergyCalculator(externalEnergyCalculatorBuilder.build());
+        inputBuilder.getJobParametersBuilder().setJobNumber(jobNumber);
+        return inputBuilder;
+    }
+
+    static private List<Input> makeHorizontalRescalingInputs() {
+        List<Input> inputs = new ArrayList<>();
+
+        int jobNumber = 1;
+        Input input;
+        double verticalRescaleFactor = .5;
+        double horizontalRescaleFactor;
+
+        horizontalRescaleFactor = .07;
+        input = makeRescaleInput(verticalRescaleFactor, horizontalRescaleFactor, jobNumber);
+        inputs.add(input);
+        jobNumber++;
+
+        horizontalRescaleFactor = .18;
+        input = makeRescaleInput(verticalRescaleFactor, horizontalRescaleFactor, jobNumber);
+        inputs.add(input);
+        jobNumber++;
+
+        horizontalRescaleFactor = .3;
+        input = makeRescaleInput(verticalRescaleFactor, horizontalRescaleFactor, jobNumber);
+        inputs.add(input);
+        jobNumber++;
+
+        horizontalRescaleFactor = 1;
+        input = makeRescaleInput(verticalRescaleFactor, horizontalRescaleFactor, jobNumber);
+        inputs.add(input);
+        jobNumber++;
+
+        horizontalRescaleFactor = 3;
+        input = makeRescaleInput(verticalRescaleFactor, horizontalRescaleFactor, jobNumber);
+        inputs.add(input);
+        jobNumber++;
+
+        horizontalRescaleFactor = 10;
+        input = makeRescaleInput(verticalRescaleFactor, horizontalRescaleFactor, jobNumber);
+        inputs.add(input);
+        jobNumber++;
+        return inputs;
+
+    }
+
     //<editor-fold defaultstate="collapsed" desc="default input">
     static private InputBuilder getDefaultInputSurfaceTensionBuilder() {
         SystemParametersBuilder systemParametersBuilder = getDefaultSystemParametersBuilder();
