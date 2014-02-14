@@ -12,7 +12,6 @@ import Engine.SimulationStepping.StepTypes.StepType;
 import Engine.SimulatorParameters;
 import FocusedSimulation.DoubleWithUncertainty;
 import FocusedSimulation.JobParameters;
-import FocusedSimulation.OutputWriter;
 import FocusedSimulation.SimulationRunner;
 import FocusedSimulation.SimulationRunner.SimulationRunnerParameters;
 import FocusedSimulation.StatisticsTracker.TrackableVariable;
@@ -81,14 +80,14 @@ public class SurfaceTensionFinder {
 
     private final JobParameters jobParameters;
     private final SimulatorParameters systemParameters;
-    private final OutputWriter outputWriter;
+    private final SurfaceTensionOutputWriter outputWriter;
     private final PolymerSimulator polymerSimulator;
     private final SimulationRunner simulationRunner;
 
     private SurfaceTensionFinder(Input input) throws FileNotFoundException {
         jobParameters = input.getJobParameters();
         systemParameters = input.getSystemParameters();
-        outputWriter = new OutputWriter(this);
+        outputWriter = new SurfaceTensionOutputWriter(this);
         polymerSimulator = systemParameters.makePolymerSimulator();
         simulationRunner = new SimulationRunner(polymerSimulator, SimulationRunnerParameters.defaultSimulationRunnerParameters());
     }
