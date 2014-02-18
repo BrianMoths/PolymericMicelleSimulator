@@ -56,6 +56,7 @@ public class SurfaceTensionJobMaker {
         final int numBeadsPerChain = (int) Math.round(inputBuilder.getSystemParametersBuilder().getPolymerCluster().getNumBeadsPerChain());
         final PolymerChain polymerChain = PolymerChain.makeChainOfType(false, numBeadsPerChain);
         final PolymerCluster polymerCluster = PolymerCluster.makeRepeatedChainCluster(polymerChain, (int) (numChains * verticalScale * horizontalScale));
+        polymerCluster.setConcentrationInWater(defaultDensity);
         inputBuilder.getSystemParametersBuilder().setPolymerCluster(polymerCluster);
         final ExternalEnergyCalculatorBuilder externalEnergyCalculatorBuilder = new ExternalEnergyCalculatorBuilder();
         externalEnergyCalculatorBuilder.setXPositionAndSpringConstant(16 * horizontalScale, 50);
@@ -81,7 +82,7 @@ public class SurfaceTensionJobMaker {
     static private final double defaultSpringConstant = 10;
     static private final int defaultNumBeadsPerChain = 15;
     static private final int defaultNumChains = 75;
-    static private final double defaultDensity = .0175;
+    static private final double defaultDensity = .175;
 
     private static SystemParametersBuilder getDefaultSystemParametersBuilder() {
         SystemParametersBuilder systemParametersBuilder = new SystemParametersBuilder();
