@@ -439,7 +439,7 @@ public class PeriodicGeometryTest {
         double expSoftResult = squareLength * squareLength;
         double coreOverlapSide = coreLength - smallPos > 0 ? coreLength - smallPos : 0;
         double expHardResult = coreOverlapSide * coreOverlapSide;
-        TwoBeadOverlap result = instance.twoBeadOverlap(position1, position2);
+        TwoBeadOverlap result = instance.twoBeadRectangularOverlap(position1, position2);
         assertEquals(result.softOverlap, expSoftResult, 0);
         assertEquals(result.hardOverlap, expHardResult, 0);
 
@@ -453,7 +453,7 @@ public class PeriodicGeometryTest {
         double xCoreSideLength = coreLength - smallPos > 0 ? coreLength - smallPos : 0;
         double yCoreSideLength = coreLength - mediumPos > 0 ? coreLength - mediumPos : 0;
         expHardResult = xCoreSideLength * yCoreSideLength;
-        result = instance.twoBeadOverlap(position1, position2);
+        result = instance.twoBeadRectangularOverlap(position1, position2);
         assertEquals(result.softOverlap, expSoftResult, 0);
         assertEquals(result.hardOverlap, expHardResult, 0);
 
@@ -466,7 +466,7 @@ public class PeriodicGeometryTest {
         xCoreSideLength = coreLength - smallPos > 0 ? coreLength - smallPos : 0;
         yCoreSideLength = coreLength - mediumPos > 0 ? coreLength - mediumPos : 0;
         expHardResult = xCoreSideLength * yCoreSideLength;
-        result = instance.twoBeadOverlap(position1, position2);
+        result = instance.twoBeadRectangularOverlap(position1, position2);
         assertEquals(result.softOverlap, expSoftResult, 0);
         assertEquals(result.hardOverlap, expHardResult, 0);
     }
