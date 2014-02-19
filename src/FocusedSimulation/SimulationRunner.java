@@ -177,4 +177,8 @@ public class SimulationRunner {
         polymerSimulator.setStepGenerator(stepGenerator);
     }
 
+    public PolymerSimulator getPolymerSimulator() {
+        return polymerSimulator;
+    }
+
 }

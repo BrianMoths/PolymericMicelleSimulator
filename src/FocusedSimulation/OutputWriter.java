@@ -4,7 +4,7 @@
  */
 package FocusedSimulation;
 
-import FocusedSimulation.surfacetension.SurfaceTensionOutputWriter;
+import FocusedSimulation.surfacetension.SurfaceTensionResultsWriter;
 import java.io.FileNotFoundException;
 import java.io.PrintWriter;
 import java.util.Calendar;
@@ -49,7 +49,7 @@ public class OutputWriter {
     }
 
     static public String getProjectPath() throws AssertionError {
-        String jarPath = SurfaceTensionOutputWriter.class.getProtectionDomain().getCodeSource().getLocation().getPath();
+        String jarPath = SurfaceTensionResultsWriter.class.getProtectionDomain().getCodeSource().getLocation().getPath();
         if (jarPath.contains("build/")) {
             jarPath = jarPath.substring(0, jarPath.lastIndexOf("build/"));
         } else if (jarPath.contains("dist/")) {

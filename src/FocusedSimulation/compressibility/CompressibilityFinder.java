@@ -4,7 +4,11 @@
  */
 package FocusedSimulation.compressibility;
 
-import FocusedSimulation.surfacetension.SurfaceTensionJobMaker;
+import Engine.PolymerSimulator;
+import Engine.SimulatorParameters;
+import FocusedSimulation.JobParameters;
+import FocusedSimulation.SimulationRunner;
+import FocusedSimulation.SimulationRunner.SimulationRunnerParameters;
 import SGEManagement.Input;
 import SGEManagement.Input.InputBuilder;
 
@@ -22,7 +26,7 @@ public class CompressibilityFinder {
             final double verticalScaleFactor = .25;
             final double horizontalScaleFactor = 10;
 
-            InputBuilder inputBuilder = SurfaceTensionJobMaker.makeRescaleInputBuilderWithHorizontalRescaling(verticalScaleFactor, horizontalScaleFactor, 0);
+            InputBuilder inputBuilder = CompressibilityJobMaker.makeRescaleInputBuilderWithHorizontalRescaling(verticalScaleFactor, horizontalScaleFactor, 0);
             inputBuilder.getJobParametersBuilder().setNumAnneals(5);
             return inputBuilder.buildInput();
         } else if (args.length == 1) {
@@ -33,12 +37,18 @@ public class CompressibilityFinder {
         }
     }
 
-//    private final JobParameters jobParameters;
-//    private final SimulatorParameters systemParameters;
-//    private final SurfaceTensionOutputWriter outputWriter;
-//    private final PolymerSimulator polymerSimulator;
-//    private final SimulationRunner simulationRunner;
+    private final JobParameters jobParameters;
+    private final SimulatorParameters systemParameters;
+    private final CompressibiltyOutputWriter outputWriter;
+    private final PolymerSimulator polymerSimulator;
+    private final SimulationRunner simulationRunner;
+
     public CompressibilityFinder(Input input) {
+        jobParameters = input.getJobParameters();
+        systemParameters = input.getSystemParameters();
+        outputWriter = new CompressibiltyOutputWriter(this);
+        polymerSimulator = systemParameters.makePolymerSimulator();
+        simulationRunner = new SimulationRunner(polymerSimulator, SimulationRunnerParameters.defaultSimulationRunnerParameters());
     }
 
 }

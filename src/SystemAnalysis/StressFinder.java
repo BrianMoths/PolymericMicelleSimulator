@@ -45,9 +45,9 @@ public class StressFinder {
             return neighborList;
         }
 
-        private void addNeighbor(final int leftNeighbor, List<Integer> neighborList) {
-            if (leftNeighbor != -1) {
-                neighborList.add(leftNeighbor);
+        private void addNeighbor(final int neighbor, List<Integer> neighborList) {
+            if (neighbor != -1) {
+                neighborList.add(neighbor);
             }
         }
 

@@ -80,16 +80,16 @@ public class SurfaceTensionFinder {
 
     private final JobParameters jobParameters;
     private final SimulatorParameters systemParameters;
-    private final SurfaceTensionOutputWriter outputWriter;
+    private final SurfaceTensionResultsWriter outputWriter;
     private final PolymerSimulator polymerSimulator;
     private final SimulationRunner simulationRunner;
 
     private SurfaceTensionFinder(Input input) throws FileNotFoundException {
         jobParameters = input.getJobParameters();
         systemParameters = input.getSystemParameters();
-        outputWriter = new SurfaceTensionOutputWriter(this);
         polymerSimulator = systemParameters.makePolymerSimulator();
         simulationRunner = new SimulationRunner(polymerSimulator, SimulationRunnerParameters.defaultSimulationRunnerParameters());
+        outputWriter = new SurfaceTensionResultsWriter(input);
     }
 
     public void findSurfaceTension() {
@@ -226,5 +226,10 @@ public class SurfaceTensionFinder {
     public double getBeadSize() {
         return systemParameters.systemGeometry.getParameters().getInteractionLength();
     }
+
     //</editor-fold>
+    SimulationRunner getSimulationRunner() {
+        return simulationRunner;
+    }
+
 }

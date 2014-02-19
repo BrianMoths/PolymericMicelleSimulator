@@ -51,16 +51,20 @@ public class CompressibilityJobMaker {
         inputBuilder = getDefaultInputSurfaceTensionBuilder();
         final double aspectRatio = inputBuilder.getSystemParametersBuilder().getAspectRatio();
         inputBuilder.getSystemParametersBuilder().setAspectRatio(aspectRatio * horizontalScale / verticalScale);
-        final int numChains = inputBuilder.getSystemParametersBuilder().getPolymerCluster().getNumChains();
-        final int numBeadsPerChain = (int) Math.round(inputBuilder.getSystemParametersBuilder().getPolymerCluster().getNumBeadsPerChain());
-        final PolymerChain polymerChain = PolymerChain.makeChainOfType(false, numBeadsPerChain);
-        final PolymerCluster polymerCluster = PolymerCluster.makeRepeatedChainCluster(polymerChain, 3 * (int) (numChains * verticalScale * horizontalScale));
+        PolymerCluster polymerCluster = getPolymerCluster(verticalScale, horizontalScale);
         inputBuilder.getSystemParametersBuilder().setPolymerCluster(polymerCluster);
         final ExternalEnergyCalculatorBuilder externalEnergyCalculatorBuilder = new ExternalEnergyCalculatorBuilder();
         externalEnergyCalculatorBuilder.setPressure(25);
         inputBuilder.getSystemParametersBuilder().getEnergeticsConstantsBuilder().setExternalEnergyCalculator(externalEnergyCalculatorBuilder.build());
         inputBuilder.getJobParametersBuilder().setJobNumber(jobNumber);
         return inputBuilder;
+    }
+
+    private static PolymerCluster getPolymerCluster(final double verticalScale, final double horizontalScale) {
+        final PolymerChain polymerChain = PolymerChain.makeChainOfType(false, defaultNumBeadsPerChain);
+        final PolymerCluster polymerCluster = PolymerCluster.makeRepeatedChainCluster(polymerChain, 3 * (int) (defaultNumChains * verticalScale * horizontalScale));
+        polymerCluster.setConcentrationInWater(defaultDensity);
+        return polymerCluster;
     }
 
     static private List<Input> makeHorizontalRescalingInputs() {
