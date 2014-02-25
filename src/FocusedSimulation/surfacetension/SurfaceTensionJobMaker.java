@@ -29,7 +29,7 @@ public class SurfaceTensionJobMaker {
     }
 
     static private List<Input> makeInputs() {
-        return makeWideVerticalScalingInputs();
+        return makeNarrowVerticalScalingInputs();
     }
 
     public static Input makeRescaleInput(final double scaleFactor, int jobNumber) {
@@ -58,6 +58,7 @@ public class SurfaceTensionJobMaker {
         externalEnergyCalculatorBuilder.setXPositionAndSpringConstant(16 * horizontalScale, 50);
         inputBuilder.getSystemParametersBuilder().getEnergeticsConstantsBuilder().setExternalEnergyCalculator(externalEnergyCalculatorBuilder.build());
         inputBuilder.getJobParametersBuilder().setJobNumber(jobNumber);
+        inputBuilder.getJobParametersBuilder().setNumSurfaceTensionTrials(200);
         return inputBuilder;
     }
 
@@ -169,11 +170,6 @@ public class SurfaceTensionJobMaker {
         double verticalRescaleFactor;
         final double horizontalRescaleFactor = 1;
 
-        verticalRescaleFactor = .2;
-        input = makeRescaleInput(verticalRescaleFactor, horizontalRescaleFactor, jobNumber);
-        inputs.add(input);
-        jobNumber++;
-
         verticalRescaleFactor = .5;
         input = makeRescaleInput(verticalRescaleFactor, horizontalRescaleFactor, jobNumber);
         inputs.add(input);
@@ -189,7 +185,28 @@ public class SurfaceTensionJobMaker {
         inputs.add(input);
         jobNumber++;
 
+        verticalRescaleFactor = 5;
+        input = makeRescaleInput(verticalRescaleFactor, horizontalRescaleFactor, jobNumber);
+        inputs.add(input);
+        jobNumber++;
+        verticalRescaleFactor = 8;
+        input = makeRescaleInput(verticalRescaleFactor, horizontalRescaleFactor, jobNumber);
+        inputs.add(input);
+        jobNumber++;
+
         verticalRescaleFactor = 10;
+        input = makeRescaleInput(verticalRescaleFactor, horizontalRescaleFactor, jobNumber);
+        inputs.add(input);
+        jobNumber++;
+        verticalRescaleFactor = 15;
+        input = makeRescaleInput(verticalRescaleFactor, horizontalRescaleFactor, jobNumber);
+        inputs.add(input);
+        jobNumber++;
+        verticalRescaleFactor = 20;
+        input = makeRescaleInput(verticalRescaleFactor, horizontalRescaleFactor, jobNumber);
+        inputs.add(input);
+        jobNumber++;
+        verticalRescaleFactor = 25;
         input = makeRescaleInput(verticalRescaleFactor, horizontalRescaleFactor, jobNumber);
         inputs.add(input);
         jobNumber++;

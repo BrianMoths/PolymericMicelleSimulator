@@ -100,9 +100,14 @@ public class StressFinder {
         }
 
         private double[] calculateOverlapForce(double[] displacement, double interactionLength, double overlapCoefficient) {
-            final double squareDisplacementRatio = calculateSquareDisplacement(displacement) / (interactionLength * interactionLength);
-            final double forceMagnitude = overlapCoefficient * calculateOverlapGradientMagnitude(squareDisplacementRatio, interactionLength);
-            return calculateScaledDisplacement(displacement, forceMagnitude);
+            if (interactionLength > 0) {
+                final double squareDistance = calculateSquareDisplacement(displacement);
+                final double squareDisplacementRatio = squareDistance / (interactionLength * interactionLength);
+                final double forceMagnitude = overlapCoefficient * calculateOverlapGradientMagnitude(squareDisplacementRatio, interactionLength);
+                return calculateScaledDisplacement(displacement, forceMagnitude / Math.sqrt(squareDistance));
+            } else {
+                return calculateScaledDisplacement(displacement, 0);
+            }
         }
 
         private double calculateSquareDisplacement(double[] displacement) {
@@ -203,7 +208,9 @@ public class StressFinder {
         Iterator<Integer> neighborIterator = neighborIteratorFactory.getNeighborIterator(bead, polymerSimulator);
         while (neighborIterator.hasNext()) {
             final Integer neighbor = neighborIterator.next();
-            incrementByStressFromNeighbor(neighbor, beadPosition);
+            if (neighbor != bead) {
+                incrementByStressFromNeighbor(neighbor, beadPosition);
+            }
         }
     }
 

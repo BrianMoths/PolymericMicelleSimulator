@@ -13,7 +13,7 @@ import FocusedSimulation.StatisticsTracker.TrackableVariable;
  */
 public final class StressTrackable {
 
-    static public final StressTrackable STRESS_TRACKABLE = new StressTrackable();
+    static public final StressTrackable TOTAL_STRESS_TRACKABLE = new StressTrackable();
     private double[][] stress;
     private final TrackableVariable stress11, stress12, stress22;
     private boolean is11Retrieved = true, is12Retrieved = true, is22Retrieved = true;

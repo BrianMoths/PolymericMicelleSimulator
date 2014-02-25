@@ -18,9 +18,11 @@ import FocusedSimulation.StatisticsTracker.TrackableVariable;
 import Gui.SystemViewer;
 import SGEManagement.Input;
 import SGEManagement.Input.InputBuilder;
+import SystemAnalysis.HistogramMaker;
 import SystemAnalysis.StressTrackable;
 import java.io.FileNotFoundException;
 import java.util.EnumMap;
+import java.util.List;
 
 /**
  *
@@ -64,8 +66,8 @@ public class SurfaceTensionFinder {
 
     private static Input readInput(String[] args) {
         if (args.length == 0) {
-            final double verticalScaleFactor = .18;
-            final double horizontalScaleFactor = 3;
+            final double verticalScaleFactor = 4;
+            final double horizontalScaleFactor = 1;
 
             InputBuilder inputBuilder = SurfaceTensionJobMaker.makeRescaleInputBuilderWithHorizontalRescaling(verticalScaleFactor, horizontalScaleFactor, 0);
             inputBuilder.getJobParametersBuilder().setNumAnneals(5);
@@ -114,9 +116,9 @@ public class SurfaceTensionFinder {
 
     private void registerTrackablesToSimulationRunner() {
         simulationRunner.trackVariable(TrackableVariable.SYSTEM_WIDTH);
-        simulationRunner.trackVariable((StressTrackable.STRESS_TRACKABLE).getStress11Trackable());
-        simulationRunner.trackVariable((StressTrackable.STRESS_TRACKABLE).getStress12Trackable());
-        simulationRunner.trackVariable((StressTrackable.STRESS_TRACKABLE).getStress22Trackable());
+        simulationRunner.trackVariable((StressTrackable.TOTAL_STRESS_TRACKABLE).getStress11Trackable());
+        simulationRunner.trackVariable((StressTrackable.TOTAL_STRESS_TRACKABLE).getStress12Trackable());
+        simulationRunner.trackVariable((StressTrackable.TOTAL_STRESS_TRACKABLE).getStress22Trackable());
     }
 
     private void tryInitializeSystemViewer() {
@@ -148,22 +150,31 @@ public class SurfaceTensionFinder {
 
     private void doMeasurementTrials() {
         for (int i = 0; i < jobParameters.getNumSurfaceTensionTrials(); i++) {
-            doMeasurementTrial(simulationRunner, TrackableVariable.SYSTEM_WIDTH, polymerSimulator);
+            doMeasurementTrial(TrackableVariable.SYSTEM_WIDTH);
         }
     }
 
     private void doTrialsUntilConvergence() {
         while (jobParameters.getShouldIterateUntilConvergence() && !simulationRunner.isConverged(TrackableVariable.SYSTEM_WIDTH)) {
-            doMeasurementTrial(simulationRunner, TrackableVariable.SYSTEM_WIDTH, polymerSimulator);
+            doMeasurementTrial(TrackableVariable.SYSTEM_WIDTH);
         }
     }
 
-    private void doMeasurementTrial(SimulationRunner simulationRunner, TrackableVariable trackableVariable, PolymerSimulator polymerSimulator) {
+    private void doMeasurementTrial(TrackableVariable trackableVariable) {
         simulationRunner.doMeasurementRun();
         DoubleWithUncertainty measuredWidth = simulationRunner.getRecentMeasurementForTrackedVariable(trackableVariable);
         MeasuredSurfaceTension measuredSurfaceTension = getMeasuredSurfaceTensionFromWidth(measuredWidth, polymerSimulator);
         outputWriter.printSurfaceTension(measuredSurfaceTension);
         outputWriter.printStress(simulationRunner);
+    }
+
+    private void soutHistogram() {
+        final List<Integer> histogram = HistogramMaker.makeHistogram(simulationRunner.getPolymerSimulator().getSystemAnalyzer());
+        System.out.println("Histogram");
+        for (Integer integer : histogram) {
+            System.out.println(integer);
+        }
+        System.out.println("End histogram");
     }
 
     private void printFinalOutput() {

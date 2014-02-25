@@ -39,14 +39,14 @@ public class CompressibilityFinder {
 
     private final JobParameters jobParameters;
     private final SimulatorParameters systemParameters;
-    private final CompressibiltyOutputWriter outputWriter;
+    private final CompressibilityOutputWriter outputWriter;
     private final PolymerSimulator polymerSimulator;
     private final SimulationRunner simulationRunner;
 
     public CompressibilityFinder(Input input) {
         jobParameters = input.getJobParameters();
         systemParameters = input.getSystemParameters();
-        outputWriter = new CompressibiltyOutputWriter(this);
+        outputWriter = new CompressibilityOutputWriter();
         polymerSimulator = systemParameters.makePolymerSimulator();
         simulationRunner = new SimulationRunner(polymerSimulator, SimulationRunnerParameters.defaultSimulationRunnerParameters());
     }
