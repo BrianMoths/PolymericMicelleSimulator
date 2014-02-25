@@ -4,16 +4,16 @@
  */
 package FocusedSimulation;
 
-import Engine.Energetics.ExternalEnergyCalculator;
 import Engine.Energetics.EnergeticsConstants;
 import Engine.Energetics.EnergeticsConstants.EnergeticsConstantsBuilder;
-import Engine.PolymerTopology.PolymerChain;
-import Engine.PolymerTopology.PolymerCluster;
+import Engine.Energetics.ExternalEnergyCalculator;
 import Engine.PolymerSimulator;
 import Engine.PolymerState.SystemGeometry.GeometricalParameters;
 import Engine.PolymerState.SystemGeometry.Implementations.AbstractGeometry;
 import Engine.PolymerState.SystemGeometry.Implementations.PeriodicGeometry;
 import Engine.PolymerState.SystemGeometry.Interfaces.SystemGeometry;
+import Engine.PolymerTopology.PolymerChain;
+import Engine.PolymerTopology.PolymerCluster;
 import Gui.SystemViewer;
 import org.apache.commons.math3.stat.descriptive.DescriptiveStatistics;
 
@@ -77,7 +77,7 @@ public class EnergyOfL {
         energeticsConstantsBuilder.setTemperature(1);
         energeticsConstantsBuilder.setAAOverlapCoefficient(0);
         energeticsConstantsBuilder.setBBOverlapCoefficient(-.06);
-        energeticsConstantsBuilder.setSpringCoefficient(1);
+        energeticsConstantsBuilder.setSpringConstant(2);
 
         final ExternalEnergyCalculator externalEnergyCalculator = makeExternalEnergyCalculator();
         energeticsConstantsBuilder.setExternalEnergyCalculator(externalEnergyCalculator);

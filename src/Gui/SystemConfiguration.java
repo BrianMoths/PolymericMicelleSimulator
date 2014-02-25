@@ -6,14 +6,14 @@ package Gui;
 
 import Engine.Energetics.EnergeticsConstants;
 import Engine.Energetics.EnergeticsConstants.EnergeticsConstantsBuilder;
-import Engine.PolymerTopology.PolymerChain;
-import Engine.PolymerTopology.PolymerCluster;
 import Engine.PolymerSimulator;
 import Engine.PolymerState.SystemGeometry.GeometricalParameters;
+import Engine.PolymerState.SystemGeometry.Implementations.AbstractGeometry.AbstractGeometryBuilder;
 import Engine.PolymerState.SystemGeometry.Implementations.HardWallGeometry.HardWallGeometryBuilder;
 import Engine.PolymerState.SystemGeometry.Implementations.PeriodicGeometry.PeriodicGeometryBuilder;
-import Engine.PolymerState.SystemGeometry.Implementations.AbstractGeometry.AbstractGeometryBuilder;
 import Engine.PolymerState.SystemGeometry.Interfaces.SystemGeometry;
+import Engine.PolymerTopology.PolymerChain;
+import Engine.PolymerTopology.PolymerCluster;
 import java.awt.event.FocusAdapter;
 import java.util.ArrayList;
 import java.util.List;
@@ -731,7 +731,7 @@ public class SystemConfiguration extends javax.swing.JFrame { //broken, need to 
         energeticsConstantsBuilder.setAAOverlapCoefficient(inputVariables.AAOverlapCoefficient);
         energeticsConstantsBuilder.setBBOverlapCoefficient(inputVariables.BBOverlapCoefficient);
         energeticsConstantsBuilder.setABOverlapCoefficient(inputVariables.ABOverlapCoefficient);
-        energeticsConstantsBuilder.setSpringCoefficient(inputVariables.springConstant);
+        energeticsConstantsBuilder.setSpringConstant(inputVariables.springConstant);
 
         return energeticsConstantsBuilder;
     }

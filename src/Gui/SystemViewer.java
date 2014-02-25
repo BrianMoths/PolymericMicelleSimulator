@@ -4,12 +4,11 @@
  */
 package Gui;
 
-import Gui.analysiswindow.AnalysisWindow;
 import Engine.Energetics.EnergeticsConstants;
 import Engine.PolymerSimulator;
-import Engine.SystemAnalyzer;
 import Engine.PolymerState.SystemGeometry.GeometricalParameters;
-import SystemAnalysis.GeometryAnalyzer;
+import Engine.SystemAnalyzer;
+import Gui.analysiswindow.AnalysisWindow;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -95,7 +94,7 @@ public class SystemViewer extends javax.swing.JFrame {
         BBCoefficientLbl.setText(stringFormatDouble(energeticsConstants.getBBOverlapCoefficient()));
         ABCoefficientLbl.setText(stringFormatDouble(energeticsConstants.getABOverlapCoefficient()));
         temperatureLbl.setText(stringFormatDouble(energeticsConstants.getTemperature()));
-        springConstantLbl.setText(stringFormatDouble(energeticsConstants.getSpringCoefficient()));
+        springConstantLbl.setText(stringFormatDouble(energeticsConstants.getSpringConstant()));
         coreCoefficientLbl.setText(stringFormatDouble(energeticsConstants.getHardOverlapCoefficient()));
         numBeadsLbl.setText(Integer.toString(polymerSimulator.getNumBeads()));
 

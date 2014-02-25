@@ -64,10 +64,9 @@ public class StressFinder {
     static private final ForceCalculator springForceFinder = new ForceCalculator() {
         @Override
         public double[] calculateForce(double[] displacement, PolymerSimulator polymerSimulator) {
-            final double springCoefficient = polymerSimulator.getEnergeticsConstants().getSpringCoefficient();
             final double[] force = new double[displacement.length];
             for (int dimension = 0; dimension < displacement.length; dimension++) {
-                force[dimension] = -springCoefficient * displacement[dimension];
+                force[dimension] = polymerSimulator.getEnergeticsConstants().calculateSpringForce(displacement[dimension]);
             }
             return force;
         }

@@ -4,9 +4,9 @@
  */
 package Gui;
 
-import Gui.analysiswindow.AnalysisWindow;
 import Engine.PolymerSimulator;
 import Engine.SystemAnalyzer;
+import Gui.analysiswindow.AnalysisWindow;
 import SystemAnalysis.GeometryAnalyzer.AreaPerimeter;
 import java.io.File;
 import java.io.FileInputStream;
@@ -171,7 +171,7 @@ public class MicelleGui extends javax.swing.JFrame {
         BBCoefficientLbl.setText(String.format("%.4f", system.getEnergeticsConstants().getBBOverlapCoefficient()));
         ABCoefficientLbl.setText(String.format("%.4f", system.getEnergeticsConstants().getABOverlapCoefficient()));
         temperatureLbl.setText(String.format("%.4f", system.getEnergeticsConstants().getTemperature()));
-        springConstantLbl.setText(String.format("%.4f", system.getEnergeticsConstants().getSpringCoefficient()));
+        springConstantLbl.setText(String.format("%.4f", system.getEnergeticsConstants().getSpringConstant() / 2));
         beadSizeLbl.setText(String.format("%.4f", system.getGeometricalParameters().getInteractionLength()));
         systemSizeLbl.setText(String.format("%.4f", system.getGeometry().getSizeOfDimension(0)));
         hardCoresChk.setSelected(system.getGeometricalParameters().getCoreLength() != 0);
@@ -596,7 +596,7 @@ public class MicelleGui extends javax.swing.JFrame {
                 File file = fileChooser.getSelectedFile();
                 try (ObjectInputStream objectInputStream = new ObjectInputStream(
                         new FileInputStream(file))) {
-                    setSystem((PolymerSimulator)objectInputStream.readObject());
+                    setSystem((PolymerSimulator) objectInputStream.readObject());
                     System.out.println("Load successful");
                 }
             }

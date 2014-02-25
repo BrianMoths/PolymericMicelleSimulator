@@ -26,7 +26,7 @@ public final class EnergeticsConstants implements Serializable {
             energeticsConstantsBuilder.ABOverlapCoefficient = 0;
             energeticsConstantsBuilder.BBOverlapCoefficient = 0;
             energeticsConstantsBuilder.temperature = 1;
-            energeticsConstantsBuilder.springCoefficient = 1;
+            energeticsConstantsBuilder.springConstant = 2; //want springConstant = 3 so that 3/2 T = 1/2 springConstant L^2 when L=1 and T =1
             energeticsConstantsBuilder.hardOverlapCoefficient = 0;
             return energeticsConstantsBuilder;
         }
@@ -38,7 +38,7 @@ public final class EnergeticsConstants implements Serializable {
             energeticsConstantsBuilder.ABOverlapCoefficient = .1;
             energeticsConstantsBuilder.BBOverlapCoefficient = 5. / 120.;
             energeticsConstantsBuilder.temperature = 1;
-            energeticsConstantsBuilder.springCoefficient = 1. / 3.;
+            energeticsConstantsBuilder.springConstant = 2. / 3.;
             energeticsConstantsBuilder.hardOverlapCoefficient = 0;
             return energeticsConstantsBuilder;
         }
@@ -47,7 +47,8 @@ public final class EnergeticsConstants implements Serializable {
                 AAOverlapCoefficient,
                 BBOverlapCoefficient,
                 ABOverlapCoefficient,
-                springCoefficient,
+                //                springCoefficient,
+                springConstant,
                 hardOverlapCoefficient;
         private ExternalEnergyCalculator externalEnergyCalculator = new ExternalEnergyCalculator();
 
@@ -59,7 +60,7 @@ public final class EnergeticsConstants implements Serializable {
             AAOverlapCoefficient = energeticsConstants.AAOverlapCoefficient;
             BBOverlapCoefficient = energeticsConstants.BBOverlapCoefficient;
             ABOverlapCoefficient = energeticsConstants.ABOverlapCoefficient;
-            springCoefficient = energeticsConstants.springCoefficient;
+            springConstant = energeticsConstants.springConstant;
             hardOverlapCoefficient = energeticsConstants.hardOverlapCoefficient;
         }
 
@@ -84,7 +85,7 @@ public final class EnergeticsConstants implements Serializable {
         }
 
         public double idealStepLength() {
-            return Math.sqrt(getTemperature() / getSpringCoefficient());
+            return Math.sqrt(getTemperature() / (getSpringConstant() / 2));
         }
 
         //<editor-fold defaultstate="collapsed" desc="setters">
@@ -110,8 +111,8 @@ public final class EnergeticsConstants implements Serializable {
             return this;
         }
 
-        public EnergeticsConstantsBuilder setSpringCoefficient(double springCoefficient) {
-            this.springCoefficient = springCoefficient;
+        public EnergeticsConstantsBuilder setSpringConstant(double springConstant) {
+            this.springConstant = springConstant;
             return this;
         }
 
@@ -143,8 +144,8 @@ public final class EnergeticsConstants implements Serializable {
             return ABOverlapCoefficient;
         }
 
-        public double getSpringCoefficient() {
-            return springCoefficient;
+        public double getSpringConstant() {
+            return springConstant;
         }
 
         public double getHardOverlapCoefficient() {
@@ -175,7 +176,7 @@ public final class EnergeticsConstants implements Serializable {
             BBOverlapCoefficient,
             ABOverlapCoefficient,
             hardOverlapCoefficient,
-            springCoefficient;
+            springConstant;
     private final ExternalEnergyCalculator externalEnergyCalculator;
 
     private EnergeticsConstants(EnergeticsConstantsBuilder energeticsConstantsBuilder) {
@@ -184,14 +185,18 @@ public final class EnergeticsConstants implements Serializable {
         BBOverlapCoefficient = energeticsConstantsBuilder.BBOverlapCoefficient;
         ABOverlapCoefficient = energeticsConstantsBuilder.ABOverlapCoefficient;
         hardOverlapCoefficient = energeticsConstantsBuilder.hardOverlapCoefficient;
-        springCoefficient = energeticsConstantsBuilder.springCoefficient;
+        springConstant = energeticsConstantsBuilder.springConstant;
         externalEnergyCalculator = energeticsConstantsBuilder.externalEnergyCalculator;
 
     }
 
     //<editor-fold defaultstate="collapsed" desc="calculate energies">
     public double springEnergy(double squareLength) {
-        return springCoefficient * squareLength;
+        return springConstant / 2 * squareLength;
+    }
+
+    public double calculateSpringForce(double displacement) {
+        return -springConstant * displacement;
     }
 
     public double densityEnergy(AreaOverlap areaOverlap) {
@@ -218,7 +223,7 @@ public final class EnergeticsConstants implements Serializable {
     }
 
     public double idealStepLength() {
-        return Math.sqrt(getTemperature() / getSpringCoefficient());
+        return Math.sqrt(getTemperature() / (getSpringConstant() / 2));
     }
 
     //<editor-fold defaultstate="collapsed" desc="to string">
@@ -230,7 +235,7 @@ public final class EnergeticsConstants implements Serializable {
         stringBuilder.append("BB Overlap Coefficient: ").append(Double.toString(BBOverlapCoefficient)).append("\n");
         stringBuilder.append("AB Overlap Coefficient: ").append(Double.toString(ABOverlapCoefficient)).append("\n");
         stringBuilder.append("Hard Overlap Coefficient: ").append(Double.toString(hardOverlapCoefficient)).append("\n");
-        stringBuilder.append("Spring Coefficient: ").append(Double.toString(springCoefficient)).append("\n");
+        stringBuilder.append("Spring Constant: ").append(Double.toString(springConstant)).append("\n");
         return stringBuilder.toString();
     }
     //</editor-fold>
@@ -256,8 +261,8 @@ public final class EnergeticsConstants implements Serializable {
         return hardOverlapCoefficient;
     }
 
-    public double getSpringCoefficient() {
-        return springCoefficient;
+    public double getSpringConstant() {
+        return springConstant;
     }
 
     public ExternalEnergyCalculator getExternalEnergyCalculator() {
