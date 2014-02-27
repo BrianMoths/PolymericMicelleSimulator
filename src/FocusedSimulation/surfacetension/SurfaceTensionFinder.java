@@ -66,11 +66,12 @@ public class SurfaceTensionFinder {
 
     private static Input readInput(String[] args) {
         if (args.length == 0) {
-            final double verticalScaleFactor = 4;
+            final double verticalScaleFactor = .1;
             final double horizontalScaleFactor = 1;
 
             InputBuilder inputBuilder = SurfaceTensionJobMaker.makeRescaleInputBuilderWithHorizontalRescaling(verticalScaleFactor, horizontalScaleFactor, 0);
-            inputBuilder.getJobParametersBuilder().setNumAnneals(5);
+            inputBuilder.getJobParametersBuilder().setNumAnneals(1);
+            inputBuilder.getJobParametersBuilder().setNumSurfaceTensionTrials(1);
             return inputBuilder.buildInput();
         } else if (args.length == 1) {
             final String fileName = args[0];

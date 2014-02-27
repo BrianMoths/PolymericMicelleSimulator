@@ -61,6 +61,7 @@ public class SystemAnalyzer implements Serializable {
     }
 
     static private final int statisticsWindow = 1000;
+    private final ImmutablePolymerState immutablePolymerState;
     private final ImmutableDiscretePolymerState immutableDiscretePolymerState;
     private final ImmutableSystemGeometry systemGeometry;
     private final double[][] beadPositions;
@@ -73,6 +74,7 @@ public class SystemAnalyzer implements Serializable {
     public SystemAnalyzer(ImmutablePolymerState immutablePolymerState,
             EnergeticsConstants energeticsConstants) {
         systemGeometry = immutablePolymerState.getImmutableSystemGeometry();
+        this.immutablePolymerState = immutablePolymerState;
         immutableDiscretePolymerState = immutablePolymerState.getImmutableDiscretePolymerState();
         numBeads = immutableDiscretePolymerState.getNumBeads();
         this.energeticsConstants = energeticsConstants;
@@ -87,6 +89,7 @@ public class SystemAnalyzer implements Serializable {
 
     public SystemAnalyzer(SystemAnalyzer systemAnalyzer) {
         systemGeometry = systemAnalyzer.systemGeometry;
+        immutablePolymerState = systemAnalyzer.immutablePolymerState;
         immutableDiscretePolymerState = systemAnalyzer.immutableDiscretePolymerState;
         numBeads = systemAnalyzer.numBeads;
         energeticsConstants = systemAnalyzer.energeticsConstants;
@@ -274,6 +277,10 @@ public class SystemAnalyzer implements Serializable {
             return immutableDiscretePolymerState.getNeighborToRightOfBead(bead);
         }
         throw new IllegalArgumentException("direction must be 0 or 1");
+    }
+
+    public List<double[]> getEndToEndDisplacements() {
+        return immutablePolymerState.getEndToEndDisplacements();
     }
 
     public double[] getBeadPosition(int bead) {

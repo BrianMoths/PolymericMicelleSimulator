@@ -25,7 +25,11 @@ public class AbstractResultsWriter {
         final double width = systemGeometry.getSizeOfDimension(0);
         final double height = systemGeometry.getSizeOfDimension(1);
         StringBuilder parametersStringBuilder = new StringBuilder();
-        parametersStringBuilder.append("\n").append("fraction of area covered at end of simulation: ").append(Double.toString(beadArea / totalArea)).append("\n").append("number density of blob at end of simulation: ").append(Double.toString(numBeads / beadArea)).append("\n").append("horizontal size of system at end of simulation: ").append(Double.toString(width)).append("\n").append("vertical size of system at end of simulation: ").append(Double.toString(height)).append("\n");
+        parametersStringBuilder.append("\n")
+                .append("fraction of area covered at end of simulation: ").append(Double.toString(beadArea / totalArea)).append("\n")
+                .append("number density of blob at end of simulation: ").append(Double.toString(numBeads / beadArea)).append("\n")
+                .append("horizontal size of system at end of simulation: ").append(Double.toString(width)).append("\n")
+                .append("vertical size of system at end of simulation: ").append(Double.toString(height)).append("\n");
         return parametersStringBuilder.toString();
     }
 

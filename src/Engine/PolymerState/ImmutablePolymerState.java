@@ -7,6 +7,7 @@ package Engine.PolymerState;
 import Engine.PolymerState.SystemGeometry.Interfaces.ImmutableSystemGeometry;
 import Engine.SystemAnalyzer.AnalyzerListener;
 import Engine.SystemAnalyzer.BeadPositionsGetter;
+import java.util.List;
 
 /**
  *
@@ -23,5 +24,7 @@ public interface ImmutablePolymerState {
     public void acceptBeadPositionGetter(BeadPositionsGetter beadPositionsGetter);
 
     public void acceptAnalyzerListener(AnalyzerListener analyzerListener);
+
+    List<double[]> getEndToEndDisplacements();
 
 }

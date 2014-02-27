@@ -7,6 +7,8 @@ package Engine.PolymerState;
 import Engine.PolymerState.SystemGeometry.Interfaces.ImmutableSystemGeometry;
 import Engine.PolymerState.SystemGeometry.Interfaces.SystemGeometry;
 import Engine.SystemAnalyzer;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  *
@@ -156,6 +158,20 @@ public class PolymerState implements ImmutablePolymerState {
 
     public void undoStep(int stepBead, double[] stepVector) {
         polymerPosition.undoStep(stepBead, stepVector);
+    }
+
+    @Override
+    public List<double[]> getEndToEndDisplacements() {
+        List<Integer> leftBeads = discretePolymerState.getLeftmostBeads();
+        List<double[]> displacements = new ArrayList<>(leftBeads.size());
+        for (Integer leftBead : leftBeads) {
+            final int rightBead = discretePolymerState.getRightBeadOfChain(leftBead);
+            final double[] leftPosition = polymerPosition.getBeadPosition(leftBead);
+            final double[] rightPosition = polymerPosition.getBeadPosition(rightBead);
+            final double[] displacement = systemGeometry.getDisplacement(rightPosition, leftPosition);
+            displacements.add(displacement);
+        }
+        return displacements;
     }
 
     public DiscretePolymerState getDiscretePolymerState() {

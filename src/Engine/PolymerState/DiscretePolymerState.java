@@ -108,6 +108,23 @@ public class DiscretePolymerState implements ImmutableDiscretePolymerState, Seri
     }
 //</editor-fold>
 
+    public List<Integer> getLeftmostBeads() {
+        List<Integer> leftmostBeads = new ArrayList<>();
+
+        for (int bead = 0; bead < numBeads; bead++) {
+            if (isLeftmostBead(bead)) {
+                leftmostBeads.add(bead);
+            }
+        }
+
+        return leftmostBeads;
+
+    }
+
+    private boolean isLeftmostBead(int bead) {
+        return getNeighborToLeftOfBead(bead) == -1;
+    }
+
     public int getReptatingBead(int beadInChain, boolean isGoingRight) {
         int movingBead;
 

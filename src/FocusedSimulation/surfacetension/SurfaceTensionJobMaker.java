@@ -29,7 +29,7 @@ public class SurfaceTensionJobMaker {
     }
 
     static private List<Input> makeInputs() {
-        return makeNarrowVerticalScalingInputs();
+        return makeFinalOutputTestInputs();
     }
 
     public static Input makeRescaleInput(final double scaleFactor, int jobNumber) {
@@ -194,27 +194,27 @@ public class SurfaceTensionJobMaker {
         inputs.add(input);
         jobNumber++;
 
-        verticalRescaleFactor = 10;
-        input = makeRescaleInput(verticalRescaleFactor, horizontalRescaleFactor, jobNumber);
-        inputs.add(input);
-        jobNumber++;
-        verticalRescaleFactor = 15;
-        input = makeRescaleInput(verticalRescaleFactor, horizontalRescaleFactor, jobNumber);
-        inputs.add(input);
-        jobNumber++;
-        verticalRescaleFactor = 20;
-        input = makeRescaleInput(verticalRescaleFactor, horizontalRescaleFactor, jobNumber);
-        inputs.add(input);
-        jobNumber++;
-        verticalRescaleFactor = 25;
-        input = makeRescaleInput(verticalRescaleFactor, horizontalRescaleFactor, jobNumber);
-        inputs.add(input);
-        jobNumber++;
-
-        verticalRescaleFactor = 30;
-        input = makeRescaleInput(verticalRescaleFactor, horizontalRescaleFactor, jobNumber);
-        inputs.add(input);
-        jobNumber++;
+//        verticalRescaleFactor = 10;
+//        input = makeRescaleInput(verticalRescaleFactor, horizontalRescaleFactor, jobNumber);
+//        inputs.add(input);
+//        jobNumber++;
+//        verticalRescaleFactor = 15;
+//        input = makeRescaleInput(verticalRescaleFactor, horizontalRescaleFactor, jobNumber);
+//        inputs.add(input);
+//        jobNumber++;
+//        verticalRescaleFactor = 20;
+//        input = makeRescaleInput(verticalRescaleFactor, horizontalRescaleFactor, jobNumber);
+//        inputs.add(input);
+//        jobNumber++;
+//        verticalRescaleFactor = 25;
+//        input = makeRescaleInput(verticalRescaleFactor, horizontalRescaleFactor, jobNumber);
+//        inputs.add(input);
+//        jobNumber++;
+//
+//        verticalRescaleFactor = 30;
+//        input = makeRescaleInput(verticalRescaleFactor, horizontalRescaleFactor, jobNumber);
+//        inputs.add(input);
+//        jobNumber++;
         return inputs;
     }
 
@@ -352,6 +352,78 @@ public class SurfaceTensionJobMaker {
         inputBuilder.getJobParametersBuilder().setShouldIterateUntilConvergence(false);
         inputs.add(inputBuilder.buildInput());
         jobNumber++;
+
+        return inputs;
+    }
+
+    private static List<Input> makeFinalOutputTestInputs() {
+        List<Input> inputs = new ArrayList<>();
+
+        int jobNumber = 1;
+        InputBuilder inputBuilder;
+        double verticalRescaleFactor = .1;
+        final double horizontalRescaleFactor = 1;
+
+        inputBuilder = makeRescaleInputBuilderWithHorizontalRescaling(verticalRescaleFactor, horizontalRescaleFactor, jobNumber);
+        inputBuilder.getJobParametersBuilder().setNumAnneals(1);
+        inputBuilder.getJobParametersBuilder().setNumSurfaceTensionTrials(1);
+        inputs.add(inputBuilder.buildInput());
+        jobNumber++;
+
+        inputBuilder = makeRescaleInputBuilderWithHorizontalRescaling(verticalRescaleFactor, horizontalRescaleFactor, jobNumber);
+        inputBuilder.getJobParametersBuilder().setNumAnneals(1);
+        inputBuilder.getJobParametersBuilder().setNumSurfaceTensionTrials(1);
+        inputs.add(inputBuilder.buildInput());
+        jobNumber++;
+
+        inputBuilder = makeRescaleInputBuilderWithHorizontalRescaling(verticalRescaleFactor, horizontalRescaleFactor, jobNumber);
+        inputBuilder.getJobParametersBuilder().setNumAnneals(1);
+        inputBuilder.getJobParametersBuilder().setNumSurfaceTensionTrials(1);
+        inputs.add(inputBuilder.buildInput());
+        jobNumber++;
+
+        inputBuilder = makeRescaleInputBuilderWithHorizontalRescaling(verticalRescaleFactor, horizontalRescaleFactor, jobNumber);
+        inputBuilder.getJobParametersBuilder().setNumAnneals(1);
+        inputBuilder.getJobParametersBuilder().setNumSurfaceTensionTrials(1);
+        inputs.add(inputBuilder.buildInput());
+        jobNumber++;
+
+        inputBuilder = makeRescaleInputBuilderWithHorizontalRescaling(verticalRescaleFactor, horizontalRescaleFactor, jobNumber);
+        inputBuilder.getJobParametersBuilder().setNumAnneals(1);
+        inputBuilder.getJobParametersBuilder().setNumSurfaceTensionTrials(1);
+        inputs.add(inputBuilder.buildInput());
+        jobNumber++;
+
+        inputBuilder = makeRescaleInputBuilderWithHorizontalRescaling(verticalRescaleFactor, horizontalRescaleFactor, jobNumber);
+        inputBuilder.getJobParametersBuilder().setNumAnneals(1);
+        inputBuilder.getJobParametersBuilder().setNumSurfaceTensionTrials(1);
+        inputs.add(inputBuilder.buildInput());
+        jobNumber++;
+
+        inputBuilder = makeRescaleInputBuilderWithHorizontalRescaling(verticalRescaleFactor, horizontalRescaleFactor, jobNumber);
+        inputBuilder.getJobParametersBuilder().setNumAnneals(1);
+        inputBuilder.getJobParametersBuilder().setNumSurfaceTensionTrials(1);
+        inputs.add(inputBuilder.buildInput());
+        jobNumber++;
+
+        inputBuilder = makeRescaleInputBuilderWithHorizontalRescaling(verticalRescaleFactor, horizontalRescaleFactor, jobNumber);
+        inputBuilder.getJobParametersBuilder().setNumAnneals(1);
+        inputBuilder.getJobParametersBuilder().setNumSurfaceTensionTrials(1);
+        inputs.add(inputBuilder.buildInput());
+        jobNumber++;
+
+        inputBuilder = makeRescaleInputBuilderWithHorizontalRescaling(verticalRescaleFactor, horizontalRescaleFactor, jobNumber);
+        inputBuilder.getJobParametersBuilder().setNumAnneals(1);
+        inputBuilder.getJobParametersBuilder().setNumSurfaceTensionTrials(1);
+        inputs.add(inputBuilder.buildInput());
+        jobNumber++;
+
+        inputBuilder = makeRescaleInputBuilderWithHorizontalRescaling(verticalRescaleFactor, horizontalRescaleFactor, jobNumber);
+        inputBuilder.getJobParametersBuilder().setNumAnneals(1);
+        inputBuilder.getJobParametersBuilder().setNumSurfaceTensionTrials(1);
+        inputs.add(inputBuilder.buildInput());
+        jobNumber++;
+
 
         return inputs;
     }
