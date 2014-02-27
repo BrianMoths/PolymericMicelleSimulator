@@ -169,7 +169,22 @@ public class SurfaceTensionFinder {
         outputWriter.printStress(simulationRunner);
     }
 
-    private void soutHistogram() {
+    private void outputEndToEndDisplacements() {
+        final List<double[]> endToEndDisplacements = polymerSimulator.getSystemAnalyzer().getEndToEndDisplacements();
+        final StringBuilder stringBuilder = new StringBuilder();
+        stringBuilder.append("Begin end to end displacements\n");
+        for (double[] displacment : endToEndDisplacements) {
+            for (int i = 0; i < displacment.length - 1; i++) {
+                stringBuilder.append(displacment[i]).append(", ");
+            }
+            stringBuilder.append(displacment[displacment.length - 1]).append("\n");
+        }
+        stringBuilder.append("End end to end displacements\n");
+        final String displacmentsString = stringBuilder.toString();
+        outputWriter.printAndSoutString(displacmentsString);
+    }
+
+    private void soutYPositionHistogram() {
         final List<Integer> histogram = HistogramMaker.makeHistogram(simulationRunner.getPolymerSimulator().getSystemAnalyzer());
         System.out.println("Histogram");
         for (Integer integer : histogram) {
@@ -179,6 +194,7 @@ public class SurfaceTensionFinder {
     }
 
     private void printFinalOutput() {
+        outputEndToEndDisplacements();
         outputWriter.printFinalOutput(polymerSimulator);
     }
 
@@ -191,6 +207,7 @@ public class SurfaceTensionFinder {
         stepweights.put(StepType.SINGLE_WALL_RESIZE, .0001);
         stepweights.put(StepType.SINGLE_BEAD, 1.);
         return new GeneralStepGenerator(stepweights);
+
     }
 
     private StepGenerator makeMainStepGenerator() {
@@ -200,9 +217,10 @@ public class SurfaceTensionFinder {
         stepweights.put(StepType.REPTATION, .1);
         stepweights.put(StepType.SINGLE_CHAIN, .01);
         return new GeneralStepGenerator(stepweights);
+
     }
 
-    //<editor-fold defaultstate="collapsed" desc="getters">
+//<editor-fold defaultstate="collapsed" desc="getters">
     public SimulatorParameters getInputParameters() {
         return systemParameters;
     }

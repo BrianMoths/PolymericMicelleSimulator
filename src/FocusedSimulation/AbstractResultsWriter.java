@@ -65,7 +65,7 @@ public class AbstractResultsWriter {
         outputWriter.printAndSoutString(parametersString);
     }
 
-    protected void printAndSoutString(String outputString) {
+    public void printAndSoutString(String outputString) {
         outputWriter.printAndSoutString(outputString);
     }
 
