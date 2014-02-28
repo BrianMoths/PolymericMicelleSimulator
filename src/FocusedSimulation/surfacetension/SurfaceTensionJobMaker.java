@@ -29,7 +29,7 @@ public class SurfaceTensionJobMaker {
     }
 
     static private List<Input> makeInputs() {
-        return makeFinalOutputTestInputs();
+        return makeNarrowVerticalScalingInputs();
     }
 
     public static Input makeRescaleInput(final double scaleFactor, int jobNumber) {
@@ -58,7 +58,7 @@ public class SurfaceTensionJobMaker {
         externalEnergyCalculatorBuilder.setXPositionAndSpringConstant(16 * horizontalScale, 50);
         inputBuilder.getSystemParametersBuilder().getEnergeticsConstantsBuilder().setExternalEnergyCalculator(externalEnergyCalculatorBuilder.build());
         inputBuilder.getJobParametersBuilder().setJobNumber(jobNumber);
-        inputBuilder.getJobParametersBuilder().setNumSurfaceTensionTrials(200);
+        inputBuilder.getJobParametersBuilder().setNumSurfaceTensionTrials(70);
         return inputBuilder;
     }
 

@@ -165,13 +165,28 @@ public class PolymerState implements ImmutablePolymerState {
         List<Integer> leftBeads = discretePolymerState.getLeftmostBeads();
         List<double[]> displacements = new ArrayList<>(leftBeads.size());
         for (Integer leftBead : leftBeads) {
-            final int rightBead = discretePolymerState.getRightBeadOfChain(leftBead);
-            final double[] leftPosition = polymerPosition.getBeadPosition(leftBead);
-            final double[] rightPosition = polymerPosition.getBeadPosition(rightBead);
-            final double[] displacement = systemGeometry.getDisplacement(rightPosition, leftPosition);
+            double[] displacement = getEndToEndDisplacement(leftBead);
             displacements.add(displacement);
         }
         return displacements;
+    }
+
+    private double[] getEndToEndDisplacement(Integer leftBead) {
+        final double[] displacement = new double[systemGeometry.getNumDimensions()];
+        int currentBead = leftBead;
+        double[] currentPosition = polymerPosition.getBeadPosition(currentBead);
+        int rightNeighbor = discretePolymerState.getNeighborToRightOfBead(currentBead);
+        double[] neighborPosition;
+        while (rightNeighbor != -1) {
+            neighborPosition = polymerPosition.getBeadPosition(rightNeighbor);
+            final double[] currentDisplacement = systemGeometry.getDisplacement(neighborPosition, currentPosition);
+            for (int i = 0; i < displacement.length; i++) {
+                displacement[i] += currentDisplacement[i];
+            }
+            currentPosition = neighborPosition;
+            rightNeighbor = discretePolymerState.getNeighborToRightOfBead(currentBead);
+        }
+        return displacement;
     }
 
     public DiscretePolymerState getDiscretePolymerState() {

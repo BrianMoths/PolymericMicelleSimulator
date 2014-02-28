@@ -30,6 +30,20 @@ public interface ImmutableSystemGeometry {
 
     public GeometricalParameters getParameters();
 
+    /**
+     * Finds the difference {@code position1} - {@code position2}. The method
+     * should satisfy
+     * {@code incrementBy(position2,getDisplacement(position1,position2))}
+     * copies {@code position1} into {@code position2}. If there are many return
+     * values which satisfy this relationship, then the one whose components
+     * have smallest magnitude among those is returned.
+     *
+     * @param position1 the position to which the displacement is being
+     * calculated
+     * @param position2 the position form which the displacement is being
+     * calculated
+     * @return the displacement to position1 from position2.
+     */
     public double[] getDisplacement(double[] position1, double[] position2);
 
     public double sqDist(double[] position1, double[] position2);
