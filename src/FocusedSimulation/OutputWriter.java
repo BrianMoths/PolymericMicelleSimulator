@@ -8,6 +8,8 @@ import FocusedSimulation.surfacetension.SurfaceTensionResultsWriter;
 import java.io.FileNotFoundException;
 import java.io.PrintWriter;
 import java.util.Calendar;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  *
@@ -95,6 +97,11 @@ public class OutputWriter {
     }
 
     public void closeWriter() {
+        try {
+            Thread.sleep(10000); //sometimes the final output is not sleeping. I wonder if it closes before hte output can be written. This fix is a total guess. I don't know what else to do.
+        } catch (InterruptedException ex) {
+            Logger.getLogger(OutputWriter.class.getName()).log(Level.SEVERE, null, ex);
+        }
         dataWriter.close();
     }
 
