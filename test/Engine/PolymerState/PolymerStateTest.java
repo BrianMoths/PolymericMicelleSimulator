@@ -50,16 +50,51 @@ public class PolymerStateTest {
     /**
      * Test of scaleSystemAlongDimension method, of class PolymerState.
      */
-    @Ignore
     @Test
     public void testScaleSystemAlongDimension() {
         System.out.println("scaleSystemAlongDimension");
-        double sizeChange = 0.0;
-        int dimension = 0;
-        PolymerState instance = null;
+        PolymerState instance;
+        double[][] actualPositions;
+        double[][] expectedPositions;
+        double sizeChange;
+        int dimension;
+
+
+
+
+        sizeChange = 20.0;
+        dimension = 0;
+        instance = makePolymerState(3, 1);
+        instance.getPolymerPosition().setBeadPositions(new double[][]{new double[]{0, 0}, new double[]{1, 0}, new double[]{0, 1}});
         instance.scaleSystemAlongDimension(sizeChange, dimension);
-        // TODO review the generated test code and remove the default call to fail.
-        fail("The test case is a prototype.");
+        actualPositions = instance.getPolymerPosition().getBeadPositions();
+        expectedPositions = new double[][]{new double[]{0, 0}, new double[]{2, 0}, new double[]{0, 1}};
+        for (int i = 0; i < actualPositions.length; i++) {
+            assertArrayEquals(actualPositions[i], expectedPositions[i], .00001);
+        }
+
+        sizeChange = 10.0;
+        dimension = 0;
+        instance = makePolymerState(3, 1);
+        instance.getPolymerPosition().setBeadPositions(new double[][]{new double[]{0, 0}, new double[]{1, 0}, new double[]{0, 1}});
+        instance.scaleSystemAlongDimension(sizeChange, dimension);
+        actualPositions = instance.getPolymerPosition().getBeadPositions();
+        expectedPositions = new double[][]{new double[]{0, 0}, new double[]{1.5, 0}, new double[]{0, 1}};
+        for (int i = 0; i < actualPositions.length; i++) {
+            assertArrayEquals(actualPositions[i], expectedPositions[i], .00001);
+        }
+
+
+        sizeChange = 20.0;
+        dimension = 1;
+        instance = makePolymerState(3, 1);
+        instance.getPolymerPosition().setBeadPositions(new double[][]{new double[]{0, 0}, new double[]{1, 0}, new double[]{0, 1}});
+        instance.scaleSystemAlongDimension(sizeChange, dimension);
+        actualPositions = instance.getPolymerPosition().getBeadPositions();
+        expectedPositions = new double[][]{new double[]{0, 0}, new double[]{1, 0}, new double[]{0, 2}};
+        for (int i = 0; i < actualPositions.length; i++) {
+            assertArrayEquals(actualPositions[i], expectedPositions[i], .00001);
+        }
     }
 
     /**

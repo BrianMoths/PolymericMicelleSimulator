@@ -8,7 +8,7 @@ import Engine.SimulatorParameters;
 import Engine.SimulatorParameters.SystemParametersBuilder;
 import FocusedSimulation.JobParameters;
 import FocusedSimulation.JobParameters.JobParametersBuilder;
-import FocusedSimulation.OutputWriter;
+import FocusedSimulation.output.OutputWriter;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;

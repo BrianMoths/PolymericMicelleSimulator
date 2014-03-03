@@ -5,7 +5,7 @@
 package FocusedSimulation.surfacetension;
 
 import Engine.PolymerSimulator;
-import FocusedSimulation.AbstractResultsWriter;
+import FocusedSimulation.output.AbstractResultsWriter;
 import FocusedSimulation.DoubleWithUncertainty;
 import FocusedSimulation.SimulationRunner;
 import FocusedSimulation.surfacetension.SurfaceTensionFinder.MeasuredSurfaceTension;

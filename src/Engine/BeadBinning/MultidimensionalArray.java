@@ -44,7 +44,6 @@ public class MultidimensionalArray<T> {
                 backingIndex %= strideOfDimension.get(dimension);
             }
 
-
             return indices;
         }
 

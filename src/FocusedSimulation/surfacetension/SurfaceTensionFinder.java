@@ -194,7 +194,7 @@ public class SurfaceTensionFinder {
     }
 
     private void printFinalOutput() {
-        outputEndToEndDisplacements();
+//        outputEndToEndDisplacements();
         outputWriter.printFinalOutput(polymerSimulator);
     }
 
