@@ -8,6 +8,7 @@ import Engine.PolymerState.SystemGeometry.Interfaces.ImmutableSystemGeometry;
 import Engine.PolymerState.SystemGeometry.Interfaces.SystemGeometry;
 import Engine.SystemAnalyzer;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
 /**
@@ -16,9 +17,9 @@ import java.util.List;
  */
 public class PolymerState implements ImmutablePolymerState {
 
-    private DiscretePolymerState discretePolymerState;
-    private PolymerPosition polymerPosition;
-    private SystemGeometry systemGeometry;
+    private final DiscretePolymerState discretePolymerState;
+    private final PolymerPosition polymerPosition;
+    private final SystemGeometry systemGeometry;
 
     public PolymerState(DiscretePolymerState discretePolymerState, PolymerPosition polymerPosition, SystemGeometry systemGeometry) {
         this.discretePolymerState = discretePolymerState;
@@ -171,20 +172,58 @@ public class PolymerState implements ImmutablePolymerState {
         return displacements;
     }
 
-    private double[] getEndToEndDisplacement(Integer leftBead) {
+    private double[] getEndToEndDisplacement(final Integer leftBead) {
+        class DisplacementIterator implements Iterator<double[]> {
+
+            private int currentBead;
+            private int rightNeighbor;
+            private double[] currentPosition;
+            private double[] neighborPosition;
+
+            public DisplacementIterator() {
+                currentBead = leftBead;
+                currentPosition = polymerPosition.getBeadPosition(currentBead);
+                rightNeighbor = discretePolymerState.getNeighborToRightOfBead(currentBead);
+            }
+
+            @Override
+            public boolean hasNext() {
+                return rightNeighbor != -1;
+            }
+
+            @Override
+            public double[] next() {
+                double[] displacement = calculateNextDisplacement();
+                iterateFields();
+                return displacement;
+            }
+
+            @Override
+            public void remove() {
+                throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+            }
+
+            private double[] calculateNextDisplacement() {
+                neighborPosition = polymerPosition.getBeadPosition(rightNeighbor);
+                final double[] displacement = systemGeometry.getDisplacement(neighborPosition, currentPosition);
+                return displacement;
+            }
+
+            private void iterateFields() {
+                currentBead = rightNeighbor;
+                currentPosition = neighborPosition;
+                rightNeighbor = discretePolymerState.getNeighborToRightOfBead(currentBead);
+            }
+
+        }
         final double[] displacement = new double[systemGeometry.getNumDimensions()];
-        int currentBead = leftBead;
-        double[] currentPosition = polymerPosition.getBeadPosition(currentBead);
-        int rightNeighbor = discretePolymerState.getNeighborToRightOfBead(currentBead);
-        double[] neighborPosition;
-        while (rightNeighbor != -1) {
-            neighborPosition = polymerPosition.getBeadPosition(rightNeighbor);
-            final double[] currentDisplacement = systemGeometry.getDisplacement(neighborPosition, currentPosition);
+        final DisplacementIterator displacementIterator = new DisplacementIterator();
+
+        while (displacementIterator.hasNext()) {
+            final double[] currentDisplacement = displacementIterator.next();
             for (int i = 0; i < displacement.length; i++) {
                 displacement[i] += currentDisplacement[i];
             }
-            currentPosition = neighborPosition;
-            rightNeighbor = discretePolymerState.getNeighborToRightOfBead(currentBead);
         }
         return displacement;
     }

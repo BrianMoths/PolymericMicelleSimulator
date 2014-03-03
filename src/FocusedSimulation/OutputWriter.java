@@ -98,7 +98,7 @@ public class OutputWriter {
 
     public void closeWriter() {
         try {
-            Thread.sleep(10000); //sometimes the final output is not sleeping. I wonder if it closes before hte output can be written. This fix is a total guess. I don't know what else to do.
+            Thread.sleep(10000); //sometimes the final output is not showing. I wonder if it closes before hte output can be written. This fix is a total guess. I don't know what else to do.
         } catch (InterruptedException ex) {
             Logger.getLogger(OutputWriter.class.getName()).log(Level.SEVERE, null, ex);
         }
