@@ -5,12 +5,9 @@
 package FocusedSimulation.surfacetension;
 
 import Engine.PolymerSimulator;
-import FocusedSimulation.output.AbstractResultsWriter;
 import FocusedSimulation.DoubleWithUncertainty;
-import FocusedSimulation.SimulationRunner;
-import FocusedSimulation.surfacetension.SurfaceTensionFinder.MeasuredSurfaceTension;
+import FocusedSimulation.output.AbstractResultsWriter;
 import SGEManagement.Input;
-import SystemAnalysis.StressTrackable;
 import java.io.FileNotFoundException;
 
 /**
@@ -19,27 +16,15 @@ import java.io.FileNotFoundException;
  */
 public class SurfaceTensionResultsWriter extends AbstractResultsWriter {
 
-    static private String makeSurfaceTensionString(MeasuredSurfaceTension measuredSurfaceTension) {
+    static private String makeSurfaceTensionString(DoubleWithUncertainty measuredSurfaceTension) {
         StringBuilder parametersStringBuilder = new StringBuilder();
         parametersStringBuilder
                 .append("Surface Tension found: ")
-                .append(Double.toString(measuredSurfaceTension.surfaceTension))
+                .append(Double.toString(measuredSurfaceTension.getValue()))
                 .append(" +/- ")
-                .append(Double.toString(measuredSurfaceTension.surfaceTensionStandardError))
+                .append(Double.toString(measuredSurfaceTension.getUncertainty()))
                 .append("\n");
         return parametersStringBuilder.toString();
-    }
-
-    static private String makeStressString(SimulationRunner simulationRunner) {
-        StringBuilder stringBuilder = new StringBuilder();
-        final DoubleWithUncertainty stress11 = simulationRunner.getRecentMeasurementForTrackedVariable(StressTrackable.TOTAL_STRESS_TRACKABLE.getStress11Trackable());
-        final DoubleWithUncertainty stress12 = simulationRunner.getRecentMeasurementForTrackedVariable(StressTrackable.TOTAL_STRESS_TRACKABLE.getStress12Trackable());
-        final DoubleWithUncertainty stress22 = simulationRunner.getRecentMeasurementForTrackedVariable(StressTrackable.TOTAL_STRESS_TRACKABLE.getStress22Trackable());
-        stringBuilder.append("[").append(stress11.getValue()).append("  ").append(stress12.getValue()).append("]  +/-  [").append(stress11.getUncertainty()).append(" ").append(stress12.getUncertainty()).append("]\n");
-        stringBuilder.append("[").append(stress12.getValue()).append("  ").append(stress22.getValue()).append("]  +/-  [").append(stress12.getUncertainty()).append(" ").append(stress22.getUncertainty()).append("]\n");
-        stringBuilder.append("\n");
-        final String outputString = stringBuilder.toString();
-        return outputString;
     }
 
     public SurfaceTensionResultsWriter(Input input) throws FileNotFoundException {
@@ -51,14 +36,9 @@ public class SurfaceTensionResultsWriter extends AbstractResultsWriter {
         printAndSoutString(initializationString);
     }
 
-    public void printSurfaceTension(MeasuredSurfaceTension measuredSurfaceTension) {
+    public void printSurfaceTension(DoubleWithUncertainty measuredSurfaceTension) {
         String surfaceTensionString = makeSurfaceTensionString(measuredSurfaceTension);
         printAndSoutString(surfaceTensionString);
-    }
-
-    public void printStress(SimulationRunner simulationRunner) {
-        String outputString = makeStressString(simulationRunner);
-        printAndSoutString(outputString);
     }
 
 }

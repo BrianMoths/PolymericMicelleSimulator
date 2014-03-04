@@ -30,18 +30,6 @@ import java.util.List;
  */
 public class SurfaceTensionFinder {
 
-    static public final class MeasuredSurfaceTension {
-
-        public final double surfaceTension;
-        public final double surfaceTensionStandardError;
-
-        public MeasuredSurfaceTension(double surfaceTension, double surfaceTensionStandardError) {
-            this.surfaceTension = surfaceTension;
-            this.surfaceTensionStandardError = surfaceTensionStandardError;
-        }
-
-    }
-
     public static void main(String[] args) {
         final Input input = readInput(args);
         try {
@@ -54,14 +42,14 @@ public class SurfaceTensionFinder {
         }
     }
 
-    static private MeasuredSurfaceTension getMeasuredSurfaceTensionFromWidth(DoubleWithUncertainty width, PolymerSimulator polymerSimulator) {
+    static private DoubleWithUncertainty getMeasuredSurfaceTensionFromWidth(DoubleWithUncertainty width, PolymerSimulator polymerSimulator) {
         final ExternalEnergyCalculator externalEnergyCalculator = polymerSimulator.getSystemAnalyzer().getEnergeticsConstants().getExternalEnergyCalculator();
         final double xEquilibriumPosition = externalEnergyCalculator.getxEquilibriumPosition();
         final double xSpringConstant = externalEnergyCalculator.getxSpringConstant();
 
         final double surfaceTension = xSpringConstant * (xEquilibriumPosition - width.getValue()) / 2;
         final double surfaceTensionError = Math.abs(xSpringConstant * width.getUncertainty()) / 2;
-        return new MeasuredSurfaceTension(surfaceTension, surfaceTensionError);
+        return new DoubleWithUncertainty(surfaceTension, surfaceTensionError);
     }
 
     private static Input readInput(String[] args) {
@@ -164,7 +152,7 @@ public class SurfaceTensionFinder {
     private void doMeasurementTrial(TrackableVariable trackableVariable) {
         simulationRunner.doMeasurementRun();
         DoubleWithUncertainty measuredWidth = simulationRunner.getRecentMeasurementForTrackedVariable(trackableVariable);
-        MeasuredSurfaceTension measuredSurfaceTension = getMeasuredSurfaceTensionFromWidth(measuredWidth, polymerSimulator);
+        DoubleWithUncertainty measuredSurfaceTension = getMeasuredSurfaceTensionFromWidth(measuredWidth, polymerSimulator);
         outputWriter.printSurfaceTension(measuredSurfaceTension);
         outputWriter.printStress(simulationRunner);
     }
@@ -194,7 +182,7 @@ public class SurfaceTensionFinder {
     }
 
     private void printFinalOutput() {
-//        outputEndToEndDisplacements();
+        outputEndToEndDisplacements();
         outputWriter.printFinalOutput(polymerSimulator);
     }
 
@@ -257,9 +245,9 @@ public class SurfaceTensionFinder {
         return systemParameters.systemGeometry.getParameters().getInteractionLength();
     }
 
-    //</editor-fold>
     SimulationRunner getSimulationRunner() {
         return simulationRunner;
     }
+    //</editor-fold>
 
 }

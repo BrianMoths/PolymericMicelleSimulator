@@ -160,13 +160,17 @@ public class SimulationRunner {
         }
     }
 
-    public DoubleWithUncertainty getRecentMeasurementForTrackedVariable(TrackableVariable trackableVariable) {
+    public DoubleWithUncertainty getRecentMeasurementForTrackedVariable(TrackableVariable trackableVariable) throws IllegalArgumentException {
         List<DoubleWithUncertainty> measurements = getMeasurementsForTrackedVariable(trackableVariable);
         return measurements.get(measurements.size() - 1);
     }
 
-    public List<DoubleWithUncertainty> getMeasurementsForTrackedVariable(TrackableVariable trackableVariable) {
-        return measuredValues.get(trackableVariable);
+    public List<DoubleWithUncertainty> getMeasurementsForTrackedVariable(TrackableVariable trackableVariable) throws IllegalArgumentException {
+        List<DoubleWithUncertainty> measuredValuesForTrackableVariable = measuredValues.get(trackableVariable);
+        if (measuredValuesForTrackableVariable == null) {
+            throw new IllegalArgumentException("Trackable variable not found");
+        }
+        return measuredValuesForTrackableVariable;
     }
 
     public StepGenerator getStepGenerator() {
