@@ -107,14 +107,14 @@ public class SystemAnalyzer implements Serializable {
      */
     public double findArea() { //produces bad output
         List<BeadRectangle> beadRectangles = systemGeometry.getRectanglesFromPositions(beadPositions);
-        return GeometryAnalyzer.findArea(beadRectangles);
+        return GeometryAnalyzer.findAreaOfRectangles(beadRectangles);
     }
 
     public AreaPerimeter findAreaAndPerimeter() {
         RectanglesAndGluedPerimeter rectanglesAndGluedPerimeter;
         rectanglesAndGluedPerimeter = systemGeometry.getRectanglesAndPerimeterFromPositions(beadPositions);
         AreaPerimeter areaPerimeter;
-        areaPerimeter = GeometryAnalyzer.findAreaAndPerimeter(rectanglesAndGluedPerimeter.beadRectangles);
+        areaPerimeter = GeometryAnalyzer.findAreaAndPerimeterOfRectangles(rectanglesAndGluedPerimeter.beadRectangles);
         areaPerimeter.perimeter -= rectanglesAndGluedPerimeter.gluedPerimeter * 2;
         return areaPerimeter;
     }

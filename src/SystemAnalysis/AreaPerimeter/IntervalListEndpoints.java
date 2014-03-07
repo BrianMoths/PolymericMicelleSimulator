@@ -54,7 +54,7 @@ public class IntervalListEndpoints {
         return 2 * intervalIndex + (isStart ? 0 : 1);
     }
 
-    static public int getIntervalFromLinearIndex(int index) {
+    static public int getIntervalIndexFromLinearIndex(int index) {
         return index / 2;
     }
 

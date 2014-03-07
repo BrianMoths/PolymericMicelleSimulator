@@ -75,7 +75,7 @@ public class OverlappingIntervalLengthFinder {
         }
         for (int permutedIndex = 0; permutedIndex < permutation.size(); permutedIndex++) {
             final int linearEndpointIndex = permutation.get(permutedIndex);
-            final int intervalIndex = IntervalListEndpoints.getIntervalFromLinearIndex(linearEndpointIndex);
+            final int intervalIndex = IntervalListEndpoints.getIntervalIndexFromLinearIndex(linearEndpointIndex);
 
             final NodeInterval nodeInterval = nodeIntervals.get(intervalIndex);
 
@@ -94,7 +94,7 @@ public class OverlappingIntervalLengthFinder {
         }
         for (int permutedIndex = 0; permutedIndex < permutation.size(); permutedIndex++) {
             final int linearEndpointIndex = permutation.get(permutedIndex);
-            final int intervalIndex = IntervalListEndpoints.getIntervalFromLinearIndex(linearEndpointIndex);
+            final int intervalIndex = IntervalListEndpoints.getIntervalIndexFromLinearIndex(linearEndpointIndex);
 
             final NodeInterval beginInterval = nodeIntervals.get(2 * intervalIndex);
             final NodeInterval endInterval = nodeIntervals.get(2 * intervalIndex + 1);

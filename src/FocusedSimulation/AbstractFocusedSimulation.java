@@ -55,7 +55,7 @@ public abstract class AbstractFocusedSimulation {
         if (jobParameters.getShouldIterateUntilConvergence()) {
             doTrialsUntilConvergence();
         }
-        printFinalOutput();
+        printFinalOutputGeneral();
     }
 
     //<editor-fold defaultstate="collapsed" desc="initialize">
@@ -137,9 +137,12 @@ public abstract class AbstractFocusedSimulation {
 
     protected abstract boolean isConverged();
 
-    private void printFinalOutput() {
+    private void printFinalOutputGeneral() {
+        printFinalOutput();
         outputWriter.printFinalOutput(polymerSimulator);
     }
+
+    protected abstract void printFinalOutput();
 
     public final void closeOutputWriter() {
         outputWriter.closeWriter();

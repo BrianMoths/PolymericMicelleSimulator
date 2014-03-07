@@ -46,7 +46,16 @@ public class AbstractResultsWriter {
         final double equilibriumPosition = input.getSystemParameters().getEnergeticsConstants().getExternalEnergyCalculator().getxEquilibriumPosition();
         final double density = input.getSystemParameters().getPolymerCluster().getConcentrationInWater();
         StringBuilder parametersStringBuilder = new StringBuilder();
-        parametersStringBuilder.append("Number of Chains: ").append(Integer.toString(numChains)).append("\n").append("Number of Beads per Chain: ").append(Integer.toString(numBeadsPerChain)).append("\n").append("Density: ").append(Double.toString(density)).append("\n").append("Side length of beads: ").append(Double.toString(beadSideLength)).append("\n").append("number  of anneals: ").append(Integer.toString(numAnneals)).append("\n").append("number of iterations finding surface tension: ").append(Integer.toString(numSurfaceTensionTrials)).append("\n").append("E=(1/2)a(L-b)^2 with a: ").append(Double.toString(springConstant)).append("\n").append("b: ").append(Double.toString(equilibriumPosition)).append("\n").append("=====================").append("\n").append("\n");
+        parametersStringBuilder.append("Number of Chains: ").append(Integer.toString(numChains)).append("\n")
+                .append("Number of Beads per Chain: ").append(Integer.toString(numBeadsPerChain)).append("\n")
+                .append("Density: ").append(Double.toString(density)).append("\n")
+                .append("Side length of beads: ").append(Double.toString(beadSideLength)).append("\n")
+                .append("number  of anneals: ").append(Integer.toString(numAnneals)).append("\n")
+                .append("number of iterations finding surface tension: ").append(Integer.toString(numSurfaceTensionTrials)).append("\n")
+                .append("E=(1/2)a(L-b)^2 with a: ").append(Double.toString(springConstant)).append("\n")
+                .append("b: ").append(Double.toString(equilibriumPosition))
+                .append("\n").append("=====================")
+                .append("\n").append("\n");
         return parametersStringBuilder.toString();
     }
 
