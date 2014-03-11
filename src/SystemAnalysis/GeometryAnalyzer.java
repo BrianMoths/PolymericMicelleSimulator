@@ -4,14 +4,13 @@
  */
 package SystemAnalysis;
 
+import SystemAnalysis.AreaPerimeter.AreaPerimeter;
 import SystemAnalysis.AreaPerimeter.rectangleareaperimeter.BeadRectangle;
 import SystemAnalysis.AreaPerimeter.rectangleareaperimeter.Interval;
 import SystemAnalysis.AreaPerimeter.rectangleareaperimeter.IntervalListEndpoints;
-import SystemAnalysis.AreaPerimeter.rectangleareaperimeter.LengthAndEdgeFinder;
 import SystemAnalysis.AreaPerimeter.rectangleareaperimeter.OverlappingIntervalLengthFinder;
 import SystemAnalysis.AreaPerimeter.rectangleareaperimeter.OverlappingRectangleAreaFinder;
 import SystemAnalysis.AreaPerimeter.rectangleareaperimeter.OverlappingRectangleAreaPerimeterFinder;
-import java.awt.Rectangle;
 import java.awt.geom.PathIterator;
 import java.awt.geom.Point2D;
 import java.awt.geom.Rectangle2D;
@@ -28,27 +27,6 @@ import kn.uni.voronoitreemap.j2d.Site;
  * @author bmoths
  */
 public class GeometryAnalyzer {
-
-    static public class AreaPerimeter {
-
-        public double area;
-        public double perimeter;
-
-        public AreaPerimeter() {
-            this(0, 0);
-        }
-
-        public AreaPerimeter(double area, double perimeter) {
-            this.area = area;
-            this.perimeter = perimeter;
-        }
-
-        public void incrementBy(AreaPerimeter areaPerimeter) {
-            area += areaPerimeter.area;
-            perimeter += areaPerimeter.perimeter;
-        }
-
-    }
 
     private static class Circle {
 

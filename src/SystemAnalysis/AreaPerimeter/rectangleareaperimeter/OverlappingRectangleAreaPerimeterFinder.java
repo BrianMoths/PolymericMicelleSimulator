@@ -4,7 +4,7 @@
  */
 package SystemAnalysis.AreaPerimeter.rectangleareaperimeter;
 
-import SystemAnalysis.GeometryAnalyzer.AreaPerimeter;
+import SystemAnalysis.AreaPerimeter.AreaPerimeter;
 
 /**
  *

@@ -8,7 +8,6 @@ import Engine.PolymerSimulator;
 import Engine.SimulationStepping.StepTypes.StepType;
 import Engine.SystemAnalyzer;
 import Gui.MicelleGui;
-import SystemAnalysis.GeometryAnalyzer.AreaPerimeter;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -98,7 +97,7 @@ public class AnalysisWindow extends javax.swing.JFrame {
     }
 
     private void updatePhysicalPropertiesDisplay() {
-        final AreaPerimeter areaPerimeter = systemAnalyzer.findAreaAndPerimeter();
+        final SystemAnalysis.AreaPerimeter.AreaPerimeter areaPerimeter = systemAnalyzer.findAreaAndPerimeter();
         final double area = areaPerimeter.area;
         final double perimeter = areaPerimeter.perimeter;
 

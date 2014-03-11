@@ -7,7 +7,6 @@ package Gui;
 import Engine.PolymerSimulator;
 import Engine.SystemAnalyzer;
 import Gui.analysiswindow.AnalysisWindow;
-import SystemAnalysis.GeometryAnalyzer.AreaPerimeter;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
@@ -145,7 +144,7 @@ public class MicelleGui extends javax.swing.JFrame {
 
         final double energy = system.getEnergy();
 
-        AreaPerimeter areaPerimeter = systemAnalyzer.findAreaAndPerimeter();
+        SystemAnalysis.AreaPerimeter.AreaPerimeter areaPerimeter = systemAnalyzer.findAreaAndPerimeter();
         systemAnalyzer.addPerimeterAreaEnergySnapshot(areaPerimeter.perimeter, areaPerimeter.area, energy);
 
         energyLbl.setText(String.format("%.4f", energy));

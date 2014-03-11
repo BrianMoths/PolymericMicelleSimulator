@@ -17,6 +17,7 @@ import Engine.SimulationStepping.StepGenerators.CompoundStepGenerators.GeneralSt
 import Engine.SimulationStepping.StepGenerators.StepGenerator;
 import Engine.SimulationStepping.StepTypes.SimulationStep;
 import Engine.SimulationStepping.StepTypes.StepType;
+import SystemAnalysis.AreaPerimeter.AreaPerimeter;
 import SystemAnalysis.GeometryAnalyzer;
 import java.io.Serializable;
 
@@ -177,7 +178,7 @@ public class PolymerSimulator implements Serializable {
     public void equilibrate() {
         while (!systemAnalyzer.isEquilibrated()) {
             doIterations(10000);
-            final GeometryAnalyzer.AreaPerimeter areaPerimeter = systemAnalyzer.findAreaAndPerimeter();
+            final AreaPerimeter areaPerimeter = systemAnalyzer.findAreaAndPerimeter();
             systemAnalyzer.addPerimeterAreaEnergySnapshot(areaPerimeter.perimeter, areaPerimeter.area, energy);
         }
     }
