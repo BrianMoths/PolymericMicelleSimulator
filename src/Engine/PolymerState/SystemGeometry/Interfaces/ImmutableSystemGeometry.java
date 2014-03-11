@@ -6,8 +6,8 @@ package Engine.PolymerState.SystemGeometry.Interfaces;
 
 import Engine.Energetics.TwoBeadOverlap;
 import Engine.PolymerState.SystemGeometry.GeometricalParameters;
-import SystemAnalysis.AreaPerimeter.BeadRectangle;
-import SystemAnalysis.AreaPerimeter.RectangleSplitting.RectanglesAndGluedPerimeter;
+import SystemAnalysis.AreaPerimeter.rectangleareaperimeter.BeadRectangle;
+import SystemAnalysis.AreaPerimeter.rectangleareaperimeter.RectangleSplitting.RectanglesAndGluedPerimeter;
 import java.util.List;
 
 /**

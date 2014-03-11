@@ -6,7 +6,7 @@ package SystemAnalysis;
 
 import Engine.PolymerSimulator;
 import Engine.PolymerState.SystemGeometry.Interfaces.SystemGeometry;
-import SystemAnalysis.AreaPerimeter.BeadRectangle;
+import SystemAnalysis.AreaPerimeter.rectangleareaperimeter.BeadRectangle;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;

@@ -6,12 +6,12 @@ package Engine.PolymerState.SystemGeometry.Implementations;
 
 import Engine.PolymerState.SystemGeometry.GeometricalParameters;
 import Engine.PolymerState.SystemGeometry.Interfaces.GeometryBuilder;
-import SystemAnalysis.AreaPerimeter.BeadRectangle;
-import SystemAnalysis.AreaPerimeter.OverlappingIntervalLengthFinder;
-import SystemAnalysis.AreaPerimeter.RectangleSplitting.PeriodicRectangleSplitter;
-import SystemAnalysis.AreaPerimeter.RectangleSplitting.RectangleSplitter;
-import SystemAnalysis.AreaPerimeter.RectangleSplitting.RectanglesAndBoundaryIntervals;
-import SystemAnalysis.AreaPerimeter.RectangleSplitting.RectanglesAndGluedPerimeter;
+import SystemAnalysis.AreaPerimeter.rectangleareaperimeter.BeadRectangle;
+import SystemAnalysis.AreaPerimeter.rectangleareaperimeter.OverlappingIntervalLengthFinder;
+import SystemAnalysis.AreaPerimeter.rectangleareaperimeter.RectangleSplitting.PeriodicRectangleSplitter;
+import SystemAnalysis.AreaPerimeter.rectangleareaperimeter.RectangleSplitting.RectangleSplitter;
+import SystemAnalysis.AreaPerimeter.rectangleareaperimeter.RectangleSplitting.RectanglesAndBoundaryIntervals;
+import SystemAnalysis.AreaPerimeter.rectangleareaperimeter.RectangleSplitting.RectanglesAndGluedPerimeter;
 import java.util.List;
 
 /**

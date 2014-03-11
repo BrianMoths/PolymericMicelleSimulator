@@ -4,11 +4,13 @@
  */
 package SystemAnalysis;
 
-import SystemAnalysis.AreaPerimeter.BeadRectangle;
-import SystemAnalysis.AreaPerimeter.Interval;
-import SystemAnalysis.AreaPerimeter.IntervalListEndpoints;
-import SystemAnalysis.AreaPerimeter.LengthAndEdgeFinder;
-import SystemAnalysis.AreaPerimeter.OverlappingIntervalLengthFinder;
+import SystemAnalysis.AreaPerimeter.rectangleareaperimeter.BeadRectangle;
+import SystemAnalysis.AreaPerimeter.rectangleareaperimeter.Interval;
+import SystemAnalysis.AreaPerimeter.rectangleareaperimeter.IntervalListEndpoints;
+import SystemAnalysis.AreaPerimeter.rectangleareaperimeter.LengthAndEdgeFinder;
+import SystemAnalysis.AreaPerimeter.rectangleareaperimeter.OverlappingIntervalLengthFinder;
+import SystemAnalysis.AreaPerimeter.rectangleareaperimeter.OverlappingRectangleAreaFinder;
+import SystemAnalysis.AreaPerimeter.rectangleareaperimeter.OverlappingRectangleAreaPerimeterFinder;
 import java.awt.Rectangle;
 import java.awt.geom.PathIterator;
 import java.awt.geom.Point2D;
@@ -203,54 +205,13 @@ public class GeometryAnalyzer {
     }
 
     static public double findAreaOfRectangles(List<BeadRectangle> beadRectangles) {
-
-        final IntervalListEndpoints horizontalEndpoints = IntervalListEndpoints.endpointsOfHorizontalRectangleEdges(beadRectangles);
-        List<Integer> xPermutation = horizontalEndpoints.getPermutation();
-        OverlappingIntervalLengthFinder overlappingIntervalLengthFinder = OverlappingIntervalLengthFinder.makeFromBeadRectangles(beadRectangles, xPermutation);
-
-        double area = 0;
-        double oldX = 0;
-
-        for (int linearIndex : xPermutation) {
-            final double newX = getNewX(beadRectangles, linearIndex);
-            final double deltaX = newX - oldX;
-
-            final double coveredVerticalLength = overlappingIntervalLengthFinder.getLength();
-            area += deltaX * coveredVerticalLength;
-
-            overlappingIntervalLengthFinder.doNextStep();
-            oldX = newX;
-        }
-        return area;
+        OverlappingRectangleAreaFinder overlappingRectangleAreaFinder = new OverlappingRectangleAreaFinder();
+        return overlappingRectangleAreaFinder.compute(beadRectangles);
     }
 
     public static AreaPerimeter findAreaAndPerimeterOfRectangles(List<BeadRectangle> beadRectangles) {
-        final IntervalListEndpoints horizontalEndpoints = IntervalListEndpoints.endpointsOfHorizontalRectangleEdges(beadRectangles);
-        List<Integer> xPermutation = horizontalEndpoints.getPermutation();
-        LengthAndEdgeFinder lengthAndEdgeFinder = LengthAndEdgeFinder.makeForBeadRectangles(beadRectangles, xPermutation);
-
-        double area = 0;
-        double oldCoveredLength = 0;
-        double perimeter = 0;
-        double oldx = 0;
-
-        for (int linearIndex : xPermutation) {
-            final double newX = getNewX(beadRectangles, linearIndex);
-            final double deltaX = newX - oldx;
-
-            final double coveredVerticalLength = lengthAndEdgeFinder.getLength();
-            area += deltaX * coveredVerticalLength;
-
-            final int numEdges = lengthAndEdgeFinder.getNumEdges();
-            perimeter += numEdges * deltaX;
-            perimeter += Math.abs(coveredVerticalLength - oldCoveredLength);
-
-            lengthAndEdgeFinder.doNextStep();
-            oldCoveredLength = coveredVerticalLength;
-            oldx = newX;
-        }
-        perimeter += oldCoveredLength; //add on perimeter from rightmost vertical edge
-        return new AreaPerimeter(area, perimeter);
+        OverlappingRectangleAreaPerimeterFinder overlappingRectangleAreaPerimeterFinder = new OverlappingRectangleAreaPerimeterFinder();
+        return overlappingRectangleAreaPerimeterFinder.compute(beadRectangles);
     }
 
     private static double getNewX(List<BeadRectangle> beadRectangles, int linearIndex) {
@@ -388,7 +349,7 @@ public class GeometryAnalyzer {
         return OverlappingIntervalLengthFinder.getCoveredLengthOfIntervals(clippedIntervals);
     }
 
-    static public AreaPerimeter findAreaPerimeterOfCriclesWithRadius(Iterable<Point2D> centers, double radius, Rectangle2D boundaryRectangle) {
+    static public AreaPerimeter findAreaPerimeterOfCirclesWithRadius(Iterable<Point2D> centers, double radius, Rectangle2D boundaryRectangle) {
         final Iterable<Double> radiusIterator = getConstantIterable(radius);
         return findAreaPerimeterOfCircles(centers, radiusIterator, boundaryRectangle);
     }

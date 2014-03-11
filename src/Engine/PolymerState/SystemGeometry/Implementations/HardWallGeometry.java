@@ -6,10 +6,10 @@ package Engine.PolymerState.SystemGeometry.Implementations;
 
 import Engine.PolymerState.SystemGeometry.GeometricalParameters;
 import Engine.PolymerState.SystemGeometry.Interfaces.GeometryBuilder;
-import SystemAnalysis.AreaPerimeter.BeadRectangle;
-import SystemAnalysis.AreaPerimeter.RectangleSplitting.HardWallRectangleSplitter;
-import SystemAnalysis.AreaPerimeter.RectangleSplitting.RectangleSplitter;
-import SystemAnalysis.AreaPerimeter.RectangleSplitting.RectanglesAndGluedPerimeter;
+import SystemAnalysis.AreaPerimeter.rectangleareaperimeter.BeadRectangle;
+import SystemAnalysis.AreaPerimeter.rectangleareaperimeter.RectangleSplitting.HardWallRectangleSplitter;
+import SystemAnalysis.AreaPerimeter.rectangleareaperimeter.RectangleSplitting.RectangleSplitter;
+import SystemAnalysis.AreaPerimeter.rectangleareaperimeter.RectangleSplitting.RectanglesAndGluedPerimeter;
 import java.util.List;
 
 /**
