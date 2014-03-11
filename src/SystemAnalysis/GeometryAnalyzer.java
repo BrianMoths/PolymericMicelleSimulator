@@ -5,6 +5,7 @@
 package SystemAnalysis;
 
 import SystemAnalysis.AreaPerimeter.BeadRectangle;
+import SystemAnalysis.AreaPerimeter.Interval;
 import SystemAnalysis.AreaPerimeter.IntervalListEndpoints;
 import SystemAnalysis.AreaPerimeter.LengthAndEdgeFinder;
 import SystemAnalysis.AreaPerimeter.OverlappingIntervalLengthFinder;
@@ -12,6 +13,7 @@ import java.awt.Rectangle;
 import java.awt.geom.PathIterator;
 import java.awt.geom.Point2D;
 import java.awt.geom.Rectangle2D;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
@@ -85,6 +87,11 @@ public class GeometryAnalyzer {
             this.radiusIterator = radiusIterator;
         }
 
+        public CircleIterator(Iterator<Point2D> centerIterator, double radius) {
+            this.centerIterator = centerIterator;
+            this.radiusIterator = getConstantIterator(radius);
+        }
+
         @Override
         public boolean hasNext() {
             return centerIterator.hasNext() && radiusIterator.hasNext();
@@ -102,11 +109,27 @@ public class GeometryAnalyzer {
 
     }
 
+    private static class CircleIterable implements Iterable<Circle> {
+
+        private final Iterable<Point2D> centerIterable;
+        private final Iterable<Double> radiusIterable;
+
+        public CircleIterable(Iterable<Point2D> centerIterable, Iterable<Double> radiusIterable) {
+            this.centerIterable = centerIterable;
+            this.radiusIterable = radiusIterable;
+        }
+
+        @Override
+        public Iterator<Circle> iterator() {
+            return new CircleIterator(centerIterable.iterator(), radiusIterable.iterator());
+        }
+
+    }
+
     static private class WrappedCircleIterator implements Iterator<Circle> {
 
         private final Iterator<Circle> circleIterator;
         private final Rectangle2D boundaryRectangle;
-        private boolean hasNext;
         private Circle lastCircle;
         private boolean needsReflectionOverVertical;
         private boolean needsReflectionOverHorizontal;
@@ -122,12 +145,12 @@ public class GeometryAnalyzer {
 
         @Override
         public boolean hasNext() {
-            return hasNext;
+            return needsAnyReflection() || circleIterator.hasNext();
         }
 
         @Override
         public Circle next() {
-            if (!(needsReflectionOverHorizontal && needsReflectionOverBoth && needsReflectionOverVertical)) {
+            if (!needsAnyReflection()) {
                 lastCircle = circleIterator.next();
                 computeNeedsReflection();
                 return lastCircle;
@@ -171,6 +194,10 @@ public class GeometryAnalyzer {
                 return new Circle(new Point2D.Double(lastCircle.getCenterX(), lastCircle.getCenterY() - boundaryRectangle.getHeight()), lastCircle.radius);
             }
             throw new AssertionError("reflect over horizontal true, but reflection over horizontal not needed");
+        }
+
+        private boolean needsAnyReflection() {
+            return needsReflectionOverHorizontal || needsReflectionOverBoth || needsReflectionOverVertical;
         }
 
     }
@@ -233,15 +260,32 @@ public class GeometryAnalyzer {
     }
 
     public static double findAreaOfCirclesWithRadius(Iterable<Point2D> centers, final double radius, Rectangle2D boundaryRectangle) {
-        final Iterator<Double> radiusIterator = new Iterator<Double>() {
+        final Iterable<Double> radii = getConstantIterable(radius);
+        return findAreaOfCircles(centers, radii, boundaryRectangle);
+    }
+
+    static private <T> Iterable<T> getConstantIterable(final T t) {
+        return new Iterable<T>() {
+            private Iterator<T> constantIterator = getConstantIterator(t);
+
+            @Override
+            public Iterator<T> iterator() {
+                return constantIterator;
+            }
+
+        };
+    }
+
+    private static <T> Iterator<T> getConstantIterator(final T t) {
+        return new Iterator<T>() {
             @Override
             public boolean hasNext() {
                 return true;
             }
 
             @Override
-            public Double next() {
-                return radius;
+            public T next() {
+                return t;
             }
 
             @Override
@@ -250,14 +294,6 @@ public class GeometryAnalyzer {
             }
 
         };
-        final Iterable<Double> radii = new Iterable<Double>() {
-            @Override
-            public Iterator<Double> iterator() {
-                return radiusIterator;
-            }
-
-        };
-        return findAreaOfCircles(centers, radii, boundaryRectangle);
     }
 
     public static double findAreaOfCircles(Iterable<Point2D> centers, Iterable<Double> radii, Rectangle2D boundaryRectangle) {
@@ -280,8 +316,117 @@ public class GeometryAnalyzer {
         return computeAreaOfSites(sites);
     }
 
+    static public AreaPerimeter findAreaPerimeterOfCircles(Iterable<Point2D> centers, Iterable<Double> radii, Rectangle2D boundaryRectangle) {
+        final Iterable<Circle> circleIterable = new CircleIterable(centers, radii);
+        AreaPerimeter areaPerimeter = findAreaPerimeterOfCirclesNoClipPerimeter(circleIterable.iterator(), boundaryRectangle);
+        areaPerimeter.perimeter += findClippedPerimeter(circleIterable, boundaryRectangle);
+        return areaPerimeter;
+    }
+
+    static private double findClippedPerimeter(Iterable<Circle> circleIterable, Rectangle2D boundaryRectangle) {
+        double perimeter = 0;
+        perimeter += leftClippedPerimeter(circleIterable, boundaryRectangle);
+        perimeter += rightClippedPerimeter(circleIterable, boundaryRectangle);
+        perimeter += topClippedPerimeter(circleIterable, boundaryRectangle);
+        perimeter += bottomClippedPerimeter(circleIterable, boundaryRectangle);
+        return perimeter;
+    }
+
+    static private double leftClippedPerimeter(Iterable<Circle> circleIterable, Rectangle2D boundaryRectangle) {
+        List<Interval> clippedIntervals = new ArrayList<>();
+        for (Circle circle : circleIterable) {
+            final double deltaX = Math.abs(boundaryRectangle.getMinX() - circle.getCenterX());
+            if (deltaX < circle.getRadius()) {
+                final double intervalHalfLength = Math.sqrt(circle.getRadius() * circle.getRadius() - deltaX * deltaX);
+                final double intervalStart = Math.max(boundaryRectangle.getMinY(), circle.getCenterY() - intervalHalfLength);
+                final double intervalEnd = Math.min(boundaryRectangle.getMaxY(), circle.getCenterY() + intervalHalfLength);
+                clippedIntervals.add(new Interval(intervalStart, intervalEnd));
+            }
+        }
+        return OverlappingIntervalLengthFinder.getCoveredLengthOfIntervals(clippedIntervals);
+    }
+
+    static private double rightClippedPerimeter(Iterable<Circle> circleIterable, Rectangle2D boundaryRectangle) {
+        List<Interval> clippedIntervals = new ArrayList<>();
+        for (Circle circle : circleIterable) {
+            final double deltaX = Math.abs(boundaryRectangle.getMaxX() - circle.getCenterX());
+            if (deltaX < circle.getRadius()) {
+                final double intervalHalfLength = Math.sqrt(circle.getRadius() * circle.getRadius() - deltaX * deltaX);
+                final double intervalStart = Math.max(boundaryRectangle.getMinY(), circle.getCenterY() - intervalHalfLength);
+                final double intervalEnd = Math.min(boundaryRectangle.getMaxY(), circle.getCenterY() + intervalHalfLength);
+                clippedIntervals.add(new Interval(intervalStart, intervalEnd));
+            }
+        }
+        return OverlappingIntervalLengthFinder.getCoveredLengthOfIntervals(clippedIntervals);
+    }
+
+    static private double topClippedPerimeter(Iterable<Circle> circleIterable, Rectangle2D boundaryRectangle) {
+        List<Interval> clippedIntervals = new ArrayList<>();
+        for (Circle circle : circleIterable) {
+            final double deltaY = Math.abs(boundaryRectangle.getMinY() - circle.getCenterY());
+            if (deltaY < circle.getRadius()) {
+                final double intervalHalfLength = Math.sqrt(circle.getRadius() * circle.getRadius() - deltaY * deltaY);
+                final double intervalStart = Math.max(boundaryRectangle.getMinX(), circle.getCenterX() - intervalHalfLength);
+                final double intervalEnd = Math.min(boundaryRectangle.getMaxX(), circle.getCenterX() + intervalHalfLength);
+                clippedIntervals.add(new Interval(intervalStart, intervalEnd));
+            }
+        }
+        return OverlappingIntervalLengthFinder.getCoveredLengthOfIntervals(clippedIntervals);
+    }
+
+    static private double bottomClippedPerimeter(Iterable<Circle> circleIterable, Rectangle2D boundaryRectangle) {
+        List<Interval> clippedIntervals = new ArrayList<>();
+        for (Circle circle : circleIterable) {
+            final double deltaY = Math.abs(boundaryRectangle.getMaxY() - circle.getCenterY());
+            if (deltaY < circle.getRadius()) {
+                final double intervalHalfLength = Math.sqrt(circle.getRadius() * circle.getRadius() - deltaY * deltaY);
+                final double intervalStart = Math.max(boundaryRectangle.getMinX(), circle.getCenterX() - intervalHalfLength);
+                final double intervalEnd = Math.min(boundaryRectangle.getMaxX(), circle.getCenterX() + intervalHalfLength);
+                clippedIntervals.add(new Interval(intervalStart, intervalEnd));
+            }
+        }
+        return OverlappingIntervalLengthFinder.getCoveredLengthOfIntervals(clippedIntervals);
+    }
+
+    static public AreaPerimeter findAreaPerimeterOfCriclesWithRadius(Iterable<Point2D> centers, double radius, Rectangle2D boundaryRectangle) {
+        final Iterable<Double> radiusIterator = getConstantIterable(radius);
+        return findAreaPerimeterOfCircles(centers, radiusIterator, boundaryRectangle);
+    }
+
+    static public AreaPerimeter findAreaPerimeterOfCirclesPeriodic(Iterable<Point2D> centers, Iterable<Double> radii, Rectangle2D boundaryRectangle) {
+        final Iterator<Circle> circleIterator = new CircleIterator(centers.iterator(), radii.iterator());
+        final Iterator<Circle> wrappedCircleIterator = new WrappedCircleIterator(circleIterator, boundaryRectangle);
+        return findAreaPerimeterOfCirclesNoClipPerimeter(wrappedCircleIterator, boundaryRectangle);
+    }
+
+    static public AreaPerimeter findAreaPerimeterOfCirclesWithRadiusPeriodic(Iterable<Point2D> centers, double radius, Rectangle2D boundaryRectangle) {
+        final Iterable<Double> radiusIterator = getConstantIterable(radius);
+        return findAreaPerimeterOfCirclesPeriodic(centers, radiusIterator, boundaryRectangle);
+    }
+
+    static private AreaPerimeter findAreaPerimeterOfCirclesNoClipPerimeter(final Iterator<Circle> circleIterator, Rectangle2D boundaryRectangle) {
+        PowerDiagram powerDiagram = new PowerDiagram();
+        OpenList sites = new OpenList();
+        while (circleIterator.hasNext()) {
+            final Circle circle = circleIterator.next();
+            final Site site = new Site(circle.getCenterX(), circle.getCenterY(), circle.getRadius() * circle.getRadius());
+            sites.add(site);
+        }
+        powerDiagram.setSites(sites);
+        final PolygonSimple boundaryPolygon = getPolygonFromRectangle(boundaryRectangle);
+        powerDiagram.setClipPoly(boundaryPolygon);
+        powerDiagram.computeDiagram();
+        return computeAreaPerimeterOfSites(sites);
+    }
+
     public static double findAreaOfCirclesPeriodic(Iterable<Point2D> centers, Iterable<Double> radii, Rectangle2D boundaryRectangle) {
         final Iterator<Circle> circleIterator = new CircleIterator(centers.iterator(), radii.iterator());
+        final Iterator<Circle> wrappedCircleIterator = new WrappedCircleIterator(circleIterator, boundaryRectangle);
+        return findAreaOfCircles(wrappedCircleIterator, boundaryRectangle);
+    }
+
+    public static double findAreaOfCirclesWithRadiusPeriodic(Iterable<Point2D> centers, double radius, Rectangle2D boundaryRectangle) {
+        final Iterator<Circle> circleIterator = new CircleIterator(centers.iterator(), radius);
         final Iterator<Circle> wrappedCircleIterator = new WrappedCircleIterator(circleIterator, boundaryRectangle);
         return findAreaOfCircles(wrappedCircleIterator, boundaryRectangle);
     }
@@ -331,11 +476,13 @@ public class GeometryAnalyzer {
         }
         System.arraycopy(firstVertex, 0, newVertex, 0, 2);
         boundaryPathIterator.next();
+        System.arraycopy(newVertex, 0, oldVertex, 0, 2);
+        segmentType = boundaryPathIterator.currentSegment(newVertex);
         while (segmentType != PathIterator.SEG_CLOSE) {
-            System.arraycopy(newVertex, 0, oldVertex, 0, 2);
-            segmentType = boundaryPathIterator.currentSegment(newVertex);//I am computing zero on the last iteration
             area += computeAreaForSegment(site, oldVertex, newVertex);
             boundaryPathIterator.next();
+            System.arraycopy(newVertex, 0, oldVertex, 0, 2);
+            segmentType = boundaryPathIterator.currentSegment(newVertex);
         }
         area += computeAreaForSegment(site, newVertex, firstVertex);
         return area;
@@ -357,12 +504,12 @@ public class GeometryAnalyzer {
         }
         System.arraycopy(firstVertex, 0, newVertex, 0, 2);
         boundaryPathIterator.next();
+        System.arraycopy(newVertex, 0, oldVertex, 0, 2);
         segmentType = boundaryPathIterator.currentSegment(newVertex);//I am computing zero on the last iteration
-
         while (segmentType != PathIterator.SEG_CLOSE) {
-            System.arraycopy(newVertex, 0, oldVertex, 0, 2);
             areaPerimeter.incrementBy(computeAreaPerimeterForSegment(site, oldVertex, newVertex));
             boundaryPathIterator.next();
+            System.arraycopy(newVertex, 0, oldVertex, 0, 2);
             segmentType = boundaryPathIterator.currentSegment(newVertex);//I am computing zero on the last iteration
         }
         areaPerimeter.incrementBy(computeAreaPerimeterForSegment(site, newVertex, firstVertex));
@@ -414,12 +561,17 @@ public class GeometryAnalyzer {
         } else {
             final double intersectionX = Math.sqrt(squareRadius - y * y);
             if (leftX < -intersectionX) {
-                area += fullCircleHorizontalLineArea(squareRadius, leftX, -intersectionX, y);
+                final double leftRegionRightEndpoint = Math.min(-intersectionX, rightX);
+                area += fullCircleHorizontalLineArea(squareRadius, leftX, leftRegionRightEndpoint, y);
             }
             if (intersectionX < rightX) {
-                area += fullCircleHorizontalLineArea(squareRadius, intersectionX, rightX, y);
+                final double rightRegionLeftEndpoint = Math.max(intersectionX, leftX);
+                area += fullCircleHorizontalLineArea(squareRadius, rightRegionLeftEndpoint, rightX, y);
             }
-            area += Math.min(Math.max(-intersectionX, leftX) - Math.min(intersectionX, rightX), 0) * y / 2;
+            final double middleRegionLeftEndpoint = Math.max(-intersectionX, leftX);
+            final double middleRegionRightEndpoint = Math.min(intersectionX, rightX);
+            final double middleRegionLength = Math.min(middleRegionLeftEndpoint - middleRegionRightEndpoint, 0);
+            area += middleRegionLength * y / 2;
         }
         return area;
     }
@@ -431,12 +583,19 @@ public class GeometryAnalyzer {
         } else {
             final double intersectionX = Math.sqrt(squareRadius - y * y);
             if (leftX < -intersectionX) {
-                areaPerimeter.incrementBy(fullCircleHorizontalLineAreaPerimeter(squareRadius, leftX, -intersectionX, y));
+                final double leftRegionRightEndpoint = Math.min(-intersectionX, rightX);
+
+                areaPerimeter.incrementBy(fullCircleHorizontalLineAreaPerimeter(squareRadius, leftX, leftRegionRightEndpoint, y));
             }
             if (intersectionX < rightX) {
-                areaPerimeter.incrementBy(fullCircleHorizontalLineAreaPerimeter(squareRadius, intersectionX, rightX, y));
+                final double rightRegionLeftEndpoint = Math.max(intersectionX, leftX);
+
+                areaPerimeter.incrementBy(fullCircleHorizontalLineAreaPerimeter(squareRadius, rightRegionLeftEndpoint, rightX, y));
             }
-            areaPerimeter.area += Math.min(Math.max(-intersectionX, leftX) - Math.min(intersectionX, rightX), 0) * y / 2;
+            final double middleRegionLeftEndpoint = Math.max(-intersectionX, leftX);
+            final double middleRegionRightEndpoint = Math.min(intersectionX, rightX);
+            final double middleRegionLength = Math.min(middleRegionLeftEndpoint - middleRegionRightEndpoint, 0);
+            areaPerimeter.area += middleRegionLength * y / 2;
         }
         return areaPerimeter;
     }
