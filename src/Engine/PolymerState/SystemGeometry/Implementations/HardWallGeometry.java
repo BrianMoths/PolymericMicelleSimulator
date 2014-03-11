@@ -6,6 +6,9 @@ package Engine.PolymerState.SystemGeometry.Implementations;
 
 import Engine.PolymerState.SystemGeometry.GeometricalParameters;
 import Engine.PolymerState.SystemGeometry.Interfaces.GeometryBuilder;
+import SystemAnalysis.AreaPerimeter.circleareaperimeter.BoundaryPerimeterFinder;
+import SystemAnalysis.AreaPerimeter.circleareaperimeter.Circle;
+import SystemAnalysis.AreaPerimeter.circleareaperimeter.CirclesAndClippedPerimeter;
 import SystemAnalysis.AreaPerimeter.rectangleareaperimeter.BeadRectangle;
 import SystemAnalysis.AreaPerimeter.rectangleareaperimeter.RectangleSplitting.HardWallRectangleSplitter;
 import SystemAnalysis.AreaPerimeter.rectangleareaperimeter.RectangleSplitting.RectangleSplitter;
@@ -112,6 +115,18 @@ public final class HardWallGeometry extends AbstractGeometry {
     @Override
     protected double calculateComponentDisplacement(double component1, double component2, int dimension) {
         return component1 - component2;
+    }
+
+    @Override
+    public Iterable<Circle> getCirclesFromPositions(double[][] beadPositions) {
+        return makeUnwrappedCirclesFromBeadPositions(beadPositions);
+    }
+
+    @Override
+    public CirclesAndClippedPerimeter getCirclesAndBoundaryPerimeterFromPosition(double[][] beadPositions) {
+        final List<Circle> circles = makeUnwrappedCirclesFromBeadPositions(beadPositions);
+        final double perimeter = BoundaryPerimeterFinder.findClippedPerimeter(circles, getBoundaryRectangle());
+        return new CirclesAndClippedPerimeter(circles, perimeter);
     }
 
 }

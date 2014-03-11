@@ -11,8 +11,13 @@ import Engine.Energetics.TwoBeadOverlap;
 import Engine.PolymerState.ImmutableDiscretePolymerState;
 import Engine.PolymerState.ImmutablePolymerState;
 import Engine.PolymerState.SystemGeometry.AreaOverlap;
+import Engine.PolymerState.SystemGeometry.GeometricalParameters;
 import Engine.PolymerState.SystemGeometry.Interfaces.ImmutableSystemGeometry;
 import SystemAnalysis.AreaPerimeter.AreaPerimeter;
+import SystemAnalysis.AreaPerimeter.circleareaperimeter.Circle;
+import SystemAnalysis.AreaPerimeter.circleareaperimeter.CircleAreaFinder;
+import SystemAnalysis.AreaPerimeter.circleareaperimeter.CircleAreaPerimeterFinder;
+import SystemAnalysis.AreaPerimeter.circleareaperimeter.CirclesAndClippedPerimeter;
 import SystemAnalysis.AreaPerimeter.rectangleareaperimeter.BeadRectangle;
 import SystemAnalysis.AreaPerimeter.rectangleareaperimeter.RectangleSplitting.RectanglesAndGluedPerimeter;
 import SystemAnalysis.GeometryAnalyzer;
@@ -105,18 +110,34 @@ public class SystemAnalyzer implements Serializable {
      * @return The amount of area occupied by the beads (any area covered
      * multiple times is still only counted once).
      */
-    public double findArea() { //produces bad output
-        List<BeadRectangle> beadRectangles = systemGeometry.getRectanglesFromPositions(beadPositions);
-        return GeometryAnalyzer.findAreaOfRectangles(beadRectangles);
+    public double findArea() {
+        if (systemGeometry.getParameters().getShape() == GeometricalParameters.Shape.SQUARE) {
+            List<BeadRectangle> beadRectangles = systemGeometry.getRectanglesFromPositions(beadPositions);
+            return GeometryAnalyzer.findAreaOfRectangles(beadRectangles);
+        } else if (systemGeometry.getParameters().getShape() == GeometricalParameters.Shape.CIRCLE) {
+            Iterable<Circle> circles = systemGeometry.getCirclesFromPositions(beadPositions);
+            return CircleAreaFinder.findAreaOfCircles(circles, systemGeometry.getBoundaryRectangle());
+        } else {
+            throw new AssertionError();
+        }
     }
 
     public AreaPerimeter findAreaAndPerimeter() {
-        RectanglesAndGluedPerimeter rectanglesAndGluedPerimeter;
-        rectanglesAndGluedPerimeter = systemGeometry.getRectanglesAndPerimeterFromPositions(beadPositions);
-        AreaPerimeter areaPerimeter;
-        areaPerimeter = GeometryAnalyzer.findAreaAndPerimeterOfRectangles(rectanglesAndGluedPerimeter.beadRectangles);
-        areaPerimeter.perimeter -= rectanglesAndGluedPerimeter.gluedPerimeter * 2;
-        return areaPerimeter;
+        if (systemGeometry.getParameters().getShape() == GeometricalParameters.Shape.SQUARE) {
+            RectanglesAndGluedPerimeter rectanglesAndGluedPerimeter;
+            rectanglesAndGluedPerimeter = systemGeometry.getRectanglesAndPerimeterFromPositions(beadPositions);
+            AreaPerimeter areaPerimeter;
+            areaPerimeter = GeometryAnalyzer.findAreaAndPerimeterOfRectangles(rectanglesAndGluedPerimeter.beadRectangles);
+            areaPerimeter.perimeter -= rectanglesAndGluedPerimeter.gluedPerimeter * 2;
+            return areaPerimeter;
+        } else if (systemGeometry.getParameters().getShape() == GeometricalParameters.Shape.CIRCLE) {
+            CirclesAndClippedPerimeter circlesAndClippedPerimeter = systemGeometry.getCirclesAndBoundaryPerimeterFromPosition(beadPositions);
+            AreaPerimeter areaPerimeter = CircleAreaPerimeterFinder.findAreaPerimeterOfCirclesNoClipPerimeter(circlesAndClippedPerimeter.getCircles(), systemGeometry.getBoundaryRectangle());
+            areaPerimeter.perimeter += circlesAndClippedPerimeter.getClippedPerimeter();
+            return areaPerimeter;
+        } else {
+            throw new AssertionError();
+        }
     }
     //</editor-fold>
 

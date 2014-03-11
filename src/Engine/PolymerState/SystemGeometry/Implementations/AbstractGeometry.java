@@ -8,8 +8,11 @@ import Engine.Energetics.TwoBeadOverlap;
 import Engine.PolymerState.SystemGeometry.GeometricalParameters;
 import Engine.PolymerState.SystemGeometry.Interfaces.GeometryBuilder;
 import Engine.PolymerState.SystemGeometry.Interfaces.SystemGeometry;
+import SystemAnalysis.AreaPerimeter.circleareaperimeter.Circle;
 import SystemAnalysis.AreaPerimeter.rectangleareaperimeter.BeadRectangle;
 import SystemAnalysis.AreaPerimeter.rectangleareaperimeter.Interval;
+import java.awt.geom.Point2D;
+import java.awt.geom.Rectangle2D;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -220,7 +223,7 @@ public abstract class AbstractGeometry implements SystemGeometry {
         return beadRectangles;
     }
 
-    final protected BeadRectangle getUnsplitRectangleFromPosition(double[] beadPosition) {
+    private BeadRectangle getUnsplitRectangleFromPosition(double[] beadPosition) {
         double left, right, top, bottom, halfWidth;
         halfWidth = parameters.getInteractionLength() / 2;
         double initialX = beadPosition[0];
@@ -250,6 +253,27 @@ public abstract class AbstractGeometry implements SystemGeometry {
         final Interval limits = new Interval(lowerLimit, upperLimit);
 
         return limits;
+    }
+
+    final protected List<Circle> makeUnwrappedCirclesFromBeadPositions(double[][] beadPositions) {
+        List<Circle> circles = new ArrayList<>();
+
+        for (int i = 0; i < beadPositions.length; i++) {
+            final double[] beadPosition = beadPositions[i];
+            circles.add(getCircleFromPosition(beadPosition));
+        }
+
+        return circles;
+    }
+
+    private Circle getCircleFromPosition(double[] position) {
+        final double radius = parameters.getInteractionLength() / 2;
+        return new Circle(new Point2D.Double(position[0], position[1]), radius);
+    }
+
+    @Override
+    public Rectangle2D getBoundaryRectangle() {
+        return new Rectangle2D.Double(0, 0, getSizeOfDimension(0), getSizeOfDimension(1));
     }
     //</editor-fold>
 

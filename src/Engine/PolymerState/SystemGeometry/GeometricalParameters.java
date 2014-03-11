@@ -13,7 +13,14 @@ import java.io.Serializable;
  */
 public final class GeometricalParameters implements Serializable {
 
+    static public enum Shape {
+
+        SQUARE,
+        CIRCLE;
+    }
+
     private final double interactionLength, coreLength, stepLength;
+    private Shape shape = Shape.CIRCLE;
 
     @Override
     public int hashCode() {
@@ -88,6 +95,10 @@ public final class GeometricalParameters implements Serializable {
 
     public double getCoreLength() {
         return coreLength;
+    }
+
+    public Shape getShape() {
+        return shape;
     }
     //</editor-fold>
 

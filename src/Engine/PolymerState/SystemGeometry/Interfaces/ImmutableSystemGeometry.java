@@ -6,8 +6,11 @@ package Engine.PolymerState.SystemGeometry.Interfaces;
 
 import Engine.Energetics.TwoBeadOverlap;
 import Engine.PolymerState.SystemGeometry.GeometricalParameters;
+import SystemAnalysis.AreaPerimeter.circleareaperimeter.Circle;
+import SystemAnalysis.AreaPerimeter.circleareaperimeter.CirclesAndClippedPerimeter;
 import SystemAnalysis.AreaPerimeter.rectangleareaperimeter.BeadRectangle;
 import SystemAnalysis.AreaPerimeter.rectangleareaperimeter.RectangleSplitting.RectanglesAndGluedPerimeter;
+import java.awt.geom.Rectangle2D;
 import java.util.List;
 
 /**
@@ -101,5 +104,11 @@ public interface ImmutableSystemGeometry {
     public RectanglesAndGluedPerimeter getRectanglesAndPerimeterFromPositions(double[][] beadPostions);
 
     public List<BeadRectangle> getRectanglesFromPositions(double[][] beadPositions);
+
+    public Iterable<Circle> getCirclesFromPositions(double[][] beadPositions);
+
+    public CirclesAndClippedPerimeter getCirclesAndBoundaryPerimeterFromPosition(double[][] beadPositions);
+
+    public Rectangle2D getBoundaryRectangle();
 
 }

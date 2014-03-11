@@ -6,6 +6,9 @@ package Engine.PolymerState.SystemGeometry.Implementations;
 
 import Engine.PolymerState.SystemGeometry.GeometricalParameters;
 import Engine.PolymerState.SystemGeometry.Interfaces.GeometryBuilder;
+import SystemAnalysis.AreaPerimeter.circleareaperimeter.Circle;
+import SystemAnalysis.AreaPerimeter.circleareaperimeter.CirclesAndClippedPerimeter;
+import SystemAnalysis.AreaPerimeter.circleareaperimeter.WrappedCircleIterable;
 import SystemAnalysis.AreaPerimeter.rectangleareaperimeter.BeadRectangle;
 import SystemAnalysis.AreaPerimeter.rectangleareaperimeter.OverlappingIntervalLengthFinder;
 import SystemAnalysis.AreaPerimeter.rectangleareaperimeter.RectangleSplitting.PeriodicRectangleSplitter;
@@ -141,6 +144,16 @@ public final class PeriodicGeometry extends AbstractGeometry {
         for (int i = 0; i < numDimensions; i++) {
             position[i] = projectComponent(position[i], i);
         }
+    }
+
+    @Override
+    public Iterable<Circle> getCirclesFromPositions(double[][] beadPositions) {
+        return new WrappedCircleIterable(makeUnwrappedCirclesFromBeadPositions(beadPositions), getBoundaryRectangle());
+    }
+
+    @Override
+    public CirclesAndClippedPerimeter getCirclesAndBoundaryPerimeterFromPosition(double[][] beadPositions) {
+        return new CirclesAndClippedPerimeter(getCirclesFromPositions(beadPositions), 0);
     }
 
 }
