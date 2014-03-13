@@ -24,7 +24,7 @@ import java.util.List;
  *
  * @author bmoths
  */
-public class SurfaceTensionFinder extends AbstractFocusedSimulation {
+public class SurfaceTensionFinder extends AbstractFocusedSimulation<SurfaceTensionResultsWriter> {
 
     public static void main(String[] args) {
         final Input input = readInput(args);
@@ -65,11 +65,8 @@ public class SurfaceTensionFinder extends AbstractFocusedSimulation {
         }
     }
 
-    private final SurfaceTensionResultsWriter outputWriter;
-
     private SurfaceTensionFinder(Input input) throws FileNotFoundException {
-        super(input);
-        outputWriter = new SurfaceTensionResultsWriter(input);
+        super(input, new SurfaceTensionResultsWriter(input));
     }
 
     //<editor-fold defaultstate="collapsed" desc="initialize">
@@ -131,7 +128,7 @@ public class SurfaceTensionFinder extends AbstractFocusedSimulation {
 
     @Override
     protected void printFinalOutput() {
-        outputEndToEndDisplacements();
+//        outputEndToEndDisplacements();
     }
 
     @Override

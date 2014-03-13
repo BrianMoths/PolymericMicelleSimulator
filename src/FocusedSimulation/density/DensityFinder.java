@@ -17,7 +17,7 @@ import java.io.FileNotFoundException;
  *
  * @author bmoths
  */
-public class DensityFinder extends AbstractFocusedSimulation {
+public class DensityFinder extends AbstractFocusedSimulation<DensityResultsWriter> {
 
     public static void main(String[] args) {
         final Input input = readInput(args);
@@ -48,11 +48,8 @@ public class DensityFinder extends AbstractFocusedSimulation {
         }
     }
 
-    private final DensityResultsWriter densityResultsWriter;
-
     private DensityFinder(Input input) throws FileNotFoundException {
-        super(input);
-        densityResultsWriter = new DensityResultsWriter(input);
+        super(input, new DensityResultsWriter(input));
     }
 
     //<editor-fold defaultstate="collapsed" desc="initialize">
@@ -71,7 +68,7 @@ public class DensityFinder extends AbstractFocusedSimulation {
 
     @Override
     protected void printInitialOutput() {
-        densityResultsWriter.printInitializationInfo(polymerSimulator);
+        outputWriter.printInitializationInfo(polymerSimulator);
     }
     //</editor-fold>
 
@@ -87,7 +84,7 @@ public class DensityFinder extends AbstractFocusedSimulation {
 
     @Override
     protected void printFinalOutput() {
-        densityResultsWriter.printFinalOutput(polymerSimulator);
+        outputWriter.printFinalOutput(polymerSimulator);
     }
 
 }

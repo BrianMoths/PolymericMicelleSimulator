@@ -16,12 +16,14 @@ import Gui.SystemViewer;
 import SGEManagement.Input;
 import java.io.FileNotFoundException;
 import java.util.EnumMap;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  *
  * @author bmoths
  */
-public abstract class AbstractFocusedSimulation {
+public abstract class AbstractFocusedSimulation<T extends AbstractResultsWriter> {
 
     protected static Input readInput(String[] args, Input defaultInput) {
         if (args.length == 0) {
@@ -36,16 +38,16 @@ public abstract class AbstractFocusedSimulation {
 
     private final JobParameters jobParameters;
     private final SimulatorParameters systemParameters;
-    private final AbstractResultsWriter outputWriter;
+    protected final T outputWriter;
     protected final PolymerSimulator polymerSimulator;
     protected final SimulationRunner simulationRunner;
 
-    protected AbstractFocusedSimulation(Input input) throws FileNotFoundException {
+    protected AbstractFocusedSimulation(Input input, T outputWriter) throws FileNotFoundException {
         jobParameters = input.getJobParameters();
         systemParameters = input.getSystemParameters();
         polymerSimulator = systemParameters.makePolymerSimulator();
         simulationRunner = new SimulationRunner(polymerSimulator, SimulationRunnerParameters.defaultSimulationRunnerParameters());
-        outputWriter = new AbstractResultsWriter(input);
+        this.outputWriter = outputWriter;
     }
 
     public final void doSimulation() {
@@ -81,6 +83,11 @@ public abstract class AbstractFocusedSimulation {
 
     private void printInitialOutputGeneric() {
         outputWriter.printParameters();
+        try {
+            Thread.sleep(10000);
+        } catch (InterruptedException ex) {
+            Logger.getLogger(AbstractFocusedSimulation.class.getName()).log(Level.SEVERE, null, ex);
+        }
         printInitialOutput();
     }
 
