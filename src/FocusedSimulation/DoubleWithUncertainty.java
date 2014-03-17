@@ -26,4 +26,8 @@ public class DoubleWithUncertainty {
         return uncertainty;
     }
 
+    public double getRelativeError() {
+        return getUncertainty() / getValue();
+    }
+
 }

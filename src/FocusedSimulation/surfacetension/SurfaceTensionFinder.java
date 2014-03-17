@@ -38,16 +38,6 @@ public class SurfaceTensionFinder extends AbstractFocusedSimulation<SurfaceTensi
         }
     }
 
-    static private DoubleWithUncertainty getMeasuredSurfaceTensionFromWidth(DoubleWithUncertainty width, PolymerSimulator polymerSimulator) {
-        final ExternalEnergyCalculator externalEnergyCalculator = polymerSimulator.getSystemAnalyzer().getEnergeticsConstants().getExternalEnergyCalculator();
-        final double xEquilibriumPosition = externalEnergyCalculator.getxEquilibriumPosition();
-        final double xSpringConstant = externalEnergyCalculator.getxSpringConstant();
-
-        final double surfaceTension = xSpringConstant * (xEquilibriumPosition - width.getValue()) / 2;
-        final double surfaceTensionError = Math.abs(xSpringConstant * width.getUncertainty()) / 2;
-        return new DoubleWithUncertainty(surfaceTension, surfaceTensionError);
-    }
-
     private static Input readInput(String[] args) {
         if (args.length == 0) {
             final double verticalScaleFactor = .1;
@@ -63,6 +53,16 @@ public class SurfaceTensionFinder extends AbstractFocusedSimulation<SurfaceTensi
         } else {
             throw new IllegalArgumentException("At most one input allowed");
         }
+    }
+
+    static private DoubleWithUncertainty getMeasuredSurfaceTensionFromWidth(DoubleWithUncertainty width, PolymerSimulator polymerSimulator) {
+        final ExternalEnergyCalculator externalEnergyCalculator = polymerSimulator.getSystemAnalyzer().getEnergeticsConstants().getExternalEnergyCalculator();
+        final double xEquilibriumPosition = externalEnergyCalculator.getxEquilibriumPosition();
+        final double xSpringConstant = externalEnergyCalculator.getxSpringConstant();
+
+        final double surfaceTension = xSpringConstant * (xEquilibriumPosition - width.getValue()) / 2;
+        final double surfaceTensionError = Math.abs(xSpringConstant * width.getUncertainty()) / 2;
+        return new DoubleWithUncertainty(surfaceTension, surfaceTensionError);
     }
 
     private SurfaceTensionFinder(Input input) throws FileNotFoundException {
@@ -129,16 +129,6 @@ public class SurfaceTensionFinder extends AbstractFocusedSimulation<SurfaceTensi
     @Override
     protected void printFinalOutput() {
 //        outputEndToEndDisplacements();
-    }
-
-    @Override
-    protected StepGenerator makeMainStepGenerator() {
-        EnumMap<StepType, Double> stepweights = new EnumMap<>(StepType.class);
-        stepweights.put(StepType.SINGLE_WALL_RESIZE, .0001);
-        stepweights.put(StepType.SINGLE_BEAD, 1.);
-        stepweights.put(StepType.REPTATION, .1);
-        stepweights.put(StepType.SINGLE_CHAIN, .01);
-        return new GeneralStepGenerator(stepweights);
     }
 
 }

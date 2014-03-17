@@ -19,6 +19,15 @@ import java.io.FileNotFoundException;
  */
 public class AbstractResultsWriter {
 
+    protected static CharSequence makeDoubleWithUncertaintyCharSequence(DoubleWithUncertainty doubleWithUncertainty) {
+        StringBuilder doubleWithUncertaintyStringBuilder = new StringBuilder();
+        doubleWithUncertaintyStringBuilder
+                .append(Double.toString(doubleWithUncertainty.getValue()))
+                .append(" +/- ")
+                .append(Double.toString(doubleWithUncertainty.getUncertainty()));
+        return doubleWithUncertaintyStringBuilder;
+    }
+
     protected static String makeFinalOutputString(PolymerSimulator polymerSimulator) {
         try {
             final SystemAnalyzer systemAnalyzer = polymerSimulator.getSystemAnalyzer();

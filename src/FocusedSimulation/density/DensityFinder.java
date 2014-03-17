@@ -4,6 +4,7 @@
  */
 package FocusedSimulation.density;
 
+import Engine.PolymerSimulator;
 import FocusedSimulation.AbstractFocusedSimulation;
 import FocusedSimulation.DoubleWithUncertainty;
 import FocusedSimulation.StatisticsTracker.TrackableVariable;
@@ -33,12 +34,12 @@ public class DensityFinder extends AbstractFocusedSimulation<DensityResultsWrite
 
     private static Input readInput(String[] args) {
         if (args.length == 0) {
-            final double verticalScaleFactor = .1;
-            final double horizontalScaleFactor = 1;
+            final double verticalScaleFactor = .3;
+            final double horizontalScaleFactor = 9;
 
-            InputBuilder inputBuilder = SurfaceTensionJobMaker.makeRescaleInputBuilderWithHorizontalRescaling(verticalScaleFactor, horizontalScaleFactor, 0);
+            InputBuilder inputBuilder = DensityJobMaker.makeRescaleInputBuilderWithHorizontalRescaling(verticalScaleFactor, horizontalScaleFactor, 0);
             inputBuilder.getJobParametersBuilder().setNumAnneals(1);
-            inputBuilder.getJobParametersBuilder().setNumSurfaceTensionTrials(1);
+            inputBuilder.getJobParametersBuilder().setNumSurfaceTensionTrials(2);
             return inputBuilder.buildInput();
         } else if (args.length == 1) {
             final String fileName = args[0];
@@ -48,6 +49,13 @@ public class DensityFinder extends AbstractFocusedSimulation<DensityResultsWrite
         }
     }
 
+    private DoubleWithUncertainty getMeasuredDensityFromVolume(DoubleWithUncertainty measuredVolume, PolymerSimulator polymerSimulator) {
+        final double numBeads = polymerSimulator.getNumBeads();
+        final double density = numBeads / measuredVolume.getValue();
+        final double uncertainty = density * measuredVolume.getRelativeError();
+        return new DoubleWithUncertainty(density, uncertainty);
+    }
+
     private DensityFinder(Input input) throws FileNotFoundException {
         super(input, new DensityResultsWriter(input));
     }
@@ -55,12 +63,12 @@ public class DensityFinder extends AbstractFocusedSimulation<DensityResultsWrite
     //<editor-fold defaultstate="collapsed" desc="initialize">
     @Override
     protected void initializePositions() {
-        polymerSimulator.reasonableColumnRandomize();
+        polymerSimulator.reasonableRandomize();
     }
 
     @Override
     protected void registerTrackablesToSimulationRunner() {
-        simulationRunner.trackVariable(TrackableVariable.SYSTEM_WIDTH);
+        simulationRunner.trackVariable(TrackableVariable.SYSTEM_VOLUME);
         simulationRunner.trackVariable((StressTrackable.TOTAL_STRESS_TRACKABLE).getStress11Trackable());
         simulationRunner.trackVariable((StressTrackable.TOTAL_STRESS_TRACKABLE).getStress12Trackable());
         simulationRunner.trackVariable((StressTrackable.TOTAL_STRESS_TRACKABLE).getStress22Trackable());
@@ -68,23 +76,24 @@ public class DensityFinder extends AbstractFocusedSimulation<DensityResultsWrite
 
     @Override
     protected void printInitialOutput() {
-        outputWriter.printInitializationInfo(polymerSimulator);
     }
     //</editor-fold>
 
     @Override
     protected void analyzeAndPrintResults() {
-        DoubleWithUncertainty measuredWidth = simulationRunner.getRecentMeasurementForTrackedVariable(TrackableVariable.SYSTEM_WIDTH);
+        DoubleWithUncertainty measuredVolume = simulationRunner.getRecentMeasurementForTrackedVariable(TrackableVariable.SYSTEM_VOLUME);
+        DoubleWithUncertainty measuredDensity = getMeasuredDensityFromVolume(measuredVolume, polymerSimulator);
+        outputWriter.printMeasuredDensity(measuredDensity);
+        outputWriter.printStress(simulationRunner);
     }
 
     @Override
     protected boolean isConverged() {
-        return simulationRunner.isConverged(TrackableVariable.SYSTEM_WIDTH);
+        return simulationRunner.isConverged(TrackableVariable.SYSTEM_VOLUME);
     }
 
     @Override
     protected void printFinalOutput() {
-        outputWriter.printFinalOutput(polymerSimulator);
     }
 
 }

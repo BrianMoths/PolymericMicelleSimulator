@@ -150,7 +150,7 @@ public abstract class AbstractGeometry implements SystemGeometry {
     }
 
     @Override
-    public double[] randomPosition() {
+    public double[] randomMiddlePosition() {
         double[] position = new double[numDimensions];
         for (int i = 0; i < numDimensions; i++) {
             position[i] = (randomNumberGenerator.nextDouble() / 3 + 1. / 3) * fullRMax[i];
@@ -159,10 +159,10 @@ public abstract class AbstractGeometry implements SystemGeometry {
     }
 
     @Override
-    public double[][] randomPositions(int numPositions) {
+    public double[][] randomMiddlePositions(int numPositions) {
         double[][] randomPositions = new double[numPositions][];
         for (int i = 0; i < numPositions; i++) {
-            randomPositions[i] = randomPosition();
+            randomPositions[i] = randomMiddlePosition();
         }
         return randomPositions;
     }
@@ -181,6 +181,23 @@ public abstract class AbstractGeometry implements SystemGeometry {
         double[] position = new double[numDimensions];
         position[0] = randomNumberGenerator.nextDouble() * fullRMax[0];
         position[1] = (randomNumberGenerator.nextDouble() / 3 + 1. / 3) * fullRMax[1];
+        return position;
+    }
+
+    @Override
+    public double[][] randomPositions(int numPositions) {
+        double[][] randomColumnPositions = new double[numPositions][];
+        for (int i = 0; i < numPositions; i++) {
+            randomColumnPositions[i] = randomPosition();
+        }
+        return randomColumnPositions;
+    }
+
+    @Override
+    public double[] randomPosition() {
+        double[] position = new double[numDimensions];
+        position[0] = randomNumberGenerator.nextDouble() * fullRMax[0];
+        position[1] = randomNumberGenerator.nextDouble() * fullRMax[1];
         return position;
     }
 

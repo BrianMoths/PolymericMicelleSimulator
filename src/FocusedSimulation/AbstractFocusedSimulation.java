@@ -83,11 +83,6 @@ public abstract class AbstractFocusedSimulation<T extends AbstractResultsWriter>
 
     private void printInitialOutputGeneric() {
         outputWriter.printParameters();
-        try {
-            Thread.sleep(10000);
-        } catch (InterruptedException ex) {
-            Logger.getLogger(AbstractFocusedSimulation.class.getName()).log(Level.SEVERE, null, ex);
-        }
         printInitialOutput();
     }
 

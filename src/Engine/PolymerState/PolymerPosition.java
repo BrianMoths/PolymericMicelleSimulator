@@ -101,6 +101,32 @@ public class PolymerPosition implements ImmutablePolymerPosition, Serializable {
         }
     }
 
+    public void reasonableRandomize(ImmutableDiscretePolymerState immutableDiscretePolymerState) {
+        List<Boolean> isRandomized = new ArrayList<>(numBeads);
+        for (int bead = 0; bead < numBeads; bead++) {
+            isRandomized.add(false);
+        }
+        for (int bead = 0; bead < numBeads; bead++) {
+            if (!isRandomized.get(bead)) {
+                List<Integer> chainOfBead = immutableDiscretePolymerState.getChainOfBead(bead);
+                reasonableChainRandomize(chainOfBead);
+                for (Integer randomizedBead : chainOfBead) {
+                    isRandomized.set(randomizedBead, true);
+                }
+            }
+
+        }
+
+    }
+
+    private void reasonableChainRandomize(List<Integer> chainOfBead) {
+        double[] currentPosition = systemGeometry.randomPosition();
+        for (int currentBead : chainOfBead) {
+            movePositionByStep(currentPosition);
+            setBeadPositionNoRebin(currentBead, currentPosition);
+        }
+    }
+
     private void movePositionByStep(double[] currentPosition) {
         boolean isStepped = false;
         while (!isStepped) {
@@ -109,7 +135,7 @@ public class PolymerPosition implements ImmutablePolymerPosition, Serializable {
     }
 
     private void randomizePrivate() {
-        setBeadPositions(systemGeometry.randomPositions(numBeads));
+        setBeadPositions(systemGeometry.randomMiddlePositions(numBeads));
         resetAnalyzersHistory();
     }
 

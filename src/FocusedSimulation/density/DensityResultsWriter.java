@@ -5,6 +5,7 @@
 package FocusedSimulation.density;
 
 import Engine.PolymerSimulator;
+import FocusedSimulation.DoubleWithUncertainty;
 import FocusedSimulation.output.AbstractResultsWriter;
 import SGEManagement.Input;
 import java.io.FileNotFoundException;
@@ -15,12 +16,22 @@ import java.io.FileNotFoundException;
  */
 public class DensityResultsWriter extends AbstractResultsWriter {
 
+    private String makeMeasuredDensityString(DoubleWithUncertainty measuredDensity) {
+        StringBuilder parametersStringBuilder = new StringBuilder();
+        parametersStringBuilder
+                .append("Density found: ")
+                .append(makeDoubleWithUncertaintyCharSequence(measuredDensity))
+                .append("\n");
+        return parametersStringBuilder.toString();
+    }
+
     public DensityResultsWriter(Input input) throws FileNotFoundException {
         super(input);
     }
 
-    void printInitializationInfo(PolymerSimulator polymerSimulator) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    void printMeasuredDensity(DoubleWithUncertainty measuredDensity) {
+        final String measuredDensityString = makeMeasuredDensityString(measuredDensity);
+        printAndSoutString(measuredDensityString);
     }
 
 }

@@ -149,6 +149,10 @@ public class PolymerState implements ImmutablePolymerState {
         polymerPosition.reasonableColumnRandomize(discretePolymerState);
     }
 
+    public void reasonableRandomize() {
+        polymerPosition.reasonableRandomize(discretePolymerState);
+    }
+
     public void anneal() {
         polymerPosition.anneal();
     }
