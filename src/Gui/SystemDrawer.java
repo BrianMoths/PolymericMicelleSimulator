@@ -51,7 +51,7 @@ public class SystemDrawer {
         final double xMax = systemGeometry.getSizeOfDimension(0);
         final double yMax = systemGeometry.getSizeOfDimension(1);
         scaleFactor = displaySize / Math.max(xMax, yMax);
-        diameter = (int) Math.round(systemGeometry.getParameters().getInteractionLength() * scaleFactor) / 2; //make diameter smaller
+        diameter = (int) Math.round(systemGeometry.getParameters().getInteractionLength() * scaleFactor);
         radius = diameter / 2;
         maxX = (int) (xMax * scaleFactor);
         maxY = (int) (yMax * scaleFactor);
