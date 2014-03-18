@@ -211,11 +211,6 @@ public final class EnergeticsConstants implements Serializable {
     }
     //</editor-fold>
 
-    public boolean isEnergeticallyAllowed(double energyChange) {
-        return energyChange < 0
-                || randomNumberGenerator.nextDouble() < Math.exp(-energyChange / temperature);
-    }
-
     public boolean isEnergeticallyAllowed(EnergyEntropyChange energyEntropyChange) {
         final double freeEnergyChange = energyEntropyChange.calculateFreeEnergyChange(temperature);
         return freeEnergyChange < 0

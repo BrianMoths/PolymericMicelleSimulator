@@ -63,7 +63,7 @@ public class AbstractGeometryTest {
         AbstractGeometry instance = PeriodicGeometry.defaultGeometry();
 
         for (int i = 0; i < 100; i++) {
-            double[] result = instance.randomPosition();
+            double[] result = instance.randomMiddlePosition();
             assertTrue(isPositionValid(result, instance.getRMax()));
         }
     }
@@ -96,7 +96,7 @@ public class AbstractGeometryTest {
         System.out.println("randomPositions");
         int numPositions = 100;
         AbstractGeometry instance = PeriodicGeometry.defaultGeometry();
-        double[][] result = instance.randomPositions(numPositions);
+        double[][] result = instance.randomMiddlePositions(numPositions);
         assertTrue(arePositionsValid(result, instance.getRMax()));
     }
 

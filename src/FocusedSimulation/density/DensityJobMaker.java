@@ -34,25 +34,28 @@ public class DensityJobMaker {
         return makeWideVerticalScalingInputs();
     }
 
-    public static Input makeRescaleInput(final double scaleFactor, int jobNumber) {
-        InputBuilder inputBuilder = makeRescaleInputBuilder(scaleFactor, jobNumber);
+    public static Input makeRescaleInput(final double scaleFactor, double pressure, int jobNumber) {
+        InputBuilder inputBuilder = makeRescaleInputBuilder(scaleFactor, pressure, jobNumber);
         return inputBuilder.buildInput();
     }
 
-    public static InputBuilder makeRescaleInputBuilder(final double scaleFactor, int jobNumber) {
-        return makeRescaleInputBuilderWithHorizontalRescaling(scaleFactor, 1, jobNumber);
+    public static InputBuilder makeRescaleInputBuilder(final double scaleFactor, double pressure, int jobNumber) {
+        return makeRescaleInputBuilderWithHorizontalRescaling(scaleFactor, 1, pressure, jobNumber);
     }
 
-    public static Input makeRescaleInput(final double verticalScale, final double horizontalScale, final int jobNumber) {
-        final InputBuilder inputBuilder = makeRescaleInputBuilderWithHorizontalRescaling(verticalScale, horizontalScale, jobNumber);
+    public static Input makeRescaleInput(final double verticalScale, final double horizontalScale, double pressure, final int jobNumber) {
+        final InputBuilder inputBuilder = makeRescaleInputBuilderWithHorizontalRescaling(verticalScale, horizontalScale, pressure, jobNumber);
         return inputBuilder.buildInput();
     }
 
-    public static InputBuilder makeRescaleInputBuilderWithHorizontalRescaling(final double verticalScale, final double horizontalScale, int jobNumber) {
+    public static InputBuilder makeRescaleInputBuilderWithHorizontalRescaling(final double verticalScale, final double horizontalScale, final double pressure, int jobNumber) {
         InputBuilder inputBuilder;
         inputBuilder = getDefaultInputDensityBuilder();
         final double aspectRatio = inputBuilder.getSystemParametersBuilder().getAspectRatio();
         inputBuilder.getSystemParametersBuilder().setAspectRatio(aspectRatio * horizontalScale / verticalScale);
+        final ExternalEnergyCalculatorBuilder externalEnergyCalculatorBuilder = new ExternalEnergyCalculatorBuilder();
+        externalEnergyCalculatorBuilder.setPressure(pressure);
+        inputBuilder.getSystemParametersBuilder().getEnergeticsConstantsBuilder().setExternalEnergyCalculator(externalEnergyCalculatorBuilder.build());
         PolymerCluster polymerCluster = getPolymerCluster(verticalScale, horizontalScale);
         inputBuilder.getSystemParametersBuilder().setPolymerCluster(polymerCluster);
         inputBuilder.getJobParametersBuilder().setJobNumber(jobNumber);
@@ -121,32 +124,54 @@ public class DensityJobMaker {
         int jobNumber = 1;
         Input input;
         double verticalRescaleFactor;
-        final double horizontalRescaleFactor = 3;
+        final double horizontalRescaleFactor = 9;
 
         verticalRescaleFactor = .05;
-        input = makeRescaleInput(verticalRescaleFactor, horizontalRescaleFactor, jobNumber);
+        input = makeRescaleInput(verticalRescaleFactor, horizontalRescaleFactor, 0, jobNumber);
         inputs.add(input);
         jobNumber++;
 
         verticalRescaleFactor = .1;
-        input = makeRescaleInput(verticalRescaleFactor, horizontalRescaleFactor, jobNumber);
+        input = makeRescaleInput(verticalRescaleFactor, horizontalRescaleFactor, 0, jobNumber);
         inputs.add(input);
         jobNumber++;
 
         verticalRescaleFactor = .5;
-        input = makeRescaleInput(verticalRescaleFactor, horizontalRescaleFactor, jobNumber);
+        input = makeRescaleInput(verticalRescaleFactor, horizontalRescaleFactor, 0, jobNumber);
         inputs.add(input);
         jobNumber++;
 
         verticalRescaleFactor = 1;
-        input = makeRescaleInput(verticalRescaleFactor, horizontalRescaleFactor, jobNumber);
+        input = makeRescaleInput(verticalRescaleFactor, horizontalRescaleFactor, 0, jobNumber);
         inputs.add(input);
         jobNumber++;
 
         verticalRescaleFactor = 2;
-        input = makeRescaleInput(verticalRescaleFactor, horizontalRescaleFactor, jobNumber);
+        input = makeRescaleInput(verticalRescaleFactor, horizontalRescaleFactor, 0, jobNumber);
         inputs.add(input);
         jobNumber++;
+        return inputs;
+    }
+
+    private static List<Input> makeCompressibilityInputs() {
+        List<Input> inputs = new ArrayList<>();
+
+        int jobNumber = 1;
+        Input input;
+        double pressure = 0;
+        final double horizontalRescaleFactor = 9;
+        final double verticalRescaleFactor = .3;
+        final double pressureStep = .05;
+
+
+        for (int i = 0; i < 5; i++) {
+            input = makeRescaleInput(verticalRescaleFactor, horizontalRescaleFactor, pressure, jobNumber);
+            inputs.add(input);
+            jobNumber++;
+            pressure += pressureStep;
+        }
+
+
         return inputs;
     }
 

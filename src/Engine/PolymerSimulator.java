@@ -148,7 +148,7 @@ public class PolymerSimulator implements Serializable {
         energy = systemAnalyzer.computeEnergy();
     }
 
-    public void doIterations(int n) { //possibly optomize by unrolling loop and tracking pairwise interactions
+    public void doIterations(int n) {
         for (int i = 0; i < n; i++) {
             synchronized (this) {
                 doIteration();

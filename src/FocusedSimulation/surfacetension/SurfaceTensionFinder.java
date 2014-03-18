@@ -40,7 +40,7 @@ public class SurfaceTensionFinder extends AbstractFocusedSimulation<SurfaceTensi
 
     private static Input readInput(String[] args) {
         if (args.length == 0) {
-            final double verticalScaleFactor = .1;
+            final double verticalScaleFactor = 1;
             final double horizontalScaleFactor = 1;
 
             InputBuilder inputBuilder = SurfaceTensionJobMaker.makeRescaleInputBuilderWithHorizontalRescaling(verticalScaleFactor, horizontalScaleFactor, 0);
@@ -128,7 +128,7 @@ public class SurfaceTensionFinder extends AbstractFocusedSimulation<SurfaceTensi
 
     @Override
     protected void printFinalOutput() {
-//        outputEndToEndDisplacements();
+        soutYPositionHistogram();
     }
 
 }

@@ -34,4 +34,12 @@ public class DensityResultsWriter extends AbstractResultsWriter {
         printAndSoutString(measuredDensityString);
     }
 
+    void printPressure() {
+        printAndSoutString(makePressureString());
+    }
+
+    private String makePressureString() {
+        return "Pressure: " + input.getSystemParameters().energeticsConstants.getExternalEnergyCalculator().getPressure() + "\n";
+    }
+
 }

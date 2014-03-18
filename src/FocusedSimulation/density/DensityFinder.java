@@ -37,7 +37,7 @@ public class DensityFinder extends AbstractFocusedSimulation<DensityResultsWrite
             final double verticalScaleFactor = .3;
             final double horizontalScaleFactor = 9;
 
-            InputBuilder inputBuilder = DensityJobMaker.makeRescaleInputBuilderWithHorizontalRescaling(verticalScaleFactor, horizontalScaleFactor, 0);
+            InputBuilder inputBuilder = DensityJobMaker.makeRescaleInputBuilderWithHorizontalRescaling(verticalScaleFactor, horizontalScaleFactor, 0, 0);
             inputBuilder.getJobParametersBuilder().setNumAnneals(1);
             inputBuilder.getJobParametersBuilder().setNumSurfaceTensionTrials(2);
             return inputBuilder.buildInput();
@@ -76,6 +76,7 @@ public class DensityFinder extends AbstractFocusedSimulation<DensityResultsWrite
 
     @Override
     protected void printInitialOutput() {
+        outputWriter.printPressure();
     }
     //</editor-fold>
 

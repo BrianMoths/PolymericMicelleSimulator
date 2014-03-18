@@ -275,10 +275,6 @@ public class SystemAnalyzer implements Serializable {
         return energeticsConstants;
     }
 
-    public boolean isEnergeticallyAllowed(double energyChange) {
-        return energeticsConstants.isEnergeticallyAllowed(energyChange);
-    }
-
     public boolean isEnergeticallyAllowed(EnergyEntropyChange energyEntropyChange) {
         return energeticsConstants.isEnergeticallyAllowed(energyEntropyChange);
     }
