@@ -386,10 +386,10 @@ public abstract class AbstractGeometry implements SystemGeometry {
 
     private double calculateCircularOverlap(final double distanceBetweenCenters, double interactionDistance) {
         final double ratio = distanceBetweenCenters / interactionDistance;
-        if (ratio >= 1) {
-            return 0;
-        } else {
+        if (ratio < 1) {
             return 0.5 * interactionDistance * interactionDistance * (Math.acos(ratio) - ratio * Math.sqrt(1 - ratio * ratio));
+        } else {
+            return 0;
         }
     }
 

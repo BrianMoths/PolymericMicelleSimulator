@@ -29,7 +29,7 @@ public class SurfaceTensionJobMaker {
     }
 
     static private List<Input> makeInputs() {
-        return makeNarrowVerticalScalingInputs();
+        return makeWideVerticalScalingInputs();
     }
 
     public static Input makeRescaleInput(final double scaleFactor, int jobNumber) {
@@ -129,34 +129,34 @@ public class SurfaceTensionJobMaker {
         int jobNumber = 1;
         Input input;
         double verticalRescaleFactor;
-        final double horizontalRescaleFactor = 3;
-
-        verticalRescaleFactor = .07;
-        input = makeRescaleInput(verticalRescaleFactor, horizontalRescaleFactor, jobNumber);
-        inputs.add(input);
-        jobNumber++;
-
-        verticalRescaleFactor = .18;
-        input = makeRescaleInput(verticalRescaleFactor, horizontalRescaleFactor, jobNumber);
-        inputs.add(input);
-        jobNumber++;
-
-        verticalRescaleFactor = .3;
-        input = makeRescaleInput(verticalRescaleFactor, horizontalRescaleFactor, jobNumber);
-        inputs.add(input);
-        jobNumber++;
+        final double horizontalRescaleFactor = 2;
 
         verticalRescaleFactor = 1;
         input = makeRescaleInput(verticalRescaleFactor, horizontalRescaleFactor, jobNumber);
         inputs.add(input);
         jobNumber++;
 
-        verticalRescaleFactor = 3;
+        verticalRescaleFactor = 2;
+        input = makeRescaleInput(verticalRescaleFactor, horizontalRescaleFactor, jobNumber);
+        inputs.add(input);
+        jobNumber++;
+
+        verticalRescaleFactor = 5;
+        input = makeRescaleInput(verticalRescaleFactor, horizontalRescaleFactor, jobNumber);
+        inputs.add(input);
+        jobNumber++;
+
+        verticalRescaleFactor = 7;
         input = makeRescaleInput(verticalRescaleFactor, horizontalRescaleFactor, jobNumber);
         inputs.add(input);
         jobNumber++;
 
         verticalRescaleFactor = 10;
+        input = makeRescaleInput(verticalRescaleFactor, horizontalRescaleFactor, jobNumber);
+        inputs.add(input);
+        jobNumber++;
+
+        verticalRescaleFactor = 15;
         input = makeRescaleInput(verticalRescaleFactor, horizontalRescaleFactor, jobNumber);
         inputs.add(input);
         jobNumber++;
@@ -348,6 +348,57 @@ public class SurfaceTensionJobMaker {
         inputBuilder.getJobParametersBuilder().setNumAnneals(10);
         inputBuilder.getJobParametersBuilder().setNumSurfaceTensionTrials(10);
         inputBuilder.getJobParametersBuilder().setShouldIterateUntilConvergence(false);
+        inputs.add(inputBuilder.buildInput());
+        jobNumber++;
+
+        return inputs;
+    }
+
+    private static List<Input> testSpringEffect() {
+        List<Input> inputs = new ArrayList<>();
+
+        int jobNumber = 1;
+        InputBuilder inputBuilder;
+        final double verticalRescaleFactor = 8;
+        final double horizontalRescaleFactor = 1;
+
+        final ExternalEnergyCalculator exernalEnergyCalculator = makeRescaleInputBuilderWithHorizontalRescaling(verticalRescaleFactor, horizontalRescaleFactor, jobNumber).systemParametersBuilder.getEnergeticsConstantsBuilder().getExternalEnergyCalculator();
+
+        final double observedBalancePointOfSpring = 13.5;
+        final double force = -exernalEnergyCalculator.getxSpringConstant() * (observedBalancePointOfSpring - exernalEnergyCalculator.getxEquilibriumPosition());
+        double newSpringConstant = 0;
+        double newXEquilibrium = 0;
+        ExternalEnergyCalculator newExternalEnergyCalculator;
+
+        inputBuilder = makeRescaleInputBuilderWithHorizontalRescaling(verticalRescaleFactor, horizontalRescaleFactor, jobNumber);
+        newSpringConstant = 5;
+        newXEquilibrium = force / newSpringConstant + observedBalancePointOfSpring;
+        newExternalEnergyCalculator = new ExternalEnergyCalculatorBuilder().setXPositionAndSpringConstant(newXEquilibrium, newSpringConstant).build();
+        inputBuilder.getSystemParametersBuilder().getEnergeticsConstantsBuilder().setExternalEnergyCalculator(newExternalEnergyCalculator);
+        inputs.add(inputBuilder.buildInput());
+        jobNumber++;
+
+        inputBuilder = makeRescaleInputBuilderWithHorizontalRescaling(verticalRescaleFactor, horizontalRescaleFactor, jobNumber);
+        newSpringConstant = 20;
+        newXEquilibrium = force / newSpringConstant + observedBalancePointOfSpring;
+        newExternalEnergyCalculator = new ExternalEnergyCalculatorBuilder().setXPositionAndSpringConstant(newXEquilibrium, newSpringConstant).build();
+        inputBuilder.getSystemParametersBuilder().getEnergeticsConstantsBuilder().setExternalEnergyCalculator(newExternalEnergyCalculator);
+        inputs.add(inputBuilder.buildInput());
+        jobNumber++;
+
+        inputBuilder = makeRescaleInputBuilderWithHorizontalRescaling(verticalRescaleFactor, horizontalRescaleFactor, jobNumber);
+        newSpringConstant = 100;
+        newXEquilibrium = force / newSpringConstant + observedBalancePointOfSpring;
+        newExternalEnergyCalculator = new ExternalEnergyCalculatorBuilder().setXPositionAndSpringConstant(newXEquilibrium, newSpringConstant).build();
+        inputBuilder.getSystemParametersBuilder().getEnergeticsConstantsBuilder().setExternalEnergyCalculator(newExternalEnergyCalculator);
+        inputs.add(inputBuilder.buildInput());
+        jobNumber++;
+
+        inputBuilder = makeRescaleInputBuilderWithHorizontalRescaling(verticalRescaleFactor, horizontalRescaleFactor, jobNumber);
+        newSpringConstant = 500;
+        newXEquilibrium = force / newSpringConstant + observedBalancePointOfSpring;
+        newExternalEnergyCalculator = new ExternalEnergyCalculatorBuilder().setXPositionAndSpringConstant(newXEquilibrium, newSpringConstant).build();
+        inputBuilder.getSystemParametersBuilder().getEnergeticsConstantsBuilder().setExternalEnergyCalculator(newExternalEnergyCalculator);
         inputs.add(inputBuilder.buildInput());
         jobNumber++;
 

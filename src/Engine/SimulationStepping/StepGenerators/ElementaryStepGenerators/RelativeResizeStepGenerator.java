@@ -36,7 +36,7 @@ public class RelativeResizeStepGenerator implements StepGenerator {
     private final double lowerRandom, randomRange, power;
 
     public RelativeResizeStepGenerator() {
-        this(.01);//.0001
+        this(.01);//.01
     }
 
     public RelativeResizeStepGenerator(double maxScalingFactor) {

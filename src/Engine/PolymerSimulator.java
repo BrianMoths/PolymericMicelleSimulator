@@ -159,14 +159,14 @@ public class PolymerSimulator implements Serializable {
         }
     }
 
-    public synchronized void doIteration() { //todo: cache bead energies
+    public synchronized void doIteration() {
         SimulationStep simulationStep = stepGenerator.generateStep(systemAnalyzer);
-        acceptanceStatistics.attemptStepOfType(simulationStep.getMoveType());
+        acceptanceStatistics.recordStepAttemptOfType(simulationStep.getMoveType());
         if (simulationStep.doStep(polymerState, systemAnalyzer)) {
             final EnergyEntropyChange energyEntropyChange = simulationStep.getEnergyEntropyChange();
             if (systemAnalyzer.isEnergeticallyAllowed(energyEntropyChange)) {
                 energy += energyEntropyChange.getEnergy();
-                acceptanceStatistics.acceptStepOfType(simulationStep.getMoveType());
+                acceptanceStatistics.recordStepAcceptanceOfType(simulationStep.getMoveType());
             } else {
                 simulationStep.undoStep(polymerState);
             }
@@ -182,8 +182,8 @@ public class PolymerSimulator implements Serializable {
     public void equilibrate() {
         while (!systemAnalyzer.isEquilibrated()) {
             doIterations(10000);
-            final AreaPerimeter areaPerimeter = systemAnalyzer.findAreaAndPerimeter();
-            systemAnalyzer.addPerimeterAreaEnergySnapshot(areaPerimeter.perimeter, areaPerimeter.area, energy);
+//            final AreaPerimeter areaPerimeter = systemAnalyzer.findAreaAndPerimeter();
+            systemAnalyzer.addPerimeterAreaEnergySnapshot(0, 0, energy);
         }
     }
 

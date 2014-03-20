@@ -14,9 +14,12 @@ import Engine.PolymerState.SystemGeometry.GeometricalParameters;
 import Engine.PolymerState.SystemGeometry.Implementations.AbstractGeometry.AbstractGeometryBuilder;
 import Engine.PolymerState.SystemGeometry.Implementations.PeriodicGeometry;
 import Engine.PolymerState.SystemGeometry.Interfaces.SystemGeometry;
+import Engine.SimulationStepping.StepGenerators.CompoundStepGenerators.GeneralStepGenerator;
+import Engine.SimulationStepping.StepTypes.StepType;
 import Engine.SystemAnalyzer;
 //import static FocusedSimulation.SurfaceTensionFinder.generateLengthStatistics;
 import Gui.SystemViewer;
+import java.util.EnumMap;
 import org.apache.commons.math3.stat.descriptive.DescriptiveStatistics;
 
 /**
@@ -26,19 +29,19 @@ import org.apache.commons.math3.stat.descriptive.DescriptiveStatistics;
 public class IdealGasSimulation {
 
     static private final int numBeadsPerChain = 1;
-    static private final int numBeads = 5;
+    static private final int numBeads = 4;
     static private final double density = .01;
 
     public static void main(String[] args) {
 
         final IdealGasSimulation idealGasSimulation;
         idealGasSimulation = new IdealGasSimulation();
-        idealGasSimulation.findVolume(.01);
+        idealGasSimulation.findVolume(.1);
 
     }
 
     static public DescriptiveStatistics generateLengthStatistics(int numSamples, PolymerSimulator polymerSimulator) {
-        final int iterationsPerSample = 100000;//1000000
+        final int iterationsPerSample = 10000;//1000000
         int numSamplesTaken = 0;
         SystemAnalyzer systemAnalyzer = polymerSimulator.getSystemAnalyzer();
 
@@ -59,8 +62,11 @@ public class IdealGasSimulation {
 
         final PolymerCluster polymerCluster = makePolymerCluster(numBeads, density);
         final SystemGeometry systemGeometry = makeSystemGeometry(polymerCluster.getNumBeadsIncludingWater(), geometricalParameters);
-
-        return new PolymerSimulator(systemGeometry, polymerCluster, energeticsConstants);
+        final PolymerSimulator polymerSimulator = new PolymerSimulator(systemGeometry, polymerCluster, energeticsConstants);
+        final EnumMap<StepType, Double> stepWeights = GeneralStepGenerator.makeDefaultWeights();
+        stepWeights.put(StepType.SINGLE_WALL_RESIZE, .5);
+        polymerSimulator.setStepGenerator(new GeneralStepGenerator(stepWeights));
+        return polymerSimulator;
     }
 
     static private PolymerCluster makePolymerCluster(int numChains, double density) {
@@ -116,6 +122,8 @@ public class IdealGasSimulation {
             System.out.println("Headless exception thrown when creating system viewer. I am unable to create system viewer.");
         }
 
+        System.out.println("System Height " + polymerSimulator.getSystemAnalyzer().getSystemGeometry().getSizeOfDimension(1));
+
         System.out.println("System is initialized.");
 
         for (int i = 0; i < numSurfaceTensionTrials; i++) {
@@ -125,7 +133,7 @@ public class IdealGasSimulation {
             System.out.println("System equilibrated.");
             System.out.println("Gathering statistics to find equilibrium length.");
 
-            final int numSamples = 1000;//100
+            final int numSamples = 10000;//100
             DescriptiveStatistics lengthStatistics = generateLengthStatistics(numSamples, polymerSimulator);
             System.out.println("Pressure times Volume found is: " + pressure * polymerSimulator.getSystemAnalyzer().getSystemGeometry().getSizeOfDimension(1) * lengthStatistics.getMean());
         }

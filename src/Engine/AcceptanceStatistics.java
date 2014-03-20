@@ -33,11 +33,11 @@ public class AcceptanceStatistics {
         acceptedIterations = new EnumMap<>(acceptanceStatistics.acceptedIterations);
     }
 
-    public void attemptStepOfType(StepType stepType) {
+    public void recordStepAttemptOfType(StepType stepType) {
         attemptedIterations.put(stepType, attemptedIterations.get(stepType) + 1);
     }
 
-    public void acceptStepOfType(StepType stepType) {
+    public void recordStepAcceptanceOfType(StepType stepType) {
         acceptedIterations.put(stepType, acceptedIterations.get(stepType) + 1);
     }
 

@@ -26,7 +26,7 @@ public final class EnergeticsConstants implements Serializable {
             energeticsConstantsBuilder.ABOverlapCoefficient = 0;
             energeticsConstantsBuilder.BBOverlapCoefficient = 0;
             energeticsConstantsBuilder.temperature = 1;
-            energeticsConstantsBuilder.springConstant = 2; //want springConstant = 3 so that 3/2 T = 1/2 springConstant L^2 when L=1 and T =1
+            energeticsConstantsBuilder.springConstant = 2; //want springConstant = 2 so that 2/2 T = 1/2 springConstant L^2 when L=1 and T =1
             energeticsConstantsBuilder.hardOverlapCoefficient = 0;
             return energeticsConstantsBuilder;
         }
