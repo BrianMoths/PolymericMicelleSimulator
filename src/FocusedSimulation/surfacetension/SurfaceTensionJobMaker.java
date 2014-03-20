@@ -29,7 +29,14 @@ public class SurfaceTensionJobMaker {
     }
 
     static private List<Input> makeInputs() {
-        return makeWideVerticalScalingInputs();
+        final List<Input> inputs = new ArrayList<>();
+        int jobNumber = 1;
+        inputs.addAll(makeWideVerticalScalingInputs(jobNumber));
+        jobNumber = inputs.size() + 1;
+        inputs.addAll(testSpringEffect(jobNumber));
+        jobNumber = inputs.size() + 1;
+        inputs.addAll(makeNarrowVerticalScalingInputs(jobNumber));
+        return inputs;
     }
 
     public static Input makeRescaleInput(final double scaleFactor, int jobNumber) {
@@ -124,9 +131,12 @@ public class SurfaceTensionJobMaker {
     //</editor-fold>
 
     private static List<Input> makeWideVerticalScalingInputs() {
+        return makeWideVerticalScalingInputs(1);
+    }
+
+    private static List<Input> makeWideVerticalScalingInputs(int jobNumber) {
         List<Input> inputs = new ArrayList<>();
 
-        int jobNumber = 1;
         Input input;
         double verticalRescaleFactor;
         final double horizontalRescaleFactor = 2;
@@ -164,9 +174,12 @@ public class SurfaceTensionJobMaker {
     }
 
     private static List<Input> makeNarrowVerticalScalingInputs() {
+        return makeNarrowVerticalScalingInputs(1);
+    }
+
+    private static List<Input> makeNarrowVerticalScalingInputs(int jobNumber) {
         List<Input> inputs = new ArrayList<>();
 
-        int jobNumber = 1;
         Input input;
         double verticalRescaleFactor;
         final double horizontalRescaleFactor = 1;
@@ -217,9 +230,12 @@ public class SurfaceTensionJobMaker {
     }
 
     private static List<Input> makeRepeatabilityInputs() {
+        return makeRepeatabilityInputs(1);
+    }
+
+    private static List<Input> makeRepeatabilityInputs(int jobNumber) {
         /////////////////Repeatability
         InputBuilder inputBuilder;
-        int jobNumber = 0;
         List<Input> inputs = new ArrayList<>();
 
         inputBuilder = makeRescaleInputBuilder(.5, jobNumber);
@@ -286,10 +302,13 @@ public class SurfaceTensionJobMaker {
     }
 
     private static List<Input> testAspectRatioEffectOnDensity() {
+        return testAspectRatioEffectOnDensity(1);
+    }
+
+    private static List<Input> testAspectRatioEffectOnDensity(int jobNumber) {
         ///////////Effect of aspect ratio on natural density.
 
         InputBuilder inputBuilder;
-        int jobNumber = 0;
         List<Input> inputs = new ArrayList<>();
         inputBuilder = makeRescaleInputBuilder(.5, jobNumber);
         inputBuilder.getSystemParametersBuilder().getPolymerCluster().setConcentrationInWater(1);
@@ -355,9 +374,12 @@ public class SurfaceTensionJobMaker {
     }
 
     private static List<Input> testSpringEffect() {
+        return testSpringEffect(1);
+    }
+
+    private static List<Input> testSpringEffect(int jobNumber) {
         List<Input> inputs = new ArrayList<>();
 
-        int jobNumber = 1;
         InputBuilder inputBuilder;
         final double verticalRescaleFactor = 8;
         final double horizontalRescaleFactor = 1;
@@ -406,9 +428,12 @@ public class SurfaceTensionJobMaker {
     }
 
     private static List<Input> makeFinalOutputTestInputs() {
+        return makeFinalOutputTestInputs(1);
+    }
+
+    private static List<Input> makeFinalOutputTestInputs(int jobNumber) {
         List<Input> inputs = new ArrayList<>();
 
-        int jobNumber = 1;
         InputBuilder inputBuilder;
         double verticalRescaleFactor = .1;
         final double horizontalRescaleFactor = 1;
