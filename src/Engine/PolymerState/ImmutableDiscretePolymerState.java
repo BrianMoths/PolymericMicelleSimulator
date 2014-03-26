@@ -4,13 +4,14 @@
  */
 package Engine.PolymerState;
 
+import java.io.Serializable;
 import java.util.List;
 
 /**
  *
  * @author bmoths
  */
-public interface ImmutableDiscretePolymerState {
+public interface ImmutableDiscretePolymerState extends Serializable {
 
     public List<Integer> getChainOfBead(int bead);
 

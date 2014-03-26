@@ -244,6 +244,10 @@ public class PolymerSimulator implements Serializable {
         return acceptanceStatistics.getAcceptedStepsOfType(stepType);
     }
 
+    public double getAcceptanceRateForStepOfType(StepType stepType) {
+        return (double) getAcceptedStepsOfType(stepType) / getAttemptedStepsOfType(stepType);
+    }
+
     public EnergeticsConstants getEnergeticsConstants() {
         return systemAnalyzer.getEnergeticsConstants();
     }

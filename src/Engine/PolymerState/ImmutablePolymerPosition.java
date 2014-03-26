@@ -4,11 +4,13 @@
  */
 package Engine.PolymerState;
 
+import java.io.Serializable;
+
 /**
  *
  * @author bmoths
  */
-public interface ImmutablePolymerPosition {
+public interface ImmutablePolymerPosition extends Serializable {
 
     public int getNumBeads();
 

@@ -6,6 +6,7 @@ package FocusedSimulation.output;
 
 import Engine.PolymerSimulator;
 import Engine.PolymerState.SystemGeometry.Interfaces.ImmutableSystemGeometry;
+import Engine.SimulationStepping.StepTypes.StepType;
 import Engine.SystemAnalyzer;
 import FocusedSimulation.DoubleWithUncertainty;
 import FocusedSimulation.SimulationRunner;
@@ -43,6 +44,9 @@ public class AbstractResultsWriter {
                     .append("number density of blob at end of simulation: ").append(Double.toString(numBeads / beadArea)).append("\n")
                     .append("horizontal size of system at end of simulation: ").append(Double.toString(width)).append("\n")
                     .append("vertical size of system at end of simulation: ").append(Double.toString(height)).append("\n");
+            for (StepType stepType : StepType.values()) {
+                parametersStringBuilder.append("Acceptance rate of ").append(stepType.toString()).append(": ").append(polymerSimulator.getAcceptanceRateForStepOfType(stepType)).append("\n");
+            }
             return parametersStringBuilder.toString();
         } catch (Exception e) {
             return "Exception raised in final output string: " + e.toString();

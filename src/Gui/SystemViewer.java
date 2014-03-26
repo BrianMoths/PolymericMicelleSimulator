@@ -62,7 +62,7 @@ public class SystemViewer extends javax.swing.JFrame {
 //</editor-fold>
 
     private final Thread updaterThread;
-    private final PolymerSimulator polymerSimulator;
+    private PolymerSimulator polymerSimulator;
     private AnalysisWindow analysisWindow;
 
     /**
@@ -127,6 +127,10 @@ public class SystemViewer extends javax.swing.JFrame {
 
     private String stringFormatDouble(double doubleForFormatting) {
         return String.format("%.4f", doubleForFormatting);
+    }
+
+    public void setPolymerSimulator(PolymerSimulator polymerSimulator) {
+        this.polymerSimulator = polymerSimulator;
     }
 
     /**

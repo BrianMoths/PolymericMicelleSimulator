@@ -16,7 +16,7 @@ import java.util.List;
  *
  * @author bmoths
  */
-public class PolymerPosition implements ImmutablePolymerPosition, Serializable {
+public class PolymerPosition implements ImmutablePolymerPosition {
 
     private final int numBeads;
     private List<AnalyzerListener> registeredAnalyzerListeners;

@@ -7,13 +7,14 @@ package Engine.PolymerState;
 import Engine.PolymerState.SystemGeometry.Interfaces.ImmutableSystemGeometry;
 import Engine.SystemAnalyzer.AnalyzerListener;
 import Engine.SystemAnalyzer.BeadPositionsGetter;
+import java.io.Serializable;
 import java.util.List;
 
 /**
  *
  * @author bmoths
  */
-public interface ImmutablePolymerState {
+public interface ImmutablePolymerState extends Serializable {
 
     public ImmutableSystemGeometry getImmutableSystemGeometry();
 

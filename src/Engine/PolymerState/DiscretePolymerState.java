@@ -13,7 +13,7 @@ import java.util.List;
  *
  * @author bmoths
  */
-public class DiscretePolymerState implements ImmutableDiscretePolymerState, Serializable {
+public class DiscretePolymerState implements ImmutableDiscretePolymerState {
 
     private final int[][] neighbors;
     private final int numBeads;
