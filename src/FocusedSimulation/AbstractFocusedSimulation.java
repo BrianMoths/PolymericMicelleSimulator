@@ -12,9 +12,11 @@ import Engine.SimulationStepping.StepTypes.StepType;
 import Engine.SimulatorParameters;
 import FocusedSimulation.SimulationRunner.SimulationRunnerParameters;
 import FocusedSimulation.output.AbstractResultsWriter;
+import FocusedSimulation.output.PolymerSimulatorWriter;
 import Gui.SystemViewer;
 import SGEManagement.Input;
 import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.util.EnumMap;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -38,6 +40,7 @@ public abstract class AbstractFocusedSimulation<T extends AbstractResultsWriter>
 
     private final JobParameters jobParameters;
     private final SimulatorParameters systemParameters;
+    private PolymerSimulatorWriter polymerSimulatorWriter;
     protected final T outputWriter;
     protected final PolymerSimulator polymerSimulator;
     protected final SimulationRunner simulationRunner;
@@ -48,6 +51,11 @@ public abstract class AbstractFocusedSimulation<T extends AbstractResultsWriter>
         polymerSimulator = systemParameters.makePolymerSimulator();
         simulationRunner = new SimulationRunner(polymerSimulator, SimulationRunnerParameters.defaultSimulationRunnerParameters());
         this.outputWriter = outputWriter;
+        try {
+            polymerSimulatorWriter = new PolymerSimulatorWriter(polymerSimulator, input.getJobNumber());
+        } catch (IOException ex) {
+            Logger.getLogger(AbstractFocusedSimulation.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }
 
     public final void doSimulation() {
@@ -148,6 +156,7 @@ public abstract class AbstractFocusedSimulation<T extends AbstractResultsWriter>
 
     public final void closeOutputWriter() {
         outputWriter.closeWriter();
+        polymerSimulatorWriter.stopWriting();
     }
 
 //<editor-fold defaultstate="collapsed" desc="getters">

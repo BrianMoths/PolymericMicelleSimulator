@@ -4,6 +4,7 @@
  */
 package Engine.BeadBinning;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -12,7 +13,7 @@ import java.util.List;
  *
  * @author bmoths
  */
-public class MultidimensionalArray<T> {
+public class MultidimensionalArray<T> implements Serializable {
 
     private class IndexIterator implements Iterator<List<Integer>> {
 
