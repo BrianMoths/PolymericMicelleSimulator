@@ -55,7 +55,7 @@ public class DensityJobMaker {
         inputBuilder.getSystemParametersBuilder().setAspectRatio(aspectRatio * horizontalScale / verticalScale);
         final ExternalEnergyCalculatorBuilder externalEnergyCalculatorBuilder = new ExternalEnergyCalculatorBuilder();
         externalEnergyCalculatorBuilder.setPressure(pressure);
-        inputBuilder.getSystemParametersBuilder().getEnergeticsConstantsBuilder().setExternalEnergyCalculator(externalEnergyCalculatorBuilder.build());
+        inputBuilder.getSystemParametersBuilder().getEnergeticsConstantsBuilder().setExternalEnergyCalculatorBuilder(externalEnergyCalculatorBuilder);
         PolymerCluster polymerCluster = getPolymerCluster(verticalScale, horizontalScale);
         inputBuilder.getSystemParametersBuilder().setPolymerCluster(polymerCluster);
         inputBuilder.getJobParametersBuilder().setJobNumber(jobNumber);

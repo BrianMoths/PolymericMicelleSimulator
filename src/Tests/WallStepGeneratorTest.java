@@ -7,6 +7,7 @@ package Tests;
 import Engine.Energetics.EnergeticsConstants;
 import Engine.Energetics.EnergeticsConstants.EnergeticsConstantsBuilder;
 import Engine.Energetics.ExternalEnergyCalculator;
+import Engine.Energetics.ExternalEnergyCalculator.ExternalEnergyCalculatorBuilder;
 import Engine.PolymerTopology.PolymerCluster;
 import Engine.PolymerSimulator;
 import Engine.PolymerState.SystemGeometry.Implementations.PeriodicGeometry;
@@ -36,7 +37,7 @@ public class WallStepGeneratorTest {
         PolymerCluster polymerCluster = PolymerCluster.makeEmptyPolymerCluster();
 
         EnergeticsConstantsBuilder energeticsConstantsBuilder = EnergeticsConstantsBuilder.defaultEnergeticsConstantsBuilder();
-        energeticsConstantsBuilder.setExternalEnergyCalculator(makeExternalEnergyCalculator());
+        energeticsConstantsBuilder.setExternalEnergyCalculatorBuilder(makeExternalEnergyCalculatorBuilder());
         final EnergeticsConstants energeticsConstants = energeticsConstantsBuilder.buildEnergeticsConstants();
 
         SystemGeometry systemGeometry = PeriodicGeometry.defaultGeometry();
@@ -57,6 +58,16 @@ public class WallStepGeneratorTest {
                     energy = 1000;
                 }
                 return energy;
+            }
+
+        };
+    }
+
+    private static ExternalEnergyCalculatorBuilder makeExternalEnergyCalculatorBuilder() {
+        return new ExternalEnergyCalculatorBuilder() {
+            @Override
+            public ExternalEnergyCalculator build() {
+                return makeExternalEnergyCalculator();
             }
 
         };

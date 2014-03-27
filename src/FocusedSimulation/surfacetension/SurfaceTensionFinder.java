@@ -5,6 +5,7 @@
 package FocusedSimulation.surfacetension;
 
 import Engine.Energetics.ExternalEnergyCalculator;
+import Engine.Energetics.ExternalEnergyCalculator.ExternalEnergyCalculatorBuilder;
 import Engine.PolymerSimulator;
 import Engine.SimulationStepping.StepGenerators.CompoundStepGenerators.GeneralStepGenerator;
 import Engine.SimulationStepping.StepGenerators.StepGenerator;
@@ -46,6 +47,7 @@ public class SurfaceTensionFinder extends AbstractFocusedSimulation<SurfaceTensi
             InputBuilder inputBuilder = SurfaceTensionJobMaker.makeRescaleInputBuilderWithHorizontalRescaling(verticalScaleFactor, horizontalScaleFactor, 0);
             inputBuilder.getJobParametersBuilder().setNumAnneals(1);
             inputBuilder.getJobParametersBuilder().setNumSurfaceTensionTrials(1);
+            inputBuilder.getSystemParametersBuilder().getEnergeticsConstantsBuilder().setExternalEnergyCalculatorBuilder(new ExternalEnergyCalculatorBuilder());
             return inputBuilder.buildInput();
         } else if (args.length == 1) {
             final String fileName = args[0];

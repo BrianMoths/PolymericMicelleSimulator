@@ -63,7 +63,7 @@ public class SurfaceTensionJobMaker {
         inputBuilder.getSystemParametersBuilder().setPolymerCluster(polymerCluster);
         final ExternalEnergyCalculatorBuilder externalEnergyCalculatorBuilder = new ExternalEnergyCalculatorBuilder();
         externalEnergyCalculatorBuilder.setXPositionAndSpringConstant(16 * horizontalScale, 50);
-        inputBuilder.getSystemParametersBuilder().getEnergeticsConstantsBuilder().setExternalEnergyCalculator(externalEnergyCalculatorBuilder.build());
+        inputBuilder.getSystemParametersBuilder().getEnergeticsConstantsBuilder().setExternalEnergyCalculatorBuilder(externalEnergyCalculatorBuilder);
         inputBuilder.getJobParametersBuilder().setJobNumber(jobNumber);
         inputBuilder.getJobParametersBuilder().setNumAnneals(50);
         inputBuilder.getJobParametersBuilder().setNumSurfaceTensionTrials(70);
@@ -103,7 +103,7 @@ public class SurfaceTensionJobMaker {
         energeticsConstantsBuilder.setBBOverlapCoefficient(defaultOverlapCoefficient);
         ExternalEnergyCalculatorBuilder externalEnergyCalculatorBuilder = new ExternalEnergyCalculatorBuilder();
         externalEnergyCalculatorBuilder.setXPositionAndSpringConstant(defaultXPosition, defaultSpringConstant);
-        energeticsConstantsBuilder.setExternalEnergyCalculator(externalEnergyCalculatorBuilder.build());
+        energeticsConstantsBuilder.setExternalEnergyCalculatorBuilder(externalEnergyCalculatorBuilder);
         systemParametersBuilder.setEnergeticsConstantsBuilder(energeticsConstantsBuilder);
         systemParametersBuilder.setInteractionLength(defaultInteractionLength);
         systemParametersBuilder.setPolymerCluster(getDefaultPolymerCluster());
@@ -235,70 +235,25 @@ public class SurfaceTensionJobMaker {
 
     private static List<Input> makeRepeatabilityInputs(int jobNumber) {
         /////////////////Repeatability
-        InputBuilder inputBuilder;
         List<Input> inputs = new ArrayList<>();
-
-        inputBuilder = makeRescaleInputBuilder(.5, jobNumber);
-        inputBuilder.getSystemParametersBuilder().getPolymerCluster().setConcentrationInWater(1);
-        inputBuilder.getSystemParametersBuilder().getEnergeticsConstantsBuilder().setExternalEnergyCalculator(new ExternalEnergyCalculator());
-        inputBuilder.getSystemParametersBuilder().setAspectRatio(1);
-        inputBuilder.getJobParametersBuilder().setNumAnneals(10);
-        inputBuilder.getJobParametersBuilder().setNumSurfaceTensionTrials(10);
-        inputBuilder.getJobParametersBuilder().setShouldIterateUntilConvergence(false);
-        inputs.add(inputBuilder.buildInput());
-        jobNumber++;
-
-        inputBuilder = makeRescaleInputBuilder(.5, jobNumber);
-        inputBuilder.getSystemParametersBuilder().getPolymerCluster().setConcentrationInWater(1);
-        inputBuilder.getSystemParametersBuilder().getEnergeticsConstantsBuilder().setExternalEnergyCalculator(new ExternalEnergyCalculator());
-        inputBuilder.getSystemParametersBuilder().setAspectRatio(1);
-        inputBuilder.getJobParametersBuilder().setNumAnneals(10);
-        inputBuilder.getJobParametersBuilder().setNumSurfaceTensionTrials(10);
-        inputBuilder.getJobParametersBuilder().setShouldIterateUntilConvergence(false);
-        inputs.add(inputBuilder.buildInput());
-        jobNumber++;
-
-        inputBuilder = makeRescaleInputBuilder(.5, jobNumber);
-        inputBuilder.getSystemParametersBuilder().getPolymerCluster().setConcentrationInWater(1);
-        inputBuilder.getSystemParametersBuilder().getEnergeticsConstantsBuilder().setExternalEnergyCalculator(new ExternalEnergyCalculator());
-        inputBuilder.getSystemParametersBuilder().setAspectRatio(1);
-        inputBuilder.getJobParametersBuilder().setNumAnneals(10);
-        inputBuilder.getJobParametersBuilder().setNumSurfaceTensionTrials(10);
-        inputBuilder.getJobParametersBuilder().setShouldIterateUntilConvergence(false);
-        inputs.add(inputBuilder.buildInput());
-        jobNumber++;
-
-        inputBuilder = makeRescaleInputBuilder(.5, jobNumber);
-        inputBuilder.getSystemParametersBuilder().getPolymerCluster().setConcentrationInWater(1);
-        inputBuilder.getSystemParametersBuilder().getEnergeticsConstantsBuilder().setExternalEnergyCalculator(new ExternalEnergyCalculator());
-        inputBuilder.getSystemParametersBuilder().setAspectRatio(1);
-        inputBuilder.getJobParametersBuilder().setNumAnneals(10);
-        inputBuilder.getJobParametersBuilder().setNumSurfaceTensionTrials(10);
-        inputBuilder.getJobParametersBuilder().setShouldIterateUntilConvergence(false);
-        inputs.add(inputBuilder.buildInput());
-        jobNumber++;
-
-        inputBuilder = makeRescaleInputBuilder(.5, jobNumber);
-        inputBuilder.getSystemParametersBuilder().getPolymerCluster().setConcentrationInWater(1);
-        inputBuilder.getSystemParametersBuilder().getEnergeticsConstantsBuilder().setExternalEnergyCalculator(new ExternalEnergyCalculator());
-        inputBuilder.getSystemParametersBuilder().setAspectRatio(1);
-        inputBuilder.getJobParametersBuilder().setNumAnneals(10);
-        inputBuilder.getJobParametersBuilder().setNumSurfaceTensionTrials(10);
-        inputBuilder.getJobParametersBuilder().setShouldIterateUntilConvergence(false);
-        inputs.add(inputBuilder.buildInput());
-        jobNumber++;
-
-        inputBuilder = makeRescaleInputBuilder(.5, jobNumber);
-        inputBuilder.getSystemParametersBuilder().getPolymerCluster().setConcentrationInWater(1);
-        inputBuilder.getSystemParametersBuilder().getEnergeticsConstantsBuilder().setExternalEnergyCalculator(new ExternalEnergyCalculator());
-        inputBuilder.getSystemParametersBuilder().setAspectRatio(1);
-        inputBuilder.getJobParametersBuilder().setNumAnneals(10);
-        inputBuilder.getJobParametersBuilder().setNumSurfaceTensionTrials(10);
-        inputBuilder.getJobParametersBuilder().setShouldIterateUntilConvergence(false);
-        inputs.add(inputBuilder.buildInput());
-        jobNumber++;
-
+        for (int i = 0; i < 6; i++) {
+            inputs.add(makeRepeatabilityInput(jobNumber));
+            jobNumber++;
+        }
         return inputs;
+    }
+
+    private static Input makeRepeatabilityInput(int jobNumber) {
+        InputBuilder inputBuilder;
+        inputBuilder = makeRescaleInputBuilder(.5, jobNumber);
+        inputBuilder.getSystemParametersBuilder().getPolymerCluster().setConcentrationInWater(1);
+        inputBuilder.getSystemParametersBuilder().getEnergeticsConstantsBuilder().setExternalEnergyCalculatorBuilder(new ExternalEnergyCalculatorBuilder());
+        inputBuilder.getSystemParametersBuilder().setAspectRatio(1);
+        inputBuilder.getJobParametersBuilder().setNumAnneals(10);
+        inputBuilder.getJobParametersBuilder().setNumSurfaceTensionTrials(10);
+        inputBuilder.getJobParametersBuilder().setShouldIterateUntilConvergence(false);
+        final Input input = inputBuilder.buildInput();
+        return input;
     }
 
     private static List<Input> testAspectRatioEffectOnDensity() {
@@ -308,69 +263,27 @@ public class SurfaceTensionJobMaker {
     private static List<Input> testAspectRatioEffectOnDensity(int jobNumber) {
         ///////////Effect of aspect ratio on natural density.
 
+        double[] aspectRatios = {.1, .3, .5, 1, 3, 10};
         InputBuilder inputBuilder;
         List<Input> inputs = new ArrayList<>();
-        inputBuilder = makeRescaleInputBuilder(.5, jobNumber);
-        inputBuilder.getSystemParametersBuilder().getPolymerCluster().setConcentrationInWater(1);
-        inputBuilder.getSystemParametersBuilder().getEnergeticsConstantsBuilder().setExternalEnergyCalculator(new ExternalEnergyCalculator());
-        inputBuilder.getSystemParametersBuilder().setAspectRatio(.1);
-        inputBuilder.getJobParametersBuilder().setNumAnneals(10);
-        inputBuilder.getJobParametersBuilder().setNumSurfaceTensionTrials(10);
-        inputBuilder.getJobParametersBuilder().setShouldIterateUntilConvergence(false);
-        inputs.add(inputBuilder.buildInput());
-        jobNumber++;
-
-        inputBuilder = makeRescaleInputBuilder(.5, jobNumber);
-        inputBuilder.getSystemParametersBuilder().getPolymerCluster().setConcentrationInWater(1);
-        inputBuilder.getSystemParametersBuilder().getEnergeticsConstantsBuilder().setExternalEnergyCalculator(new ExternalEnergyCalculator());
-        inputBuilder.getSystemParametersBuilder().setAspectRatio(.1);
-        inputBuilder.getJobParametersBuilder().setNumAnneals(10);
-        inputBuilder.getJobParametersBuilder().setNumSurfaceTensionTrials(10);
-        inputBuilder.getJobParametersBuilder().setShouldIterateUntilConvergence(false);
-        inputs.add(inputBuilder.buildInput());
-        jobNumber++;
-
-        inputBuilder = makeRescaleInputBuilder(.5, jobNumber);
-        inputBuilder.getSystemParametersBuilder().getPolymerCluster().setConcentrationInWater(1);
-        inputBuilder.getSystemParametersBuilder().getEnergeticsConstantsBuilder().setExternalEnergyCalculator(new ExternalEnergyCalculator());
-        inputBuilder.getSystemParametersBuilder().setAspectRatio(.1);
-        inputBuilder.getJobParametersBuilder().setNumAnneals(10);
-        inputBuilder.getJobParametersBuilder().setNumSurfaceTensionTrials(10);
-        inputBuilder.getJobParametersBuilder().setShouldIterateUntilConvergence(false);
-        inputs.add(inputBuilder.buildInput());
-        jobNumber++;
-
-        inputBuilder = makeRescaleInputBuilder(.5, jobNumber);
-        inputBuilder.getSystemParametersBuilder().getPolymerCluster().setConcentrationInWater(1);
-        inputBuilder.getSystemParametersBuilder().getEnergeticsConstantsBuilder().setExternalEnergyCalculator(new ExternalEnergyCalculator());
-        inputBuilder.getSystemParametersBuilder().setAspectRatio(.1);
-        inputBuilder.getJobParametersBuilder().setNumAnneals(10);
-        inputBuilder.getJobParametersBuilder().setNumSurfaceTensionTrials(10);
-        inputBuilder.getJobParametersBuilder().setShouldIterateUntilConvergence(false);
-        inputs.add(inputBuilder.buildInput());
-        jobNumber++;
-
-        inputBuilder = makeRescaleInputBuilder(.5, jobNumber);
-        inputBuilder.getSystemParametersBuilder().getPolymerCluster().setConcentrationInWater(1);
-        inputBuilder.getSystemParametersBuilder().getEnergeticsConstantsBuilder().setExternalEnergyCalculator(new ExternalEnergyCalculator());
-        inputBuilder.getSystemParametersBuilder().setAspectRatio(.3);
-        inputBuilder.getJobParametersBuilder().setNumAnneals(10);
-        inputBuilder.getJobParametersBuilder().setNumSurfaceTensionTrials(10);
-        inputBuilder.getJobParametersBuilder().setShouldIterateUntilConvergence(false);
-        inputs.add(inputBuilder.buildInput());
-        jobNumber++;
-
-        inputBuilder = makeRescaleInputBuilder(.5, jobNumber);
-        inputBuilder.getSystemParametersBuilder().getPolymerCluster().setConcentrationInWater(1);
-        inputBuilder.getSystemParametersBuilder().getEnergeticsConstantsBuilder().setExternalEnergyCalculator(new ExternalEnergyCalculator());
-        inputBuilder.getSystemParametersBuilder().setAspectRatio(.3);
-        inputBuilder.getJobParametersBuilder().setNumAnneals(10);
-        inputBuilder.getJobParametersBuilder().setNumSurfaceTensionTrials(10);
-        inputBuilder.getJobParametersBuilder().setShouldIterateUntilConvergence(false);
-        inputs.add(inputBuilder.buildInput());
-        jobNumber++;
-
+        for (int i = 0; i < aspectRatios.length; i++) {
+            inputs.add(makeTestAspectRatioInput(jobNumber, aspectRatios[i]));
+            jobNumber++;
+        }
         return inputs;
+    }
+
+    public static Input makeTestAspectRatioInput(int jobNumber, double aspectRatio) {
+        InputBuilder inputBuilder;
+        inputBuilder = makeRescaleInputBuilder(.5, jobNumber);
+        inputBuilder.getSystemParametersBuilder().getPolymerCluster().setConcentrationInWater(1);
+        inputBuilder.getSystemParametersBuilder().getEnergeticsConstantsBuilder().setExternalEnergyCalculatorBuilder(new ExternalEnergyCalculatorBuilder());
+        inputBuilder.getSystemParametersBuilder().setAspectRatio(aspectRatio);
+        inputBuilder.getJobParametersBuilder().setNumAnneals(10);
+        inputBuilder.getJobParametersBuilder().setNumSurfaceTensionTrials(10);
+        inputBuilder.getJobParametersBuilder().setShouldIterateUntilConvergence(false);
+        Input input = inputBuilder.buildInput();
+        return input;
     }
 
     private static List<Input> testSpringEffect() {
@@ -380,51 +293,32 @@ public class SurfaceTensionJobMaker {
     private static List<Input> testSpringEffect(int jobNumber) {
         List<Input> inputs = new ArrayList<>();
 
-        InputBuilder inputBuilder;
         final double verticalRescaleFactor = 8;
         final double horizontalRescaleFactor = 1;
 
-        final ExternalEnergyCalculator exernalEnergyCalculator = makeRescaleInputBuilderWithHorizontalRescaling(verticalRescaleFactor, horizontalRescaleFactor, jobNumber).systemParametersBuilder.getEnergeticsConstantsBuilder().getExternalEnergyCalculator();
+        final ExternalEnergyCalculatorBuilder exernalEnergyCalculatorBuilder = makeRescaleInputBuilderWithHorizontalRescaling(verticalRescaleFactor, horizontalRescaleFactor, jobNumber).systemParametersBuilder.getEnergeticsConstantsBuilder().getExternalEnergyCalculatorBuilder();
 
         final double observedBalancePointOfSpring = 13.5;
-        final double force = -exernalEnergyCalculator.getxSpringConstant() * (observedBalancePointOfSpring - exernalEnergyCalculator.getxEquilibriumPosition());
-        double newSpringConstant = 0;
-        double newXEquilibrium = 0;
-        ExternalEnergyCalculator newExternalEnergyCalculator;
+        final double force = -exernalEnergyCalculatorBuilder.getxSpringConstant() * (observedBalancePointOfSpring - exernalEnergyCalculatorBuilder.getxEquilibriumPosition());
+        double[] newSpringConstants = {5, 20, 100, 500};
+        Input input;
 
-        inputBuilder = makeRescaleInputBuilderWithHorizontalRescaling(verticalRescaleFactor, horizontalRescaleFactor, jobNumber);
-        newSpringConstant = 5;
-        newXEquilibrium = force / newSpringConstant + observedBalancePointOfSpring;
-        newExternalEnergyCalculator = new ExternalEnergyCalculatorBuilder().setXPositionAndSpringConstant(newXEquilibrium, newSpringConstant).build();
-        inputBuilder.getSystemParametersBuilder().getEnergeticsConstantsBuilder().setExternalEnergyCalculator(newExternalEnergyCalculator);
-        inputs.add(inputBuilder.buildInput());
-        jobNumber++;
-
-        inputBuilder = makeRescaleInputBuilderWithHorizontalRescaling(verticalRescaleFactor, horizontalRescaleFactor, jobNumber);
-        newSpringConstant = 20;
-        newXEquilibrium = force / newSpringConstant + observedBalancePointOfSpring;
-        newExternalEnergyCalculator = new ExternalEnergyCalculatorBuilder().setXPositionAndSpringConstant(newXEquilibrium, newSpringConstant).build();
-        inputBuilder.getSystemParametersBuilder().getEnergeticsConstantsBuilder().setExternalEnergyCalculator(newExternalEnergyCalculator);
-        inputs.add(inputBuilder.buildInput());
-        jobNumber++;
-
-        inputBuilder = makeRescaleInputBuilderWithHorizontalRescaling(verticalRescaleFactor, horizontalRescaleFactor, jobNumber);
-        newSpringConstant = 100;
-        newXEquilibrium = force / newSpringConstant + observedBalancePointOfSpring;
-        newExternalEnergyCalculator = new ExternalEnergyCalculatorBuilder().setXPositionAndSpringConstant(newXEquilibrium, newSpringConstant).build();
-        inputBuilder.getSystemParametersBuilder().getEnergeticsConstantsBuilder().setExternalEnergyCalculator(newExternalEnergyCalculator);
-        inputs.add(inputBuilder.buildInput());
-        jobNumber++;
-
-        inputBuilder = makeRescaleInputBuilderWithHorizontalRescaling(verticalRescaleFactor, horizontalRescaleFactor, jobNumber);
-        newSpringConstant = 500;
-        newXEquilibrium = force / newSpringConstant + observedBalancePointOfSpring;
-        newExternalEnergyCalculator = new ExternalEnergyCalculatorBuilder().setXPositionAndSpringConstant(newXEquilibrium, newSpringConstant).build();
-        inputBuilder.getSystemParametersBuilder().getEnergeticsConstantsBuilder().setExternalEnergyCalculator(newExternalEnergyCalculator);
-        inputs.add(inputBuilder.buildInput());
-        jobNumber++;
+        for (int i = 0; i < newSpringConstants.length; i++) {
+            double springConstant = newSpringConstants[i];
+            input = makeSpringEffectInput(verticalRescaleFactor, horizontalRescaleFactor, jobNumber, force, springConstant, observedBalancePointOfSpring);
+            inputs.add(input);
+            jobNumber++;
+        }
 
         return inputs;
+    }
+
+    private static Input makeSpringEffectInput(final double verticalRescaleFactor, final double horizontalRescaleFactor, int jobNumber, final double force, double newSpringConstant, final double observedBalancePointOfSpring) {
+        InputBuilder inputBuilder = makeRescaleInputBuilderWithHorizontalRescaling(verticalRescaleFactor, horizontalRescaleFactor, jobNumber);
+        final double newXEquilibrium = force / newSpringConstant + observedBalancePointOfSpring;
+        ExternalEnergyCalculatorBuilder newExternalEnergyCalculatorBuilder = new ExternalEnergyCalculatorBuilder().setXPositionAndSpringConstant(newXEquilibrium, newSpringConstant);
+        inputBuilder.getSystemParametersBuilder().getEnergeticsConstantsBuilder().setExternalEnergyCalculatorBuilder(newExternalEnergyCalculatorBuilder);
+        return inputBuilder.buildInput();
     }
 
     private static List<Input> makeFinalOutputTestInputs() {

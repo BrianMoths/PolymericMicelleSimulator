@@ -38,9 +38,8 @@ public class SimulatorParameters implements Serializable {
             systemParametersBuilder.setAspectRatio(defaultAspectRatio);
             EnergeticsConstantsBuilder energeticsConstantsBuilder = EnergeticsConstantsBuilder.zeroEnergeticsConstantsBuilder();
             energeticsConstantsBuilder.setBBOverlapCoefficient(defaultOverlapCoefficient);
-            ExternalEnergyCalculatorBuilder externalEnergyCalculatorBuilder = new ExternalEnergyCalculatorBuilder();
+            ExternalEnergyCalculatorBuilder externalEnergyCalculatorBuilder = energeticsConstantsBuilder.getExternalEnergyCalculatorBuilder();
             externalEnergyCalculatorBuilder.setXPositionAndSpringConstant(defaultXPosition, defaultSpringConstant);
-            energeticsConstantsBuilder.setExternalEnergyCalculator(externalEnergyCalculatorBuilder.build());
             systemParametersBuilder.setEnergeticsConstantsBuilder(energeticsConstantsBuilder);
             systemParametersBuilder.setInteractionLength(defaultInteractionLength);
             systemParametersBuilder.setPolymerCluster(getDefaultPolymerCluster());

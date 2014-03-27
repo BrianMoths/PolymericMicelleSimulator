@@ -7,6 +7,7 @@ package FocusedSimulation;
 import Engine.Energetics.EnergeticsConstants;
 import Engine.Energetics.EnergeticsConstants.EnergeticsConstantsBuilder;
 import Engine.Energetics.ExternalEnergyCalculator;
+import Engine.Energetics.ExternalEnergyCalculator.ExternalEnergyCalculatorBuilder;
 import Engine.PolymerSimulator;
 import Engine.PolymerState.SystemGeometry.GeometricalParameters;
 import Engine.PolymerState.SystemGeometry.Implementations.AbstractGeometry;
@@ -79,16 +80,16 @@ public class EnergyOfL {
         energeticsConstantsBuilder.setBBOverlapCoefficient(-.06);
         energeticsConstantsBuilder.setSpringConstant(2);
 
-        final ExternalEnergyCalculator externalEnergyCalculator = makeExternalEnergyCalculator();
-        energeticsConstantsBuilder.setExternalEnergyCalculator(externalEnergyCalculator);
+        final ExternalEnergyCalculatorBuilder externalEnergyCalculatorBuilder = makeExternalEnergyCalculatorBuilder();
+        energeticsConstantsBuilder.setExternalEnergyCalculatorBuilder(externalEnergyCalculatorBuilder);
 
         return energeticsConstantsBuilder;
     }
 
-    static private ExternalEnergyCalculator makeExternalEnergyCalculator() {
+    static private ExternalEnergyCalculatorBuilder makeExternalEnergyCalculatorBuilder() {
         final ExternalEnergyCalculator.ExternalEnergyCalculatorBuilder externalEnergyCalculatorBuilder = new ExternalEnergyCalculator.ExternalEnergyCalculatorBuilder();
         externalEnergyCalculatorBuilder.setXPositionAndSpringConstant(0, 0); //was 50, .2
-        return externalEnergyCalculatorBuilder.build();
+        return externalEnergyCalculatorBuilder;
     }
 
     static private SystemGeometry makeSystemGeometry(PolymerCluster polymerCluster, GeometricalParameters geometricalParameters) {

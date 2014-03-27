@@ -4,6 +4,7 @@
  */
 package Engine.Energetics;
 
+import Engine.Energetics.ExternalEnergyCalculator.ExternalEnergyCalculatorBuilder;
 import Engine.PolymerState.SystemGeometry.AreaOverlap;
 import Engine.PolymerState.SystemGeometry.GeometricalParameters;
 import Engine.PolymerState.SystemGeometry.Interfaces.ImmutableSystemGeometry;
@@ -50,7 +51,7 @@ public final class EnergeticsConstants implements Serializable {
                 //                springCoefficient,
                 springConstant,
                 hardOverlapCoefficient;
-        private ExternalEnergyCalculator externalEnergyCalculator = new ExternalEnergyCalculator();
+        private ExternalEnergyCalculatorBuilder externalEnergyCalculatorBuilder = new ExternalEnergyCalculatorBuilder();
 
         private EnergeticsConstantsBuilder() {
         }
@@ -62,6 +63,7 @@ public final class EnergeticsConstants implements Serializable {
             ABOverlapCoefficient = energeticsConstants.ABOverlapCoefficient;
             springConstant = energeticsConstants.springConstant;
             hardOverlapCoefficient = energeticsConstants.hardOverlapCoefficient;
+            externalEnergyCalculatorBuilder = new ExternalEnergyCalculatorBuilder(energeticsConstants.getExternalEnergyCalculator());
         }
 
         public EnergeticsConstants buildEnergeticsConstants() {
@@ -121,12 +123,12 @@ public final class EnergeticsConstants implements Serializable {
             return this;
         }
 
-        public EnergeticsConstantsBuilder setExternalEnergyCalculator(ExternalEnergyCalculator externalEnergyCalculator) {
-            this.externalEnergyCalculator = externalEnergyCalculator;
+        public EnergeticsConstantsBuilder setExternalEnergyCalculatorBuilder(ExternalEnergyCalculatorBuilder externalEnergyCalculatorBuilder) {
+            this.externalEnergyCalculatorBuilder = externalEnergyCalculatorBuilder;
             return this;
         }
-        //</editor-fold>
 
+        //</editor-fold>
         //<editor-fold defaultstate="collapsed" desc="getters">
         public double getTemperature() {
             return temperature;
@@ -152,8 +154,8 @@ public final class EnergeticsConstants implements Serializable {
             return hardOverlapCoefficient;
         }
 
-        public ExternalEnergyCalculator getExternalEnergyCalculator() {
-            return externalEnergyCalculator;
+        public ExternalEnergyCalculatorBuilder getExternalEnergyCalculatorBuilder() {
+            return externalEnergyCalculatorBuilder;
         }
         //</editor-fold>
 
@@ -186,7 +188,7 @@ public final class EnergeticsConstants implements Serializable {
         ABOverlapCoefficient = energeticsConstantsBuilder.ABOverlapCoefficient;
         hardOverlapCoefficient = energeticsConstantsBuilder.hardOverlapCoefficient;
         springConstant = energeticsConstantsBuilder.springConstant;
-        externalEnergyCalculator = energeticsConstantsBuilder.externalEnergyCalculator;
+        externalEnergyCalculator = energeticsConstantsBuilder.externalEnergyCalculatorBuilder.build();
 
     }
 

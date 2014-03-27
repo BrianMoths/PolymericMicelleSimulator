@@ -95,7 +95,7 @@ public class IdealGasSimulation {
         energeticsConstantsBuilder.setTemperature(1);
         ExternalEnergyCalculatorBuilder externalEnergyCalculatorBuilder = new ExternalEnergyCalculatorBuilder();
         externalEnergyCalculatorBuilder.setPressure(pressure);
-        energeticsConstantsBuilder.setExternalEnergyCalculator(externalEnergyCalculatorBuilder.build());
+        energeticsConstantsBuilder.setExternalEnergyCalculatorBuilder(externalEnergyCalculatorBuilder);
         return energeticsConstantsBuilder.buildEnergeticsConstants();
     }
 

@@ -25,6 +25,14 @@ public class ExternalEnergyCalculator implements Serializable {
             pressure = 0;
         }
 
+        public ExternalEnergyCalculatorBuilder(ExternalEnergyCalculator externalEnergyCalculator) {
+            xTension = externalEnergyCalculator.getxTension();
+            xQuadratic = externalEnergyCalculator.getxQuadratic();
+            yTension = externalEnergyCalculator.getyTension();
+            yQuadratic = externalEnergyCalculator.getyQuadratic();
+            pressure = externalEnergyCalculator.getPressure();
+        }
+
         public ExternalEnergyCalculator build() {
             return new ExternalEnergyCalculator(this);
         }

@@ -55,7 +55,7 @@ public class CompressibilityJobMaker {
         inputBuilder.getSystemParametersBuilder().setPolymerCluster(polymerCluster);
         final ExternalEnergyCalculatorBuilder externalEnergyCalculatorBuilder = new ExternalEnergyCalculatorBuilder();
         externalEnergyCalculatorBuilder.setPressure(25);
-        inputBuilder.getSystemParametersBuilder().getEnergeticsConstantsBuilder().setExternalEnergyCalculator(externalEnergyCalculatorBuilder.build());
+        inputBuilder.getSystemParametersBuilder().getEnergeticsConstantsBuilder().setExternalEnergyCalculatorBuilder(externalEnergyCalculatorBuilder);
         inputBuilder.getJobParametersBuilder().setJobNumber(jobNumber);
         return inputBuilder;
     }
@@ -134,7 +134,7 @@ public class CompressibilityJobMaker {
         energeticsConstantsBuilder.setBBOverlapCoefficient(defaultOverlapCoefficient);
         ExternalEnergyCalculatorBuilder externalEnergyCalculatorBuilder = new ExternalEnergyCalculatorBuilder();
         externalEnergyCalculatorBuilder.setXPositionAndSpringConstant(defaultXPosition, defaultSpringConstant);
-        energeticsConstantsBuilder.setExternalEnergyCalculator(externalEnergyCalculatorBuilder.build());
+        energeticsConstantsBuilder.setExternalEnergyCalculatorBuilder(externalEnergyCalculatorBuilder);
         systemParametersBuilder.setEnergeticsConstantsBuilder(energeticsConstantsBuilder);
         systemParametersBuilder.setInteractionLength(defaultInteractionLength);
         systemParametersBuilder.setPolymerCluster(getDefaultPolymerCluster());
