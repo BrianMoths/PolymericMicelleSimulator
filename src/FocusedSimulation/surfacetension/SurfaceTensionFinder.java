@@ -46,7 +46,7 @@ public class SurfaceTensionFinder extends AbstractFocusedSimulation<SurfaceTensi
 
             InputBuilder inputBuilder = SurfaceTensionJobMaker.makeRescaleInputBuilderWithHorizontalRescaling(verticalScaleFactor, horizontalScaleFactor, 0);
             inputBuilder.getJobParametersBuilder().setNumAnneals(1);
-            inputBuilder.getJobParametersBuilder().setNumSurfaceTensionTrials(1);
+            inputBuilder.getJobParametersBuilder().setNumSurfaceTensionTrials(30);
             inputBuilder.getSystemParametersBuilder().getEnergeticsConstantsBuilder().setExternalEnergyCalculatorBuilder(new ExternalEnergyCalculatorBuilder());
             return inputBuilder.buildInput();
         } else if (args.length == 1) {

@@ -5,13 +5,14 @@
 package Engine;
 
 import Engine.SimulationStepping.StepTypes.StepType;
+import java.io.Serializable;
 import java.util.EnumMap;
 
 /**
  *
  * @author bmoths
  */
-public class AcceptanceStatistics {
+public class AcceptanceStatistics implements Serializable {
 
     private final EnumMap<StepType, Integer> attemptedIterations, acceptedIterations;
 

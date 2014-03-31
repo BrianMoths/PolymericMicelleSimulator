@@ -11,12 +11,13 @@ import Engine.SimulationStepping.StepGenerators.ElementaryStepGenerators.Relativ
 import Engine.SimulationStepping.StepGenerators.ElementaryStepGenerators.ReptationStepGenerator;
 import Engine.SimulationStepping.StepGenerators.StepGenerator;
 import Engine.SystemAnalyzer;
+import java.io.Serializable;
 
 /**
  *
  * @author bmoths
  */
-public enum StepType {
+public enum StepType implements Serializable {
 
     SINGLE_BEAD(new StepGenerator() {
         @Override

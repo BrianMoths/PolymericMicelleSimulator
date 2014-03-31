@@ -65,13 +65,6 @@ public class PolymerSimulatorWriter {
         return jarPath;
     }
 
-    static private ObjectOutputStream makeDataWriter(int jobNumber) throws FileNotFoundException, IOException {
-        String projectPath = getProjectPath();
-        final String path = projectPath + "../simulationSnapshots/";
-        String fileName = makeFileName(jobNumber);
-        return new ObjectOutputStream(new FileOutputStream(path + fileName));
-    }
-
     static private String makeFileName(int fileNameNumber) {
         StringBuilder fileNameBuilder = new StringBuilder();
         String datePrefix = makeDatePrefix();
@@ -80,14 +73,27 @@ public class PolymerSimulatorWriter {
         return fileNameBuilder.toString();
     }
 
+    private static String getPathAndFileString(int jobNumber) throws AssertionError {
+        String projectPath = getProjectPath();
+        final String path = projectPath + "../simulationSnapshots/";
+        String fileName = makeFileName(jobNumber);
+        final String pathAndFileString = path + fileName;
+        return pathAndFileString;
+    }
+
+    private static ObjectOutputStream getObjectOutputStreamFromAbsoluteFile(String pathAndFileString) throws IOException {
+        final ObjectOutputStream objectOutputStream = new ObjectOutputStream(new FileOutputStream(pathAndFileString));
+        return objectOutputStream;
+    }
+
     private class PolymerSimulatorOutputRunnable implements Runnable {
 
         private final PolymerSimulator polymerSimulator;
-        private final ObjectOutputStream objectOutputStream;
+        private final String absoluteFileName;
 
-        public PolymerSimulatorOutputRunnable(final PolymerSimulator polymerSimulator, ObjectOutputStream objectOutputStream) {
+        public PolymerSimulatorOutputRunnable(final PolymerSimulator polymerSimulator, int jobNumber) {
             this.polymerSimulator = polymerSimulator;
-            this.objectOutputStream = objectOutputStream;
+            this.absoluteFileName = getPathAndFileString(jobNumber);
         }
 
         @Override
@@ -99,15 +105,20 @@ public class PolymerSimulatorWriter {
                     Logger.getLogger(PolymerSimulatorWriter.class.getName()).log(Level.SEVERE, null, ex);
                 }
                 try {
-                    objectOutputStream.writeObject(polymerSimulator);
+                    ObjectOutputStream objectOutputStream = getObjectOutputStreamFromAbsoluteFile(absoluteFileName);
+                    synchronized (polymerSimulator) {
+                        objectOutputStream.writeObject(polymerSimulator);
+                    }
+                    objectOutputStream.flush();
+                    try {
+                        objectOutputStream.close();
+                    } catch (IOException ex) {
+                        Logger.getLogger(PolymerSimulatorWriter.class.getName()).log(Level.SEVERE, null, ex);
+                    }
+                    System.out.println("Object written.");
                 } catch (IOException ex) {
                     Logger.getLogger(PolymerSimulatorWriter.class.getName()).log(Level.SEVERE, null, ex);
                 }
-            }
-            try {
-                objectOutputStream.close();
-            } catch (IOException ex) {
-                Logger.getLogger(PolymerSimulatorWriter.class.getName()).log(Level.SEVERE, null, ex);
             }
         }
 
@@ -116,8 +127,7 @@ public class PolymerSimulatorWriter {
     private boolean isStillWriting = true;
 
     public PolymerSimulatorWriter(final PolymerSimulator polymerSimulator, int jobNumber) throws FileNotFoundException, IOException {
-        ObjectOutputStream objectOutputStream = makeDataWriter(jobNumber);
-        Thread outputThread = new Thread(new PolymerSimulatorOutputRunnable(polymerSimulator, objectOutputStream));
+        Thread outputThread = new Thread(new PolymerSimulatorOutputRunnable(polymerSimulator, jobNumber));
         outputThread.start();
     }
 

@@ -6,12 +6,13 @@ package Engine.SimulationStepping.StepGenerators;
 
 import Engine.SimulationStepping.StepTypes.SimulationStep;
 import Engine.SystemAnalyzer;
+import java.io.Serializable;
 
 /**
  *
  * @author bmoths
  */
-public interface StepGenerator {
+public interface StepGenerator extends Serializable {
 
     public SimulationStep generateStep(SystemAnalyzer systemAnalyzer);
 

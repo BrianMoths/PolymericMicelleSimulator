@@ -62,6 +62,7 @@ public class PolymerSimulatorReader {
     private PolymerSimulatorReader(File file) throws IOException, ClassNotFoundException {
         this.file = file;
         systemViewer = new SystemViewer(readPolymerSimulator());
+        systemViewer.setVisible(true);
 //        viewThread = makeViewThread();
     }
 
@@ -74,10 +75,9 @@ public class PolymerSimulatorReader {
             try {
                 systemViewer.setPolymerSimulator(readPolymerSimulator());
             } catch (IOException | ClassNotFoundException ex) {
-                break;
             }
             try {
-                Thread.sleep(5000);
+                Thread.sleep(10000);
             } catch (InterruptedException ex) {
                 Logger.getLogger(PolymerSimulatorReader.class.getName()).log(Level.SEVERE, null, ex);
             }

@@ -46,7 +46,7 @@ public class SystemAnalyzer implements Serializable {
 
     }
 
-    public class AnalyzerListener {
+    public class AnalyzerListener implements Serializable {
 
         private AnalyzerListener() {
         }

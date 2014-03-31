@@ -131,6 +131,8 @@ public class SystemViewer extends javax.swing.JFrame {
 
     public void setPolymerSimulator(PolymerSimulator polymerSimulator) {
         this.polymerSimulator = polymerSimulator;
+        registerGuiWithSystem();
+        updateDisplay();
     }
 
     /**
