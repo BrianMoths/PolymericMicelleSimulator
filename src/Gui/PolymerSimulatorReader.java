@@ -35,7 +35,7 @@ public class PolymerSimulatorReader {
 
     private static File getPolymerSimulatorFile() throws IllegalArgumentException {
         String path = System.getProperty("user.dir");
-        JFileChooser fileChooser = new JFileChooser(path, null);
+        JFileChooser fileChooser = new JFileChooser(path + "/../../../simulationSnapshots", null);
         int returnVal = fileChooser.showOpenDialog(null);
         if (returnVal == JFileChooser.APPROVE_OPTION) {
             return fileChooser.getSelectedFile();
@@ -46,7 +46,6 @@ public class PolymerSimulatorReader {
 
     private final File file;
     private final SystemViewer systemViewer;
-//    private final Thread viewThread;
 
     private PolymerSimulatorReader(File file) throws IOException, ClassNotFoundException {
         this.file = file;

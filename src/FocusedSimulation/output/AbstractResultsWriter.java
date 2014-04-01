@@ -100,6 +100,11 @@ public class AbstractResultsWriter {
         this.input = input;
     }
 
+    public void printAnnealDone(int numAnnealsDone) {
+        String annealsDoneString = "Number of anneals done so far: " + numAnnealsDone;
+        outputWriter.printAndSoutString(annealsDoneString);
+    }
+
     public void printFinalOutput(PolymerSimulator polymerSimulator) {
         String finalOutputString = makeFinalOutputString(polymerSimulator);
         outputWriter.printAndSoutString(finalOutputString);
