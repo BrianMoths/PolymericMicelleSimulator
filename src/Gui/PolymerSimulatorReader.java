@@ -19,17 +19,6 @@ import javax.swing.JFileChooser;
  */
 public class PolymerSimulatorReader {
 
-//    private static class ViewerRunnable implements Runnable{
-//
-//        private final SystemViewer systemViewer;
-//        @Override
-//        public void run() {
-//            while(true){
-//                systemViewer.setPolymerSimulator(readPolymerSimulator());
-//            }
-//        }
-//        
-//    }
     public static void main(String[] args) {
         File file = getPolymerSimulatorFile();
         try {
@@ -63,21 +52,16 @@ public class PolymerSimulatorReader {
         this.file = file;
         systemViewer = new SystemViewer(readPolymerSimulator());
         systemViewer.setVisible(true);
-//        viewThread = makeViewThread();
     }
 
-//    private Thread makeViewThread() {
-//        
-//    }
     private void run() {
-//        viewThread.start();
         while (true) {
             try {
                 systemViewer.setPolymerSimulator(readPolymerSimulator());
             } catch (IOException | ClassNotFoundException ex) {
             }
             try {
-                Thread.sleep(10000);
+                Thread.sleep(10_000);
             } catch (InterruptedException ex) {
                 Logger.getLogger(PolymerSimulatorReader.class.getName()).log(Level.SEVERE, null, ex);
             }

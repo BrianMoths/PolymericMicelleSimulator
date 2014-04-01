@@ -115,7 +115,6 @@ public class PolymerSimulatorWriter {
                     } catch (IOException ex) {
                         Logger.getLogger(PolymerSimulatorWriter.class.getName()).log(Level.SEVERE, null, ex);
                     }
-                    System.out.println("Object written.");
                 } catch (IOException ex) {
                     Logger.getLogger(PolymerSimulatorWriter.class.getName()).log(Level.SEVERE, null, ex);
                 }

@@ -5,7 +5,6 @@
 package FocusedSimulation.surfacetension;
 
 import Engine.Energetics.EnergeticsConstants.EnergeticsConstantsBuilder;
-import Engine.Energetics.ExternalEnergyCalculator;
 import Engine.Energetics.ExternalEnergyCalculator.ExternalEnergyCalculatorBuilder;
 import Engine.PolymerTopology.PolymerChain;
 import Engine.PolymerTopology.PolymerCluster;
@@ -24,7 +23,7 @@ import java.util.List;
 public class SurfaceTensionJobMaker {
 
     public static void main(String[] args) {
-        final List<Input> inputs = makeInputs();
+        final List<Input> inputs = makeNoSpringInputs();
         JobSubmitter.submitJobs(inputs);
     }
 
@@ -321,79 +320,31 @@ public class SurfaceTensionJobMaker {
         return inputBuilder.buildInput();
     }
 
-    private static List<Input> makeFinalOutputTestInputs() {
-        return makeFinalOutputTestInputs(1);
+    private static List<Input> makeNoSpringInputs() {
+        return makeNoSpringInputs(1);
     }
 
-    private static List<Input> makeFinalOutputTestInputs(int jobNumber) {
-        List<Input> inputs = new ArrayList<>();
+    private static List<Input> makeNoSpringInputs(int jobNumber) {
+        final double[] verticalRescaleFactors = {.1, .5, 1};
+        final double[] horizontalRescaleFactors = {1, 3, 10};
 
-        InputBuilder inputBuilder;
-        double verticalRescaleFactor = .1;
-        final double horizontalRescaleFactor = 1;
+        final List<Input> noSpringInputs = new ArrayList<>();
 
-        inputBuilder = makeRescaleInputBuilderWithHorizontalRescaling(verticalRescaleFactor, horizontalRescaleFactor, jobNumber);
-        inputBuilder.getJobParametersBuilder().setNumAnneals(1);
-        inputBuilder.getJobParametersBuilder().setNumSurfaceTensionTrials(1);
-        inputs.add(inputBuilder.buildInput());
-        jobNumber++;
+        for (int i = 0; i < verticalRescaleFactors.length; i++) {
+            for (int j = 0; j < horizontalRescaleFactors.length; j++) {
+                final Input input = makeNoSpringInput(verticalRescaleFactors[i], horizontalRescaleFactors[j], jobNumber);
+                noSpringInputs.add(input);
+                jobNumber++;
+            }
+        }
 
-        inputBuilder = makeRescaleInputBuilderWithHorizontalRescaling(verticalRescaleFactor, horizontalRescaleFactor, jobNumber);
-        inputBuilder.getJobParametersBuilder().setNumAnneals(1);
-        inputBuilder.getJobParametersBuilder().setNumSurfaceTensionTrials(1);
-        inputs.add(inputBuilder.buildInput());
-        jobNumber++;
+        return noSpringInputs;
+    }
 
-        inputBuilder = makeRescaleInputBuilderWithHorizontalRescaling(verticalRescaleFactor, horizontalRescaleFactor, jobNumber);
-        inputBuilder.getJobParametersBuilder().setNumAnneals(1);
-        inputBuilder.getJobParametersBuilder().setNumSurfaceTensionTrials(1);
-        inputs.add(inputBuilder.buildInput());
-        jobNumber++;
-
-        inputBuilder = makeRescaleInputBuilderWithHorizontalRescaling(verticalRescaleFactor, horizontalRescaleFactor, jobNumber);
-        inputBuilder.getJobParametersBuilder().setNumAnneals(1);
-        inputBuilder.getJobParametersBuilder().setNumSurfaceTensionTrials(1);
-        inputs.add(inputBuilder.buildInput());
-        jobNumber++;
-
-        inputBuilder = makeRescaleInputBuilderWithHorizontalRescaling(verticalRescaleFactor, horizontalRescaleFactor, jobNumber);
-        inputBuilder.getJobParametersBuilder().setNumAnneals(1);
-        inputBuilder.getJobParametersBuilder().setNumSurfaceTensionTrials(1);
-        inputs.add(inputBuilder.buildInput());
-        jobNumber++;
-
-        inputBuilder = makeRescaleInputBuilderWithHorizontalRescaling(verticalRescaleFactor, horizontalRescaleFactor, jobNumber);
-        inputBuilder.getJobParametersBuilder().setNumAnneals(1);
-        inputBuilder.getJobParametersBuilder().setNumSurfaceTensionTrials(1);
-        inputs.add(inputBuilder.buildInput());
-        jobNumber++;
-
-        inputBuilder = makeRescaleInputBuilderWithHorizontalRescaling(verticalRescaleFactor, horizontalRescaleFactor, jobNumber);
-        inputBuilder.getJobParametersBuilder().setNumAnneals(1);
-        inputBuilder.getJobParametersBuilder().setNumSurfaceTensionTrials(1);
-        inputs.add(inputBuilder.buildInput());
-        jobNumber++;
-
-        inputBuilder = makeRescaleInputBuilderWithHorizontalRescaling(verticalRescaleFactor, horizontalRescaleFactor, jobNumber);
-        inputBuilder.getJobParametersBuilder().setNumAnneals(1);
-        inputBuilder.getJobParametersBuilder().setNumSurfaceTensionTrials(1);
-        inputs.add(inputBuilder.buildInput());
-        jobNumber++;
-
-        inputBuilder = makeRescaleInputBuilderWithHorizontalRescaling(verticalRescaleFactor, horizontalRescaleFactor, jobNumber);
-        inputBuilder.getJobParametersBuilder().setNumAnneals(1);
-        inputBuilder.getJobParametersBuilder().setNumSurfaceTensionTrials(1);
-        inputs.add(inputBuilder.buildInput());
-        jobNumber++;
-
-        inputBuilder = makeRescaleInputBuilderWithHorizontalRescaling(verticalRescaleFactor, horizontalRescaleFactor, jobNumber);
-        inputBuilder.getJobParametersBuilder().setNumAnneals(1);
-        inputBuilder.getJobParametersBuilder().setNumSurfaceTensionTrials(1);
-        inputs.add(inputBuilder.buildInput());
-        jobNumber++;
-
-
-        return inputs;
+    private static Input makeNoSpringInput(final double verticalRescaleFactor, final double horizontalRescaleFactor, int jobNumber) {
+        InputBuilder inputBuilder = makeRescaleInputBuilderWithHorizontalRescaling(verticalRescaleFactor, horizontalRescaleFactor, jobNumber);
+        inputBuilder.getSystemParametersBuilder().getEnergeticsConstantsBuilder().setExternalEnergyCalculatorBuilder(new ExternalEnergyCalculatorBuilder());
+        return inputBuilder.buildInput();
     }
 
 }
