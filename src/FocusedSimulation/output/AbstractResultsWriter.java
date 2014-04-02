@@ -69,7 +69,7 @@ public class AbstractResultsWriter {
                     .append("Density: ").append(Double.toString(density)).append("\n")
                     .append("Side length of beads: ").append(Double.toString(beadSideLength)).append("\n")
                     .append("number  of anneals: ").append(Integer.toString(numAnneals)).append("\n")
-                    .append("number of iterations finding surface tension: ").append(Integer.toString(numSurfaceTensionTrials)).append("\n")
+                    .append("number of iterations finding results: ").append(Integer.toString(numSurfaceTensionTrials)).append("\n")
                     .append("E=(1/2)a(L-b)^2 with a: ").append(Double.toString(springConstant)).append("\n")
                     .append("b: ").append(Double.toString(equilibriumPosition))
                     .append("\n").append("=====================")

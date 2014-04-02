@@ -40,8 +40,6 @@ public class BridgeCollapseJobMaker {
     static private final double defaultAspectRatio = .0286;
     static private final double defaultOverlapCoefficient = -.06;
     static private final double defaultInteractionLength = 4.;
-    static private final double defaultXPosition = 50;
-    static private final double defaultSpringConstant = 10;
     static private final int defaultNumBeadsPerChain = 15;
     static private final int defaultNumChains = 75;
     static private final double defaultDensity = .175;
@@ -51,9 +49,6 @@ public class BridgeCollapseJobMaker {
         systemParametersBuilder.setAspectRatio(defaultAspectRatio);
         EnergeticsConstantsBuilder energeticsConstantsBuilder = EnergeticsConstantsBuilder.zeroEnergeticsConstantsBuilder();
         energeticsConstantsBuilder.setBBOverlapCoefficient(defaultOverlapCoefficient);
-        ExternalEnergyCalculatorBuilder externalEnergyCalculatorBuilder = new ExternalEnergyCalculatorBuilder();
-        externalEnergyCalculatorBuilder.setXPositionAndSpringConstant(defaultXPosition, defaultSpringConstant);
-        energeticsConstantsBuilder.setExternalEnergyCalculatorBuilder(externalEnergyCalculatorBuilder);
         systemParametersBuilder.setEnergeticsConstantsBuilder(energeticsConstantsBuilder);
         systemParametersBuilder.setInteractionLength(defaultInteractionLength);
         systemParametersBuilder.setPolymerCluster(getDefaultPolymerCluster());
@@ -87,9 +82,6 @@ public class BridgeCollapseJobMaker {
         inputBuilder.getSystemParametersBuilder().setAspectRatio(aspectRatio * horizontalScale / verticalScale);
         PolymerCluster polymerCluster = getPolymerCluster(verticalScale, horizontalScale);
         inputBuilder.getSystemParametersBuilder().setPolymerCluster(polymerCluster);
-        final ExternalEnergyCalculatorBuilder externalEnergyCalculatorBuilder = new ExternalEnergyCalculatorBuilder();
-        externalEnergyCalculatorBuilder.setXPositionAndSpringConstant(16 * horizontalScale, 50);
-        inputBuilder.getSystemParametersBuilder().getEnergeticsConstantsBuilder().setExternalEnergyCalculatorBuilder(externalEnergyCalculatorBuilder);
         inputBuilder.getJobParametersBuilder().setJobNumber(jobNumber);
         inputBuilder.getJobParametersBuilder().setNumAnneals(50);
         inputBuilder.getJobParametersBuilder().setNumSurfaceTensionTrials(70);
@@ -126,7 +118,6 @@ public class BridgeCollapseJobMaker {
 
     private static Input makeNoSpringInput(final double verticalRescaleFactor, final double horizontalRescaleFactor, int jobNumber) {
         InputBuilder inputBuilder = makeRescaleInputBuilderWithHorizontalRescaling(verticalRescaleFactor, horizontalRescaleFactor, jobNumber);
-        inputBuilder.getSystemParametersBuilder().getEnergeticsConstantsBuilder().setExternalEnergyCalculatorBuilder(new ExternalEnergyCalculatorBuilder());
         return inputBuilder.buildInput();
     }
 

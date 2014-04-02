@@ -33,13 +33,12 @@ public class BridgeCollapseFinder extends AbstractFocusedSimulation<BridgeCollap
 
     private static Input readInput(String[] args) {
         if (args.length == 0) {
-            final double verticalScaleFactor = .2;
-            final double horizontalScaleFactor = 1;
+            final double verticalScaleFactor = .1;
+            final double horizontalScaleFactor = 3;
 
             InputBuilder inputBuilder = BridgeCollapseJobMaker.makeRescaleInputBuilderWithHorizontalRescaling(verticalScaleFactor, horizontalScaleFactor, 0);
             inputBuilder.getJobParametersBuilder().setNumAnneals(1);
             inputBuilder.getJobParametersBuilder().setNumSurfaceTensionTrials(30);
-            inputBuilder.getSystemParametersBuilder().getEnergeticsConstantsBuilder().setExternalEnergyCalculatorBuilder(new ExternalEnergyCalculatorBuilder());
             return inputBuilder.buildInput();
         } else if (args.length == 1) {
             final String fileName = args[0];
