@@ -86,12 +86,12 @@ public class OutputWriter {
         return fileNameBuilder.toString();
     }
 
-    public void printAndSoutString(final String string) {
+    public void printAndSoutString(final CharSequence string) {
         printString(string);
         System.out.println(string);
     }
 
-    public void printString(final String string) {
+    public void printString(final CharSequence string) {
         dataWriter.print(string);
         dataWriter.flush();
     }

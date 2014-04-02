@@ -130,7 +130,7 @@ public class SurfaceTensionFinder extends AbstractFocusedSimulation<SurfaceTensi
 
     @Override
     protected void printFinalOutput() {
-        soutYPositionHistogram();
+//        soutYPositionHistogram();
     }
 
 }

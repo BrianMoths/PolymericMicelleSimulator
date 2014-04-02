@@ -101,7 +101,7 @@ public class AbstractResultsWriter {
     }
 
     public void printAnnealDone(int numAnnealsDone) {
-        String annealsDoneString = "Number of anneals done so far: " + numAnnealsDone;
+        String annealsDoneString = "Number of anneals done so far: " + numAnnealsDone + "\n";
         outputWriter.printAndSoutString(annealsDoneString);
     }
 
@@ -120,7 +120,7 @@ public class AbstractResultsWriter {
         printAndSoutString(outputString);
     }
 
-    public void printAndSoutString(String outputString) {
+    public void printAndSoutString(CharSequence outputString) {
         outputWriter.printAndSoutString(outputString);
     }
 
