@@ -9,6 +9,7 @@ import Engine.Energetics.ExternalEnergyCalculator.ExternalEnergyCalculatorBuilde
 import Engine.PolymerTopology.PolymerChain;
 import Engine.PolymerTopology.PolymerCluster;
 import Engine.SimulatorParameters.SystemParametersBuilder;
+import FocusedSimulation.AbstractFocusedSimulation;
 import FocusedSimulation.JobParameters.JobParametersBuilder;
 import SGEManagement.Input;
 import SGEManagement.Input.InputBuilder;
@@ -22,9 +23,11 @@ import java.util.List;
  */
 public class CompressibilityJobMaker {
 
+    public static final String pathToFocusedSimulationClass = AbstractFocusedSimulation.pathToFocusedSimulation + "compressibility/CompressibilityFinder";
+
     public static void main(String[] args) {
         final List<Input> inputs = makeInputs();
-        JobSubmitter.submitJobs(inputs);
+        JobSubmitter.submitJobs(pathToFocusedSimulationClass, inputs);
     }
 
     static private List<Input> makeInputs() {

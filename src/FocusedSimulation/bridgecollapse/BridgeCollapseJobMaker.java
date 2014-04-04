@@ -9,6 +9,7 @@ import Engine.Energetics.ExternalEnergyCalculator.ExternalEnergyCalculatorBuilde
 import Engine.PolymerTopology.PolymerChain;
 import Engine.PolymerTopology.PolymerCluster;
 import Engine.SimulatorParameters.SystemParametersBuilder;
+import FocusedSimulation.AbstractFocusedSimulation;
 import FocusedSimulation.JobParameters.JobParametersBuilder;
 import SGEManagement.Input;
 import SGEManagement.Input.InputBuilder;
@@ -22,9 +23,11 @@ import java.util.List;
  */
 public class BridgeCollapseJobMaker {
 
+    public static final String pathToFocusedSimulationClass = AbstractFocusedSimulation.pathToFocusedSimulation + "bridgecollapse/BridgeCollapseFinder";
+
     public static void main(String[] args) {
-        final List<Input> inputs = makeNoSpringInputs();
-        JobSubmitter.submitJobs(inputs);
+        final List<Input> inputs = makeRescaledInputs(1);
+        JobSubmitter.submitJobs(pathToFocusedSimulationClass, inputs);
     }
 
     //<editor-fold defaultstate="collapsed" desc="default input">
@@ -112,6 +115,26 @@ public class BridgeCollapseJobMaker {
                 jobNumber++;
             }
         }
+
+        return noSpringInputs;
+    }
+
+    private static List<Input> makeRescaledInputs(int jobNumber) {
+        final List<Input> noSpringInputs = new ArrayList<>();
+        Input input;
+
+
+        input = makeNoSpringInput(.1 * 2.3, 3 * 2.3, jobNumber);
+        noSpringInputs.add(input);
+        jobNumber++;
+
+        input = makeNoSpringInput(.5 * .5, 3 * .5, jobNumber);
+        noSpringInputs.add(input);
+        jobNumber++;
+
+        input = makeNoSpringInput(1 * .25, 3 * .25, jobNumber);
+        noSpringInputs.add(input);
+        jobNumber++;
 
         return noSpringInputs;
     }

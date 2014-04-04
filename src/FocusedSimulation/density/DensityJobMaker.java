@@ -9,6 +9,7 @@ import Engine.Energetics.ExternalEnergyCalculator.ExternalEnergyCalculatorBuilde
 import Engine.PolymerTopology.PolymerChain;
 import Engine.PolymerTopology.PolymerCluster;
 import Engine.SimulatorParameters.SystemParametersBuilder;
+import FocusedSimulation.AbstractFocusedSimulation;
 import FocusedSimulation.JobParameters.JobParametersBuilder;
 import static FocusedSimulation.surfacetension.SurfaceTensionJobMaker.makeRescaleInput;
 import static FocusedSimulation.surfacetension.SurfaceTensionJobMaker.makeRescaleInputBuilder;
@@ -25,9 +26,11 @@ import java.util.List;
  */
 public class DensityJobMaker {
 
+    public static final String pathToFocusedSimulationClass = AbstractFocusedSimulation.pathToFocusedSimulation + "density/DensityFinder";
+
     public static void main(String[] args) {
         final List<Input> inputs = makeInputs();
-        JobSubmitter.submitJobs(inputs);
+        JobSubmitter.submitJobs(pathToFocusedSimulationClass, inputs);
     }
 
     static private List<Input> makeInputs() {

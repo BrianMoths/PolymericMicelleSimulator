@@ -20,35 +20,32 @@ import java.util.logging.Logger;
  */
 public class JobSubmitter {
 
-    static public void submitJobs(List<Input> inputs) {
-        final String commandExceptInput = makeCommandExceptInput();
+    static public void submitJobs(String focusedSimulationPath, List<Input> inputs) {
+        final String commandExceptInput = makeCommandExceptInput(focusedSimulationPath);
         for (Input input : inputs) {
             submitJob(commandExceptInput, input);
         }
     }
 
     //<editor-fold defaultstate="collapsed" desc="makeCommandExceptInput">
-    static private String makeCommandExceptInput() {
-        final String path = getPath();
-        final String jarName = getJarName();
+    static private String makeCommandExceptInput(String focusedSimulationPath) {
+//        final String path = getPath();
+//        final String jarName = getJarName();
         StringBuilder commandBuilder = new StringBuilder();
-        commandBuilder.append("java -jar ")
-                .append(path)
-                .append("/")
-                .append(jarName);
+        commandBuilder.append("java ")
+                .append(focusedSimulationPath);
 
         return commandBuilder.toString();
     }
 
-    static private String getPath() {
-        return "/home/bmoths/Desktop/projects/polymerMicelles/simulation/PolymericMicelles/dist";
-    }
-
-    static private String getJarName() {
-        return "PolymericMicelles.jar";
-    }
+//    static private String getPath() {
+//        return "/home/bmoths/Desktop/projects/polymerMicelles/simulation/PolymericMicelles/dist";
+//    }
+//
+//    static private String getJarName() {
+//        return "PolymericMicelles.jar";
+//    }
     //</editor-fold>
-
     static private void submitJob(String commandExceptInput, Input input) {
         final String fileName = makeFileName(input);
         final String path = makePath(fileName);

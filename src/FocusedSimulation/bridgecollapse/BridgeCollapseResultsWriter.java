@@ -32,7 +32,7 @@ public class BridgeCollapseResultsWriter extends AbstractResultsWriter {
 
     static private CharSequence makeHorizontalSizeCharSequence(DoubleWithUncertainty horizontalSystemSize) {
         final StringBuilder stringBuilder = new StringBuilder();
-        stringBuilder.append("fraction of area covered: ")
+        stringBuilder.append("horizontal size of system: ")
                 .append(Double.toString(horizontalSystemSize.getValue()))
                 .append(" +/- ")
                 .append(Double.toString(horizontalSystemSize.getUncertainty()))
