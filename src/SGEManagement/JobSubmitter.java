@@ -29,23 +29,15 @@ public class JobSubmitter {
 
     //<editor-fold defaultstate="collapsed" desc="makeCommandExceptInput">
     static private String makeCommandExceptInput(String focusedSimulationPath) {
-//        final String path = getPath();
-//        final String jarName = getJarName();
         StringBuilder commandBuilder = new StringBuilder();
         commandBuilder.append("java ")
+                .append("-cp '/home/bmoths/Desktop/projects/polymerMicelles/simulation/PolyermericMicelles/build/classes/:/home/bmoths/Desktop/projects/polymerMicelles/simulation/PolyermericMicelles/dist/lib/*' ")
                 .append(focusedSimulationPath);
 
         return commandBuilder.toString();
     }
-
-//    static private String getPath() {
-//        return "/home/bmoths/Desktop/projects/polymerMicelles/simulation/PolymericMicelles/dist";
-//    }
-//
-//    static private String getJarName() {
-//        return "PolymericMicelles.jar";
-//    }
     //</editor-fold>
+
     static private void submitJob(String commandExceptInput, Input input) {
         final String fileName = makeFileName(input);
         final String path = makePath(fileName);

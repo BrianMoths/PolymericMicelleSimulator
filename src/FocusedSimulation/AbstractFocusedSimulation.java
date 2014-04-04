@@ -27,7 +27,7 @@ import java.util.logging.Logger;
  */
 public abstract class AbstractFocusedSimulation<T extends AbstractResultsWriter> {
 
-    public static final String pathToFocusedSimulation = "/home/bmoths/Desktop/projects/polymerMicelles/simulation/PolymericMicelles/build/classes/FocusedSimulation/";
+    public static final String pathToFocusedSimulation = "FocusedSimulation/";
 
     protected static Input readInput(String[] args, Input defaultInput) {
         if (args.length == 0) {

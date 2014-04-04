@@ -26,7 +26,7 @@ public class SurfaceTensionJobMaker {
     public static final String pathToFocusedSimulationClass = AbstractFocusedSimulation.pathToFocusedSimulation + "surfacetension/SurfaceTensionFinder";
 
     public static void main(String[] args) {
-        final List<Input> inputs = makeNoSpringInputs();
+        final List<Input> inputs = smallSystemInput(1);
         JobSubmitter.submitJobs(pathToFocusedSimulationClass, inputs);
     }
 
@@ -323,31 +323,46 @@ public class SurfaceTensionJobMaker {
         return inputBuilder.buildInput();
     }
 
-    private static List<Input> makeNoSpringInputs() {
-        return makeNoSpringInputs(1);
-    }
+    private static List<Input> smallSystemInput(int jobNumber) {
+        List<Input> inputs = new ArrayList<>();
 
-    private static List<Input> makeNoSpringInputs(int jobNumber) {
-        final double[] verticalRescaleFactors = {.1, .5, 1};
-        final double[] horizontalRescaleFactors = {1, 3, 10};
+        InputBuilder inputBuilder;
 
-        final List<Input> noSpringInputs = new ArrayList<>();
+        inputBuilder = makeRescaleInputBuilderWithHorizontalRescaling(.1, 3, jobNumber);
+        inputBuilder.getSystemParametersBuilder().getEnergeticsConstantsBuilder().getExternalEnergyCalculatorBuilder().setXPositionAndSpringConstant(35, 50);
+        inputs.add(inputBuilder.buildInput());
+        jobNumber++;
 
-        for (int i = 0; i < verticalRescaleFactors.length; i++) {
-            for (int j = 0; j < horizontalRescaleFactors.length; j++) {
-                final Input input = makeNoSpringInput(verticalRescaleFactors[i], horizontalRescaleFactors[j], jobNumber);
-                noSpringInputs.add(input);
-                jobNumber++;
-            }
-        }
 
-        return noSpringInputs;
-    }
+        inputBuilder = makeRescaleInputBuilderWithHorizontalRescaling(.1, 5, jobNumber);
+        inputBuilder.getSystemParametersBuilder().getEnergeticsConstantsBuilder().getExternalEnergyCalculatorBuilder().setXPositionAndSpringConstant(60, 50);
+        inputs.add(inputBuilder.buildInput());
+        jobNumber++;
 
-    private static Input makeNoSpringInput(final double verticalRescaleFactor, final double horizontalRescaleFactor, int jobNumber) {
-        InputBuilder inputBuilder = makeRescaleInputBuilderWithHorizontalRescaling(verticalRescaleFactor, horizontalRescaleFactor, jobNumber);
-        inputBuilder.getSystemParametersBuilder().getEnergeticsConstantsBuilder().setExternalEnergyCalculatorBuilder(new ExternalEnergyCalculatorBuilder());
-        return inputBuilder.buildInput();
+
+        inputBuilder = makeRescaleInputBuilderWithHorizontalRescaling(.1, 10, jobNumber);
+        inputBuilder.getSystemParametersBuilder().getEnergeticsConstantsBuilder().getExternalEnergyCalculatorBuilder().setXPositionAndSpringConstant(100, 50);
+        inputs.add(inputBuilder.buildInput());
+        jobNumber++;
+
+
+        inputBuilder = makeRescaleInputBuilderWithHorizontalRescaling(.05, 1.5, jobNumber);
+        inputs.add(inputBuilder.buildInput());
+        jobNumber++;
+
+
+        inputBuilder = makeRescaleInputBuilderWithHorizontalRescaling(.1, 1.5, jobNumber);
+        inputs.add(inputBuilder.buildInput());
+        jobNumber++;
+
+
+        inputBuilder = makeRescaleInputBuilderWithHorizontalRescaling(.5, 1.5, jobNumber);
+        inputs.add(inputBuilder.buildInput());
+        jobNumber++;
+
+
+
+        return inputs;
     }
 
 }

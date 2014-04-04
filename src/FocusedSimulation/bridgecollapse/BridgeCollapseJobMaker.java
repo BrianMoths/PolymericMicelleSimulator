@@ -26,7 +26,7 @@ public class BridgeCollapseJobMaker {
     public static final String pathToFocusedSimulationClass = AbstractFocusedSimulation.pathToFocusedSimulation + "bridgecollapse/BridgeCollapseFinder";
 
     public static void main(String[] args) {
-        final List<Input> inputs = makeRescaledInputs(1);
+        final List<Input> inputs = makeLongerRunInputs(1);
         JobSubmitter.submitJobs(pathToFocusedSimulationClass, inputs);
     }
 
@@ -139,9 +139,34 @@ public class BridgeCollapseJobMaker {
         return noSpringInputs;
     }
 
+    private static List<Input> makeLongerRunInputs(int jobNumber) {
+        final List<Input> noSpringInputs = new ArrayList<>();
+        InputBuilder inputBuilder;
+
+
+        inputBuilder = makeNoSpringInputBuilder(.5, 10, jobNumber);
+        inputBuilder.getJobParametersBuilder().setNumSurfaceTensionTrials(210);
+        noSpringInputs.add(inputBuilder.buildInput());
+        jobNumber++;
+
+        inputBuilder = makeNoSpringInputBuilder(1, 3, jobNumber);
+        inputBuilder.getJobParametersBuilder().setNumSurfaceTensionTrials(210);
+        noSpringInputs.add(inputBuilder.buildInput());
+        jobNumber++;
+
+
+
+        return noSpringInputs;
+    }
+
     private static Input makeNoSpringInput(final double verticalRescaleFactor, final double horizontalRescaleFactor, int jobNumber) {
-        InputBuilder inputBuilder = makeRescaleInputBuilderWithHorizontalRescaling(verticalRescaleFactor, horizontalRescaleFactor, jobNumber);
+        InputBuilder inputBuilder = makeNoSpringInputBuilder(verticalRescaleFactor, horizontalRescaleFactor, jobNumber);
         return inputBuilder.buildInput();
+    }
+
+    private static InputBuilder makeNoSpringInputBuilder(final double verticalRescaleFactor, final double horizontalRescaleFactor, int jobNumber) {
+        InputBuilder inputBuilder = makeRescaleInputBuilderWithHorizontalRescaling(verticalRescaleFactor, horizontalRescaleFactor, jobNumber);
+        return inputBuilder;
     }
 
 }
