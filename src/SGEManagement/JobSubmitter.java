@@ -31,7 +31,7 @@ public class JobSubmitter {
     static private String makeCommandExceptInput(String focusedSimulationPath) {
         StringBuilder commandBuilder = new StringBuilder();
         commandBuilder.append("java ")
-                .append("-cp '/home/bmoths/Desktop/projects/polymerMicelles/simulation/PolyermericMicelles/build/classes/:/home/bmoths/Desktop/projects/polymerMicelles/simulation/PolyermericMicelles/dist/lib/*' ")
+                .append("-cp '/home/bmoths/Desktop/projects/polymerMicelles/simulation/PolymericMicelles/build/classes/:/home/bmoths/Desktop/projects/polymerMicelles/simulation/PolymericMicelles/dist/lib/*' ")
                 .append(focusedSimulationPath);
 
         return commandBuilder.toString();
