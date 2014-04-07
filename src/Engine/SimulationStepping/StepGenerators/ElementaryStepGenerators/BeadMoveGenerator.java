@@ -40,7 +40,7 @@ public class BeadMoveGenerator implements StepGenerator {
 
     static private double[] getStepVector(SystemAnalyzer systemAnalyzer) {
         ImmutableSystemGeometry systemGeometry = systemAnalyzer.getSystemGeometry();
-        return systemGeometry.randomGaussian();
+        return systemGeometry.randomGaussian(.4);
     }
 
     public BeadMoveGenerator() {

@@ -41,7 +41,7 @@ public class IdealGasSimulation {
     }
 
     static public DescriptiveStatistics generateLengthStatistics(int numSamples, PolymerSimulator polymerSimulator) {
-        final int iterationsPerSample = 10000;//1000000
+        final int iterationsPerSample = 5000;//1000000
         int numSamplesTaken = 0;
         SystemAnalyzer systemAnalyzer = polymerSimulator.getSystemAnalyzer();
 
@@ -99,7 +99,7 @@ public class IdealGasSimulation {
         return energeticsConstantsBuilder.buildEnergeticsConstants();
     }
 
-    private int numSurfaceTensionTrials = 1000;
+    private int numSurfaceTensionTrials = 100;
 
     private IdealGasSimulation() {
     }
@@ -133,7 +133,7 @@ public class IdealGasSimulation {
             System.out.println("System equilibrated.");
             System.out.println("Gathering statistics to find equilibrium length.");
 
-            final int numSamples = 3000;//100
+            final int numSamples = 100;//100
             DescriptiveStatistics lengthStatistics = generateLengthStatistics(numSamples, polymerSimulator);
             System.out.println("Pressure times Volume found is: " + pressure * polymerSimulator.getSystemAnalyzer().getSystemGeometry().getSizeOfDimension(1) * lengthStatistics.getMean());
         }
