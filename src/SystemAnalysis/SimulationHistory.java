@@ -43,6 +43,7 @@ public class SimulationHistory implements Serializable {
 
     }
 
+    private static final long serialVersionUID = 0L;
     private DescriptiveStatistics perimeterStatistics;
     private DescriptiveStatistics areaStatistics;
     private DescriptiveStatistics energyStatistics;

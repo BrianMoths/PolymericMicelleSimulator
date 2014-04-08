@@ -122,7 +122,7 @@ public class ExternalEnergyCalculator implements Serializable {
         return (2 * quadratic);
     }
     //</editor-fold>
-
+    private static final long serialVersionUID = 0L;
     private final double xTension, xQuadratic, yTension, yQuadratic, pressure;
 
     public ExternalEnergyCalculator() {

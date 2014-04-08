@@ -161,7 +161,7 @@ public final class EnergeticsConstants implements Serializable {
 
     }
     //</editor-fold>
-
+    private static final long serialVersionUID = 0L;
     static private Random randomNumberGenerator = new Random();
 
     static public EnergeticsConstants defaultEnergeticsConstants() {

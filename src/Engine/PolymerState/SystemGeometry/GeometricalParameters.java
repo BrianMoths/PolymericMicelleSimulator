@@ -19,6 +19,7 @@ public final class GeometricalParameters implements Serializable {
         CIRCLE;
     }
 
+    private static final long serialVersionUID = 0L;
     private final double interactionLength, coreLength, stepLength;
     private Shape shape = Shape.CIRCLE;
 

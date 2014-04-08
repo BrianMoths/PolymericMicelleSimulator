@@ -14,6 +14,8 @@ import java.util.List;
  */
 public class PolymerCluster implements Serializable {
 
+    private static final long serialVersionUID = 0L;
+
     static public PolymerCluster makeEmptyPolymerCluster() {
         return new PolymerCluster();
     }

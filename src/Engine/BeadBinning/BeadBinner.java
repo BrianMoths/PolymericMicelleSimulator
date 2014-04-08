@@ -20,6 +20,8 @@ public class BeadBinner implements Serializable {
 
     static private class BinIndex implements Serializable {
 
+        private static final long serialVersionUID = 0L;
+
         static BinIndex addIndices(BinIndex firstSummand, List<Integer> secondSummand) { //TODO make projected sum
             final int numDimensions = firstSummand.indices.size();
 
@@ -150,6 +152,7 @@ public class BeadBinner implements Serializable {
 
     }
 
+    private static final long serialVersionUID = 0L;
     private final int numDimensions;
     private final double[] binSize;
     private final int[] numBins;

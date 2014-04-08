@@ -48,6 +48,8 @@ public class SystemAnalyzer implements Serializable {
 
     public class AnalyzerListener implements Serializable {
 
+        private static final long serialVersionUID = 0L;
+
         private AnalyzerListener() {
         }
 
@@ -65,6 +67,7 @@ public class SystemAnalyzer implements Serializable {
 
     }
 
+    private static final long serialVersionUID = 0L;
     static private final int statisticsWindow = 1000;
     private final ImmutablePolymerState immutablePolymerState;
     private final ImmutableDiscretePolymerState immutableDiscretePolymerState;

@@ -57,6 +57,8 @@ public class Input implements Serializable {
 
     }
 
+    private static final long serialVersionUID = 0L;
+
     static public Input readInputFromFile(String fileName) {
         ObjectInputStream objectInputStream = getObjectOutputStream(fileName);
         try {

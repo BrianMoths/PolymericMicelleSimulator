@@ -14,6 +14,8 @@ import java.util.List;
  */
 public class PolymerChain implements Serializable {
 
+    private static final long serialVersionUID = 0L;
+
     static public PolymerChain makeSingletChainOfType(boolean isTypeA) {
         PolymerChain polymerChain = new PolymerChain();
         polymerChain.addBead(isTypeA);

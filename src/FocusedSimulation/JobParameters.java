@@ -26,6 +26,7 @@ public class JobParameters implements Serializable {
             return jobParametersBuilder;
         }
 
+        private static final long serialVersionUID = 0L;
         private int numAnneals; //50
         private int numSurfaceTensionTrials; //70
         private boolean shouldIterateUntilConvergence;

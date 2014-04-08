@@ -67,6 +67,7 @@ public enum StepType implements Serializable {
 
     },
     "trivial");
+    private static final long serialVersionUID = 0L;
     private final StepGenerator stepGenerator;
     private final String name;
 

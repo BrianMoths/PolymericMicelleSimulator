@@ -55,6 +55,7 @@ public class MultidimensionalArray<T> implements Serializable {
 
     }
 
+    private static final long serialVersionUID = 0L;
     private final List<Integer> dimensionSizes;
     private final List<Integer> strideOfDimension;
     private final List<T> backingArray;

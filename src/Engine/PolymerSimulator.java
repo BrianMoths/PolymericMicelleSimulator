@@ -54,7 +54,7 @@ public class PolymerSimulator implements Serializable {
         return geometricalParameters;
     }
     //</editor-fold>
-
+    private static final long serialVersionUID = 0L;
     private final SystemGeometry geometry;
     private final PolymerPosition polymerPosition;
     private final PolymerState polymerState;

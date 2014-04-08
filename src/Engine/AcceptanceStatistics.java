@@ -29,6 +29,8 @@ public class AcceptanceStatistics implements Serializable {
         }
     }
 
+    private static final long serialVersionUID = 0L;
+
     public AcceptanceStatistics(AcceptanceStatistics acceptanceStatistics) {
         attemptedIterations = new EnumMap<>(acceptanceStatistics.attemptedIterations);
         acceptedIterations = new EnumMap<>(acceptanceStatistics.acceptedIterations);
