@@ -29,7 +29,7 @@ public class GeneralStepGenerator implements StepGenerator {
         return new GeneralStepGenerator(weights);
     }
 
-    static private EnumMap<StepType, Double> makeDefaultWeights() {
+    static public EnumMap<StepType, Double> makeDefaultWeights() {
         EnumMap<StepType, Double> weights = new EnumMap<>(StepType.class);
         weights.put(StepType.SINGLE_BEAD, 1.);//1
         weights.put(StepType.SINGLE_CHAIN, .00);//.01
