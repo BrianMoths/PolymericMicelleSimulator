@@ -14,8 +14,8 @@ import java.util.List;
  */
 public class HistogramMaker {
 
-    private static final int numBins = 100;
     private static final int dimension = 1;
+    private static final double binSize = 4;
 
     public static List<Integer> makeHistogram(SystemAnalyzer systemAnalyzer) {
         HistogramMaker histogramMaker = new HistogramMaker(systemAnalyzer);
@@ -24,15 +24,14 @@ public class HistogramMaker {
 
     private final SystemAnalyzer systemAnalyzer;
     private final List<Integer> histogram;
-    private final double binSize;
 
     public HistogramMaker(SystemAnalyzer systemAnalyzer) {
         this.systemAnalyzer = systemAnalyzer;
+        final int numBins = (int) (systemAnalyzer.getSystemGeometry().getSizeOfDimension(dimension) / binSize) + 1;
         histogram = new ArrayList<>(numBins);
         for (int i = 0; i < numBins; i++) {
             histogram.add(0);
         }
-        binSize = systemAnalyzer.getSystemGeometry().getSizeOfDimension(dimension) / numBins;
     }
 
     private List<Integer> makeHistogram() {

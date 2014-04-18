@@ -26,7 +26,7 @@ public class SurfaceTensionJobMaker {
     public static final String pathToFocusedSimulationClass = AbstractFocusedSimulation.pathToFocusedSimulation + "surfacetension/SurfaceTensionFinder";
 
     public static void main(String[] args) {
-        final List<Input> inputs = smallSystemInput(1);
+        final List<Input> inputs = makeHistogramInputs();
         JobSubmitter.submitJobs(pathToFocusedSimulationClass, inputs);
     }
 
@@ -90,7 +90,7 @@ public class SurfaceTensionJobMaker {
     }
 
     static private final double defaultAspectRatio = .0286;
-    static private final double defaultOverlapCoefficient = -.06;
+    static private final double defaultOverlapCoefficient = -.06;//-.06 .053 looks different
     static private final double defaultInteractionLength = 4.;
     static private final double defaultXPosition = 50;
     static private final double defaultSpringConstant = 10;
@@ -286,6 +286,30 @@ public class SurfaceTensionJobMaker {
         inputBuilder.getJobParametersBuilder().setShouldIterateUntilConvergence(false);
         Input input = inputBuilder.buildInput();
         return input;
+    }
+
+    private static List<Input> makeHistogramInputs() {
+        return makeHistogramInputs(1);
+    }
+
+    private static List<Input> makeHistogramInputs(int jobNumber) {
+
+        List<Input> inputs = new ArrayList<>();
+        inputs.add(makeHistogramInput(jobNumber, .5, 2.5));
+        jobNumber++;
+        inputs.add(makeHistogramInput(jobNumber, 1, 5));
+        jobNumber++;
+        inputs.add(makeHistogramInput(jobNumber, .25, 1.25));
+        jobNumber++;
+        return inputs;
+    }
+
+    public static Input makeHistogramInput(int jobNumber, double verticalScaleFactor, double horizontalScaleFactor) {
+        InputBuilder inputBuilder = SurfaceTensionJobMaker.makeRescaleInputBuilderWithHorizontalRescaling(verticalScaleFactor, horizontalScaleFactor, 0);
+        inputBuilder.getJobParametersBuilder().setNumAnneals(1);
+        inputBuilder.getJobParametersBuilder().setNumSurfaceTensionTrials(30);
+        inputBuilder.getJobParametersBuilder().setJobNumber(jobNumber);
+        return inputBuilder.buildInput();
     }
 
     private static List<Input> testSpringEffect() {

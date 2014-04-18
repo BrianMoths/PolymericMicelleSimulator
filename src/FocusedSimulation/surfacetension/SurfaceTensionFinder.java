@@ -41,13 +41,12 @@ public class SurfaceTensionFinder extends AbstractFocusedSimulation<SurfaceTensi
 
     private static Input readInput(String[] args) {
         if (args.length == 0) {
-            final double verticalScaleFactor = .2;
-            final double horizontalScaleFactor = 1;
+            final double verticalScaleFactor = .5;
+            final double horizontalScaleFactor = 2.5;
 
             InputBuilder inputBuilder = SurfaceTensionJobMaker.makeRescaleInputBuilderWithHorizontalRescaling(verticalScaleFactor, horizontalScaleFactor, 0);
             inputBuilder.getJobParametersBuilder().setNumAnneals(1);
             inputBuilder.getJobParametersBuilder().setNumSurfaceTensionTrials(30);
-            inputBuilder.getSystemParametersBuilder().getEnergeticsConstantsBuilder().setExternalEnergyCalculatorBuilder(new ExternalEnergyCalculatorBuilder());
             return inputBuilder.buildInput();
         } else if (args.length == 1) {
             final String fileName = args[0];
@@ -88,6 +87,7 @@ public class SurfaceTensionFinder extends AbstractFocusedSimulation<SurfaceTensi
     @Override
     protected void printInitialOutput() {
         outputWriter.printInitializationInfo(polymerSimulator);
+        soutYPositionHistogram();
     }
     //</editor-fold>
 
@@ -97,6 +97,7 @@ public class SurfaceTensionFinder extends AbstractFocusedSimulation<SurfaceTensi
         DoubleWithUncertainty measuredSurfaceTension = getMeasuredSurfaceTensionFromWidth(measuredWidth, polymerSimulator);
         outputWriter.printSurfaceTension(measuredSurfaceTension);
         outputWriter.printStress(simulationRunner);
+        soutYPositionHistogram();
     }
 
     @Override
@@ -121,16 +122,16 @@ public class SurfaceTensionFinder extends AbstractFocusedSimulation<SurfaceTensi
 
     private void soutYPositionHistogram() {
         final List<Integer> histogram = HistogramMaker.makeHistogram(simulationRunner.getPolymerSimulator().getSystemAnalyzer());
-        System.out.println("Histogram");
+        outputWriter.printAndSoutString("Histogram\n");
         for (Integer integer : histogram) {
-            System.out.println(integer);
+            outputWriter.printAndSoutString(integer.toString() + "\n");
         }
-        System.out.println("End histogram");
+        outputWriter.printAndSoutString("End histogram\n");
     }
 
     @Override
     protected void printFinalOutput() {
-//        soutYPositionHistogram();
+        soutYPositionHistogram();
     }
 
 }
