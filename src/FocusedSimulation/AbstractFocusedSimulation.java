@@ -128,7 +128,7 @@ public abstract class AbstractFocusedSimulation<T extends AbstractResultsWriter>
 
     protected StepGenerator makeMainStepGenerator() {
         EnumMap<StepType, Double> stepweights = new EnumMap<>(StepType.class);
-        stepweights.put(StepType.SINGLE_WALL_RESIZE, .0001);
+        stepweights.put(StepType.SINGLE_WALL_RESIZE, 1. / polymerSimulator.getNumBeads());
         stepweights.put(StepType.SINGLE_BEAD, 1.);
         stepweights.put(StepType.REPTATION, .1);
         stepweights.put(StepType.SINGLE_CHAIN, .01);
