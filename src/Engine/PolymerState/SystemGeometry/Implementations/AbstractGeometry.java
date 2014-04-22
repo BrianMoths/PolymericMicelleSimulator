@@ -151,36 +151,54 @@ public abstract class AbstractGeometry implements SystemGeometry {
 
     @Override
     public double[] randomMiddlePosition() {
+        return randomMiddlePosition(1. / 3.);
+    }
+
+    public double[] randomMiddlePosition(double frac) {
         double[] position = new double[numDimensions];
         for (int i = 0; i < numDimensions; i++) {
-            position[i] = (randomNumberGenerator.nextDouble() / 3 + 1. / 3) * fullRMax[i];
+            position[i] = (randomNumberGenerator.nextDouble() * frac + (1 - frac) / 2) * fullRMax[i];
         }
         return position;
     }
 
-    @Override
-    public double[][] randomMiddlePositions(int numPositions) {
+    public double[][] randomMiddlePositions(int numPositions, double frac) {
         double[][] randomPositions = new double[numPositions][];
         for (int i = 0; i < numPositions; i++) {
-            randomPositions[i] = randomMiddlePosition();
+            randomPositions[i] = randomMiddlePosition(frac);
         }
         return randomPositions;
     }
 
     @Override
-    public double[][] randomColumnPositions(int numPositions) {
+    public double[][] randomMiddlePositions(int numPositions) {
+        return randomMiddlePositions(numPositions, 1. / 3.);
+    }
+
+    @Override
+    public double[][] randomColumnPositions(int numPositions, double frac) {
         double[][] randomColumnPositions = new double[numPositions][];
         for (int i = 0; i < numPositions; i++) {
-            randomColumnPositions[i] = randomColumnPosition();
+            randomColumnPositions[i] = randomColumnPosition(frac);
         }
         return randomColumnPositions;
     }
 
     @Override
+    public double[][] randomColumnPositions(int numPositions) {
+        return randomColumnPositions(numPositions, 1. / 3.);
+    }
+
+    @Override
     public double[] randomColumnPosition() {
+        return randomColumnPosition(1. / 3.);
+    }
+
+    @Override
+    public double[] randomColumnPosition(double frac) {
         double[] position = new double[numDimensions];
         position[0] = randomNumberGenerator.nextDouble() * fullRMax[0];
-        position[1] = (randomNumberGenerator.nextDouble() / 3 + 1. / 3) * fullRMax[1];
+        position[1] = (randomNumberGenerator.nextDouble() * frac + (1 - frac) / 2) * fullRMax[1];
         return position;
     }
 

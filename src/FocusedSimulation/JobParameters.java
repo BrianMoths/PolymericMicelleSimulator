@@ -4,6 +4,7 @@
  */
 package FocusedSimulation;
 
+import FocusedSimulation.SimulationRunner.SimulationRunnerParameters;
 import java.io.Serializable;
 
 /**
@@ -13,10 +14,6 @@ import java.io.Serializable;
 public class JobParameters implements Serializable {
 
     static public class JobParametersBuilder {
-
-        static private final int defaultNumAnneals = 50;//50
-        static private final int defaultNumSurfaceTensionTrials = 70;
-        static private final int defaultJobNumber = 0;
 
         static public JobParametersBuilder getDefaultJobParametersBuilder() {
             JobParametersBuilder jobParametersBuilder = new JobParametersBuilder();
@@ -31,6 +28,7 @@ public class JobParameters implements Serializable {
         private int numSurfaceTensionTrials; //70
         private boolean shouldIterateUntilConvergence;
         private int jobNumber;
+        private SimulationRunnerParameters simulationRunnerParameters;
 
         public JobParametersBuilder() {
         }
@@ -61,8 +59,9 @@ public class JobParameters implements Serializable {
             return shouldIterateUntilConvergence;
         }
 
-        public void setShouldIterateUntilConvergence(boolean shouldIterateUntilConvergence) {
+        public JobParametersBuilder setShouldIterateUntilConvergence(boolean shouldIterateUntilConvergence) {
             this.shouldIterateUntilConvergence = shouldIterateUntilConvergence;
+            return this;
         }
 
         public int getJobNumber() {
@@ -74,6 +73,15 @@ public class JobParameters implements Serializable {
             return this;
         }
 
+        public SimulationRunnerParameters getSimulationRunnerParameters() {
+            return simulationRunnerParameters;
+        }
+
+        public JobParametersBuilder setSimulationRunnerParameters(SimulationRunnerParameters simulationRunnerParameters) {
+            this.simulationRunnerParameters = simulationRunnerParameters;
+            return this;
+        }
+
     }
 
     static private final int defaultNumAnneals = 50;
@@ -81,19 +89,21 @@ public class JobParameters implements Serializable {
     static private final int defaultJobNumber = 0;
 
     static public FocusedSimulation.JobParameters getDefaultJobParameters() {
-        return new FocusedSimulation.JobParameters(defaultNumAnneals, defaultNumSurfaceTensionTrials, true, defaultJobNumber);
+        return new FocusedSimulation.JobParameters(defaultNumAnneals, defaultNumSurfaceTensionTrials, true, defaultJobNumber, SimulationRunnerParameters.defaultSimulationRunnerParameters());
     }
 
     private final int numAnneals; //50
     private final int numSurfaceTensionTrials; //70
     private final boolean shouldIterateUntilConvergence;
     private final int jobNumber;
+    private final SimulationRunnerParameters simulationRunnerParameters;
 
-    public JobParameters(int numAnneals, int numSurfaceTensionTrials, boolean shouldIterateUntilConvergence, int jobNumber) {
+    public JobParameters(int numAnneals, int numSurfaceTensionTrials, boolean shouldIterateUntilConvergence, int jobNumber, SimulationRunnerParameters simulationRunnerParameters) {
         this.numAnneals = numAnneals;
         this.numSurfaceTensionTrials = numSurfaceTensionTrials;
         this.shouldIterateUntilConvergence = shouldIterateUntilConvergence;
         this.jobNumber = jobNumber;
+        this.simulationRunnerParameters = simulationRunnerParameters;
     }
 
     private JobParameters(JobParametersBuilder jobParametersBuilder) {
@@ -101,6 +111,7 @@ public class JobParameters implements Serializable {
         numSurfaceTensionTrials = jobParametersBuilder.getNumSurfaceTensionTrials();
         shouldIterateUntilConvergence = jobParametersBuilder.getShouldIterateUntilConvergence();
         jobNumber = jobParametersBuilder.getJobNumber();
+        simulationRunnerParameters = jobParametersBuilder.simulationRunnerParameters;
     }
 
     public int getNumAnneals() {
@@ -117,6 +128,10 @@ public class JobParameters implements Serializable {
 
     public int getJobNumber() {
         return jobNumber;
+    }
+
+    public SimulationRunnerParameters getSimulationRunnerParameters() {
+        return simulationRunnerParameters;
     }
 
 }

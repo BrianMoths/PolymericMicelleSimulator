@@ -61,7 +61,11 @@ public interface ImmutableSystemGeometry {
 
     public double[] randomColumnPosition();
 
+    public double[] randomColumnPosition(double frac);
+
     public double[][] randomColumnPositions(int numPositions);
+
+    public double[][] randomColumnPositions(int numPositions, double frac);
 
     public double[] randomPosition();
 
