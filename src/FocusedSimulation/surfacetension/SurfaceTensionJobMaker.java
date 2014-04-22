@@ -26,7 +26,7 @@ public class SurfaceTensionJobMaker {
     public static final String pathToFocusedSimulationClass = AbstractFocusedSimulation.pathToFocusedSimulation + "surfacetension/SurfaceTensionFinder";
 
     public static void main(String[] args) {
-        final List<Input> inputs = makeHistogramInputs();
+        final List<Input> inputs = smallSystemInput(1);
         JobSubmitter.submitJobs(pathToFocusedSimulationClass, inputs);
     }
 
@@ -90,7 +90,7 @@ public class SurfaceTensionJobMaker {
     }
 
     static private final double defaultAspectRatio = .0286;
-    static private final double defaultOverlapCoefficient = -.06;//-.06 .053 looks different
+    static private final double defaultOverlapCoefficient = -.053;//-.06 .053 looks different
     static private final double defaultInteractionLength = 4.;
     static private final double defaultXPosition = 50;
     static private final double defaultSpringConstant = 10;

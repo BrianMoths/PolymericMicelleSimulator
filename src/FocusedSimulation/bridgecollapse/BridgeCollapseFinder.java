@@ -4,11 +4,9 @@
  */
 package FocusedSimulation.bridgecollapse;
 
-import Engine.Energetics.ExternalEnergyCalculator.ExternalEnergyCalculatorBuilder;
 import FocusedSimulation.AbstractFocusedSimulation;
 import FocusedSimulation.DoubleWithUncertainty;
 import FocusedSimulation.StatisticsTracker.TrackableVariable;
-import FocusedSimulation.surfacetension.SurfaceTensionResultsWriter;
 import SGEManagement.Input;
 import SGEManagement.Input.InputBuilder;
 import java.io.FileNotFoundException;
@@ -33,8 +31,8 @@ public class BridgeCollapseFinder extends AbstractFocusedSimulation<BridgeCollap
 
     private static Input readInput(String[] args) {
         if (args.length == 0) {
-            final double verticalScaleFactor = .1;
-            final double horizontalScaleFactor = 3;
+            final double verticalScaleFactor = .5;
+            final double horizontalScaleFactor = 1.5;
 
             InputBuilder inputBuilder = BridgeCollapseJobMaker.makeRescaleInputBuilderWithHorizontalRescaling(verticalScaleFactor, horizontalScaleFactor, 0);
             inputBuilder.getJobParametersBuilder().setNumAnneals(1);

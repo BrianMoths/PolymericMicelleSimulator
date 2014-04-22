@@ -94,7 +94,7 @@ public class PolymerPosition implements ImmutablePolymerPosition {
     }
 
     private void reasonableColumnChainRandomize(List<Integer> chainOfBead) {
-        double[] currentPosition = systemGeometry.randomColumnPosition();
+        double[] currentPosition = systemGeometry.randomColumnPosition(.15);
         for (int currentBead : chainOfBead) {
             movePositionByStep(currentPosition);
             setBeadPositionNoRebin(currentBead, currentPosition);

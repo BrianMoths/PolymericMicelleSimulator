@@ -26,7 +26,7 @@ public class BridgeCollapseJobMaker {
     public static final String pathToFocusedSimulationClass = AbstractFocusedSimulation.pathToFocusedSimulation + "bridgecollapse/BridgeCollapseFinder";
 
     public static void main(String[] args) {
-        final List<Input> inputs = makeLongerRunInputs(1);
+        final List<Input> inputs = makeNoSpringInputs(1);
         JobSubmitter.submitJobs(pathToFocusedSimulationClass, inputs);
     }
 
@@ -41,7 +41,7 @@ public class BridgeCollapseJobMaker {
     }
 
     static private final double defaultAspectRatio = .0286;
-    static private final double defaultOverlapCoefficient = -.06;
+    static private final double defaultOverlapCoefficient = -.053;
     static private final double defaultInteractionLength = 4.;
     static private final int defaultNumBeadsPerChain = 15;
     static private final int defaultNumChains = 75;
@@ -151,6 +151,26 @@ public class BridgeCollapseJobMaker {
 
         inputBuilder = makeNoSpringInputBuilder(1, 3, jobNumber);
         inputBuilder.getJobParametersBuilder().setNumSurfaceTensionTrials(210);
+        noSpringInputs.add(inputBuilder.buildInput());
+        jobNumber++;
+
+
+
+        return noSpringInputs;
+    }
+
+    private static List<Input> testNonCollapsingInputs(int jobNumber) {
+        final List<Input> noSpringInputs = new ArrayList<>();
+        InputBuilder inputBuilder;
+
+
+        inputBuilder = makeNoSpringInputBuilder(.5, 10, jobNumber);
+        inputBuilder.getJobParametersBuilder().setNumSurfaceTensionTrials(70);
+        noSpringInputs.add(inputBuilder.buildInput());
+        jobNumber++;
+
+        inputBuilder = makeNoSpringInputBuilder(1, 3, jobNumber);
+        inputBuilder.getJobParametersBuilder().setNumSurfaceTensionTrials(70);
         noSpringInputs.add(inputBuilder.buildInput());
         jobNumber++;
 

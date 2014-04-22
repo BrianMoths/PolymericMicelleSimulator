@@ -87,7 +87,6 @@ public class SurfaceTensionFinder extends AbstractFocusedSimulation<SurfaceTensi
     @Override
     protected void printInitialOutput() {
         outputWriter.printInitializationInfo(polymerSimulator);
-        soutYPositionHistogram();
     }
     //</editor-fold>
 
