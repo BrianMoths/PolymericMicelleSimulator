@@ -20,6 +20,8 @@ public class JobParameters implements Serializable {
             jobParametersBuilder.setNumAnneals(defaultNumAnneals);
             jobParametersBuilder.setNumSurfaceTensionTrials(defaultNumSurfaceTensionTrials);
             jobParametersBuilder.setJobNumber(defaultJobNumber);
+            jobParametersBuilder.setSimulationRunnerParameters(SimulationRunnerParameters.defaultSimulationRunnerParameters());
+
             return jobParametersBuilder;
         }
 

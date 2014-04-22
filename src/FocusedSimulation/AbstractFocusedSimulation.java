@@ -51,7 +51,7 @@ public abstract class AbstractFocusedSimulation<T extends AbstractResultsWriter>
         jobParameters = input.getJobParameters();
         systemParameters = input.getSystemParameters();
         polymerSimulator = systemParameters.makePolymerSimulator();
-        simulationRunner = new SimulationRunner(polymerSimulator, SimulationRunnerParameters.defaultSimulationRunnerParameters());
+        simulationRunner = new SimulationRunner(polymerSimulator, input.getJobParameters().getSimulationRunnerParameters());
         this.outputWriter = outputWriter;
         try {
             polymerSimulatorWriter = new PolymerSimulatorWriter(polymerSimulator, input.getJobNumber());

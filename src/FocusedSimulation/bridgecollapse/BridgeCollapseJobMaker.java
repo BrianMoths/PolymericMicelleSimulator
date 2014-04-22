@@ -26,7 +26,17 @@ public class BridgeCollapseJobMaker {
     public static final String pathToFocusedSimulationClass = AbstractFocusedSimulation.pathToFocusedSimulation + "bridgecollapse/BridgeCollapseFinder";
 
     public static void main(String[] args) {
-        final List<Input> inputs = makeNoSpringInputs(1);
+        int jobNumber;
+        final List<Input> inputs = new ArrayList<>();
+
+        jobNumber = inputs.size() + 1;
+        final List<Input> noSpringInputs = makeNoSpringInputs(jobNumber);
+        inputs.addAll(noSpringInputs);
+
+        jobNumber = inputs.size() + 1;
+        final List<Input> nonCollapsingInputs = testNonCollapsingInputs(jobNumber);
+        inputs.addAll(nonCollapsingInputs);
+
         JobSubmitter.submitJobs(pathToFocusedSimulationClass, inputs);
     }
 

@@ -8,6 +8,7 @@ import Engine.PolymerSimulator;
 import Engine.SimulationStepping.StepGenerators.StepGenerator;
 import FocusedSimulation.StatisticsTracker.TrackableVariable;
 import Gui.SystemViewer;
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -19,7 +20,7 @@ import java.util.Map;
  */
 public class SimulationRunner {
 
-    static public class SimulationRunnerParameters {
+    static public class SimulationRunnerParameters implements Serializable {
 
         static private final int defaultNumIterationsPerSample = 100_000; // should depend on number of beads and size of resize steps
         static private final int defaultNumSamples = 100; //should depend on desired relative precision of result
@@ -31,6 +32,7 @@ public class SimulationRunner {
             return defaultSimulationRunnerParameters;
         }
 
+        private static final long serialVersionUID = 0L;
         private final int numIterationsPerSample;
         private final int numSamples;
         private final int numIterationsPerAnneal;
