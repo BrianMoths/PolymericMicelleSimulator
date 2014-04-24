@@ -55,17 +55,33 @@ public class SimulatorParameters implements Serializable {
         }
 
         private double interactionLength;
+        private double coreLength = 0;
         private EnergeticsConstantsBuilder energeticsConstantsBuilder;
         private PolymerCluster polymerCluster;
         private double aspectRatio;
         private GeneralStepGenerator generalStepGenerator;
 
+        public SimulatorParameters buildSystemParametersWithAutomaticHardOverlap() {
+//            GeometricalParameters geometricalParameters = new GeometricalParameters(interactionLength, energeticsConstantsBuilder);
+//            energeticsConstantsBuilder.setHardOverlapCoefficientFromParameters(geometricalParameters);
+//            SystemGeometry systemGeometry = makeSystemGeometry(geometricalParameters);
+//            final EnergeticsConstants energeticsConstants = energeticsConstantsBuilder.buildEnergeticsConstants();
+//            return new SimulatorParameters(systemGeometry, polymerCluster, energeticsConstants);
+            autosetCoreParameters();
+            return buildSystemParameters();
+        }
+
         public SimulatorParameters buildSystemParameters() {
-            GeometricalParameters geometricalParameters = new GeometricalParameters(interactionLength, energeticsConstantsBuilder);
-            energeticsConstantsBuilder.setHardOverlapCoefficientFromParameters(geometricalParameters);
+            GeometricalParameters geometricalParameters = new GeometricalParameters(interactionLength, energeticsConstantsBuilder, coreLength);
             SystemGeometry systemGeometry = makeSystemGeometry(geometricalParameters);
             final EnergeticsConstants energeticsConstants = energeticsConstantsBuilder.buildEnergeticsConstants();
             return new SimulatorParameters(systemGeometry, polymerCluster, energeticsConstants);
+        }
+
+        public void autosetCoreParameters() {
+            GeometricalParameters geometricalParameters = new GeometricalParameters(interactionLength, energeticsConstantsBuilder);
+            coreLength = geometricalParameters.getCoreLength();
+            energeticsConstantsBuilder.setHardOverlapCoefficientFromParameters(geometricalParameters);
         }
 
         public double getInteractionLength() {
@@ -106,6 +122,14 @@ public class SimulatorParameters implements Serializable {
 
         public void setGeneralStepGenerator(GeneralStepGenerator generalStepGenerator) {
             this.generalStepGenerator = generalStepGenerator;
+        }
+
+        public double getCoreLength() {
+            return coreLength;
+        }
+
+        public void setCoreLength(double coreLength) {
+            this.coreLength = coreLength;
         }
 
         private SystemGeometry makeSystemGeometry(GeometricalParameters geometricalParameters) {

@@ -85,14 +85,14 @@ public class StressFinder {
         }
 
         private double[] calculateOuterForce(double[] displacement, PolymerSimulator polymerSimulator) {
-            final double interactionLength = polymerSimulator.getGeometry().getParameters().getInteractionLength();
+            final double interactionLength = polymerSimulator.getGeometry().getGeometricalParameters().getInteractionLength();
             final double outerOverlapCoefficient = polymerSimulator.getEnergeticsConstants().getBBOverlapCoefficient();
             final double[] outerForce = calculateOverlapForce(displacement, interactionLength, outerOverlapCoefficient);
             return outerForce;
         }
 
         private double[] calculateInnerForce(double[] displacement, PolymerSimulator polymerSimulator) {
-            final double coreLength = polymerSimulator.getGeometry().getParameters().getCoreLength();
+            final double coreLength = polymerSimulator.getGeometry().getGeometricalParameters().getCoreLength();
             final double innerOverlapCoefficient = polymerSimulator.getEnergeticsConstants().getHardOverlapCoefficient();
             final double[] innerForce = calculateOverlapForce(displacement, coreLength, innerOverlapCoefficient);
             return innerForce;

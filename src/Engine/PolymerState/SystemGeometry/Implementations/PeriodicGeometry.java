@@ -23,6 +23,8 @@ import java.util.List;
  */
 public final class PeriodicGeometry extends AbstractGeometry {
 
+    private static final long serialVersionUID = 0L;
+
     public static class PeriodicGeometryBuilder extends AbstractGeometryBuilder {
 
         private PeriodicGeometryBuilder(PeriodicGeometry geometry) {

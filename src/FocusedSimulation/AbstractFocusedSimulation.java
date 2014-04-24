@@ -203,7 +203,7 @@ public abstract class AbstractFocusedSimulation<T extends AbstractResultsWriter>
     }
 
     public double getBeadSize() {
-        return systemParameters.systemGeometry.getParameters().getInteractionLength();
+        return systemParameters.systemGeometry.getGeometricalParameters().getInteractionLength();
     }
 
     SimulationRunner getSimulationRunner() {

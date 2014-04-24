@@ -114,10 +114,10 @@ public class SystemAnalyzer implements Serializable {
      * multiple times is still only counted once).
      */
     public double findArea() {
-        if (systemGeometry.getParameters().getShape() == GeometricalParameters.Shape.SQUARE) {
+        if (systemGeometry.getGeometricalParameters().getShape() == GeometricalParameters.Shape.SQUARE) {
             List<BeadRectangle> beadRectangles = systemGeometry.getRectanglesFromPositions(beadPositions);
             return GeometryAnalyzer.findAreaOfRectangles(beadRectangles);
-        } else if (systemGeometry.getParameters().getShape() == GeometricalParameters.Shape.CIRCLE) {
+        } else if (systemGeometry.getGeometricalParameters().getShape() == GeometricalParameters.Shape.CIRCLE) {
             Iterable<Circle> circles = systemGeometry.getCirclesFromPositions(beadPositions);
             return CircleAreaFinder.findAreaOfCircles(circles, systemGeometry.getBoundaryRectangle());
         } else {
@@ -126,14 +126,14 @@ public class SystemAnalyzer implements Serializable {
     }
 
     public AreaPerimeter findAreaAndPerimeter() {
-        if (systemGeometry.getParameters().getShape() == GeometricalParameters.Shape.SQUARE) {
+        if (systemGeometry.getGeometricalParameters().getShape() == GeometricalParameters.Shape.SQUARE) {
             RectanglesAndGluedPerimeter rectanglesAndGluedPerimeter;
             rectanglesAndGluedPerimeter = systemGeometry.getRectanglesAndPerimeterFromPositions(beadPositions);
             AreaPerimeter areaPerimeter;
             areaPerimeter = GeometryAnalyzer.findAreaAndPerimeterOfRectangles(rectanglesAndGluedPerimeter.beadRectangles);
             areaPerimeter.perimeter -= rectanglesAndGluedPerimeter.gluedPerimeter * 2;
             return areaPerimeter;
-        } else if (systemGeometry.getParameters().getShape() == GeometricalParameters.Shape.CIRCLE) {
+        } else if (systemGeometry.getGeometricalParameters().getShape() == GeometricalParameters.Shape.CIRCLE) {
             CirclesAndClippedPerimeter circlesAndClippedPerimeter = systemGeometry.getCirclesAndBoundaryPerimeterFromPosition(beadPositions);
             AreaPerimeter areaPerimeter = CircleAreaPerimeterFinder.findAreaPerimeterOfCirclesNoClipPerimeter(circlesAndClippedPerimeter.getCircles(), systemGeometry.getBoundaryRectangle());
             areaPerimeter.perimeter += circlesAndClippedPerimeter.getClippedPerimeter();

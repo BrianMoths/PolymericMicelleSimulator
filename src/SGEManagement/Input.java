@@ -35,6 +35,10 @@ public class Input implements Serializable {
         public SystemParametersBuilder systemParametersBuilder;
         public JobParametersBuilder jobParametersBuilder;
 
+        public Input buildInputAutomaticHardOverlap() {
+            return new Input(systemParametersBuilder.buildSystemParametersWithAutomaticHardOverlap(), jobParametersBuilder.buildJobParameters());
+        }
+
         public Input buildInput() {
             return new Input(systemParametersBuilder.buildSystemParameters(), jobParametersBuilder.buildJobParameters());
         }

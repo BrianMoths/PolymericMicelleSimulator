@@ -4,13 +4,13 @@
  */
 package Engine.PolymerState.SystemGeometry.Interfaces;
 
-import java.io.Serializable;
-
 /**
  *
  * @author bmoths
  */
-public interface SystemGeometry extends ImmutableSystemGeometry, Serializable {
+public interface SystemGeometry extends ImmutableSystemGeometry {
+
+    static final long serialVersionUID = 0L;
 
     public void setRMax(int index, double rMax);
 

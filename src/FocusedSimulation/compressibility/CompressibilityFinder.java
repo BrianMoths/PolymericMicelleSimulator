@@ -28,7 +28,7 @@ public class CompressibilityFinder {
 
             InputBuilder inputBuilder = CompressibilityJobMaker.makeRescaleInputBuilderWithHorizontalRescaling(verticalScaleFactor, horizontalScaleFactor, 0);
             inputBuilder.getJobParametersBuilder().setNumAnneals(5);
-            return inputBuilder.buildInput();
+            return inputBuilder.buildInputAutomaticHardOverlap();
         } else if (args.length == 1) {
             final String fileName = args[0];
             return Input.readInputFromFile(fileName);

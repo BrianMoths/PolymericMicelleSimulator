@@ -21,6 +21,8 @@ import java.util.List;
  */
 public final class HardWallGeometry extends AbstractGeometry {
 
+    private static final long serialVersionUID = 0L;
+
     @Override
     public GeometryBuilder toBuilder() {
         return new HardWallGeometryBuilder(this);

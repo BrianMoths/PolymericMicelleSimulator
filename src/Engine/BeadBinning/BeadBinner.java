@@ -165,7 +165,7 @@ public class BeadBinner implements Serializable {
 
     public BeadBinner(double[][] beadPositions, ImmutableSystemGeometry systemGeometry) {
         final double[] rMax = systemGeometry.getRMax();
-        final double interactionLength = systemGeometry.getParameters().getInteractionLength();
+        final double interactionLength = systemGeometry.getGeometricalParameters().getInteractionLength();
         numDimensions = systemGeometry.getNumDimensions();
         numBins = new int[numDimensions];
         binSize = new double[numDimensions];

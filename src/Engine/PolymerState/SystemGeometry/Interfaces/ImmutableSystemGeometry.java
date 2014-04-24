@@ -11,13 +11,16 @@ import SystemAnalysis.AreaPerimeter.circleareaperimeter.CirclesAndClippedPerimet
 import SystemAnalysis.AreaPerimeter.rectangleareaperimeter.BeadRectangle;
 import SystemAnalysis.AreaPerimeter.rectangleareaperimeter.RectangleSplitting.RectanglesAndGluedPerimeter;
 import java.awt.geom.Rectangle2D;
+import java.io.Serializable;
 import java.util.List;
 
 /**
  *
  * @author bmoths
  */
-public interface ImmutableSystemGeometry {
+public interface ImmutableSystemGeometry extends Serializable {
+
+    static final long serialVersionUID = 0L;
 
     public GeometryBuilder toBuilder();
 
@@ -31,7 +34,7 @@ public interface ImmutableSystemGeometry {
 
     public double getVolume();
 
-    public GeometricalParameters getParameters();
+    public GeometricalParameters getGeometricalParameters();
 
     /**
      * Finds the difference {@code position1} - {@code position2}. The method

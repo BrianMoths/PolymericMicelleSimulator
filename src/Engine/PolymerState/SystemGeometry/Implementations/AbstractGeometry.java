@@ -41,7 +41,7 @@ public abstract class AbstractGeometry implements SystemGeometry {
             dimension = geometry.getNumDimensions();
             fullRMax = new double[dimension];
             System.arraycopy(geometry.getRMax(), 0, fullRMax, 0, dimension);
-            parameters = geometry.getParameters();
+            parameters = geometry.getGeometricalParameters();
         }
 
         @Override
@@ -128,6 +128,7 @@ public abstract class AbstractGeometry implements SystemGeometry {
     }
     //</editor-fold>
 
+    private static final long serialVersionUID = 0L;
     public static final Random randomNumberGenerator = new Random();
     protected final int numDimensions;
     protected final double[] fullRMax;
@@ -397,7 +398,7 @@ public abstract class AbstractGeometry implements SystemGeometry {
     }
 
     @Override
-    public GeometricalParameters getParameters() {
+    public GeometricalParameters getGeometricalParameters() {
         return parameters;
     }
     //</editor-fold>

@@ -60,9 +60,13 @@ public final class GeometricalParameters implements Serializable {
     }
 
     public GeometricalParameters(double stepLength, double interactionLength) {
+        this(stepLength, interactionLength, 0);
+    }
+
+    public GeometricalParameters(double stepLength, double interactionLength, double coreLength) {
         this.interactionLength = interactionLength;
         this.stepLength = stepLength;
-        coreLength = 0;
+        this.coreLength = coreLength;
     }
 
     public GeometricalParameters(GeometricalParameters geometricalParameters) {
@@ -71,13 +75,19 @@ public final class GeometricalParameters implements Serializable {
         coreLength = geometricalParameters.coreLength;
     }
 
+    public GeometricalParameters(double interactionLength, EnergeticsConstantsBuilder energeticsConstantsBuilder, double coreLength) {
+        this.interactionLength = interactionLength;
+        stepLength = energeticsConstantsBuilder.idealStepLength();
+        this.coreLength = coreLength;
+    }
+
     public GeometricalParameters(double interactionLength, EnergeticsConstantsBuilder energeticsConstantsBuilder) {
         this.interactionLength = interactionLength;
         stepLength = energeticsConstantsBuilder.idealStepLength();
-        coreLength = coreLengthFromPhysicalConstants(energeticsConstantsBuilder);
+        coreLength = coreLengthFromPhysicalConstants(energeticsConstantsBuilder, interactionLength);
     }
 
-    private double coreLengthFromPhysicalConstants(EnergeticsConstantsBuilder energeticsConstantsBuilder) {
+    static public double coreLengthFromPhysicalConstants(EnergeticsConstantsBuilder energeticsConstantsBuilder, double interactionLength) {
         final double attractionInT = .5; //.5
         double thermalForce = attractionInT * energeticsConstantsBuilder.getTemperature() / interactionLength;
         double minCoefficientForBonding = -thermalForce / interactionLength;

@@ -74,7 +74,7 @@ public final class EnergeticsConstants implements Serializable {
             hardOverlapCoefficient = hardOverlapCoefficientFromParameters(geometricalParameters);
         }
 
-        private double hardOverlapCoefficientFromParameters(GeometricalParameters geometricalParameters) {
+        public double hardOverlapCoefficientFromParameters(GeometricalParameters geometricalParameters) {
             if (geometricalParameters.getCoreLength() > 1e-10) {
                 final double bondingEnergyInT = .5;
                 final double coreRepulsionInT = 5; //5
@@ -161,6 +161,7 @@ public final class EnergeticsConstants implements Serializable {
 
     }
     //</editor-fold>
+
     private static final long serialVersionUID = 0L;
     static private Random randomNumberGenerator = new Random();
 

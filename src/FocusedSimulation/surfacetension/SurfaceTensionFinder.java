@@ -4,6 +4,7 @@
  */
 package FocusedSimulation.surfacetension;
 
+import Engine.Energetics.EnergeticsConstants.EnergeticsConstantsBuilder;
 import Engine.Energetics.ExternalEnergyCalculator;
 import Engine.Energetics.ExternalEnergyCalculator.ExternalEnergyCalculatorBuilder;
 import Engine.PolymerSimulator;
@@ -42,11 +43,16 @@ public class SurfaceTensionFinder extends AbstractFocusedSimulation<SurfaceTensi
     private static Input readInput(String[] args) {
         if (args.length == 0) {
             final double verticalScaleFactor = .5;
-            final double horizontalScaleFactor = 2.5;
+            final double horizontalScaleFactor = 5;
 
             InputBuilder inputBuilder = SurfaceTensionJobMaker.makeRescaleInputBuilderWithHorizontalRescaling(verticalScaleFactor, horizontalScaleFactor, 0);
             inputBuilder.getJobParametersBuilder().setNumAnneals(1);
             inputBuilder.getJobParametersBuilder().setNumSurfaceTensionTrials(30);
+            final EnergeticsConstantsBuilder energeticsConstantsBuilder = inputBuilder.getSystemParametersBuilder().getEnergeticsConstantsBuilder();
+            inputBuilder.getSystemParametersBuilder().autosetCoreParameters();
+            energeticsConstantsBuilder.setBBOverlapCoefficient(1 * energeticsConstantsBuilder.getBBOverlapCoefficient());
+            energeticsConstantsBuilder.setHardOverlapCoefficient(1 * energeticsConstantsBuilder.getHardOverlapCoefficient());
+
             return inputBuilder.buildInput();
         } else if (args.length == 1) {
             final String fileName = args[0];

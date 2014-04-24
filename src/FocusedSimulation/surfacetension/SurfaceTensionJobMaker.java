@@ -44,7 +44,7 @@ public class SurfaceTensionJobMaker {
 
     public static Input makeRescaleInput(final double scaleFactor, int jobNumber) {
         InputBuilder inputBuilder = makeRescaleInputBuilder(scaleFactor, jobNumber);
-        final Input input = inputBuilder.buildInput();
+        final Input input = inputBuilder.buildInputAutomaticHardOverlap();
         return input;
     }
 
@@ -54,7 +54,7 @@ public class SurfaceTensionJobMaker {
 
     public static Input makeRescaleInput(final double verticalScale, final double horizontalScale, final int jobNumber) {
         final InputBuilder inputBuilder = makeRescaleInputBuilderWithHorizontalRescaling(verticalScale, horizontalScale, jobNumber);
-        return inputBuilder.buildInput();
+        return inputBuilder.buildInputAutomaticHardOverlap();
     }
 
     public static InputBuilder makeRescaleInputBuilderWithHorizontalRescaling(final double verticalScale, final double horizontalScale, int jobNumber) {
@@ -68,7 +68,7 @@ public class SurfaceTensionJobMaker {
         externalEnergyCalculatorBuilder.setXPositionAndSpringConstant(16 * horizontalScale, 50);
         inputBuilder.getSystemParametersBuilder().getEnergeticsConstantsBuilder().setExternalEnergyCalculatorBuilder(externalEnergyCalculatorBuilder);
         inputBuilder.getJobParametersBuilder().setJobNumber(jobNumber);
-        inputBuilder.getJobParametersBuilder().setNumAnneals(50);
+        inputBuilder.getJobParametersBuilder().setNumAnneals(3);
         inputBuilder.getJobParametersBuilder().setNumSurfaceTensionTrials(70);
         return inputBuilder;
     }
@@ -91,7 +91,7 @@ public class SurfaceTensionJobMaker {
     }
 
     static private final double defaultAspectRatio = .0286;
-    static private final double defaultOverlapCoefficient = -.053;//-.06 .053 looks different
+    static private final double defaultOverlapCoefficient = -.053;//-.06 -.053 looks different
     static private final double defaultInteractionLength = 4.;
     static private final double defaultXPosition = 50;
     static private final double defaultSpringConstant = 10;
@@ -255,7 +255,7 @@ public class SurfaceTensionJobMaker {
         inputBuilder.getJobParametersBuilder().setNumAnneals(10);
         inputBuilder.getJobParametersBuilder().setNumSurfaceTensionTrials(10);
         inputBuilder.getJobParametersBuilder().setShouldIterateUntilConvergence(false);
-        final Input input = inputBuilder.buildInput();
+        final Input input = inputBuilder.buildInputAutomaticHardOverlap();
         return input;
     }
 
@@ -285,7 +285,7 @@ public class SurfaceTensionJobMaker {
         inputBuilder.getJobParametersBuilder().setNumAnneals(10);
         inputBuilder.getJobParametersBuilder().setNumSurfaceTensionTrials(10);
         inputBuilder.getJobParametersBuilder().setShouldIterateUntilConvergence(false);
-        Input input = inputBuilder.buildInput();
+        Input input = inputBuilder.buildInputAutomaticHardOverlap();
         return input;
     }
 
@@ -310,7 +310,7 @@ public class SurfaceTensionJobMaker {
         inputBuilder.getJobParametersBuilder().setNumAnneals(1);
         inputBuilder.getJobParametersBuilder().setNumSurfaceTensionTrials(30);
         inputBuilder.getJobParametersBuilder().setJobNumber(jobNumber);
-        return inputBuilder.buildInput();
+        return inputBuilder.buildInputAutomaticHardOverlap();
     }
 
     private static List<Input> testSpringEffect() {
@@ -345,7 +345,7 @@ public class SurfaceTensionJobMaker {
         final double newXEquilibrium = force / newSpringConstant + observedBalancePointOfSpring;
         ExternalEnergyCalculatorBuilder newExternalEnergyCalculatorBuilder = new ExternalEnergyCalculatorBuilder().setXPositionAndSpringConstant(newXEquilibrium, newSpringConstant);
         inputBuilder.getSystemParametersBuilder().getEnergeticsConstantsBuilder().setExternalEnergyCalculatorBuilder(newExternalEnergyCalculatorBuilder);
-        return inputBuilder.buildInput();
+        return inputBuilder.buildInputAutomaticHardOverlap();
     }
 
     private static List<Input> smallSystemInput(int jobNumber) {
@@ -355,34 +355,34 @@ public class SurfaceTensionJobMaker {
 
         inputBuilder = makeRescaleInputBuilderWithHorizontalRescaling(.1, 3, jobNumber);
         inputBuilder.getSystemParametersBuilder().getEnergeticsConstantsBuilder().getExternalEnergyCalculatorBuilder().setXPositionAndSpringConstant(35, 50);
-        inputs.add(inputBuilder.buildInput());
+        inputs.add(inputBuilder.buildInputAutomaticHardOverlap());
         jobNumber++;
 
 
         inputBuilder = makeRescaleInputBuilderWithHorizontalRescaling(.1, 5, jobNumber);
         inputBuilder.getSystemParametersBuilder().getEnergeticsConstantsBuilder().getExternalEnergyCalculatorBuilder().setXPositionAndSpringConstant(60, 50);
-        inputs.add(inputBuilder.buildInput());
+        inputs.add(inputBuilder.buildInputAutomaticHardOverlap());
         jobNumber++;
 
 
         inputBuilder = makeRescaleInputBuilderWithHorizontalRescaling(.1, 10, jobNumber);
         inputBuilder.getSystemParametersBuilder().getEnergeticsConstantsBuilder().getExternalEnergyCalculatorBuilder().setXPositionAndSpringConstant(100, 50);
-        inputs.add(inputBuilder.buildInput());
+        inputs.add(inputBuilder.buildInputAutomaticHardOverlap());
         jobNumber++;
 
 
         inputBuilder = makeRescaleInputBuilderWithHorizontalRescaling(.05, 1.5, jobNumber);
-        inputs.add(inputBuilder.buildInput());
+        inputs.add(inputBuilder.buildInputAutomaticHardOverlap());
         jobNumber++;
 
 
         inputBuilder = makeRescaleInputBuilderWithHorizontalRescaling(.1, 1.5, jobNumber);
-        inputs.add(inputBuilder.buildInput());
+        inputs.add(inputBuilder.buildInputAutomaticHardOverlap());
         jobNumber++;
 
 
         inputBuilder = makeRescaleInputBuilderWithHorizontalRescaling(.5, 1.5, jobNumber);
-        inputs.add(inputBuilder.buildInput());
+        inputs.add(inputBuilder.buildInputAutomaticHardOverlap());
         jobNumber++;
 
 
