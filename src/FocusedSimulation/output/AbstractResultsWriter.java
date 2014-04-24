@@ -4,6 +4,7 @@
  */
 package FocusedSimulation.output;
 
+import Engine.Energetics.EnergeticsConstants;
 import Engine.PolymerSimulator;
 import Engine.PolymerState.SystemGeometry.Interfaces.ImmutableSystemGeometry;
 import Engine.SimulationStepping.StepTypes.StepType;
@@ -58,20 +59,28 @@ public class AbstractResultsWriter {
             final int numBeadsPerChain = (int) input.getSystemParameters().getPolymerCluster().getNumBeadsPerChain();
             final int numAnneals = input.getJobParameters().getNumAnneals();
             final int numSurfaceTensionTrials = input.getJobParameters().getNumSurfaceTensionTrials();
-            final double beadSideLength = input.getSystemParameters().getSystemGeometry().getParameters().getInteractionLength();
             final int numChains = input.getSystemParameters().getPolymerCluster().getNumChains();
-            final double springConstant = input.getSystemParameters().getEnergeticsConstants().getExternalEnergyCalculator().getxSpringConstant();
-            final double equilibriumPosition = input.getSystemParameters().getEnergeticsConstants().getExternalEnergyCalculator().getxEquilibriumPosition();
+            final EnergeticsConstants energeticsConstants = input.getSystemParameters().getEnergeticsConstants();
+            final double springConstant = energeticsConstants.getExternalEnergyCalculator().getxSpringConstant();
+            final double equilibriumPosition = energeticsConstants.getExternalEnergyCalculator().getxEquilibriumPosition();
+            final double softOverlapCoefficient = energeticsConstants.getBBOverlapCoefficient();
+            final double hardOverlapCoefficient = energeticsConstants.getHardOverlapCoefficient();
+            final double interactionLength = input.getSystemParameters().getSystemGeometry().getGeometricalParameters().getInteractionLength();
+            final double hardCoreLength = input.getSystemParameters().getSystemGeometry().getGeometricalParameters().getCoreLength();
             final double density = input.getSystemParameters().getPolymerCluster().getConcentrationInWater();
             StringBuilder parametersStringBuilder = new StringBuilder();
             parametersStringBuilder.append("Number of Chains: ").append(Integer.toString(numChains)).append("\n")
                     .append("Number of Beads per Chain: ").append(Integer.toString(numBeadsPerChain)).append("\n")
                     .append("Density: ").append(Double.toString(density)).append("\n")
-                    .append("Side length of beads: ").append(Double.toString(beadSideLength)).append("\n")
                     .append("number  of anneals: ").append(Integer.toString(numAnneals)).append("\n")
                     .append("number of iterations finding results: ").append(Integer.toString(numSurfaceTensionTrials)).append("\n")
                     .append("number of samples per surface tension measurement: ").append(Integer.toString(input.getJobParameters().getSimulationRunnerParameters().getNumSamples())).append("\n")
                     .append("number of simulator iterations per sample: ").append(Integer.toString(input.getJobParameters().getSimulationRunnerParameters().getNumIterationsPerSample())).append("\n")
+                    .append("number of simulator iterations per anneal: ").append(Integer.toString(input.getJobParameters().getSimulationRunnerParameters().getNumIterationsPerAnneal())).append("\n")
+                    .append("Interaction length of beads: ").append(Double.toString(interactionLength)).append("\n")
+                    .append("hard core length of beads: ").append(Double.toString(hardCoreLength)).append("\n")
+                    .append("soft overlap coefficient: ").append(Double.toString(softOverlapCoefficient)).append("\n")
+                    .append("hard overlap coefficient: ").append(Double.toString(hardOverlapCoefficient)).append("\n")
                     .append("E=(1/2)a(L-b)^2 with a: ").append(Double.toString(springConstant)).append("\n")
                     .append("b: ").append(Double.toString(equilibriumPosition))
                     .append("\n").append("=====================")
