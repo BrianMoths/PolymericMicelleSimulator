@@ -48,10 +48,10 @@ public class SurfaceTensionFinder extends AbstractFocusedSimulation<SurfaceTensi
             InputBuilder inputBuilder = SurfaceTensionJobMaker.makeRescaleInputBuilderWithHorizontalRescaling(verticalScaleFactor, horizontalScaleFactor, 0);
             inputBuilder.getJobParametersBuilder().setNumAnneals(1);
             inputBuilder.getJobParametersBuilder().setNumSurfaceTensionTrials(30);
-            final EnergeticsConstantsBuilder energeticsConstantsBuilder = inputBuilder.getSystemParametersBuilder().getEnergeticsConstantsBuilder();
             inputBuilder.getSystemParametersBuilder().autosetCoreParameters();
-            energeticsConstantsBuilder.setBBOverlapCoefficient(1 * energeticsConstantsBuilder.getBBOverlapCoefficient());
-            energeticsConstantsBuilder.setHardOverlapCoefficient(1 * energeticsConstantsBuilder.getHardOverlapCoefficient());
+            final EnergeticsConstantsBuilder energeticsConstantsBuilder = inputBuilder.getSystemParametersBuilder().getEnergeticsConstantsBuilder();
+            energeticsConstantsBuilder.setBBOverlapCoefficient(3 * energeticsConstantsBuilder.getBBOverlapCoefficient());
+            energeticsConstantsBuilder.setHardOverlapCoefficient(3 * energeticsConstantsBuilder.getHardOverlapCoefficient());
 
             return inputBuilder.buildInput();
         } else if (args.length == 1) {

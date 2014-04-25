@@ -62,11 +62,6 @@ public class SimulatorParameters implements Serializable {
         private GeneralStepGenerator generalStepGenerator;
 
         public SimulatorParameters buildSystemParametersWithAutomaticHardOverlap() {
-//            GeometricalParameters geometricalParameters = new GeometricalParameters(interactionLength, energeticsConstantsBuilder);
-//            energeticsConstantsBuilder.setHardOverlapCoefficientFromParameters(geometricalParameters);
-//            SystemGeometry systemGeometry = makeSystemGeometry(geometricalParameters);
-//            final EnergeticsConstants energeticsConstants = energeticsConstantsBuilder.buildEnergeticsConstants();
-//            return new SimulatorParameters(systemGeometry, polymerCluster, energeticsConstants);
             autosetCoreParameters();
             return buildSystemParameters();
         }

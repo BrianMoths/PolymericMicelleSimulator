@@ -55,7 +55,7 @@ public class StressFinderTest {
     @Test
     public void testCalculateSpringStress() {
         System.out.println("calculateSpringStress");
-        PolymerSimulator polymerSimulator = systemParametersBuilder.buildSystemParameters().makePolymerSimulator();
+        PolymerSimulator polymerSimulator = systemParametersBuilder.buildSystemParametersWithAutomaticHardOverlap().makePolymerSimulator();
         final double systemSize = polymerSimulator.getGeometry().getSizeOfDimension(0);
         final double displacement = .2;
         double[][] beadPositions = {{systemSize / 2 + 0, systemSize / 2 + 0}, {systemSize / 2 + displacement, systemSize / 2 + 0}};
@@ -74,7 +74,7 @@ public class StressFinderTest {
     @Test
     public void testCalculateOverlapStress() {
         System.out.println("calculateOverlapStress");
-        PolymerSimulator polymerSimulator = systemParametersBuilder.buildSystemParameters().makePolymerSimulator();
+        PolymerSimulator polymerSimulator = systemParametersBuilder.buildSystemParametersWithAutomaticHardOverlap().makePolymerSimulator();
         final double systemSize = polymerSimulator.getGeometry().getSizeOfDimension(0);
         final double displacement = .2;
         double[][] beadPositions = {{systemSize / 2 + 0, systemSize / 2 + 0}, {systemSize / 2 + displacement, systemSize / 2 + 0}};
@@ -106,7 +106,7 @@ public class StressFinderTest {
     public void testCalculateTotalStress() {
         System.out.println("calculateTotalStress");
 
-        PolymerSimulator polymerSimulator = systemParametersBuilder.buildSystemParameters().makePolymerSimulator();
+        PolymerSimulator polymerSimulator = systemParametersBuilder.buildSystemParametersWithAutomaticHardOverlap().makePolymerSimulator();
         final double systemSize = polymerSimulator.getGeometry().getSizeOfDimension(0);
         final double displacement = .2;
         double[][] beadPositions = {{systemSize / 2 + 0, systemSize / 2 + 0}, {systemSize / 2 + displacement, systemSize / 2 + 0}};

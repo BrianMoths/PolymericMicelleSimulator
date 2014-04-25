@@ -54,7 +54,7 @@ public class PeriodicGeometryTest {
         PeriodicGeometry defaultGeometry = PeriodicGeometry.defaultGeometry();
         assertTrue(defaultGeometry.getNumDimensions() > 0);
         assertTrue(defaultGeometry.getRMax().length == defaultGeometry.getNumDimensions());
-        GeometricalParameters geometricalParameters = defaultGeometry.getParameters();
+        GeometricalParameters geometricalParameters = defaultGeometry.getGeometricalParameters();
         assertTrue(geometricalParameters.getCoreLength() >= 0);
         assertTrue(geometricalParameters.getInteractionLength() >= 0);
         assertTrue(geometricalParameters.getStepLength() >= 0);
@@ -74,7 +74,7 @@ public class PeriodicGeometryTest {
     private void checkConsistency(PeriodicGeometry geometry, GeometryBuilder builder) {
         assertArrayEquals(geometry.getRMax(), builder.getFullRMaxCopy(), 0);
         assertEquals(geometry.getNumDimensions(), builder.getDimension());
-        assertEquals(geometry.getParameters(), builder.getParameters());
+        assertEquals(geometry.getGeometricalParameters(), builder.getParameters());
     }
 
     /**
@@ -424,8 +424,8 @@ public class PeriodicGeometryTest {
     public void testTwoBeadOverlap() {
         System.out.println("twoBeadOverlap");
         PeriodicGeometry instance = PeriodicGeometry.defaultGeometry();
-        double interactionLength = instance.getParameters().getInteractionLength();
-        double coreLength = instance.getParameters().getCoreLength();
+        double interactionLength = instance.getGeometricalParameters().getInteractionLength();
+        double coreLength = instance.getGeometricalParameters().getCoreLength();
         double xMax = instance.getRMax()[0];
         double yMax = instance.getRMax()[1];
         double[] position1;

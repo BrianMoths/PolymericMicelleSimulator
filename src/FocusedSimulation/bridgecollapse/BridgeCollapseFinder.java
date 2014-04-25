@@ -4,6 +4,7 @@
  */
 package FocusedSimulation.bridgecollapse;
 
+import Engine.Energetics.EnergeticsConstants.EnergeticsConstantsBuilder;
 import FocusedSimulation.AbstractFocusedSimulation;
 import FocusedSimulation.DoubleWithUncertainty;
 import FocusedSimulation.StatisticsTracker.TrackableVariable;
@@ -32,12 +33,16 @@ public class BridgeCollapseFinder extends AbstractFocusedSimulation<BridgeCollap
     private static Input readInput(String[] args) {
         if (args.length == 0) {
             final double verticalScaleFactor = .5;
-            final double horizontalScaleFactor = 1.5;
+            final double horizontalScaleFactor = 5.0;
 
             InputBuilder inputBuilder = BridgeCollapseJobMaker.makeRescaleInputBuilderWithHorizontalRescaling(verticalScaleFactor, horizontalScaleFactor, 0);
-            inputBuilder.getJobParametersBuilder().setNumAnneals(1);
+            inputBuilder.getJobParametersBuilder().setNumAnneals(10);
             inputBuilder.getJobParametersBuilder().setNumSurfaceTensionTrials(30);
-            return inputBuilder.buildInputAutomaticHardOverlap();
+            inputBuilder.getSystemParametersBuilder().autosetCoreParameters();
+            final EnergeticsConstantsBuilder energeticsConstantsBuilder = inputBuilder.getSystemParametersBuilder().getEnergeticsConstantsBuilder();
+            energeticsConstantsBuilder.setBBOverlapCoefficient(3 * energeticsConstantsBuilder.getBBOverlapCoefficient());
+            energeticsConstantsBuilder.setHardOverlapCoefficient(3 * energeticsConstantsBuilder.getHardOverlapCoefficient());
+            return inputBuilder.buildInput();
         } else if (args.length == 1) {
             final String fileName = args[0];
             return Input.readInputFromFile(fileName);

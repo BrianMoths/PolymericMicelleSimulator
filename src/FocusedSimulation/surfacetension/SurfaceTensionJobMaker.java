@@ -91,7 +91,7 @@ public class SurfaceTensionJobMaker {
     }
 
     static private final double defaultAspectRatio = .0286;
-    static private final double defaultOverlapCoefficient = -.053;//-.06 -.053 looks different
+    static private final double defaultOverlapCoefficient = -.063;//-.06 -.053 looks different
     static private final double defaultInteractionLength = 4.;
     static private final double defaultXPosition = 50;
     static private final double defaultSpringConstant = 10;
