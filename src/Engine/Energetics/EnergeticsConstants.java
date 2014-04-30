@@ -15,7 +15,28 @@ import java.util.Random;
 /**
  * A class which keeps all the information about how beads interact. It has
  * methods to get the non-geometrical parameters of the interaction as well as
- * methods to give the interaction energy as a function of separation.
+ * methods to give the interaction energy as a function of separation. <p>
+ *
+ * There are three types of energy this class is concerned with. <p>
+ *
+ * One arises from the stretching of a polymer chain. The polymer chain is
+ * modeled as a sequence of monomers, each on interacting with the next by a
+ * harmonic potential. The parameter tracked by this class is the common spring
+ * constant of the harmonic potentials. <p>
+ *
+ * The second type of energy this class is concerned with is an energy
+ * associated with beads overlapping. This energy has two terms. One is a term
+ * proportional to the area of the overlap of the beads. The constant of the
+ * proportionality depends on if the beads are both of type A, both of type B,
+ * or of opposite type. The second term is proportional to the overlap area of
+ * the hard cores of the beads. The constant of proportionality is the hard core
+ * overlap coefficient. <p>
+ *
+ * The third type of energy is the external energy. This is to simulate external
+ * forces acting on the walls of the simulation box. Thus the external energy
+ * will depend on the size of the simulation box in each dimension. The
+ * parameters of this energy are encapsulated in a external energy calculator
+ * object.
  *
  * @author bmoths
  */
