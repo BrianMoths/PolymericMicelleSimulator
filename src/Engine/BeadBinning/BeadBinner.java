@@ -13,8 +13,14 @@ import java.util.List;
 import java.util.Set;
 
 /**
+ * A class which keeps track of the positions of a collection of beads within a
+ * specified geometry and can return an iterator guaranteed to iterate over a
+ * superset of beads within an interaction length of a given bead or position.
+ * Positions may be updated by passing an array containing all positions or by
+ * specifying a new position of a single bead.
  *
  * @author bmoths
+ * @see ImmutableSystemGeometry
  */
 public class BeadBinner implements Serializable {
 
@@ -163,6 +169,14 @@ public class BeadBinner implements Serializable {
     private final List<Integer> initialBinOffset; //TODO make a list of bin offsets.
 //    private final List<List<Integer>> binOffsets;
 
+    /**
+     * Constructs a <tt>BeadBinner</tt> which is designed to track bead
+     * movements in a space with the specified geometry
+     *
+     * @param beadPositions the current positions of the beads to be tracked
+     * @param systemGeometry the geometry of the space the beads will be moved
+     * in
+     */
     public BeadBinner(double[][] beadPositions, ImmutableSystemGeometry systemGeometry) {
         final double[] rMax = systemGeometry.getRMax();
         final double interactionLength = systemGeometry.getGeometricalParameters().getInteractionLength();
@@ -182,6 +196,11 @@ public class BeadBinner implements Serializable {
         binBeadsPrivate(beadPositions);
     }
 
+    /**
+     * Constructs a copy of the specified <tt>BeadBinner</tt>.
+     *
+     * @param beadBinner the <tt>BeadBinner</tt> to be copied
+     */
     public BeadBinner(BeadBinner beadBinner) {
         binIndices = new ArrayList<>();
         for (BinIndex binIndex : beadBinner.binIndices) {
@@ -228,6 +247,13 @@ public class BeadBinner implements Serializable {
     }
     //</editor-fold>
 
+    /**
+     * resets the state of the <tt>BeadBinner</tt> to be consistent with the
+     * specified bead positions. This would be necessary if the bead positions
+     * are reset to a random configuration or otherwise all changed at once.
+     *
+     * @param beadPositions the positions of the beads
+     */
     public void binBeads(double[][] beadPositions) {
         binBeadsPrivate(beadPositions);
     }
@@ -252,6 +278,12 @@ public class BeadBinner implements Serializable {
         }
     }
 
+    /**
+     * updates the bead specified beads position to be the specified position
+     *
+     * @param stepBead the bead whose position is to be updated
+     * @param newBeadPosition the new position of the bead
+     */
     public void updateBeadPosition(int stepBead, double[] newBeadPosition) {
         removeBead(stepBead);
         addBeadAt(stepBead, newBeadPosition);
@@ -310,6 +342,15 @@ public class BeadBinner implements Serializable {
         return indexOfDimension;
     }
 
+    /**
+     * returns an iterator which is guaranteed to contain the indices of all
+     * beads "close" to the given bead. By "close" we mean within the
+     * interaction length specified by the geometry specified in the
+     * constructor.
+     *
+     * @param bead the bead whose neighbors are to be found
+     * @return an iterator giving the neighbors of the given bead
+     */
     public Iterator<Integer> getNearbyBeadIterator(int bead) {
         BinIndex binIndex = binIndices.get(bead);
 
@@ -318,6 +359,15 @@ public class BeadBinner implements Serializable {
         return iterator;
     }
 
+    /**
+     * returns an iterator which is guaranteed to contain the indices of all
+     * beads "close" to the given position. By "close" we mean within the
+     * interaction length specified by the geometry specified in the
+     * constructor.
+     *
+     * @param position the position around which nearby beads are to be found
+     * @return an iterator giving the beads near the given position
+     */
     public Iterator<Integer> getNearbyBeadIterator(double[] position) {
         BinIndex binIndex = getBinIndex(position);
 

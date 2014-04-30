@@ -10,6 +10,13 @@ import java.util.Iterator;
 import java.util.List;
 
 /**
+ * A non-resizable array of arbitrary rank. The size of the array along each
+ * dimension is specified when the array is constructed. Individual elements of
+ * the array can be querried and mutated. Also there are methods to get the
+ * total number of elements in the array, the size of each dimension, and the
+ * total number of dimensions (i.e., rank) of the array.
+ *
+ * @param <T> the type of elements in the array
  *
  * @author bmoths
  */
@@ -60,12 +67,28 @@ public class MultidimensionalArray<T> implements Serializable {
     private final List<Integer> strideOfDimension;
     private final List<T> backingArray;
 
+    /**
+     * constructs an array whose rank is the length of the given list and where
+     * the size of the <tt>i</tt>th dimension is the <tt>i</tt>th element in the
+     * list
+     *
+     * @param dimensionSizes the list specifying the rank of the array and the
+     * size of each dimension.
+     */
     public MultidimensionalArray(List<Integer> dimensionSizes) {
         this.dimensionSizes = new ArrayList<>(dimensionSizes);
         strideOfDimension = calculateStrideOfDimension();
         backingArray = makeBackingArray();
     }
 
+    /**
+     * constructs an array whose rank is the length of the input array and where
+     * the size of the <tt>i</tt>th dimension is the <tt>i</tt>th element in the
+     * input array
+     *
+     * @param dimensionSizes the array specifying the rank of the
+     * multidimensional array and the size of each dimension.
+     */
     public MultidimensionalArray(int[] dimensionSizes) {
         this.dimensionSizes = makeDimensionSizes(dimensionSizes);
         strideOfDimension = calculateStrideOfDimension();
@@ -84,6 +107,11 @@ public class MultidimensionalArray<T> implements Serializable {
         return dimensionSizesLocal;
     }
 
+    /**
+     * constructs a copy of the given multidimensional array
+     *
+     * @param multidimensionalArray the array to be copied.
+     */
     public MultidimensionalArray(MultidimensionalArray multidimensionalArray) {
         this.dimensionSizes = multidimensionalArray.dimensionSizes;
         this.strideOfDimension = multidimensionalArray.strideOfDimension;
@@ -125,12 +153,25 @@ public class MultidimensionalArray<T> implements Serializable {
     }
     //</editor-fold>
 
+    /**
+     * return the element at the given position.
+     *
+     * @param index the index of the element to be returned
+     * @return the element at the specified position
+     */
     public T get(List<Integer> index) {
         final int backingIndex = getBackingIndex(index);
 
         return backingArray.get(backingIndex);
     }
 
+    /**
+     * Replaces the element at the specified position of the list with the
+     * specified element
+     *
+     * @param index the position of the element to replace
+     * @param value the new element to store at the specified position
+     */
     public void set(List<Integer> index, T value) {
         final int backingIndex = getBackingIndex(index);
 
@@ -146,18 +187,41 @@ public class MultidimensionalArray<T> implements Serializable {
         return backingIndex;
     }
 
+    /**
+     * returns an iterator which generates all possible indices of the array in
+     * lexicographical order
+     *
+     * @return the iterator
+     */
     public Iterator<List<Integer>> getIndexIterator() {
         return new IndexIterator();
     }
 
+    /**
+     * returns the total number of elements in the array
+     *
+     * @return the total number of elements in the array
+     */
     public int getTotalSize() {
         return backingArray.size();
     }
 
+    /**
+     * returns the size of the specified dimension. This si one more than the
+     * maximum allowed index in that dimension.
+     *
+     * @param dimension the dimension whose size is to be returned
+     * @return the size of the given dimension
+     */
     public int getSizeOfDimension(int dimension) {
         return dimensionSizes.get(dimension);
     }
 
+    /**
+     * returns the total number of dimensions, or rank, of the array.
+     *
+     * @return the total number of dimensions of the array.
+     */
     public int getNumDimensions() {
         return dimensionSizes.size();
     }
