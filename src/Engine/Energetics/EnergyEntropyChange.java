@@ -5,11 +5,22 @@
 package Engine.Energetics;
 
 /**
+ * This class represents a change in energy and entropy. It provides a method to
+ * find a free energy changed given a temperature.
  *
  * @author brian
  */
 public class EnergyEntropyChange {
 
+    /**
+     *
+     * Returns an energy entropy change representing the sum of the two given
+     * energy entropy changes.
+     *
+     * @param firstSummand the first summand of the sum
+     * @param secondSummand the second summand of the sum
+     * @return the sum
+     */
     static public EnergyEntropyChange sum(EnergyEntropyChange firstSummand, EnergyEntropyChange secondSummand) {
         final double energySum = firstSummand.getEnergy() + secondSummand.getEnergy();
         final double entropySum = firstSummand.getEntropy() + secondSummand.getEntropy();
@@ -21,15 +32,35 @@ public class EnergyEntropyChange {
 
     private final double energy, entropy;
 
+    /**
+     * constructs an energy entropy change with the given changes in energy and
+     * entropy
+     *
+     * @param energy the change in energy
+     * @param entropy the change in entropy
+     */
     public EnergyEntropyChange(double energy, double entropy) {
         this.energy = energy;
         this.entropy = entropy;
     }
 
+    /**
+     * a copy constructor for energy entropy
+     *
+     * @param energyEntropyChange the energy entropy to be copied
+     */
     public EnergyEntropyChange(EnergyEntropyChange energyEntropyChange) {
         this(energyEntropyChange.energy, energyEntropyChange.entropy);
     }
 
+    /**
+     * returns the free energy change implied by the energy entropy change at
+     * the given temperature.
+     *
+     * @param temperature the temperature at which the changes in energy and
+     * entropy took place.
+     * @return the resulting change in free energy
+     */
     public double calculateFreeEnergyChange(double temperature) {
         return energy - temperature * entropy;
     }
@@ -63,10 +94,20 @@ public class EnergyEntropyChange {
     //</editor-fold>
 
     //<editor-fold defaultstate="collapsed" desc="getters">
+    /**
+     * returns the change in energy of this energy entropy change.
+     *
+     * @return the change in energy
+     */
     public double getEnergy() {
         return energy;
     }
 
+    /**
+     * returns the change in entropy of this energy entropy change.
+     *
+     * @returnthe change in entropy
+     */
     public double getEntropy() {
         return entropy;
     }
