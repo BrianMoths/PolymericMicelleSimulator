@@ -23,7 +23,7 @@ public class SimulationRunner {
     static public class SimulationRunnerParameters implements Serializable {
 
         static private final int defaultNumIterationsPerSample = 100_000; // should depend on number of beads and size of resize steps
-        static private final int defaultNumSamples = 1000; //should depend on desired relative precision of result
+        static private final int defaultNumSamples = 10_000; //should depend on desired relative precision of result
         static private final int defaultNumIterationsPerAnneal = 300_000;
 
         static public SimulationRunnerParameters defaultSimulationRunnerParameters() {
