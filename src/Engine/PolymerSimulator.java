@@ -54,15 +54,19 @@ public class PolymerSimulator implements Serializable {
         return geometricalParameters;
     }
     //</editor-fold>
+
     private static final long serialVersionUID = 0L;
     private final SystemGeometry geometry;
     private final PolymerPosition polymerPosition;
     private final PolymerState polymerState;
     private final SystemAnalyzer systemAnalyzer;
     private StepGenerator stepGenerator = GeneralStepGenerator.defaultStepGenerator();
-    private double energy;
+    private EnergyEntropyChange energyEntropy;
     private AcceptanceStatistics acceptanceStatistics;
 
+    /**
+     * constructs a reasonable polymer simulator object
+     */
     public PolymerSimulator() {
 
         PolymerCluster polymerCluster = PolymerCluster.makeDefaultPolymerCluster();
@@ -75,7 +79,7 @@ public class PolymerSimulator implements Serializable {
         DiscretePolymerState discretePolymerState = new DiscretePolymerState(polymerCluster);
         polymerState = new PolymerState(discretePolymerState, polymerPosition, geometry);
         systemAnalyzer = new SystemAnalyzer(polymerState, energeticsConstants);
-        energy = systemAnalyzer.computeEnergy();
+        energyEntropy = systemAnalyzer.computerEnergyEntropy();
     }
 
     public PolymerSimulator(SystemGeometry systemGeometry, PolymerCluster polymerCluster, EnergeticsConstants energeticsConstants) {
@@ -92,14 +96,14 @@ public class PolymerSimulator implements Serializable {
         acceptanceStatistics = new AcceptanceStatistics();
 
         systemAnalyzer = new SystemAnalyzer(polymerState, energeticsConstants);
-        energy = systemAnalyzer.computeEnergy();
+        energyEntropy = systemAnalyzer.computerEnergyEntropy();
     }
 
     public PolymerSimulator(PolymerSimulator polymerSimulator) {
         geometry = polymerSimulator.geometry;
         polymerPosition = new PolymerPosition(polymerSimulator.polymerPosition);
         polymerState = new PolymerState(polymerSimulator.polymerState.getDiscretePolymerState(), polymerPosition, geometry);
-        energy = polymerSimulator.energy;
+        energyEntropy = polymerSimulator.energyEntropy;
         acceptanceStatistics = new AcceptanceStatistics(polymerSimulator.acceptanceStatistics);
         systemAnalyzer = new SystemAnalyzer(polymerSimulator.systemAnalyzer);
     }
@@ -116,7 +120,7 @@ public class PolymerSimulator implements Serializable {
         //add systemAnalyzer toString
 //        stringBuilder.append("Physical Constants: ").append(energeticsConstants.toString()).append("\n");
         stringBuilder.append("Polymer position: \n").append(polymerPosition.toString()).append("\n");
-        stringBuilder.append("Energy: ").append(Double.toString(energy)).append("\n");
+        stringBuilder.append(energyEntropy.toString()).append("\n");
         stringBuilder.append("Total iterations performed: ").append(Integer.toString(getIterationNumber())).append("\n");
         stringBuilder.append("Number iterations accepted: ").append(Integer.toString(getAcceptedIterations())).append("\n");
         return stringBuilder.toString();
@@ -125,13 +129,13 @@ public class PolymerSimulator implements Serializable {
     public synchronized void randomizePositions() {
         resetCounters();
         polymerPosition.randomize();
-        energy = systemAnalyzer.computeEnergy();
+        energyEntropy = systemAnalyzer.computerEnergyEntropy();
     }
 
     public synchronized void columnRandomizePositions() {
         resetCounters();
         polymerPosition.columnRandomize();
-        energy = systemAnalyzer.computeEnergy();
+        energyEntropy = systemAnalyzer.computerEnergyEntropy();
     }
 
     public synchronized void reasonableColumnRandomize() {
@@ -145,7 +149,7 @@ public class PolymerSimulator implements Serializable {
     public synchronized void anneal() {
         resetCounters();
         polymerPosition.anneal();
-        energy = systemAnalyzer.computeEnergy();
+        energyEntropy = systemAnalyzer.computerEnergyEntropy();
     }
 
     public void doIterations(int n) {
@@ -165,7 +169,7 @@ public class PolymerSimulator implements Serializable {
         if (simulationStep.doStep(polymerState, systemAnalyzer)) {
             final EnergyEntropyChange energyEntropyChange = simulationStep.getEnergyEntropyChange();
             if (systemAnalyzer.isEnergeticallyAllowed(energyEntropyChange)) {
-                energy += energyEntropyChange.getEnergy();
+                energyEntropy = energyEntropy.incrementedBy(energyEntropyChange);
                 acceptanceStatistics.recordStepAcceptanceOfType(simulationStep.getMoveType());
             } else {
                 simulationStep.undoStep(polymerState);
@@ -178,14 +182,6 @@ public class PolymerSimulator implements Serializable {
         acceptanceStatistics = new AcceptanceStatistics();
     }
     //</editor-fold>
-
-    public void equilibrate() {
-        while (!systemAnalyzer.isEquilibrated()) {
-            doIterations(10000);
-//            final AreaPerimeter areaPerimeter = systemAnalyzer.findAreaAndPerimeter();
-            systemAnalyzer.addPerimeterAreaEnergySnapshot(0, 0, energy);
-        }
-    }
 
     public synchronized void setBeadPositions(double[][] beadPositions) {
         polymerPosition.setBeadPositions(beadPositions);
@@ -213,7 +209,15 @@ public class PolymerSimulator implements Serializable {
     }
 
     public double getEnergy() {
-        return energy;
+        return energyEntropy.getEnergy();
+    }
+
+    public double getEntropy() {
+        return energyEntropy.getEntropy();
+    }
+
+    public EnergyEntropyChange getEnergyEntropy() {
+        return energyEntropy;
     }
 
     public int getIterationNumber() {

@@ -21,15 +21,6 @@ import java.io.FileNotFoundException;
  */
 public class AbstractResultsWriter {
 
-    protected static CharSequence makeDoubleWithUncertaintyCharSequence(DoubleWithUncertainty doubleWithUncertainty) {
-        StringBuilder doubleWithUncertaintyStringBuilder = new StringBuilder();
-        doubleWithUncertaintyStringBuilder
-                .append(Double.toString(doubleWithUncertainty.getValue()))
-                .append(" +/- ")
-                .append(Double.toString(doubleWithUncertainty.getUncertainty()));
-        return doubleWithUncertaintyStringBuilder;
-    }
-
     protected static String makeFinalOutputString(PolymerSimulator polymerSimulator) {
         try {
             final SystemAnalyzer systemAnalyzer = polymerSimulator.getSystemAnalyzer();
@@ -135,8 +126,23 @@ public class AbstractResultsWriter {
         outputWriter.printAndSoutString(outputString);
     }
 
+    public void printAndSoutCaptionedObject(CharSequence caption, Object object) {
+        CharSequence captionedDoubleWithUncertaintyCharSequence = makeCaptionedDoubleWithUncertaintyCharSequence(caption, object);
+        printAndSoutString(captionedDoubleWithUncertaintyCharSequence);
+    }
+
     public void closeWriter() {
         outputWriter.closeWriter();
+    }
+
+    private CharSequence makeCaptionedDoubleWithUncertaintyCharSequence(CharSequence caption, Object object) {
+        StringBuilder stringBuilder = new StringBuilder();
+        stringBuilder
+                .append(caption)
+                .append(": ")
+                .append(object.toString())
+                .append("\n");
+        return stringBuilder;
     }
 
 }

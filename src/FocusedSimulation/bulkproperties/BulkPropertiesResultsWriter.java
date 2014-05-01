@@ -4,7 +4,6 @@
  */
 package FocusedSimulation.bulkproperties;
 
-import Engine.PolymerSimulator;
 import FocusedSimulation.DoubleWithUncertainty;
 import FocusedSimulation.output.AbstractResultsWriter;
 import SGEManagement.Input;
@@ -16,30 +15,30 @@ import java.io.FileNotFoundException;
  */
 public class BulkPropertiesResultsWriter extends AbstractResultsWriter {
 
-    private String makeMeasuredDensityString(DoubleWithUncertainty measuredDensity) {
-        StringBuilder parametersStringBuilder = new StringBuilder();
-        parametersStringBuilder
-                .append("Density found: ")
-                .append(makeDoubleWithUncertaintyCharSequence(measuredDensity))
-                .append("\n");
-        return parametersStringBuilder.toString();
-    }
-
     public BulkPropertiesResultsWriter(Input input) throws FileNotFoundException {
         super(input);
     }
 
     void printMeasuredDensity(DoubleWithUncertainty measuredDensity) {
-        final String measuredDensityString = makeMeasuredDensityString(measuredDensity);
-        printAndSoutString(measuredDensityString);
+        final String caption = "Density found";
+        printAndSoutCaptionedObject(caption, measuredDensity);
     }
 
     void printPressure() {
-        printAndSoutString(makePressureString());
+        printAndSoutCaptionedObject("Pressure", input.getSystemParameters().energeticsConstants.getExternalEnergyCalculator().getPressure());
     }
 
-    private String makePressureString() {
-        return "Pressure: " + input.getSystemParameters().energeticsConstants.getExternalEnergyCalculator().getPressure() + "\n";
+    void printMeasuredEnergyPerBead(DoubleWithUncertainty measuredEnergyPerBead) {
+        final String caption = "Measured energy per bead";
+        printAndSoutCaptionedObject(caption, measuredEnergyPerBead);
+    }
+
+    void printMeasuredEntropyPerBead(DoubleWithUncertainty measuredEntropyPerBead) {
+        final String caption = "Measured entropy per bead";
+        printAndSoutCaptionedObject(caption, measuredEntropyPerBead);
+    }
+
+    void printIdealGasPressure(double idealGasPressure) {
     }
 
 }

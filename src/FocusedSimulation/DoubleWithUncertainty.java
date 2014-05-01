@@ -18,6 +18,23 @@ public class DoubleWithUncertainty {
         this.uncertainty = uncertainty;
     }
 
+    public DoubleWithUncertainty times(double factor) {
+        return new DoubleWithUncertainty(value * factor, uncertainty * factor);
+    }
+
+    public DoubleWithUncertainty reciprocal() {
+        final double newValue = 1 / value;
+        return new DoubleWithUncertainty(newValue, newValue * getRelativeError());
+    }
+
+    public DoubleWithUncertainty reciprocalTimes(double factor) {
+        return reciprocal().times(factor);
+    }
+
+    public DoubleWithUncertainty dividedBy(double divisor) {
+        return times(1 / divisor);
+    }
+
     public double getValue() {
         return value;
     }
@@ -28,6 +45,11 @@ public class DoubleWithUncertainty {
 
     public double getRelativeError() {
         return getUncertainty() / getValue();
+    }
+
+    @Override
+    public String toString() {
+        return value + " +/- " + uncertainty;
     }
 
 }

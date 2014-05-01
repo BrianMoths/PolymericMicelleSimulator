@@ -215,7 +215,7 @@ public class SystemAnalyzer implements Serializable {
     }
     //</editor-fold>
 
-    //<editor-fold defaultstate="collapsed" desc="computing energy">
+    //<editor-fold defaultstate="collapsed" desc="computing energy and entropy">
     //<editor-fold defaultstate="collapsed" desc="total Energy">
     public double computeEnergy() {
         return springEnergy() + densityEnergy() + externalEnergy();
@@ -255,10 +255,24 @@ public class SystemAnalyzer implements Serializable {
         return energeticsConstants.densityEnergy(overlap);
     }
     //</editor-fold>
+
+    //<editor-fold defaultstate="collapsed" desc="entropy and energy entropy">
+    public double computeEntropy() {
+        return getNumBeads() * Math.log(systemGeometry.getVolume() / getNumBeads());
+    }
+
+    public EnergyEntropyChange computerEnergyEntropy() {
+        return new EnergyEntropyChange(computeEnergy(), computeEntropy());
+    }
+    //</editor-fold>
     //</editor-fold>
 
     public List<Integer> getChainOfBead(int bead) {
         return immutableDiscretePolymerState.getChainOfBead(bead);
+    }
+
+    public double getIdealGasPressure() {
+        return energeticsConstants.getTemperature() * getNumBeads() / systemGeometry.getVolume();
     }
 
     //<editor-fold defaultstate="collapsed" desc="getters">

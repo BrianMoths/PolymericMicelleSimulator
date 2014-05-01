@@ -44,7 +44,7 @@ public class SurfaceTensionJobMaker {
 
     public static Input makeRescaleInput(final double scaleFactor, int jobNumber) {
         InputBuilder inputBuilder = makeRescaleInputBuilder(scaleFactor, jobNumber);
-        final Input input = inputBuilder.buildInputAutomaticHardOverlap();
+        final Input input = inputBuilder.buildInput();
         return input;
     }
 
@@ -54,7 +54,7 @@ public class SurfaceTensionJobMaker {
 
     public static Input makeRescaleInput(final double verticalScale, final double horizontalScale, final int jobNumber) {
         final InputBuilder inputBuilder = makeRescaleInputBuilderWithHorizontalRescaling(verticalScale, horizontalScale, jobNumber);
-        return inputBuilder.buildInputAutomaticHardOverlap();
+        return inputBuilder.buildInput();
     }
 
     public static InputBuilder makeRescaleInputBuilderWithHorizontalRescaling(final double verticalScale, final double horizontalScale, int jobNumber) {
@@ -68,8 +68,13 @@ public class SurfaceTensionJobMaker {
         externalEnergyCalculatorBuilder.setXPositionAndSpringConstant(16 * horizontalScale, 50);
         inputBuilder.getSystemParametersBuilder().getEnergeticsConstantsBuilder().setExternalEnergyCalculatorBuilder(externalEnergyCalculatorBuilder);
         inputBuilder.getJobParametersBuilder().setJobNumber(jobNumber);
-        inputBuilder.getJobParametersBuilder().setNumAnneals(3);
-        inputBuilder.getJobParametersBuilder().setNumSurfaceTensionTrials(70);
+        inputBuilder.getJobParametersBuilder().setNumAnneals(5);
+        inputBuilder.getJobParametersBuilder().setNumSimulationTrials(4);
+        inputBuilder.getSystemParametersBuilder().autosetCoreParameters();
+        final EnergeticsConstantsBuilder energeticsConstantsBuilder = inputBuilder.getSystemParametersBuilder().getEnergeticsConstantsBuilder();
+        energeticsConstantsBuilder.setBBOverlapCoefficient(3 * energeticsConstantsBuilder.getBBOverlapCoefficient());
+        energeticsConstantsBuilder.setHardOverlapCoefficient(3 * energeticsConstantsBuilder.getHardOverlapCoefficient());
+
         return inputBuilder;
     }
 
@@ -127,7 +132,7 @@ public class SurfaceTensionJobMaker {
     static public JobParametersBuilder getDefaultJobParametersBuilder() {
         JobParametersBuilder jobParametersBuilder = new JobParametersBuilder();
         jobParametersBuilder.setNumAnneals(defaultNumAnneals);
-        jobParametersBuilder.setNumSurfaceTensionTrials(defaultNumSurfaceTensionTrials);
+        jobParametersBuilder.setNumSimulationTrials(defaultNumSurfaceTensionTrials);
         jobParametersBuilder.setJobNumber(defaultJobNumber);
         return jobParametersBuilder;
     }
@@ -141,38 +146,15 @@ public class SurfaceTensionJobMaker {
         List<Input> inputs = new ArrayList<>();
 
         Input input;
-        double verticalRescaleFactor;
         final double horizontalRescaleFactor = 2;
+        final double[] verticalRescaleFactors = {1, 2, 5, 7, 10, 15};
 
-        verticalRescaleFactor = 1;
-        input = makeRescaleInput(verticalRescaleFactor, horizontalRescaleFactor, jobNumber);
-        inputs.add(input);
-        jobNumber++;
-
-        verticalRescaleFactor = 2;
-        input = makeRescaleInput(verticalRescaleFactor, horizontalRescaleFactor, jobNumber);
-        inputs.add(input);
-        jobNumber++;
-
-        verticalRescaleFactor = 5;
-        input = makeRescaleInput(verticalRescaleFactor, horizontalRescaleFactor, jobNumber);
-        inputs.add(input);
-        jobNumber++;
-
-        verticalRescaleFactor = 7;
-        input = makeRescaleInput(verticalRescaleFactor, horizontalRescaleFactor, jobNumber);
-        inputs.add(input);
-        jobNumber++;
-
-        verticalRescaleFactor = 10;
-        input = makeRescaleInput(verticalRescaleFactor, horizontalRescaleFactor, jobNumber);
-        inputs.add(input);
-        jobNumber++;
-
-        verticalRescaleFactor = 15;
-        input = makeRescaleInput(verticalRescaleFactor, horizontalRescaleFactor, jobNumber);
-        inputs.add(input);
-        jobNumber++;
+        for (int i = 0; i < verticalRescaleFactors.length; i++) {
+            double verticalRescaleFactor = verticalRescaleFactors[i];
+            input = makeRescaleInput(verticalRescaleFactor, horizontalRescaleFactor, jobNumber);
+            inputs.add(input);
+            jobNumber++;
+        }
         return inputs;
     }
 
@@ -184,51 +166,15 @@ public class SurfaceTensionJobMaker {
         List<Input> inputs = new ArrayList<>();
 
         Input input;
-        double verticalRescaleFactor;
-        final double horizontalRescaleFactor = 1;
+        final double horizontalRescaleFactor = 2;
+        final double[] verticalRescaleFactors = {.5, 1, 3, 5, 8, 10, 15, 20, 25, 30};
 
-        verticalRescaleFactor = .5;
-        input = makeRescaleInput(verticalRescaleFactor, horizontalRescaleFactor, jobNumber);
-        inputs.add(input);
-        jobNumber++;
-        verticalRescaleFactor = 1;
-        input = makeRescaleInput(verticalRescaleFactor, horizontalRescaleFactor, jobNumber);
-        inputs.add(input);
-        jobNumber++;
-        verticalRescaleFactor = 3;
-        input = makeRescaleInput(verticalRescaleFactor, horizontalRescaleFactor, jobNumber);
-        inputs.add(input);
-        jobNumber++;
-        verticalRescaleFactor = 5;
-        input = makeRescaleInput(verticalRescaleFactor, horizontalRescaleFactor, jobNumber);
-        inputs.add(input);
-        jobNumber++;
-        verticalRescaleFactor = 8;
-        input = makeRescaleInput(verticalRescaleFactor, horizontalRescaleFactor, jobNumber);
-        inputs.add(input);
-        jobNumber++;
-
-        verticalRescaleFactor = 10;
-        input = makeRescaleInput(verticalRescaleFactor, horizontalRescaleFactor, jobNumber);
-        inputs.add(input);
-        jobNumber++;
-        verticalRescaleFactor = 15;
-        input = makeRescaleInput(verticalRescaleFactor, horizontalRescaleFactor, jobNumber);
-        inputs.add(input);
-        jobNumber++;
-        verticalRescaleFactor = 20;
-        input = makeRescaleInput(verticalRescaleFactor, horizontalRescaleFactor, jobNumber);
-        inputs.add(input);
-        jobNumber++;
-        verticalRescaleFactor = 25;
-        input = makeRescaleInput(verticalRescaleFactor, horizontalRescaleFactor, jobNumber);
-        inputs.add(input);
-        jobNumber++;
-
-        verticalRescaleFactor = 30;
-        input = makeRescaleInput(verticalRescaleFactor, horizontalRescaleFactor, jobNumber);
-        inputs.add(input);
-        jobNumber++;
+        for (int i = 0; i < verticalRescaleFactors.length; i++) {
+            double verticalRescaleFactor = verticalRescaleFactors[i];
+            input = makeRescaleInput(verticalRescaleFactor, horizontalRescaleFactor, jobNumber);
+            inputs.add(input);
+            jobNumber++;
+        }
         return inputs;
     }
 
@@ -253,7 +199,7 @@ public class SurfaceTensionJobMaker {
         inputBuilder.getSystemParametersBuilder().getEnergeticsConstantsBuilder().setExternalEnergyCalculatorBuilder(new ExternalEnergyCalculatorBuilder());
         inputBuilder.getSystemParametersBuilder().setAspectRatio(1);
         inputBuilder.getJobParametersBuilder().setNumAnneals(10);
-        inputBuilder.getJobParametersBuilder().setNumSurfaceTensionTrials(10);
+        inputBuilder.getJobParametersBuilder().setNumSimulationTrials(10);
         inputBuilder.getJobParametersBuilder().setShouldIterateUntilConvergence(false);
         final Input input = inputBuilder.buildInputAutomaticHardOverlap();
         return input;
@@ -283,7 +229,7 @@ public class SurfaceTensionJobMaker {
         inputBuilder.getSystemParametersBuilder().getEnergeticsConstantsBuilder().setExternalEnergyCalculatorBuilder(new ExternalEnergyCalculatorBuilder());
         inputBuilder.getSystemParametersBuilder().setAspectRatio(aspectRatio);
         inputBuilder.getJobParametersBuilder().setNumAnneals(10);
-        inputBuilder.getJobParametersBuilder().setNumSurfaceTensionTrials(10);
+        inputBuilder.getJobParametersBuilder().setNumSimulationTrials(10);
         inputBuilder.getJobParametersBuilder().setShouldIterateUntilConvergence(false);
         Input input = inputBuilder.buildInputAutomaticHardOverlap();
         return input;
@@ -308,7 +254,7 @@ public class SurfaceTensionJobMaker {
     public static Input makeHistogramInput(int jobNumber, double verticalScaleFactor, double horizontalScaleFactor) {
         InputBuilder inputBuilder = SurfaceTensionJobMaker.makeRescaleInputBuilderWithHorizontalRescaling(verticalScaleFactor, horizontalScaleFactor, 0);
         inputBuilder.getJobParametersBuilder().setNumAnneals(1);
-        inputBuilder.getJobParametersBuilder().setNumSurfaceTensionTrials(30);
+        inputBuilder.getJobParametersBuilder().setNumSimulationTrials(30);
         inputBuilder.getJobParametersBuilder().setJobNumber(jobNumber);
         return inputBuilder.buildInputAutomaticHardOverlap();
     }
@@ -353,39 +299,51 @@ public class SurfaceTensionJobMaker {
 
         InputBuilder inputBuilder;
 
+
+        inputBuilder = makeRescaleInputBuilderWithHorizontalRescaling(.05, 1, jobNumber);
+        inputs.add(inputBuilder.buildInput());
+        jobNumber++;
+
+        inputBuilder = makeRescaleInputBuilderWithHorizontalRescaling(.05, 3, jobNumber);
+        PolymerCluster polymerCluster = inputBuilder.getSystemParametersBuilder().getPolymerCluster();
+        polymerCluster.setConcentrationInWater(.5 * polymerCluster.getConcentrationInWater());
+        inputBuilder.systemParametersBuilder.setAspectRatio(inputBuilder.getSystemParametersBuilder().getAspectRatio() * .5);
+        inputs.add(inputBuilder.buildInput());
+        jobNumber++;
+
+        inputBuilder = makeRescaleInputBuilderWithHorizontalRescaling(.05, 10, jobNumber);
+        polymerCluster = inputBuilder.getSystemParametersBuilder().getPolymerCluster();
+        polymerCluster.setConcentrationInWater(.5 * polymerCluster.getConcentrationInWater());
+        inputBuilder.systemParametersBuilder.setAspectRatio(inputBuilder.getSystemParametersBuilder().getAspectRatio() * .5);
+        inputs.add(inputBuilder.buildInput());
+        jobNumber++;
+
+        inputBuilder = makeRescaleInputBuilderWithHorizontalRescaling(.1, 1, jobNumber);
+        inputs.add(inputBuilder.buildInput());
+        jobNumber++;
+
         inputBuilder = makeRescaleInputBuilderWithHorizontalRescaling(.1, 3, jobNumber);
-        inputBuilder.getSystemParametersBuilder().getEnergeticsConstantsBuilder().getExternalEnergyCalculatorBuilder().setXPositionAndSpringConstant(35, 50);
-        inputs.add(inputBuilder.buildInputAutomaticHardOverlap());
+        inputs.add(inputBuilder.buildInput());
         jobNumber++;
-
-
-        inputBuilder = makeRescaleInputBuilderWithHorizontalRescaling(.1, 5, jobNumber);
-        inputBuilder.getSystemParametersBuilder().getEnergeticsConstantsBuilder().getExternalEnergyCalculatorBuilder().setXPositionAndSpringConstant(60, 50);
-        inputs.add(inputBuilder.buildInputAutomaticHardOverlap());
-        jobNumber++;
-
 
         inputBuilder = makeRescaleInputBuilderWithHorizontalRescaling(.1, 10, jobNumber);
-        inputBuilder.getSystemParametersBuilder().getEnergeticsConstantsBuilder().getExternalEnergyCalculatorBuilder().setXPositionAndSpringConstant(100, 50);
-        inputs.add(inputBuilder.buildInputAutomaticHardOverlap());
+        inputs.add(inputBuilder.buildInput());
         jobNumber++;
 
 
-        inputBuilder = makeRescaleInputBuilderWithHorizontalRescaling(.05, 1.5, jobNumber);
-        inputs.add(inputBuilder.buildInputAutomaticHardOverlap());
+        inputBuilder = makeRescaleInputBuilderWithHorizontalRescaling(.3, 1, jobNumber);
+        inputs.add(inputBuilder.buildInput());
         jobNumber++;
 
 
-        inputBuilder = makeRescaleInputBuilderWithHorizontalRescaling(.1, 1.5, jobNumber);
-        inputs.add(inputBuilder.buildInputAutomaticHardOverlap());
+        inputBuilder = makeRescaleInputBuilderWithHorizontalRescaling(.3, 3, jobNumber);
+        inputs.add(inputBuilder.buildInput());
         jobNumber++;
 
 
-        inputBuilder = makeRescaleInputBuilderWithHorizontalRescaling(.5, 1.5, jobNumber);
-        inputs.add(inputBuilder.buildInputAutomaticHardOverlap());
+        inputBuilder = makeRescaleInputBuilderWithHorizontalRescaling(.3, 10, jobNumber);
+        inputs.add(inputBuilder.buildInput());
         jobNumber++;
-
-
 
         return inputs;
     }

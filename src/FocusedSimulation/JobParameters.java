@@ -18,7 +18,7 @@ public class JobParameters implements Serializable {
         static public JobParametersBuilder getDefaultJobParametersBuilder() {
             JobParametersBuilder jobParametersBuilder = new JobParametersBuilder();
             jobParametersBuilder.setNumAnneals(defaultNumAnneals);
-            jobParametersBuilder.setNumSurfaceTensionTrials(defaultNumSurfaceTensionTrials);
+            jobParametersBuilder.setNumSimulationTrials(defaultNumSurfaceTensionTrials);
             jobParametersBuilder.setJobNumber(defaultJobNumber);
             jobParametersBuilder.setSimulationRunnerParameters(SimulationRunnerParameters.defaultSimulationRunnerParameters());
 
@@ -27,7 +27,7 @@ public class JobParameters implements Serializable {
 
         private static final long serialVersionUID = 0L;
         private int numAnneals; //50
-        private int numSurfaceTensionTrials; //70
+        private int numSimulationTrials; //70
         private boolean shouldIterateUntilConvergence;
         private int jobNumber;
         private SimulationRunnerParameters simulationRunnerParameters;
@@ -48,12 +48,12 @@ public class JobParameters implements Serializable {
             return this;
         }
 
-        public int getNumSurfaceTensionTrials() {
-            return numSurfaceTensionTrials;
+        public int getNumSimulationTrials() {
+            return numSimulationTrials;
         }
 
-        public JobParametersBuilder setNumSurfaceTensionTrials(int numSurfaceTensionTrials) {
-            this.numSurfaceTensionTrials = numSurfaceTensionTrials;
+        public JobParametersBuilder setNumSimulationTrials(int numSimulationTrials) {
+            this.numSimulationTrials = numSimulationTrials;
             return this;
         }
 
@@ -110,7 +110,7 @@ public class JobParameters implements Serializable {
 
     private JobParameters(JobParametersBuilder jobParametersBuilder) {
         numAnneals = jobParametersBuilder.getNumAnneals();
-        numSurfaceTensionTrials = jobParametersBuilder.getNumSurfaceTensionTrials();
+        numSurfaceTensionTrials = jobParametersBuilder.getNumSimulationTrials();
         shouldIterateUntilConvergence = jobParametersBuilder.getShouldIterateUntilConvergence();
         jobNumber = jobParametersBuilder.getJobNumber();
         simulationRunnerParameters = jobParametersBuilder.simulationRunnerParameters;

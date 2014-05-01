@@ -35,7 +35,7 @@ public class EnergyOfL {
             systemViewer.setVisible(true);
 
             System.out.println("System is initialized.");
-            polymerSimulator.equilibrate();
+//            polymerSimulator.equilibrate();
 
             System.out.println("System equilibrated.");
             System.out.println("Gathering statistics to find equilibrium length.");

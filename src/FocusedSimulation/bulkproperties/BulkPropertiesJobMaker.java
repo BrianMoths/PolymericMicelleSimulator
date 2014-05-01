@@ -63,7 +63,7 @@ public class BulkPropertiesJobMaker {
         inputBuilder.getSystemParametersBuilder().setPolymerCluster(polymerCluster);
         inputBuilder.getJobParametersBuilder().setJobNumber(jobNumber);
         inputBuilder.getJobParametersBuilder().setNumAnneals(50);
-        inputBuilder.getJobParametersBuilder().setNumSurfaceTensionTrials(70);
+        inputBuilder.getJobParametersBuilder().setNumSimulationTrials(70);
         return inputBuilder;
     }
 
@@ -116,7 +116,7 @@ public class BulkPropertiesJobMaker {
     static public JobParametersBuilder getDefaultJobParametersBuilder() {
         JobParametersBuilder jobParametersBuilder = new JobParametersBuilder();
         jobParametersBuilder.setNumAnneals(defaultNumAnneals);
-        jobParametersBuilder.setNumSurfaceTensionTrials(defaultNumSurfaceTensionTrials);
+        jobParametersBuilder.setNumSimulationTrials(defaultNumSurfaceTensionTrials);
         jobParametersBuilder.setJobNumber(defaultJobNumber);
         return jobParametersBuilder;
     }

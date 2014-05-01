@@ -158,7 +158,7 @@ public class CompressibilityJobMaker {
     static public JobParametersBuilder getDefaultJobParametersBuilder() {
         JobParametersBuilder jobParametersBuilder = new JobParametersBuilder();
         jobParametersBuilder.setNumAnneals(defaultNumAnneals);
-        jobParametersBuilder.setNumSurfaceTensionTrials(defaultNumSurfaceTensionTrials);
+        jobParametersBuilder.setNumSimulationTrials(defaultNumSurfaceTensionTrials);
         jobParametersBuilder.setJobNumber(defaultJobNumber);
         return jobParametersBuilder;
     }

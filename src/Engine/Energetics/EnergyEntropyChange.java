@@ -6,7 +6,8 @@ package Engine.Energetics;
 
 /**
  * This class represents a change in energy and entropy. It provides a method to
- * find a free energy changed given a temperature.
+ * find a free energy changed given a temperature. Objects of this class are
+ * immutable.
  *
  * @author brian
  */
@@ -63,6 +64,19 @@ public class EnergyEntropyChange {
      */
     public double calculateFreeEnergyChange(double temperature) {
         return energy - temperature * entropy;
+    }
+
+    /**
+     * returns the energy entropy change obtained by incrementing this energy
+     * entropy change by the given increment. This method has no side effects.
+     * In particular this energy entropy change is not modified.
+     *
+     * @param increment the energy entropy changed to be added to this energy
+     * entropy change
+     * @return
+     */
+    public EnergyEntropyChange incrementedBy(EnergyEntropyChange increment) {
+        return new EnergyEntropyChange(energy + increment.energy, entropy + increment.entropy);
     }
 
     //<editor-fold defaultstate="collapsed" desc="equals and hashcode">

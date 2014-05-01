@@ -4,7 +4,6 @@
  */
 package FocusedSimulation.bulkproperties;
 
-import Engine.PolymerSimulator;
 import FocusedSimulation.AbstractFocusedSimulation;
 import FocusedSimulation.DoubleWithUncertainty;
 import FocusedSimulation.StatisticsTracker.TrackableVariable;
@@ -39,7 +38,7 @@ public class BulkPropertiesFinder extends AbstractFocusedSimulation<BulkProperti
 
             InputBuilder inputBuilder = BulkPropertiesJobMaker.makeRescaleInputBuilderWithHorizontalRescaling(verticalScaleFactor, horizontalScaleFactor, 0, 0);
             inputBuilder.getJobParametersBuilder().setNumAnneals(1);
-            inputBuilder.getJobParametersBuilder().setNumSurfaceTensionTrials(20);
+            inputBuilder.getJobParametersBuilder().setNumSimulationTrials(5);
             return inputBuilder.buildInputAutomaticHardOverlap();
         } else if (args.length == 1) {
             final String fileName = args[0];
@@ -47,13 +46,6 @@ public class BulkPropertiesFinder extends AbstractFocusedSimulation<BulkProperti
         } else {
             throw new IllegalArgumentException("At most one input allowed");
         }
-    }
-
-    private DoubleWithUncertainty getMeasuredDensityFromVolume(DoubleWithUncertainty measuredVolume, PolymerSimulator polymerSimulator) {
-        final double numBeads = polymerSimulator.getNumBeads();
-        final double density = numBeads / measuredVolume.getValue();
-        final double uncertainty = density * measuredVolume.getRelativeError();
-        return new DoubleWithUncertainty(density, uncertainty);
     }
 
     private BulkPropertiesFinder(Input input) throws FileNotFoundException {
@@ -69,6 +61,8 @@ public class BulkPropertiesFinder extends AbstractFocusedSimulation<BulkProperti
     @Override
     protected void registerTrackablesToSimulationRunner() {
         simulationRunner.trackVariable(TrackableVariable.SYSTEM_VOLUME);
+        simulationRunner.trackVariable(TrackableVariable.SYSTEM_ENERGY);
+        simulationRunner.trackVariable(TrackableVariable.SYSTEM_ENTROPY);
         simulationRunner.trackVariable((StressTrackable.TOTAL_STRESS_TRACKABLE).getStress11Trackable());
         simulationRunner.trackVariable((StressTrackable.TOTAL_STRESS_TRACKABLE).getStress12Trackable());
         simulationRunner.trackVariable((StressTrackable.TOTAL_STRESS_TRACKABLE).getStress22Trackable());
@@ -83,8 +77,19 @@ public class BulkPropertiesFinder extends AbstractFocusedSimulation<BulkProperti
     @Override
     protected void analyzeAndPrintResults() {
         DoubleWithUncertainty measuredVolume = simulationRunner.getRecentMeasurementForTrackedVariable(TrackableVariable.SYSTEM_VOLUME);
-        DoubleWithUncertainty measuredDensity = getMeasuredDensityFromVolume(measuredVolume, polymerSimulator);
+        final double numBeads = polymerSimulator.getNumBeads();
+        DoubleWithUncertainty measuredDensity = measuredVolume.reciprocalTimes(numBeads);
         outputWriter.printMeasuredDensity(measuredDensity);
+
+        DoubleWithUncertainty measuredEnergy = simulationRunner.getRecentMeasurementForTrackedVariable(TrackableVariable.SYSTEM_ENERGY);
+        DoubleWithUncertainty measuredEnergyPerBead = measuredEnergy.dividedBy(polymerSimulator.getNumBeads());
+        outputWriter.printMeasuredEnergyPerBead(measuredEnergyPerBead);
+
+        DoubleWithUncertainty measuredEntropy = simulationRunner.getRecentMeasurementForTrackedVariable(TrackableVariable.SYSTEM_VOLUME);
+        DoubleWithUncertainty measuredEntropyPerBead = measuredEntropy.reciprocalTimes(numBeads);
+        outputWriter.printMeasuredEntropyPerBead(measuredEntropyPerBead);
+
+        outputWriter.printIdealGasPressure(polymerSimulator.getSystemAnalyzer().getIdealGasPressure());
         outputWriter.printStress(simulationRunner);
     }
 

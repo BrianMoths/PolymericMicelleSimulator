@@ -37,11 +37,7 @@ public class BridgeCollapseFinder extends AbstractFocusedSimulation<BridgeCollap
 
             InputBuilder inputBuilder = BridgeCollapseJobMaker.makeRescaleInputBuilderWithHorizontalRescaling(verticalScaleFactor, horizontalScaleFactor, 0);
             inputBuilder.getJobParametersBuilder().setNumAnneals(10);
-            inputBuilder.getJobParametersBuilder().setNumSurfaceTensionTrials(30);
-            inputBuilder.getSystemParametersBuilder().autosetCoreParameters();
-            final EnergeticsConstantsBuilder energeticsConstantsBuilder = inputBuilder.getSystemParametersBuilder().getEnergeticsConstantsBuilder();
-            energeticsConstantsBuilder.setBBOverlapCoefficient(3 * energeticsConstantsBuilder.getBBOverlapCoefficient());
-            energeticsConstantsBuilder.setHardOverlapCoefficient(3 * energeticsConstantsBuilder.getHardOverlapCoefficient());
+            inputBuilder.getJobParametersBuilder().setNumSimulationTrials(30);
             return inputBuilder.buildInput();
         } else if (args.length == 1) {
             final String fileName = args[0];

@@ -18,6 +18,20 @@ public class StatisticsTracker {
 
     public interface TrackableVariable {
 
+        public static final TrackableVariable SYSTEM_ENTROPY = new TrackableVariable() {
+            @Override
+            public double getValue(PolymerSimulator polymerSimulator) {
+                return polymerSimulator.getEntropy();
+            }
+
+        };
+        public static final TrackableVariable SYSTEM_ENERGY = new TrackableVariable() {
+            @Override
+            public double getValue(PolymerSimulator polymerSimulator) {
+                return polymerSimulator.getEnergy();
+            }
+
+        };
         public static final TrackableVariable SYSTEM_WIDTH = new TrackableVariable() {
             @Override
             public double getValue(PolymerSimulator polymerSimulator) {

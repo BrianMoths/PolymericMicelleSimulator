@@ -82,7 +82,7 @@ public class BridgeCollapseJobMaker {
     static public JobParametersBuilder getDefaultJobParametersBuilder() {
         JobParametersBuilder jobParametersBuilder = new JobParametersBuilder();
         jobParametersBuilder.setNumAnneals(defaultNumAnneals);
-        jobParametersBuilder.setNumSurfaceTensionTrials(defaultNumSurfaceTensionTrials);
+        jobParametersBuilder.setNumSimulationTrials(defaultNumSurfaceTensionTrials);
         jobParametersBuilder.setJobNumber(defaultJobNumber);
         return jobParametersBuilder;
     }
@@ -96,8 +96,12 @@ public class BridgeCollapseJobMaker {
         PolymerCluster polymerCluster = getPolymerCluster(verticalScale, horizontalScale);
         inputBuilder.getSystemParametersBuilder().setPolymerCluster(polymerCluster);
         inputBuilder.getJobParametersBuilder().setJobNumber(jobNumber);
-        inputBuilder.getJobParametersBuilder().setNumAnneals(50);
-        inputBuilder.getJobParametersBuilder().setNumSurfaceTensionTrials(70);
+        inputBuilder.getJobParametersBuilder().setNumAnneals(5);
+        inputBuilder.getJobParametersBuilder().setNumSimulationTrials(20);
+        inputBuilder.getSystemParametersBuilder().autosetCoreParameters();
+        final EnergeticsConstantsBuilder energeticsConstantsBuilder = inputBuilder.getSystemParametersBuilder().getEnergeticsConstantsBuilder();
+        energeticsConstantsBuilder.setBBOverlapCoefficient(3 * energeticsConstantsBuilder.getBBOverlapCoefficient());
+        energeticsConstantsBuilder.setHardOverlapCoefficient(3 * energeticsConstantsBuilder.getHardOverlapCoefficient());
         return inputBuilder;
     }
 
@@ -155,12 +159,12 @@ public class BridgeCollapseJobMaker {
 
 
         inputBuilder = makeNoSpringInputBuilder(.5, 10, jobNumber);
-        inputBuilder.getJobParametersBuilder().setNumSurfaceTensionTrials(210);
+        inputBuilder.getJobParametersBuilder().setNumSimulationTrials(210);
         noSpringInputs.add(inputBuilder.buildInputAutomaticHardOverlap());
         jobNumber++;
 
         inputBuilder = makeNoSpringInputBuilder(1, 3, jobNumber);
-        inputBuilder.getJobParametersBuilder().setNumSurfaceTensionTrials(210);
+        inputBuilder.getJobParametersBuilder().setNumSimulationTrials(210);
         noSpringInputs.add(inputBuilder.buildInputAutomaticHardOverlap());
         jobNumber++;
 
@@ -175,13 +179,13 @@ public class BridgeCollapseJobMaker {
 
 
         inputBuilder = makeNoSpringInputBuilder(.5, 10, jobNumber);
-        inputBuilder.getJobParametersBuilder().setNumSurfaceTensionTrials(70);
-        noSpringInputs.add(inputBuilder.buildInputAutomaticHardOverlap());
+        inputBuilder.getJobParametersBuilder().setNumSimulationTrials(20);
+        noSpringInputs.add(inputBuilder.buildInput());
         jobNumber++;
 
         inputBuilder = makeNoSpringInputBuilder(1, 3, jobNumber);
-        inputBuilder.getJobParametersBuilder().setNumSurfaceTensionTrials(70);
-        noSpringInputs.add(inputBuilder.buildInputAutomaticHardOverlap());
+        inputBuilder.getJobParametersBuilder().setNumSimulationTrials(20);
+        noSpringInputs.add(inputBuilder.buildInput());
         jobNumber++;
 
 
@@ -191,7 +195,7 @@ public class BridgeCollapseJobMaker {
 
     private static Input makeNoSpringInput(final double verticalRescaleFactor, final double horizontalRescaleFactor, int jobNumber) {
         InputBuilder inputBuilder = makeNoSpringInputBuilder(verticalRescaleFactor, horizontalRescaleFactor, jobNumber);
-        return inputBuilder.buildInputAutomaticHardOverlap();
+        return inputBuilder.buildInput();
     }
 
     private static InputBuilder makeNoSpringInputBuilder(final double verticalRescaleFactor, final double horizontalRescaleFactor, int jobNumber) {

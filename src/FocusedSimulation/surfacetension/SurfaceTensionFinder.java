@@ -8,6 +8,7 @@ import Engine.Energetics.EnergeticsConstants.EnergeticsConstantsBuilder;
 import Engine.Energetics.ExternalEnergyCalculator;
 import Engine.Energetics.ExternalEnergyCalculator.ExternalEnergyCalculatorBuilder;
 import Engine.PolymerSimulator;
+import Engine.PolymerTopology.PolymerCluster;
 import Engine.SimulationStepping.StepGenerators.CompoundStepGenerators.GeneralStepGenerator;
 import Engine.SimulationStepping.StepGenerators.StepGenerator;
 import Engine.SimulationStepping.StepTypes.StepType;
@@ -42,16 +43,15 @@ public class SurfaceTensionFinder extends AbstractFocusedSimulation<SurfaceTensi
 
     private static Input readInput(String[] args) {
         if (args.length == 0) {
-            final double verticalScaleFactor = .5;
-            final double horizontalScaleFactor = 5;
+            final double verticalScaleFactor = .05;
+            final double horizontalScaleFactor = 10;
 
             InputBuilder inputBuilder = SurfaceTensionJobMaker.makeRescaleInputBuilderWithHorizontalRescaling(verticalScaleFactor, horizontalScaleFactor, 0);
             inputBuilder.getJobParametersBuilder().setNumAnneals(1);
-            inputBuilder.getJobParametersBuilder().setNumSurfaceTensionTrials(30);
-            inputBuilder.getSystemParametersBuilder().autosetCoreParameters();
-            final EnergeticsConstantsBuilder energeticsConstantsBuilder = inputBuilder.getSystemParametersBuilder().getEnergeticsConstantsBuilder();
-            energeticsConstantsBuilder.setBBOverlapCoefficient(3 * energeticsConstantsBuilder.getBBOverlapCoefficient());
-            energeticsConstantsBuilder.setHardOverlapCoefficient(3 * energeticsConstantsBuilder.getHardOverlapCoefficient());
+            inputBuilder.getJobParametersBuilder().setNumSimulationTrials(30);
+            PolymerCluster polymerCluster = inputBuilder.getSystemParametersBuilder().getPolymerCluster();
+            polymerCluster.setConcentrationInWater(.5 * polymerCluster.getConcentrationInWater());
+            inputBuilder.systemParametersBuilder.setAspectRatio(inputBuilder.getSystemParametersBuilder().getAspectRatio() * .5);
 
             return inputBuilder.buildInput();
         } else if (args.length == 1) {
