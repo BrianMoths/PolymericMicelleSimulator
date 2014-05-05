@@ -28,11 +28,27 @@ import java.util.Iterator;
 import java.util.List;
 
 /**
+ * This class is used to analyze the properties of the state of a polymer
+ * simulator. This class is mainly concerned with calculating the area and
+ * perimeter of the region occupied by polymer, the amount of overlap a single
+ * bead or the entire ensemble makes, the amount of polymer spring stretching a
+ * single bead or the entire ensemble makes, and computing the energy of a
+ * single bead or the whole ensemble of beads.
  *
  * @author bmoths
  */
 public class SystemAnalyzer implements Serializable {
 
+    /**
+     * Used to allow a safe mode of communication between a system analyzer and
+     * a class containing the bead positions to be analyzed. The system analyzer
+     * gives an object of this class to another object, a bead position source
+     * object, by a system analyzer. Then the bead position source object calls
+     * the
+     * <tt>setBeadPositions</tt> method. This will cause the bead position
+     * getter object to remember the reference to the beadPositions array, and
+     * this data may be seen by the system analyzer.
+     */
     static public final class BeadPositionsGetter {
 
         private double[][] temporaryBeadPositions;
@@ -40,35 +56,54 @@ public class SystemAnalyzer implements Serializable {
         private BeadPositionsGetter() {
         }
 
+        /**
+         * Causes this object to remember the bead positions which have been
+         * given to it.
+         *
+         * @param beadPositions an array containing the position of beads.
+         */
         public void setBeadPositions(double[][] beadPositions) {
             this.temporaryBeadPositions = beadPositions;
         }
 
     }
 
-    public class AnalyzerListener implements Serializable {
+    /**
+     * Listens for changes occuring in the bead positions so that the system
+     * analyzer can update its internal state accordingly. It may be that only
+     * one bead has moved or that many beads have moved. There are two different
+     * methods, one for each case.
+     */
+    public final class AnalyzerListener implements Serializable {
 
         private static final long serialVersionUID = 0L;
 
         private AnalyzerListener() {
         }
 
-        public void rebinBeads() {
+        /**
+         * If the geometry of the simulation has changed it is necessary for the
+         * system analyzer to recompute its internal state. If many beads have
+         * changed position, it may be more efficient to recompute internal
+         * state from scratch rather than doing a series of updates.
+         */
+        public void recomputeInternalState() {
             beadBinner = new BeadBinner(beadPositions, systemGeometry);
         }
 
+        /**
+         * Updates the system analyzer to reflect the new position of the step
+         * bead..
+         *
+         * @param stepBead The bead whose position has changed.
+         */
         public void updateBinOfBead(int stepBead) {
             beadBinner.updateBeadPosition(stepBead, beadPositions[stepBead]);
-        }
-
-        public void resetHistory() {
-            simulationHistory.clearAll();
         }
 
     }
 
     private static final long serialVersionUID = 0L;
-    static private final int statisticsWindow = 1000;
     private final ImmutablePolymerState immutablePolymerState;
     private final ImmutableDiscretePolymerState immutableDiscretePolymerState;
     private final ImmutableSystemGeometry systemGeometry;
@@ -76,9 +111,18 @@ public class SystemAnalyzer implements Serializable {
     private final EnergeticsConstants energeticsConstants;
     private final int numBeads;
     private BeadBinner beadBinner;
-    private SimulationHistory simulationHistory;
 
     //<editor-fold defaultstate="collapsed" desc="constructors">
+    /**
+     * Constructs a system analyzer which has a reference to an immutable view
+     * of the mutable state of the polymer simulation as wells as the energetics
+     * constants of the simulation, which is immutable.
+     *
+     * @param immutablePolymerState an immutable view of the mutable state of a
+     * simulation
+     * @param energeticsConstants the constants describing the interactions
+     * between monomers in the simulation.
+     */
     public SystemAnalyzer(ImmutablePolymerState immutablePolymerState,
             EnergeticsConstants energeticsConstants) {
         systemGeometry = immutablePolymerState.getImmutableSystemGeometry();
@@ -92,9 +136,13 @@ public class SystemAnalyzer implements Serializable {
         AnalyzerListener analyzerListener = new AnalyzerListener();
         immutablePolymerState.acceptAnalyzerListener(analyzerListener);
         beadBinner = new BeadBinner(beadPositions, systemGeometry);
-        simulationHistory = new SimulationHistory(statisticsWindow);
     }
 
+    /**
+     * A copy constructor.
+     *
+     * @param systemAnalyzer the system analyzer to be copied.
+     */
     public SystemAnalyzer(SystemAnalyzer systemAnalyzer) {
         systemGeometry = systemAnalyzer.systemGeometry;
         immutablePolymerState = systemAnalyzer.immutablePolymerState;
@@ -144,19 +192,14 @@ public class SystemAnalyzer implements Serializable {
     }
     //</editor-fold>
 
-    //<editor-fold defaultstate="collapsed" desc="simulation history">
-    public void addPerimeterAreaEnergySnapshot(double perimeter, double area, double energy) {
-        simulationHistory.addValue(SimulationHistory.TrackedVariable.PERIMETER, perimeter);
-        simulationHistory.addValue(SimulationHistory.TrackedVariable.AREA, area);
-        simulationHistory.addValue(SimulationHistory.TrackedVariable.ENERGY, energy);
-    }
-
-    public double getAverage(TrackedVariable trackedVariable) {
-        return simulationHistory.getAverage(trackedVariable);
-    }
-    //</editor-fold>
-
     //<editor-fold defaultstate="collapsed" desc="overlap and stretching">
+    /**
+     * returns the total square distance resulting from stretched bonds between
+     * adjacent monomers. This quantity is half the sum of all pairwise square
+     * distances between adjacent monomers.
+     *
+     * @return the sum of square distances between adjacent monomers
+     */
     public double totalSpringStretching() {
         double sqLength = 0;
 
@@ -167,6 +210,16 @@ public class SystemAnalyzer implements Serializable {
         return sqLength / 2; //divide by two since double counting
     }
 
+    /**
+     * returns the sum of square distances between a given bead and its
+     * neighbors. For the purposes of this function. Summing the result of this
+     * function over all beads would give twice the total spring stretching
+     * between all pairs of beads, since each bond would be counted twice.
+     *
+     * @param bead the bead whose bonds' square length is to be determined
+     * @return the sum of square lengths of all bonds attached to the given
+     * bead.
+     */
     public double beadStretching(int bead) {
         double sqLength = 0;
         final int leftNeighborIndex = immutableDiscretePolymerState.getNeighborToLeftOfBead(bead);
@@ -261,7 +314,7 @@ public class SystemAnalyzer implements Serializable {
         return getNumBeads() * Math.log(systemGeometry.getVolume() / getNumBeads());
     }
 
-    public EnergyEntropyChange computerEnergyEntropy() {
+    public EnergyEntropyChange computeEnergyEntropy() {
         return new EnergyEntropyChange(computeEnergy(), computeEntropy());
     }
     //</editor-fold>
@@ -278,10 +331,6 @@ public class SystemAnalyzer implements Serializable {
     //<editor-fold defaultstate="collapsed" desc="getters">
     public Iterator<Integer> getNearbyBeadIterator(int bead) {
         return beadBinner.getNearbyBeadIterator(bead);
-    }
-
-    public boolean isEquilibrated() {
-        return simulationHistory.isEquilibrated();
     }
 
     public ImmutableSystemGeometry getSystemGeometry() {
@@ -326,10 +375,6 @@ public class SystemAnalyzer implements Serializable {
 
     public double getBeadPositionComponent(int bead, int component) {
         return beadPositions[bead][component];
-    }
-
-    public SimulationHistory getSimulationHistory() {
-        return simulationHistory;
     }
 
     public boolean isTypeA(int bead) {

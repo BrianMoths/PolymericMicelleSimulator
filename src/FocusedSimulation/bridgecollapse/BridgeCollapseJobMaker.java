@@ -124,7 +124,7 @@ public class BridgeCollapseJobMaker {
 
         for (int i = 0; i < verticalRescaleFactors.length; i++) {
             for (int j = 0; j < horizontalRescaleFactors.length; j++) {
-                final Input input = makeNoSpringInput(verticalRescaleFactors[i], horizontalRescaleFactors[j], jobNumber);
+                final Input input = makeRescaleInput(verticalRescaleFactors[i], horizontalRescaleFactors[j], jobNumber);
                 noSpringInputs.add(input);
                 jobNumber++;
             }
@@ -138,15 +138,15 @@ public class BridgeCollapseJobMaker {
         Input input;
 
 
-        input = makeNoSpringInput(.1 * 2.3, 3 * 2.3, jobNumber);
+        input = makeRescaleInput(.1 * 2.3, 3 * 2.3, jobNumber);
         noSpringInputs.add(input);
         jobNumber++;
 
-        input = makeNoSpringInput(.5 * .5, 3 * .5, jobNumber);
+        input = makeRescaleInput(.5 * .5, 3 * .5, jobNumber);
         noSpringInputs.add(input);
         jobNumber++;
 
-        input = makeNoSpringInput(1 * .25, 3 * .25, jobNumber);
+        input = makeRescaleInput(1 * .25, 3 * .25, jobNumber);
         noSpringInputs.add(input);
         jobNumber++;
 
@@ -158,12 +158,12 @@ public class BridgeCollapseJobMaker {
         InputBuilder inputBuilder;
 
 
-        inputBuilder = makeNoSpringInputBuilder(.5, 10, jobNumber);
+        inputBuilder = makeRescaleInputBuilderWithHorizontalRescaling(.5, 10, jobNumber);
         inputBuilder.getJobParametersBuilder().setNumSimulationTrials(210);
         noSpringInputs.add(inputBuilder.buildInputAutomaticHardOverlap());
         jobNumber++;
 
-        inputBuilder = makeNoSpringInputBuilder(1, 3, jobNumber);
+        inputBuilder = makeRescaleInputBuilderWithHorizontalRescaling(1, 3, jobNumber);
         inputBuilder.getJobParametersBuilder().setNumSimulationTrials(210);
         noSpringInputs.add(inputBuilder.buildInputAutomaticHardOverlap());
         jobNumber++;
@@ -178,12 +178,12 @@ public class BridgeCollapseJobMaker {
         InputBuilder inputBuilder;
 
 
-        inputBuilder = makeNoSpringInputBuilder(.5, 10, jobNumber);
+        inputBuilder = makeRescaleInputBuilderWithHorizontalRescaling(.5, 10, jobNumber);
         inputBuilder.getJobParametersBuilder().setNumSimulationTrials(20);
         noSpringInputs.add(inputBuilder.buildInput());
         jobNumber++;
 
-        inputBuilder = makeNoSpringInputBuilder(1, 3, jobNumber);
+        inputBuilder = makeRescaleInputBuilderWithHorizontalRescaling(1, 3, jobNumber);
         inputBuilder.getJobParametersBuilder().setNumSimulationTrials(20);
         noSpringInputs.add(inputBuilder.buildInput());
         jobNumber++;
@@ -193,14 +193,9 @@ public class BridgeCollapseJobMaker {
         return noSpringInputs;
     }
 
-    private static Input makeNoSpringInput(final double verticalRescaleFactor, final double horizontalRescaleFactor, int jobNumber) {
-        InputBuilder inputBuilder = makeNoSpringInputBuilder(verticalRescaleFactor, horizontalRescaleFactor, jobNumber);
-        return inputBuilder.buildInput();
-    }
-
-    private static InputBuilder makeNoSpringInputBuilder(final double verticalRescaleFactor, final double horizontalRescaleFactor, int jobNumber) {
+    private static Input makeRescaleInput(final double verticalRescaleFactor, final double horizontalRescaleFactor, int jobNumber) {
         InputBuilder inputBuilder = makeRescaleInputBuilderWithHorizontalRescaling(verticalRescaleFactor, horizontalRescaleFactor, jobNumber);
-        return inputBuilder;
+        return inputBuilder.buildInput();
     }
 
 }

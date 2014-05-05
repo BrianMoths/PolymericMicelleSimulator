@@ -4,6 +4,8 @@
  */
 package Engine.Energetics;
 
+import java.io.Serializable;
+
 /**
  * This class represents a change in energy and entropy. It provides a method to
  * find a free energy changed given a temperature. Objects of this class are
@@ -11,7 +13,9 @@ package Engine.Energetics;
  *
  * @author brian
  */
-public class EnergyEntropyChange {
+public class EnergyEntropyChange implements Serializable {
+
+    private static final long serialVersionUID = 0L;
 
     /**
      *

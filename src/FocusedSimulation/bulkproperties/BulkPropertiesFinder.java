@@ -34,12 +34,12 @@ public class BulkPropertiesFinder extends AbstractFocusedSimulation<BulkProperti
     private static Input readInput(String[] args) {
         if (args.length == 0) {
             final double verticalScaleFactor = .3;
-            final double horizontalScaleFactor = 9;
+            final double horizontalScaleFactor = 10;
 
-            InputBuilder inputBuilder = BulkPropertiesJobMaker.makeRescaleInputBuilderWithHorizontalRescaling(verticalScaleFactor, horizontalScaleFactor, 0, 0);
+            InputBuilder inputBuilder = BulkPropertiesJobMaker.makeRescaleInputBuilderWithHorizontalRescaling(verticalScaleFactor, horizontalScaleFactor, 0);
             inputBuilder.getJobParametersBuilder().setNumAnneals(1);
             inputBuilder.getJobParametersBuilder().setNumSimulationTrials(5);
-            return inputBuilder.buildInputAutomaticHardOverlap();
+            return inputBuilder.buildInput();
         } else if (args.length == 1) {
             final String fileName = args[0];
             return Input.readInputFromFile(fileName);
@@ -62,7 +62,10 @@ public class BulkPropertiesFinder extends AbstractFocusedSimulation<BulkProperti
     protected void registerTrackablesToSimulationRunner() {
         simulationRunner.trackVariable(TrackableVariable.SYSTEM_VOLUME);
         simulationRunner.trackVariable(TrackableVariable.SYSTEM_ENERGY);
+        simulationRunner.trackVariable(TrackableVariable.SYSTEM_SPRING_ENERGY);
+        simulationRunner.trackVariable(TrackableVariable.SYSTEM_OVERLAP_ENERGY);
         simulationRunner.trackVariable(TrackableVariable.SYSTEM_ENTROPY);
+        simulationRunner.trackVariable(TrackableVariable.IDEAL_GAS_PRESSURE);
         simulationRunner.trackVariable((StressTrackable.TOTAL_STRESS_TRACKABLE).getStress11Trackable());
         simulationRunner.trackVariable((StressTrackable.TOTAL_STRESS_TRACKABLE).getStress12Trackable());
         simulationRunner.trackVariable((StressTrackable.TOTAL_STRESS_TRACKABLE).getStress22Trackable());
@@ -76,20 +79,13 @@ public class BulkPropertiesFinder extends AbstractFocusedSimulation<BulkProperti
 
     @Override
     protected void analyzeAndPrintResults() {
-        DoubleWithUncertainty measuredVolume = simulationRunner.getRecentMeasurementForTrackedVariable(TrackableVariable.SYSTEM_VOLUME);
-        final double numBeads = polymerSimulator.getNumBeads();
-        DoubleWithUncertainty measuredDensity = measuredVolume.reciprocalTimes(numBeads);
-        outputWriter.printMeasuredDensity(measuredDensity);
+        analyzeAndPrintDensity();
+        analyzeAndPrintEnergyPerBead();
+        analyzeAndPrintSpringEnergyPerBead();
+        analyzeAndPrintOverlapEnergyPerBead();
+        analyzeAndPrintEntropyPerBead();
 
-        DoubleWithUncertainty measuredEnergy = simulationRunner.getRecentMeasurementForTrackedVariable(TrackableVariable.SYSTEM_ENERGY);
-        DoubleWithUncertainty measuredEnergyPerBead = measuredEnergy.dividedBy(polymerSimulator.getNumBeads());
-        outputWriter.printMeasuredEnergyPerBead(measuredEnergyPerBead);
-
-        DoubleWithUncertainty measuredEntropy = simulationRunner.getRecentMeasurementForTrackedVariable(TrackableVariable.SYSTEM_VOLUME);
-        DoubleWithUncertainty measuredEntropyPerBead = measuredEntropy.reciprocalTimes(numBeads);
-        outputWriter.printMeasuredEntropyPerBead(measuredEntropyPerBead);
-
-        outputWriter.printIdealGasPressure(polymerSimulator.getSystemAnalyzer().getIdealGasPressure());
+        outputWriter.printIdealGasPressure(simulationRunner.getRecentMeasurementForTrackedVariable(TrackableVariable.IDEAL_GAS_PRESSURE));
         outputWriter.printStress(simulationRunner);
     }
 
@@ -100,6 +96,36 @@ public class BulkPropertiesFinder extends AbstractFocusedSimulation<BulkProperti
 
     @Override
     protected void printFinalOutput() {
+    }
+
+    private void analyzeAndPrintDensity() throws IllegalArgumentException {
+        DoubleWithUncertainty measuredVolume = simulationRunner.getRecentMeasurementForTrackedVariable(TrackableVariable.SYSTEM_VOLUME);
+        DoubleWithUncertainty measuredDensity = measuredVolume.reciprocalTimes(polymerSimulator.getNumBeads());
+        outputWriter.printMeasuredDensity(measuredDensity);
+    }
+
+    private void analyzeAndPrintEnergyPerBead() throws IllegalArgumentException {
+        DoubleWithUncertainty measuredEnergy = simulationRunner.getRecentMeasurementForTrackedVariable(TrackableVariable.SYSTEM_ENERGY);
+        DoubleWithUncertainty measuredEnergyPerBead = measuredEnergy.dividedBy(polymerSimulator.getNumBeads());
+        outputWriter.printMeasuredEnergyPerBead(measuredEnergyPerBead);
+    }
+
+    private void analyzeAndPrintEntropyPerBead() throws IllegalArgumentException {
+        DoubleWithUncertainty measuredEntropy = simulationRunner.getRecentMeasurementForTrackedVariable(TrackableVariable.SYSTEM_ENTROPY);
+        DoubleWithUncertainty measuredEntropyPerBead = measuredEntropy.dividedBy(polymerSimulator.getNumBeads());
+        outputWriter.printMeasuredEntropyPerBead(measuredEntropyPerBead);
+    }
+
+    private void analyzeAndPrintOverlapEnergyPerBead() throws IllegalArgumentException {
+        DoubleWithUncertainty measuredOverlapEnergy = simulationRunner.getRecentMeasurementForTrackedVariable(TrackableVariable.SYSTEM_OVERLAP_ENERGY);
+        DoubleWithUncertainty measuredOverlapEnergyPerBead = measuredOverlapEnergy.dividedBy(polymerSimulator.getNumBeads());
+        outputWriter.printMeasuredOverlapEnergyPerBead(measuredOverlapEnergyPerBead);
+    }
+
+    private void analyzeAndPrintSpringEnergyPerBead() throws IllegalArgumentException {
+        DoubleWithUncertainty measuredSpringEnergy = simulationRunner.getRecentMeasurementForTrackedVariable(TrackableVariable.SYSTEM_SPRING_ENERGY);
+        DoubleWithUncertainty measuredSpringEnergyPerBead = measuredSpringEnergy.dividedBy(polymerSimulator.getNumBeads());
+        outputWriter.printMeasuredSpringEnergyPerBead(measuredSpringEnergyPerBead);
     }
 
 }

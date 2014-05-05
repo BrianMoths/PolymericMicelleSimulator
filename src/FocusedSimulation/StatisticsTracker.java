@@ -18,10 +18,31 @@ public class StatisticsTracker {
 
     public interface TrackableVariable {
 
+        public static final TrackableVariable IDEAL_GAS_PRESSURE = new TrackableVariable() {
+            @Override
+            public double getValue(PolymerSimulator polymerSimulator) {
+                return polymerSimulator.getSystemAnalyzer().getIdealGasPressure();
+            }
+
+        };
         public static final TrackableVariable SYSTEM_ENTROPY = new TrackableVariable() {
             @Override
             public double getValue(PolymerSimulator polymerSimulator) {
                 return polymerSimulator.getEntropy();
+            }
+
+        };
+        public static final TrackableVariable SYSTEM_SPRING_ENERGY = new TrackableVariable() {
+            @Override
+            public double getValue(PolymerSimulator polymerSimulator) {
+                return polymerSimulator.getSystemAnalyzer().springEnergy();
+            }
+
+        };
+        public static final TrackableVariable SYSTEM_OVERLAP_ENERGY = new TrackableVariable() {
+            @Override
+            public double getValue(PolymerSimulator polymerSimulator) {
+                return polymerSimulator.getSystemAnalyzer().densityEnergy();
             }
 
         };

@@ -72,7 +72,6 @@ public class PolymerPosition implements ImmutablePolymerPosition {
 
     public void columnRandomize() {
         setBeadPositions(systemGeometry.randomColumnPositions(numBeads));
-        resetAnalyzersHistory();
     }
 
     public void reasonableColumnRandomize(ImmutableDiscretePolymerState immutableDiscretePolymerState) {
@@ -136,7 +135,6 @@ public class PolymerPosition implements ImmutablePolymerPosition {
 
     private void randomizePrivate() {
         setBeadPositions(systemGeometry.randomMiddlePositions(numBeads));
-        resetAnalyzersHistory();
     }
 
     public void anneal() {
@@ -145,7 +143,6 @@ public class PolymerPosition implements ImmutablePolymerPosition {
             double[] stepVector = systemGeometry.randomGaussian(.5);//.5
             systemGeometry.incrementFirstVector(beadPosition, stepVector);
         }
-        resetAnalyzersHistory();
         analyzersRebinBeads();
     }
     //</editor-fold>
@@ -161,19 +158,13 @@ public class PolymerPosition implements ImmutablePolymerPosition {
 
     private void analyzersRebinBeads() {
         for (AnalyzerListener analyzerListener : registeredAnalyzerListeners) {
-            analyzerListener.rebinBeads();
+            analyzerListener.recomputeInternalState();
         }
     }
 
     private void signalMoveToAnalyzers(int stepBead) {
         for (AnalyzerListener analyzerListener : registeredAnalyzerListeners) {
             analyzerListener.updateBinOfBead(stepBead);
-        }
-    }
-
-    private void resetAnalyzersHistory() {
-        for (AnalyzerListener analyzerListener : registeredAnalyzerListeners) {
-            analyzerListener.resetHistory();
         }
     }
     //</editor-fold>

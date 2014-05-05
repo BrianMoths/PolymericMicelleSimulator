@@ -26,7 +26,7 @@ import java.util.List;
  */
 public class BulkPropertiesJobMaker {
 
-    public static final String pathToFocusedSimulationClass = AbstractFocusedSimulation.pathToFocusedSimulation + "density/DensityFinder";
+    public static final String pathToFocusedSimulationClass = AbstractFocusedSimulation.pathToFocusedSimulation + "bulkproperties/BulkPropertiesFinder";
 
     public static void main(String[] args) {
         final List<Input> inputs = makeInputs();
@@ -34,36 +34,58 @@ public class BulkPropertiesJobMaker {
     }
 
     static private List<Input> makeInputs() {
-        return makeWideVerticalScalingInputs();
+        return makeBulkPropertiesInputs();
     }
 
-    public static Input makeRescaleInput(final double scaleFactor, double pressure, int jobNumber) {
-        InputBuilder inputBuilder = makeRescaleInputBuilder(scaleFactor, pressure, jobNumber);
+    private static List<Input> makeBulkPropertiesInputs() {
+        return makeBulkPropertiesInputs(1);
+    }
+
+    private static List<Input> makeBulkPropertiesInputs(int jobNumber) {
+        final double[] verticalRescaleFactors = {.05, .1, 3};
+        final double[] horizontalRescaleFactors = {2, 4, 10};
+
+        final List<Input> noSpringInputs = new ArrayList<>();
+
+        for (int i = 0; i < verticalRescaleFactors.length; i++) {
+            for (int j = 0; j < horizontalRescaleFactors.length; j++) {
+                final Input input = makeRescaleInput(verticalRescaleFactors[i], horizontalRescaleFactors[j], jobNumber);
+                noSpringInputs.add(input);
+                jobNumber++;
+            }
+        }
+
+        return noSpringInputs;
+    }
+
+    public static Input makeRescaleInput(final double scaleFactor, int jobNumber) {
+        InputBuilder inputBuilder = makeRescaleInputBuilder(scaleFactor, jobNumber);
         return inputBuilder.buildInput();
     }
 
-    public static InputBuilder makeRescaleInputBuilder(final double scaleFactor, double pressure, int jobNumber) {
-        return makeRescaleInputBuilderWithHorizontalRescaling(scaleFactor, 1, pressure, jobNumber);
+    public static InputBuilder makeRescaleInputBuilder(final double scaleFactor, int jobNumber) {
+        return makeRescaleInputBuilderWithHorizontalRescaling(scaleFactor, 1, jobNumber);
     }
 
-    public static Input makeRescaleInput(final double verticalScale, final double horizontalScale, double pressure, final int jobNumber) {
-        final InputBuilder inputBuilder = makeRescaleInputBuilderWithHorizontalRescaling(verticalScale, horizontalScale, pressure, jobNumber);
+    public static Input makeRescaleInput(final double verticalScale, final double horizontalScale, final int jobNumber) {
+        final InputBuilder inputBuilder = makeRescaleInputBuilderWithHorizontalRescaling(verticalScale, horizontalScale, jobNumber);
         return inputBuilder.buildInput();
     }
 
-    public static InputBuilder makeRescaleInputBuilderWithHorizontalRescaling(final double verticalScale, final double horizontalScale, final double pressure, int jobNumber) {
+    public static InputBuilder makeRescaleInputBuilderWithHorizontalRescaling(final double verticalScale, final double horizontalScale, int jobNumber) {
         InputBuilder inputBuilder;
         inputBuilder = getDefaultInputDensityBuilder();
         final double aspectRatio = inputBuilder.getSystemParametersBuilder().getAspectRatio();
         inputBuilder.getSystemParametersBuilder().setAspectRatio(aspectRatio * horizontalScale / verticalScale);
-        final ExternalEnergyCalculatorBuilder externalEnergyCalculatorBuilder = new ExternalEnergyCalculatorBuilder();
-        externalEnergyCalculatorBuilder.setPressure(pressure);
-        inputBuilder.getSystemParametersBuilder().getEnergeticsConstantsBuilder().setExternalEnergyCalculatorBuilder(externalEnergyCalculatorBuilder);
         PolymerCluster polymerCluster = getPolymerCluster(verticalScale, horizontalScale);
         inputBuilder.getSystemParametersBuilder().setPolymerCluster(polymerCluster);
         inputBuilder.getJobParametersBuilder().setJobNumber(jobNumber);
-        inputBuilder.getJobParametersBuilder().setNumAnneals(50);
-        inputBuilder.getJobParametersBuilder().setNumSimulationTrials(70);
+        inputBuilder.getJobParametersBuilder().setNumAnneals(5);
+        inputBuilder.getJobParametersBuilder().setNumSimulationTrials(5);
+        inputBuilder.getSystemParametersBuilder().autosetCoreParameters();
+        final EnergeticsConstantsBuilder energeticsConstantsBuilder = inputBuilder.getSystemParametersBuilder().getEnergeticsConstantsBuilder();
+        energeticsConstantsBuilder.setBBOverlapCoefficient(3 * energeticsConstantsBuilder.getBBOverlapCoefficient());
+        energeticsConstantsBuilder.setHardOverlapCoefficient(3 * energeticsConstantsBuilder.getHardOverlapCoefficient());
         return inputBuilder;
     }
 
@@ -85,7 +107,7 @@ public class BulkPropertiesJobMaker {
     }
 
     static private final double defaultAspectRatio = .0286;
-    static private final double defaultOverlapCoefficient = -.06;
+    static private final double defaultOverlapCoefficient = -.063;
     static private final double defaultInteractionLength = 4.;
     static private final int defaultNumBeadsPerChain = 15;
     static private final int defaultNumChains = 75;
@@ -120,62 +142,6 @@ public class BulkPropertiesJobMaker {
         jobParametersBuilder.setJobNumber(defaultJobNumber);
         return jobParametersBuilder;
     }
-
-    private static List<Input> makeWideVerticalScalingInputs() {
-        List<Input> inputs = new ArrayList<>();
-
-        int jobNumber = 1;
-        Input input;
-        double verticalRescaleFactor;
-        final double horizontalRescaleFactor = 9;
-
-        verticalRescaleFactor = .05;
-        input = makeRescaleInput(verticalRescaleFactor, horizontalRescaleFactor, 0, jobNumber);
-        inputs.add(input);
-        jobNumber++;
-
-        verticalRescaleFactor = .1;
-        input = makeRescaleInput(verticalRescaleFactor, horizontalRescaleFactor, 0, jobNumber);
-        inputs.add(input);
-        jobNumber++;
-
-        verticalRescaleFactor = .5;
-        input = makeRescaleInput(verticalRescaleFactor, horizontalRescaleFactor, 0, jobNumber);
-        inputs.add(input);
-        jobNumber++;
-
-        verticalRescaleFactor = 1;
-        input = makeRescaleInput(verticalRescaleFactor, horizontalRescaleFactor, 0, jobNumber);
-        inputs.add(input);
-        jobNumber++;
-
-        verticalRescaleFactor = 2;
-        input = makeRescaleInput(verticalRescaleFactor, horizontalRescaleFactor, 0, jobNumber);
-        inputs.add(input);
-        jobNumber++;
-        return inputs;
-    }
-
-    private static List<Input> makeCompressibilityInputs() {
-        List<Input> inputs = new ArrayList<>();
-
-        int jobNumber = 1;
-        Input input;
-        double pressure = 0;
-        final double horizontalRescaleFactor = 9;
-        final double verticalRescaleFactor = .3;
-        final double pressureStep = .05;
-
-
-        for (int i = 0; i < 5; i++) {
-            input = makeRescaleInput(verticalRescaleFactor, horizontalRescaleFactor, pressure, jobNumber);
-            inputs.add(input);
-            jobNumber++;
-            pressure += pressureStep;
-        }
-
-
-        return inputs;
-    }
+    //</editor-fold>
 
 }

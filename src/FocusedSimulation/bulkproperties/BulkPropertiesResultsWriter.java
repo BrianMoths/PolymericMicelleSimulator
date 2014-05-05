@@ -20,7 +20,7 @@ public class BulkPropertiesResultsWriter extends AbstractResultsWriter {
     }
 
     void printMeasuredDensity(DoubleWithUncertainty measuredDensity) {
-        final String caption = "Density found";
+        final String caption = "Number density found";
         printAndSoutCaptionedObject(caption, measuredDensity);
     }
 
@@ -38,7 +38,19 @@ public class BulkPropertiesResultsWriter extends AbstractResultsWriter {
         printAndSoutCaptionedObject(caption, measuredEntropyPerBead);
     }
 
-    void printIdealGasPressure(double idealGasPressure) {
+    void printIdealGasPressure(DoubleWithUncertainty idealGasPressure) {
+        final String caption = "Measured ideal gas pressure";
+        printAndSoutCaptionedObject(caption, idealGasPressure);
+    }
+
+    void printMeasuredOverlapEnergyPerBead(DoubleWithUncertainty measuredOverlapEnergyPerBead) {
+        final String caption = "Measured overlap energy per bead";
+        printAndSoutCaptionedObject(caption, measuredOverlapEnergyPerBead);
+    }
+
+    void printMeasuredSpringEnergyPerBead(DoubleWithUncertainty measuredSpringEnergyPerBead) {
+        final String caption = "Measured spring energy per bead";
+        printAndSoutCaptionedObject(caption, measuredSpringEnergyPerBead);
     }
 
 }

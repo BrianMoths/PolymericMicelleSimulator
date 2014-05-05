@@ -79,7 +79,7 @@ public class PolymerSimulator implements Serializable {
         DiscretePolymerState discretePolymerState = new DiscretePolymerState(polymerCluster);
         polymerState = new PolymerState(discretePolymerState, polymerPosition, geometry);
         systemAnalyzer = new SystemAnalyzer(polymerState, energeticsConstants);
-        energyEntropy = systemAnalyzer.computerEnergyEntropy();
+        energyEntropy = systemAnalyzer.computeEnergyEntropy();
     }
 
     public PolymerSimulator(SystemGeometry systemGeometry, PolymerCluster polymerCluster, EnergeticsConstants energeticsConstants) {
@@ -96,7 +96,7 @@ public class PolymerSimulator implements Serializable {
         acceptanceStatistics = new AcceptanceStatistics();
 
         systemAnalyzer = new SystemAnalyzer(polymerState, energeticsConstants);
-        energyEntropy = systemAnalyzer.computerEnergyEntropy();
+        energyEntropy = systemAnalyzer.computeEnergyEntropy();
     }
 
     public PolymerSimulator(PolymerSimulator polymerSimulator) {
@@ -129,13 +129,13 @@ public class PolymerSimulator implements Serializable {
     public synchronized void randomizePositions() {
         resetCounters();
         polymerPosition.randomize();
-        energyEntropy = systemAnalyzer.computerEnergyEntropy();
+        energyEntropy = systemAnalyzer.computeEnergyEntropy();
     }
 
     public synchronized void columnRandomizePositions() {
         resetCounters();
         polymerPosition.columnRandomize();
-        energyEntropy = systemAnalyzer.computerEnergyEntropy();
+        energyEntropy = systemAnalyzer.computeEnergyEntropy();
     }
 
     public synchronized void reasonableColumnRandomize() {
@@ -149,7 +149,7 @@ public class PolymerSimulator implements Serializable {
     public synchronized void anneal() {
         resetCounters();
         polymerPosition.anneal();
-        energyEntropy = systemAnalyzer.computerEnergyEntropy();
+        energyEntropy = systemAnalyzer.computeEnergyEntropy();
     }
 
     public void doIterations(int n) {
