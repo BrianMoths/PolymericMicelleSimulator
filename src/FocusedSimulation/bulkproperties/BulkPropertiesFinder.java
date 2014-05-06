@@ -33,8 +33,8 @@ public class BulkPropertiesFinder extends AbstractFocusedSimulation<BulkProperti
 
     private static Input readInput(String[] args) {
         if (args.length == 0) {
-            final double verticalScaleFactor = .3;
-            final double horizontalScaleFactor = 10;
+            final double verticalScaleFactor = .05;
+            final double horizontalScaleFactor = 2;
 
             InputBuilder inputBuilder = BulkPropertiesJobMaker.makeRescaleInputBuilderWithHorizontalRescaling(verticalScaleFactor, horizontalScaleFactor, 0);
             inputBuilder.getJobParametersBuilder().setNumAnneals(1);

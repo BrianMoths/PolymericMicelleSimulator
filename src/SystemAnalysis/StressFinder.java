@@ -207,7 +207,7 @@ public class StressFinder {
         Iterator<Integer> neighborIterator = neighborIteratorFactory.getNeighborIterator(bead, polymerSimulator);
         while (neighborIterator.hasNext()) {
             final Integer neighbor = neighborIterator.next();
-            if (neighbor < bead) {
+            if (neighbor < bead) { //only counts each bond once
                 incrementByStressFromNeighbor(neighbor, beadPosition);
             }
         }

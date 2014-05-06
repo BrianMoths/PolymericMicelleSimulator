@@ -69,7 +69,7 @@ public class SystemAnalyzer implements Serializable {
     }
 
     /**
-     * Listens for changes occuring in the bead positions so that the system
+     * Listens for changes occurring in the bead positions so that the system
      * analyzer can update its internal state accordingly. It may be that only
      * one bead has moved or that many beads have moved. There are two different
      * methods, one for each case.

@@ -1,0 +1,2 @@
+write javadocs
+remove factor of two in overlapping energy calculator
