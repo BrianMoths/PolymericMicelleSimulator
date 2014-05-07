@@ -26,7 +26,7 @@ public class SimulatorParameters implements Serializable {
 
         private static final long serialVersionUID = 0L;
         static private final double defaultAspectRatio = .1;
-        static private final double defaultOverlapCoefficient = -.06;
+        static private final double defaultOverlapCoefficient = -.12;
         static private final double defaultInteractionLength = 4.;
         static private final double defaultXPosition = 50;
         static private final double defaultSpringConstant = 10;

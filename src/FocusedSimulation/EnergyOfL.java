@@ -77,7 +77,7 @@ public class EnergyOfL {
 
         energeticsConstantsBuilder.setTemperature(1);
         energeticsConstantsBuilder.setAAOverlapCoefficient(0);
-        energeticsConstantsBuilder.setBBOverlapCoefficient(-.06);
+        energeticsConstantsBuilder.setBBOverlapCoefficient(-.12);
         energeticsConstantsBuilder.setSpringConstant(2);
 
         final ExternalEnergyCalculatorBuilder externalEnergyCalculatorBuilder = makeExternalEnergyCalculatorBuilder();

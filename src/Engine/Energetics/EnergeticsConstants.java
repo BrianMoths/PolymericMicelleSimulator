@@ -60,12 +60,12 @@ public final class EnergeticsConstants implements Serializable {
         static public EnergeticsConstantsBuilder zeroEnergeticsConstantsBuilder() {
             EnergeticsConstantsBuilder energeticsConstantsBuilder;
             energeticsConstantsBuilder = new EnergeticsConstantsBuilder();
-            energeticsConstantsBuilder.AAOverlapCoefficient = 0;
-            energeticsConstantsBuilder.ABOverlapCoefficient = 0;
-            energeticsConstantsBuilder.BBOverlapCoefficient = 0;
-            energeticsConstantsBuilder.temperature = 1;
-            energeticsConstantsBuilder.springConstant = 2; //want springConstant = 2 so that 2/2 T = 1/2 springConstant L^2 when L=1 and T =1
-            energeticsConstantsBuilder.hardOverlapCoefficient = 0;
+            energeticsConstantsBuilder.setAAOverlapCoefficient(0);
+            energeticsConstantsBuilder.setABOverlapCoefficient(0);
+            energeticsConstantsBuilder.setBBOverlapCoefficient(0);
+            energeticsConstantsBuilder.setTemperature(1);
+            energeticsConstantsBuilder.setSpringConstant(2); //want springConstant = 2 so that 2/2 T = 1/2 springConstant L^2 when L=1 and T =1
+            energeticsConstantsBuilder.setHardOverlapCoefficient(0);
             return energeticsConstantsBuilder;
         }
 
@@ -77,12 +77,12 @@ public final class EnergeticsConstants implements Serializable {
         static public EnergeticsConstantsBuilder defaultEnergeticsConstantsBuilder() {
             EnergeticsConstantsBuilder energeticsConstantsBuilder;
             energeticsConstantsBuilder = new EnergeticsConstantsBuilder();
-            energeticsConstantsBuilder.AAOverlapCoefficient = 5. / 120;
-            energeticsConstantsBuilder.ABOverlapCoefficient = .1;
-            energeticsConstantsBuilder.BBOverlapCoefficient = 5. / 120.;
-            energeticsConstantsBuilder.temperature = 1;
-            energeticsConstantsBuilder.springConstant = 2. / 3.;
-            energeticsConstantsBuilder.hardOverlapCoefficient = 0;
+            energeticsConstantsBuilder.setAAOverlapCoefficient(2 * 5. / 120);
+            energeticsConstantsBuilder.setABOverlapCoefficient(2 * .1);
+            energeticsConstantsBuilder.setBBOverlapCoefficient(2 * 5. / 120.);
+            energeticsConstantsBuilder.setTemperature(1);
+            energeticsConstantsBuilder.setSpringConstant(2. / 3.);
+            energeticsConstantsBuilder.setHardOverlapCoefficient(2 * 0);
             return energeticsConstantsBuilder;
         }
 
@@ -90,8 +90,8 @@ public final class EnergeticsConstants implements Serializable {
                 AAOverlapCoefficient,
                 BBOverlapCoefficient,
                 ABOverlapCoefficient,
-                springConstant,
-                hardOverlapCoefficient;
+                hardOverlapCoefficient,
+                springConstant;
         private ExternalEnergyCalculatorBuilder externalEnergyCalculatorBuilder = new ExternalEnergyCalculatorBuilder();
 
         private EnergeticsConstantsBuilder() {
@@ -109,10 +109,10 @@ public final class EnergeticsConstants implements Serializable {
         public EnergeticsConstantsBuilder(EnergeticsConstants energeticsConstants) {
             temperature = energeticsConstants.temperature;
             AAOverlapCoefficient = energeticsConstants.AAOverlapCoefficient;
-            BBOverlapCoefficient = energeticsConstants.BBOverlapCoefficient;
             ABOverlapCoefficient = energeticsConstants.ABOverlapCoefficient;
-            springConstant = energeticsConstants.springConstant;
+            BBOverlapCoefficient = energeticsConstants.BBOverlapCoefficient;
             hardOverlapCoefficient = energeticsConstants.hardOverlapCoefficient;
+            springConstant = energeticsConstants.springConstant;
             externalEnergyCalculatorBuilder = new ExternalEnergyCalculatorBuilder(energeticsConstants.getExternalEnergyCalculator());
         }
 
@@ -134,7 +134,7 @@ public final class EnergeticsConstants implements Serializable {
          * the interaction
          */
         public void setHardOverlapCoefficientFromParameters(GeometricalParameters geometricalParameters) {
-            hardOverlapCoefficient = hardOverlapCoefficientFromParameters(geometricalParameters);
+            setHardOverlapCoefficient(hardOverlapCoefficientFromParameters(geometricalParameters));
         }
 
         /**
@@ -147,11 +147,11 @@ public final class EnergeticsConstants implements Serializable {
          */
         public double hardOverlapCoefficientFromParameters(GeometricalParameters geometricalParameters) {
             if (geometricalParameters.getCoreLength() > 1e-10) {
-                final double bondingEnergyInT = .5;
-                final double coreRepulsionInT = 5; //5
-                double minCoefficientForBonding = -bondingEnergyInT * temperature / (geometricalParameters.getInteractionLength() * geometricalParameters.getInteractionLength());
-                double minAttraction = Math.min(Math.min(BBOverlapCoefficient, AAOverlapCoefficient), minCoefficientForBonding);
-                return (coreRepulsionInT * temperature - geometricalParameters.getInteractionLength() * geometricalParameters.getInteractionLength() * minAttraction) / (geometricalParameters.getCoreLength() * geometricalParameters.getCoreLength());
+                final double bondingEnergyInT = 1;
+                final double coreRepulsionInT = 10; //10
+                double minCoefficientForBonding = -bondingEnergyInT * getTemperature() / (geometricalParameters.getInteractionLength() * geometricalParameters.getInteractionLength());
+                double minAttraction = Math.min(Math.min(getBBOverlapCoefficient(), getAAOverlapCoefficient()), minCoefficientForBonding);
+                return (coreRepulsionInT * getTemperature() - geometricalParameters.getInteractionLength() * geometricalParameters.getInteractionLength() * minAttraction) / (geometricalParameters.getCoreLength() * geometricalParameters.getCoreLength());
             } else {
                 return 0;
             }
@@ -170,18 +170,15 @@ public final class EnergeticsConstants implements Serializable {
 
         //<editor-fold defaultstate="collapsed" desc="setters">
         /**
-         * sets the temperature to the given value, and returns this builder
-         * (for chaining). The value of the temperature must be greater than or
-         * equal to zero.
+         * sets the temperature to the given value. The value of the temperature
+         * must be greater than or equal to zero.
          *
          * @param temperature the new value of the temperature
-         * @return this object
          */
-        public EnergeticsConstantsBuilder setTemperature(double temperature) {
+        public void setTemperature(double temperature) {
             if (temperature >= 0) {
                 this.temperature = temperature;
             }
-            return this;
         }
 
         /**
@@ -194,9 +191,8 @@ public final class EnergeticsConstants implements Serializable {
          * @param AAOverlapCoefficient The new value AA overlap coefficient.
          * @return this energetics constants builder
          */
-        public EnergeticsConstantsBuilder setAAOverlapCoefficient(double AAOverlapCoefficient) {
+        public void setAAOverlapCoefficient(double AAOverlapCoefficient) {
             this.AAOverlapCoefficient = AAOverlapCoefficient;
-            return this;
         }
 
         /**
@@ -209,9 +205,8 @@ public final class EnergeticsConstants implements Serializable {
          * @param BBOverlapCoefficient The new value BB overlap coefficient.
          * @return this energetics constants builder
          */
-        public EnergeticsConstantsBuilder setBBOverlapCoefficient(double BBOverlapCoefficient) {
+        public void setBBOverlapCoefficient(double BBOverlapCoefficient) {
             this.BBOverlapCoefficient = BBOverlapCoefficient;
-            return this;
         }
 
         /**
@@ -221,26 +216,10 @@ public final class EnergeticsConstants implements Serializable {
          * attractive interaction while a positive value represents a repulsive
          * interaction.
          *
-         * @param BBOverlapCoefficient The new value AB overlap coefficient.
-         * @return this energetics constants builder
+         * @param ABOverlapCoefficient The new value AB overlap coefficient.
          */
-        public EnergeticsConstantsBuilder setABOverlapCoefficient(double ABOverlapCoefficient) {
+        public void setABOverlapCoefficient(double ABOverlapCoefficient) {
             this.ABOverlapCoefficient = ABOverlapCoefficient;
-            return this;
-        }
-
-        /**
-         * sets the spring constant which for the harmonic potential between two
-         * adjacent monomers on a polymer chain. The value for this parameter
-         * ought to be non-negative.
-         *
-         * @param springConstant The spring constant for the interaction of
-         * adjacent monomers on a polymer.
-         * @return this energetics constants builder.
-         */
-        public EnergeticsConstantsBuilder setSpringConstant(double springConstant) {
-            this.springConstant = springConstant;
-            return this;
         }
 
         /**
@@ -250,11 +229,21 @@ public final class EnergeticsConstants implements Serializable {
          * repulsive, so the value should typically be positive.
          *
          * @param hardOverlapCoefficient the hard overlap coefficient
-         * @return this energetics constants builder
          */
-        public EnergeticsConstantsBuilder setHardOverlapCoefficient(double hardOverlapCoefficient) {
-            this.hardOverlapCoefficient = hardOverlapCoefficient;
-            return this;
+        public void setHardOverlapCoefficient(double HardOverlapCoefficient) {
+            this.hardOverlapCoefficient = HardOverlapCoefficient;
+        }
+
+        /**
+         * sets the spring constant which for the harmonic potential between two
+         * adjacent monomers on a polymer chain. The value for this parameter
+         * ought to be non-negative.
+         *
+         * @param springConstant The spring constant for the interaction of
+         * adjacent monomers on a polymer.
+         */
+        public void setSpringConstant(double springConstant) {
+            this.springConstant = springConstant;
         }
 
         /**
@@ -265,11 +254,9 @@ public final class EnergeticsConstants implements Serializable {
          * @see ExternalEnergyCalculator
          * @param externalEnergyCalculatorBuilder the new value of the external
          * energy calculator builder
-         * @return this energetics constants builder
          */
-        public EnergeticsConstantsBuilder setExternalEnergyCalculatorBuilder(ExternalEnergyCalculatorBuilder externalEnergyCalculatorBuilder) {
+        public void setExternalEnergyCalculatorBuilder(ExternalEnergyCalculatorBuilder externalEnergyCalculatorBuilder) {
             this.externalEnergyCalculatorBuilder = externalEnergyCalculatorBuilder;
-            return this;
         }
         //</editor-fold>
 
@@ -323,16 +310,6 @@ public final class EnergeticsConstants implements Serializable {
         }
 
         /**
-         * Returns the spring constant describing the harmonic potential
-         * interaction between monomers which are adjacent on a polymer chain.
-         *
-         * @return the spring constant
-         */
-        public double getSpringConstant() {
-            return springConstant;
-        }
-
-        /**
          * Returns the hard overlap coefficient. This coefficient determines how
          * much interaction energy there is per unit of area of hard core
          * overlap between any two beads.
@@ -341,6 +318,16 @@ public final class EnergeticsConstants implements Serializable {
          */
         public double getHardOverlapCoefficient() {
             return hardOverlapCoefficient;
+        }
+
+        /**
+         * Returns the spring constant describing the harmonic potential
+         * interaction between monomers which are adjacent on a polymer chain.
+         *
+         * @return the spring constant
+         */
+        public double getSpringConstant() {
+            return springConstant;
         }
 
         /**
@@ -391,13 +378,13 @@ public final class EnergeticsConstants implements Serializable {
     private final ExternalEnergyCalculator externalEnergyCalculator;
 
     private EnergeticsConstants(EnergeticsConstantsBuilder energeticsConstantsBuilder) {
-        temperature = energeticsConstantsBuilder.temperature;
-        AAOverlapCoefficient = energeticsConstantsBuilder.AAOverlapCoefficient;
-        BBOverlapCoefficient = energeticsConstantsBuilder.BBOverlapCoefficient;
-        ABOverlapCoefficient = energeticsConstantsBuilder.ABOverlapCoefficient;
-        hardOverlapCoefficient = energeticsConstantsBuilder.hardOverlapCoefficient;
-        springConstant = energeticsConstantsBuilder.springConstant;
-        externalEnergyCalculator = energeticsConstantsBuilder.externalEnergyCalculatorBuilder.build();
+        temperature = energeticsConstantsBuilder.getTemperature();
+        AAOverlapCoefficient = energeticsConstantsBuilder.getAAOverlapCoefficient();
+        BBOverlapCoefficient = energeticsConstantsBuilder.getBBOverlapCoefficient();
+        ABOverlapCoefficient = energeticsConstantsBuilder.getABOverlapCoefficient();
+        hardOverlapCoefficient = energeticsConstantsBuilder.getHardOverlapCoefficient();
+        springConstant = energeticsConstantsBuilder.getSpringConstant();
+        externalEnergyCalculator = energeticsConstantsBuilder.getExternalEnergyCalculatorBuilder().build();
 
     }
 
@@ -438,10 +425,10 @@ public final class EnergeticsConstants implements Serializable {
      * beads
      */
     public double densityEnergy(AreaOverlap areaOverlap) {
-        return 2 * (AAOverlapCoefficient * areaOverlap.AAOverlap
-                + BBOverlapCoefficient * areaOverlap.BBOverlap
-                + ABOverlapCoefficient * areaOverlap.ABOverlap
-                + hardOverlapCoefficient * areaOverlap.hardOverlap); //why a factor of two?
+        return getAAOverlapCoefficient() * areaOverlap.AAOverlap
+                + getBBOverlapCoefficient() * areaOverlap.BBOverlap
+                + getABOverlapCoefficient() * areaOverlap.ABOverlap
+                + getHardOverlapCoefficient() * areaOverlap.hardOverlap;
     }
 
     /**
@@ -490,10 +477,10 @@ public final class EnergeticsConstants implements Serializable {
     public String toString() {
         StringBuilder stringBuilder = new StringBuilder();
         stringBuilder.append("Temperature: ").append(Double.toString(temperature)).append("\n");
-        stringBuilder.append("AA Overlap Coefficient: ").append(Double.toString(AAOverlapCoefficient)).append("\n");
-        stringBuilder.append("BB Overlap Coefficient: ").append(Double.toString(BBOverlapCoefficient)).append("\n");
-        stringBuilder.append("AB Overlap Coefficient: ").append(Double.toString(ABOverlapCoefficient)).append("\n");
-        stringBuilder.append("Hard Overlap Coefficient: ").append(Double.toString(hardOverlapCoefficient)).append("\n");
+        stringBuilder.append("AA Overlap Coefficient: ").append(Double.toString(getAAOverlapCoefficient())).append("\n");
+        stringBuilder.append("BB Overlap Coefficient: ").append(Double.toString(getBBOverlapCoefficient())).append("\n");
+        stringBuilder.append("AB Overlap Coefficient: ").append(Double.toString(getABOverlapCoefficient())).append("\n");
+        stringBuilder.append("Hard Overlap Coefficient: ").append(Double.toString(getHardOverlapCoefficient())).append("\n");
         stringBuilder.append("Spring Constant: ").append(Double.toString(springConstant)).append("\n");
         return stringBuilder.toString();
     }

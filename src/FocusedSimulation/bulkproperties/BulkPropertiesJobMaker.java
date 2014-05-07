@@ -107,7 +107,7 @@ public class BulkPropertiesJobMaker {
     }
 
     static private final double defaultAspectRatio = .0286;
-    static private final double defaultOverlapCoefficient = -.063;
+    static private final double defaultOverlapCoefficient = -.126;
     static private final double defaultInteractionLength = 4.;
     static private final int defaultNumBeadsPerChain = 15;
     static private final int defaultNumChains = 75;

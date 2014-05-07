@@ -134,7 +134,7 @@ public class CompressibilityJobMaker {
         SystemParametersBuilder systemParametersBuilder = new SystemParametersBuilder();
         systemParametersBuilder.setAspectRatio(defaultAspectRatio);
         EnergeticsConstantsBuilder energeticsConstantsBuilder = EnergeticsConstantsBuilder.zeroEnergeticsConstantsBuilder();
-        energeticsConstantsBuilder.setBBOverlapCoefficient(defaultOverlapCoefficient);
+        energeticsConstantsBuilder.setBBOverlapCoefficient(2 * defaultOverlapCoefficient);
         ExternalEnergyCalculatorBuilder externalEnergyCalculatorBuilder = new ExternalEnergyCalculatorBuilder();
         externalEnergyCalculatorBuilder.setXPositionAndSpringConstant(defaultXPosition, defaultSpringConstant);
         energeticsConstantsBuilder.setExternalEnergyCalculatorBuilder(externalEnergyCalculatorBuilder);
