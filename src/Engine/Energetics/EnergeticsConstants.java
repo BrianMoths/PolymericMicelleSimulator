@@ -90,7 +90,6 @@ public final class EnergeticsConstants implements Serializable {
                 AAOverlapCoefficient,
                 BBOverlapCoefficient,
                 ABOverlapCoefficient,
-                //                springCoefficient,
                 springConstant,
                 hardOverlapCoefficient;
         private ExternalEnergyCalculatorBuilder externalEnergyCalculatorBuilder = new ExternalEnergyCalculatorBuilder();
