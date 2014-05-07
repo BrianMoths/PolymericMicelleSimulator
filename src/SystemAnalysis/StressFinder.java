@@ -86,35 +86,28 @@ public class StressFinder {
 
         private double[] calculateOuterForce(double[] displacement, PolymerSimulator polymerSimulator) {
             final double interactionLength = polymerSimulator.getGeometry().getGeometricalParameters().getInteractionLength();
+            final double[] overlapAreaGradient = calculateOverlapAreaGradient(displacement, interactionLength);
             final double outerOverlapCoefficient = polymerSimulator.getEnergeticsConstants().getBBOverlapCoefficient();
-            final double[] outerForce = calculateOverlapForce(displacement, interactionLength, outerOverlapCoefficient);
-            return outerForce;
+            return calculateScaledDisplacement(overlapAreaGradient, outerOverlapCoefficient);
         }
 
         private double[] calculateInnerForce(double[] displacement, PolymerSimulator polymerSimulator) {
             final double coreLength = polymerSimulator.getGeometry().getGeometricalParameters().getCoreLength();
+            final double[] overlapAreaGradient = calculateOverlapAreaGradient(displacement, coreLength);
             final double innerOverlapCoefficient = polymerSimulator.getEnergeticsConstants().getHardOverlapCoefficient();
-            final double[] innerForce = calculateOverlapForce(displacement, coreLength, innerOverlapCoefficient);
-            return innerForce;
+            return calculateScaledDisplacement(overlapAreaGradient, innerOverlapCoefficient);
         }
 
-        private double[] calculateOverlapForce(double[] displacement, double interactionLength, double overlapCoefficient) {
+        public double[] calculateOverlapAreaGradient(double[] displacement, double interactionLength) {
             if (interactionLength > 0) {
                 final double squareDistance = calculateSquareDisplacement(displacement);
                 final double squareDisplacementRatio = squareDistance / (interactionLength * interactionLength);
-                final double forceMagnitude = overlapCoefficient * calculateOverlapGradientMagnitude(squareDisplacementRatio, interactionLength);
-                return calculateScaledDisplacement(displacement, forceMagnitude / Math.sqrt(squareDistance));
+                final double overlapGradientMagnitude = calculateOverlapGradientMagnitude(squareDisplacementRatio, interactionLength);
+                final double[] displacementDirection = calculateScaledDisplacement(displacement, 1 / Math.sqrt(squareDistance));
+                return calculateScaledDisplacement(displacementDirection, overlapGradientMagnitude);
             } else {
                 return calculateScaledDisplacement(displacement, 0);
             }
-        }
-
-        private double calculateSquareDisplacement(double[] displacement) {
-            double sum = 0;
-            for (int i = 0; i < displacement.length; i++) {
-                sum += displacement[i] * displacement[i];
-            }
-            return sum;
         }
 
         private double calculateOverlapGradientMagnitude(final double squareDisplacementRatio, double interactionLength) {
@@ -125,6 +118,14 @@ public class StressFinder {
                 forceMagnitude = interactionLength * Math.sqrt(1. - squareDisplacementRatio);
             }
             return forceMagnitude;
+        }
+
+        private double calculateSquareDisplacement(double[] displacement) {
+            double sum = 0;
+            for (int i = 0; i < displacement.length; i++) {
+                sum += displacement[i] * displacement[i];
+            }
+            return sum;
         }
 
         private double[] calculateScaledDisplacement(double[] displacement, final double forceMagnitude) {
