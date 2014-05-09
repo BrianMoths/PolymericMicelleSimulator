@@ -141,18 +141,30 @@ public class StressFinder {
     static private final double defaultFractionalSize = 1. / 3.;
 
     static public double[][] calculateSpringStress(PolymerSimulator polymerSimulator) {
-        StressFinder stressFinder = new StressFinder(polymerSimulator, connectedNeighbors, springForceFinder, defaultFractionalSize);
+        return calculateSpringStress(polymerSimulator, defaultFractionalSize);
+    }
+
+    static public double[][] calculateSpringStress(PolymerSimulator polymerSimulator, double fractionalSize) {
+        StressFinder stressFinder = new StressFinder(polymerSimulator, connectedNeighbors, springForceFinder, fractionalSize);
         return stressFinder.calculateStress();
     }
 
     static public double[][] calculateOverlapStress(PolymerSimulator polymerSimulator) {
-        StressFinder stressFinder = new StressFinder(polymerSimulator, nearbyNeighbors, overlapForceFinder, defaultFractionalSize);
+        return calculateOverlapStress(polymerSimulator, defaultFractionalSize);
+    }
+
+    static public double[][] calculateOverlapStress(PolymerSimulator polymerSimulator, double fractionalSize) {
+        StressFinder stressFinder = new StressFinder(polymerSimulator, nearbyNeighbors, overlapForceFinder, fractionalSize);
         return stressFinder.calculateStress();
     }
 
     static public double[][] calculateTotalStress(PolymerSimulator polymerSimulator) {
-        final double[][] springStress = calculateSpringStress(polymerSimulator);
-        final double[][] overlapStress = calculateOverlapStress(polymerSimulator);
+        return calculateTotalStress(polymerSimulator, defaultFractionalSize);
+    }
+
+    static public double[][] calculateTotalStress(PolymerSimulator polymerSimulator, double fractionalSize) {
+        final double[][] springStress = calculateSpringStress(polymerSimulator, fractionalSize);
+        final double[][] overlapStress = calculateOverlapStress(polymerSimulator, fractionalSize);
         final int numDimensions = overlapStress.length;
         for (int i = 0; i < numDimensions; i++) {
             for (int j = 0; j < numDimensions; j++) {

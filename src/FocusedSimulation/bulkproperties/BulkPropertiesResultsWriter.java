@@ -53,4 +53,9 @@ public class BulkPropertiesResultsWriter extends AbstractResultsWriter {
         printAndSoutCaptionedObject(caption, measuredSpringEnergyPerBead);
     }
 
+    void printNonNeighborEnergy(DoubleWithUncertainty nonNeighborEnergy) {
+        final String caption = "Measured average non-neighbor overlap energy";
+        printAndSoutCaptionedObject(caption, nonNeighborEnergy);
+    }
+
 }

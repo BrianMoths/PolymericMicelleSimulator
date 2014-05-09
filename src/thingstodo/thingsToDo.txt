@@ -1,2 +1,3 @@
 write javadocs
-remove factor of two in overlapping energy calculator
+make simulation runner parameters settable by each different simulation.
+decrease size of chain step if necessary

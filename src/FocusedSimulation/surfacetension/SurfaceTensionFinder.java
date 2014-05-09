@@ -85,9 +85,9 @@ public class SurfaceTensionFinder extends AbstractFocusedSimulation<SurfaceTensi
     @Override
     protected void registerTrackablesToSimulationRunner() {
         simulationRunner.trackVariable(TrackableVariable.SYSTEM_WIDTH);
-        simulationRunner.trackVariable((StressTrackable.TOTAL_STRESS_TRACKABLE).getStress11Trackable());
-        simulationRunner.trackVariable((StressTrackable.TOTAL_STRESS_TRACKABLE).getStress12Trackable());
-        simulationRunner.trackVariable((StressTrackable.TOTAL_STRESS_TRACKABLE).getStress22Trackable());
+        simulationRunner.trackVariable((StressTrackable.MIDDLE_REGION_STRESS_TRACKABLE).getStress11Trackable());
+        simulationRunner.trackVariable((StressTrackable.MIDDLE_REGION_STRESS_TRACKABLE).getStress12Trackable());
+        simulationRunner.trackVariable((StressTrackable.MIDDLE_REGION_STRESS_TRACKABLE).getStress22Trackable());
     }
 
     @Override

@@ -193,6 +193,7 @@ public class SystemAnalyzer implements Serializable {
     //</editor-fold>
 
     //<editor-fold defaultstate="collapsed" desc="overlap and stretching">
+    //<editor-fold defaultstate="collapsed" desc="stretching">
     /**
      * returns the total square distance resulting from stretched bonds between
      * adjacent monomers. This quantity is half the sum of all pairwise square
@@ -236,7 +237,9 @@ public class SystemAnalyzer implements Serializable {
             return 0;
         }
     }
+//</editor-fold>
 
+    //<editor-fold defaultstate="collapsed" desc="overlap">
     public AreaOverlap totalOverlap() {
         AreaOverlap overlap = new AreaOverlap();
 
@@ -266,6 +269,30 @@ public class SystemAnalyzer implements Serializable {
 
         return AreaOverlap.overlapOfBead(isTypeA(bead), AOverlap, BOverlap);
     }
+
+    /**
+     * Returns the area overlap between two given beads.
+     *
+     * @see TwoBeadOverlap
+     * @param firstBead the first bead of the pair whose area overlap is to be
+     * calculated
+     * @param secondBead the second bead of the pair whose area overlap is to be
+     * calculated
+     * @return the area overlap between the two given beads
+     */
+    public AreaOverlap beadOverlap(int firstBead, int secondBead) {
+        final TwoBeadOverlap AOverlap = new TwoBeadOverlap();
+        final TwoBeadOverlap BOverlap = new TwoBeadOverlap();
+        final double[] firstBeadPosition = beadPositions[firstBead];
+        final double[] secondBeadPosition = beadPositions[secondBead];
+        if (isTypeA(secondBead)) {
+            AOverlap.increment(systemGeometry.twoBeadCircularOverlap(firstBeadPosition, secondBeadPosition));
+        } else {
+            BOverlap.increment(systemGeometry.twoBeadCircularOverlap(firstBeadPosition, secondBeadPosition));
+        }
+        return AreaOverlap.overlapOfBead(isTypeA(firstBead), AOverlap, BOverlap);
+    }
+    //</editor-fold>
     //</editor-fold>
 
     //<editor-fold defaultstate="collapsed" desc="computing energy and entropy">
@@ -298,14 +325,17 @@ public class SystemAnalyzer implements Serializable {
 
     public double beadSpringEnergy(int bead) {
         final double beadStretching = beadStretching(bead);
-
         return energeticsConstants.springEnergy(beadStretching);
     }
 
     public double beadDensityEnergy(int bead) {
         final AreaOverlap overlap = beadOverlap(bead);
-
         return energeticsConstants.densityEnergy(overlap);
+    }
+
+    public double beadDensityEnergy(int firstBead, int secondBead) {
+        final AreaOverlap areaOverlap = beadOverlap(firstBead, secondBead);
+        return energeticsConstants.densityEnergy(areaOverlap);
     }
     //</editor-fold>
 
@@ -353,6 +383,16 @@ public class SystemAnalyzer implements Serializable {
         return immutableDiscretePolymerState.getNumABeads();
     }
 
+    /**
+     * Returns the neighbor of the given bead in the given direction. The bead
+     * is represented by its index, which is an integer. The direction may be
+     * either 0 or 1, where 0 indicates left and 1 indicates right. If the bead
+     * does not have a neighbor in the given direction, then -1 is output.
+     *
+     * @param bead the bead whose neighbor is to be found
+     * @param direction the direction specifying which neighbors is to be found
+     * @return the index of the neighbor if it exists, or -1 if it does not.
+     */
     public int getNeighbor(int bead, int direction) {
         if (direction == 0) {
             return immutableDiscretePolymerState.getNeighborToLeftOfBead(bead);

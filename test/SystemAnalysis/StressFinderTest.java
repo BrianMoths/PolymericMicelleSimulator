@@ -40,7 +40,7 @@ public class StressFinderTest {
         PolymerCluster polymerCluster = PolymerCluster.makeRepeatedChainCluster(PolymerChain.makeChainOfType(false, 2), 1);
         polymerCluster.setConcentrationInWater(.01);
         systemParametersBuilder.setPolymerCluster(polymerCluster);
-        systemParametersBuilder.getEnergeticsConstantsBuilder().setBBOverlapCoefficient(.01);
+        systemParametersBuilder.getEnergeticsConstantsBuilder().setBBOverlapCoefficient(2 * .01);
         systemParametersBuilder.setInteractionLength(1.);
         systemParametersBuilder.setAspectRatio(1);
     }
@@ -79,7 +79,7 @@ public class StressFinderTest {
         final double displacement = .2;
         double[][] beadPositions = {{systemSize / 2 + 0, systemSize / 2 + 0}, {systemSize / 2 + displacement, systemSize / 2 + 0}};
         polymerSimulator.setBeadPositions(beadPositions);
-        double[][] expResult = {{polymerSimulator.getEnergeticsConstants().getBBOverlapCoefficient() * Math.sqrt(polymerSimulator.getGeometricalParameters().getInteractionLength() - displacement * displacement) * 9 / polymerSimulator.getGeometry().getVolume() * displacement * 2, 0}, {0, 0}};
+        double[][] expResult = {{polymerSimulator.getEnergeticsConstants().getBBOverlapCoefficient() / 2 * Math.sqrt(polymerSimulator.getGeometricalParameters().getInteractionLength() - displacement * displacement) * 9 / polymerSimulator.getGeometry().getVolume() * displacement * 2, 0}, {0, 0}};
         System.out.println(expResult[0][0]);
         double[][] result = StressFinder.calculateOverlapStress(polymerSimulator);
 
@@ -111,7 +111,7 @@ public class StressFinderTest {
         final double displacement = .2;
         double[][] beadPositions = {{systemSize / 2 + 0, systemSize / 2 + 0}, {systemSize / 2 + displacement, systemSize / 2 + 0}};
         polymerSimulator.setBeadPositions(beadPositions);
-        double[][] expResult = {{(-polymerSimulator.getEnergeticsConstants().getSpringConstant() * displacement + polymerSimulator.getEnergeticsConstants().getBBOverlapCoefficient() * Math.sqrt(polymerSimulator.getGeometricalParameters().getInteractionLength() - displacement * displacement)) * 9 / polymerSimulator.getGeometry().getVolume() * displacement * 2, 0}, {0, 0}};
+        double[][] expResult = {{(-polymerSimulator.getEnergeticsConstants().getSpringConstant() * displacement + polymerSimulator.getEnergeticsConstants().getBBOverlapCoefficient() / 2 * Math.sqrt(polymerSimulator.getGeometricalParameters().getInteractionLength() - displacement * displacement)) * 9 / polymerSimulator.getGeometry().getVolume() * displacement * 2, 0}, {0, 0}};
         System.out.println(expResult[0][0]);
         double[][] result = StressFinder.calculateTotalStress(polymerSimulator);
         double fractionalError = getFractionalError(expResult, result);

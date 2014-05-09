@@ -10,6 +10,7 @@ import FocusedSimulation.StatisticsTracker.TrackableVariable;
 import FocusedSimulation.surfacetension.SurfaceTensionJobMaker;
 import SGEManagement.Input;
 import SGEManagement.Input.InputBuilder;
+import SystemAnalysis.FullStressTrackable;
 import SystemAnalysis.StressTrackable;
 import java.io.FileNotFoundException;
 
@@ -61,14 +62,16 @@ public class BulkPropertiesFinder extends AbstractFocusedSimulation<BulkProperti
     @Override
     protected void registerTrackablesToSimulationRunner() {
         simulationRunner.trackVariable(TrackableVariable.SYSTEM_VOLUME);
+        simulationRunner.trackVariable(TrackableVariable.AVERAGE_NON_NEIGHBOR_ENERGY);
+        simulationRunner.trackVariable(TrackableVariable.NUMBER_DENSITY);
         simulationRunner.trackVariable(TrackableVariable.SYSTEM_ENERGY);
         simulationRunner.trackVariable(TrackableVariable.SYSTEM_SPRING_ENERGY);
         simulationRunner.trackVariable(TrackableVariable.SYSTEM_OVERLAP_ENERGY);
         simulationRunner.trackVariable(TrackableVariable.SYSTEM_ENTROPY);
         simulationRunner.trackVariable(TrackableVariable.IDEAL_GAS_PRESSURE);
-        simulationRunner.trackVariable((StressTrackable.TOTAL_STRESS_TRACKABLE).getStress11Trackable());
-        simulationRunner.trackVariable((StressTrackable.TOTAL_STRESS_TRACKABLE).getStress12Trackable());
-        simulationRunner.trackVariable((StressTrackable.TOTAL_STRESS_TRACKABLE).getStress22Trackable());
+        simulationRunner.trackVariable((FullStressTrackable.FULL_REGION_STRESS_TRACKABLE).getStress11Trackable());
+        simulationRunner.trackVariable((FullStressTrackable.FULL_REGION_STRESS_TRACKABLE).getStress12Trackable());
+        simulationRunner.trackVariable((FullStressTrackable.FULL_REGION_STRESS_TRACKABLE).getStress22Trackable());
     }
 
     @Override
@@ -84,9 +87,10 @@ public class BulkPropertiesFinder extends AbstractFocusedSimulation<BulkProperti
         analyzeAndPrintSpringEnergyPerBead();
         analyzeAndPrintOverlapEnergyPerBead();
         analyzeAndPrintEntropyPerBead();
+        analyzeAndPrintNonNeighborEnergy();
 
         outputWriter.printIdealGasPressure(simulationRunner.getRecentMeasurementForTrackedVariable(TrackableVariable.IDEAL_GAS_PRESSURE));
-        outputWriter.printStress(simulationRunner);
+        outputWriter.printFullStress(simulationRunner);
     }
 
     @Override
@@ -99,8 +103,7 @@ public class BulkPropertiesFinder extends AbstractFocusedSimulation<BulkProperti
     }
 
     private void analyzeAndPrintDensity() throws IllegalArgumentException {
-        DoubleWithUncertainty measuredVolume = simulationRunner.getRecentMeasurementForTrackedVariable(TrackableVariable.SYSTEM_VOLUME);
-        DoubleWithUncertainty measuredDensity = measuredVolume.reciprocalTimes(polymerSimulator.getNumBeads());
+        DoubleWithUncertainty measuredDensity = simulationRunner.getRecentMeasurementForTrackedVariable(TrackableVariable.NUMBER_DENSITY);
         outputWriter.printMeasuredDensity(measuredDensity);
     }
 
@@ -126,6 +129,11 @@ public class BulkPropertiesFinder extends AbstractFocusedSimulation<BulkProperti
         DoubleWithUncertainty measuredSpringEnergy = simulationRunner.getRecentMeasurementForTrackedVariable(TrackableVariable.SYSTEM_SPRING_ENERGY);
         DoubleWithUncertainty measuredSpringEnergyPerBead = measuredSpringEnergy.dividedBy(polymerSimulator.getNumBeads());
         outputWriter.printMeasuredSpringEnergyPerBead(measuredSpringEnergyPerBead);
+    }
+
+    private void analyzeAndPrintNonNeighborEnergy() {
+        DoubleWithUncertainty nonNeighborEnergy = simulationRunner.getRecentMeasurementForTrackedVariable(TrackableVariable.AVERAGE_NON_NEIGHBOR_ENERGY);
+        outputWriter.printNonNeighborEnergy(nonNeighborEnergy);
     }
 
 }

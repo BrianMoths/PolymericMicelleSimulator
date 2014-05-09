@@ -5,6 +5,7 @@
 package FocusedSimulation;
 
 import Engine.PolymerSimulator;
+import SystemAnalysis.NonNeighborEnergy;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
@@ -22,6 +23,13 @@ public class StatisticsTracker {
             @Override
             public double getValue(PolymerSimulator polymerSimulator) {
                 return polymerSimulator.getSystemAnalyzer().getIdealGasPressure();
+            }
+
+        };
+        public static final TrackableVariable AVERAGE_NON_NEIGHBOR_ENERGY = new TrackableVariable() {
+            @Override
+            public double getValue(PolymerSimulator polymerSimulator) {
+                return NonNeighborEnergy.getAverageNonNeighborEnergy(polymerSimulator.getSystemAnalyzer());
             }
 
         };
@@ -64,6 +72,13 @@ public class StatisticsTracker {
             @Override
             public double getValue(PolymerSimulator polymerSimulator) {
                 return polymerSimulator.getGeometry().getVolume();
+            }
+
+        };
+        public static final TrackableVariable NUMBER_DENSITY = new TrackableVariable() {
+            @Override
+            public double getValue(PolymerSimulator polymerSimulator) {
+                return polymerSimulator.getNumBeads() / polymerSimulator.getGeometry().getVolume();
             }
 
         };

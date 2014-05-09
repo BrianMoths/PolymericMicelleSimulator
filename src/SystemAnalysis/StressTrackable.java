@@ -11,14 +11,17 @@ import FocusedSimulation.StatisticsTracker.TrackableVariable;
  *
  * @author bmoths
  */
-public final class StressTrackable {
+public class StressTrackable {
 
-    static public final StressTrackable TOTAL_STRESS_TRACKABLE = new StressTrackable();
+    static public final double defaultSizeFraction = 1. / 3.;
+    static public final StressTrackable MIDDLE_REGION_STRESS_TRACKABLE = new StressTrackable(defaultSizeFraction);
     private double[][] stress;
     private final TrackableVariable stress11, stress12, stress22;
     private boolean is11Retrieved = true, is12Retrieved = true, is22Retrieved = true;
+    private final double sizeFraction;
 
-    private StressTrackable() {
+    protected StressTrackable(double sizeFraction) {
+        this.sizeFraction = sizeFraction;
         stress11 = new TrackableVariable() {
             @Override
             public double getValue(PolymerSimulator polymerSimulator) {
@@ -48,7 +51,7 @@ public final class StressTrackable {
         };
     }
 
-    private double getStress(int i, int j, PolymerSimulator polymerSimulator) {
+    protected double getStress(int i, int j, PolymerSimulator polymerSimulator) {
         if (isCalculationNeeded()) {
             calculateStress(polymerSimulator);
             resetBooleans();
@@ -63,10 +66,10 @@ public final class StressTrackable {
     }
 
     private void calculateStress(PolymerSimulator polymerSimulator) {
-        stress = StressFinder.calculateTotalStress(polymerSimulator);
+        stress = StressFinder.calculateTotalStress(polymerSimulator, sizeFraction);
     }
 
-    private boolean isCalculationNeeded() {
+    final protected boolean isCalculationNeeded() {
         return is11Retrieved && is12Retrieved && is22Retrieved;
     }
 
