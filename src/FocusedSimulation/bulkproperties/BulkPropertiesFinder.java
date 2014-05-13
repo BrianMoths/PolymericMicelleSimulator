@@ -56,10 +56,12 @@ public class BulkPropertiesFinder<U extends BulkPropertiesResultsWriter> extends
         return new BulkPropertiesFinder<>(input, new BulkPropertiesResultsWriter(input));
     }
 
-    private TrackableVariable numLeftBeadsTrackable;
+    private final LeftBeadsTrackable numLeftBeadsTrackable;
 
     protected BulkPropertiesFinder(Input input, U bulkPropertiesResultsWriter) throws FileNotFoundException {
         super(input, bulkPropertiesResultsWriter);
+        final double systemfraction = .2;
+        numLeftBeadsTrackable = new LeftBeadsTrackable(systemfraction, simulationRunner);
     }
 
     //<editor-fold defaultstate="collapsed" desc="initialize">
@@ -70,7 +72,7 @@ public class BulkPropertiesFinder<U extends BulkPropertiesResultsWriter> extends
 
     @Override
     protected void registerTrackablesToSimulationRunner() {
-        simulationRunner.trackVariable(makeNumLeftBeadsTrackable(simulationRunner.getPolymerSimulator().getGeometry().getSizeOfDimension(0) / 5));
+        simulationRunner.trackVariable(numLeftBeadsTrackable);
         simulationRunner.trackVariable(TrackableVariable.SYSTEM_VOLUME);
         simulationRunner.trackVariable(TrackableVariable.AVERAGE_NON_NEIGHBOR_ENERGY);
         simulationRunner.trackVariable(TrackableVariable.NUMBER_DENSITY);
@@ -82,25 +84,6 @@ public class BulkPropertiesFinder<U extends BulkPropertiesResultsWriter> extends
         simulationRunner.trackVariable((FullStressTrackable.FULL_REGION_STRESS_TRACKABLE).getStress11Trackable());
         simulationRunner.trackVariable((FullStressTrackable.FULL_REGION_STRESS_TRACKABLE).getStress12Trackable());
         simulationRunner.trackVariable((FullStressTrackable.FULL_REGION_STRESS_TRACKABLE).getStress22Trackable());
-    }
-
-    private TrackableVariable makeNumLeftBeadsTrackable(final double xPosition) {
-        numLeftBeadsTrackable = new TrackableVariable() {
-            @Override
-            public double getValue(PolymerSimulator polymerSimulator) {
-                final SystemAnalyzer systemAnalyzer = simulationRunner.getPolymerSimulator().getSystemAnalyzer();
-                final int numBeads = systemAnalyzer.getNumBeads();
-                int numLeftBeads = 0;
-                for (int bead = 0; bead < numBeads; bead++) {
-                    if (systemAnalyzer.getBeadPositionComponent(bead, 0) < xPosition) {
-                        numLeftBeads++;
-                    }
-                }
-                return numLeftBeads;
-            }
-
-        };
-        return numLeftBeadsTrackable;
     }
 
     @Override
@@ -171,7 +154,7 @@ public class BulkPropertiesFinder<U extends BulkPropertiesResultsWriter> extends
         final double mean = numLeftBeadsStatistics.getMean();
         final double standardDeviation = numLeftBeadsStatistics.getStandardDeviation();
 
-        final double compressibilityValue = standardDeviation * standardDeviation / (mean * simulationRunner.getPolymerSimulator().getEnergeticsConstants().getTemperature());
+        final double compressibilityValue = standardDeviation * standardDeviation / (mean * (mean / numLeftBeadsTrackable.getLeftRegionVolume()) * simulationRunner.getPolymerSimulator().getEnergeticsConstants().getTemperature());
 
         final double numSamples = numLeftBeadsStatistics.getN();
         final double standardError = standardDeviation / Math.sqrt(numSamples);
@@ -179,7 +162,7 @@ public class BulkPropertiesFinder<U extends BulkPropertiesResultsWriter> extends
 
         final double meanRelativeUncertainty = standardError / mean;
         final double standardDeviationRelativeUncertainty = standardDeviationUncertainty / standardDeviation;
-        final double compressibiltyRelativeUncertainty = Math.sqrt((2 * standardDeviationRelativeUncertainty * 2 * standardDeviationRelativeUncertainty) + (meanRelativeUncertainty * meanRelativeUncertainty));
+        final double compressibiltyRelativeUncertainty = 2 * Math.sqrt((standardDeviationRelativeUncertainty * standardDeviationRelativeUncertainty) + (meanRelativeUncertainty * meanRelativeUncertainty));
         final double compressibiltyUncertainty = compressibilityValue * compressibiltyRelativeUncertainty;
 
         final DoubleWithUncertainty compressibility = new DoubleWithUncertainty(compressibilityValue, compressibiltyUncertainty);

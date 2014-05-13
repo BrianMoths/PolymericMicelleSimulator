@@ -65,7 +65,7 @@ public class CompressibilityFinder extends BulkPropertiesFinder<CompressibilityR
         final DoubleWithUncertainty compressedDensity = simulationRunner.getRecentMeasurementForTrackedVariable(TrackableVariable.NUMBER_DENSITY);
         final double pressure = simulationRunner.getPolymerSimulator().getEnergeticsConstants().getExternalEnergyCalculator().getPressure();
 
-        final DoubleWithUncertainty compressiblity = equilibriumDensity.plus(compressedDensity.negation()).times(1 / pressure);
+        final DoubleWithUncertainty compressiblity = equilibriumDensity.plus(compressedDensity.negation()).times(1 / (pressure * equilibriumDensity.getValue()));
         outputWriter.printCompressiblity(compressiblity);
     }
 

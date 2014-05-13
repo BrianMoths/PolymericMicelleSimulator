@@ -11,6 +11,7 @@ import Engine.PolymerTopology.PolymerCluster;
 import Engine.SimulatorParameters.SystemParametersBuilder;
 import FocusedSimulation.AbstractFocusedSimulation;
 import FocusedSimulation.JobParameters.JobParametersBuilder;
+import static FocusedSimulation.bulkproperties.BulkPropertiesJobMaker.makeRescaleInput;
 import SGEManagement.Input;
 import SGEManagement.Input.InputBuilder;
 import SGEManagement.JobSubmitter;
@@ -31,7 +32,7 @@ public class CompressibilityJobMaker {
     }
 
     static private List<Input> makeInputs() {
-        return makeHorizontalRescalingInputs();
+        return makeCompressibilityInputs();
     }
 
     public static Input makeRescaleInput(final double scaleFactor, int jobNumber) {
@@ -51,7 +52,7 @@ public class CompressibilityJobMaker {
 
     public static InputBuilder makeRescaleInputBuilderWithHorizontalRescaling(final double verticalScale, final double horizontalScale, int jobNumber) {
         InputBuilder inputBuilder;
-        inputBuilder = getDefaultInputSurfaceTensionBuilder();
+        inputBuilder = getDefaultInputCompressibilityBuilder();
         final double aspectRatio = inputBuilder.getSystemParametersBuilder().getAspectRatio();
         inputBuilder.getSystemParametersBuilder().setAspectRatio(aspectRatio * horizontalScale / verticalScale);
         PolymerCluster polymerCluster = getPolymerCluster(verticalScale, horizontalScale);
@@ -68,6 +69,27 @@ public class CompressibilityJobMaker {
         final PolymerCluster polymerCluster = PolymerCluster.makeRepeatedChainCluster(polymerChain, 3 * (int) (defaultNumChains * verticalScale * horizontalScale));
         polymerCluster.setConcentrationInWater(defaultDensity);
         return polymerCluster;
+    }
+
+    private static List<Input> makeCompressibilityInputs() {
+        return makeCompressibilityInputs(1);
+    }
+
+    private static List<Input> makeCompressibilityInputs(int jobNumber) {
+        final double[] verticalRescaleFactors = {.05, .1, 3};
+        final double[] horizontalRescaleFactors = {2, 4, 10};
+
+        final List<Input> noSpringInputs = new ArrayList<>();
+
+        for (int i = 0; i < verticalRescaleFactors.length; i++) {
+            for (int j = 0; j < horizontalRescaleFactors.length; j++) {
+                final Input input = makeRescaleInput(verticalRescaleFactors[i], horizontalRescaleFactors[j], jobNumber);
+                noSpringInputs.add(input);
+                jobNumber++;
+            }
+        }
+
+        return noSpringInputs;
     }
 
     static private List<Input> makeHorizontalRescalingInputs() {
@@ -112,7 +134,7 @@ public class CompressibilityJobMaker {
     }
 
     //<editor-fold defaultstate="collapsed" desc="default input">
-    static private InputBuilder getDefaultInputSurfaceTensionBuilder() {
+    static private InputBuilder getDefaultInputCompressibilityBuilder() {
         SystemParametersBuilder systemParametersBuilder = getDefaultSystemParametersBuilder();
         JobParametersBuilder jobParametersBuilder = JobParametersBuilder.getDefaultJobParametersBuilder();
         Input.InputBuilder inputBuilder = new SGEManagement.Input.InputBuilder();
@@ -122,22 +144,19 @@ public class CompressibilityJobMaker {
     }
 
     static private final double defaultAspectRatio = .0286;
-    static private final double defaultOverlapCoefficient = -.06;
+    static private final double defaultOverlapCoefficient = -.126;
     static private final double defaultInteractionLength = 4.;
-    static private final double defaultXPosition = 50;
-    static private final double defaultSpringConstant = 10;
     static private final int defaultNumBeadsPerChain = 15;
     static private final int defaultNumChains = 75;
     static private final double defaultDensity = .0175;
+    static private final double defaultPressure = .1;
 
     private static SystemParametersBuilder getDefaultSystemParametersBuilder() {
         SystemParametersBuilder systemParametersBuilder = new SystemParametersBuilder();
         systemParametersBuilder.setAspectRatio(defaultAspectRatio);
         EnergeticsConstantsBuilder energeticsConstantsBuilder = EnergeticsConstantsBuilder.zeroEnergeticsConstantsBuilder();
-        energeticsConstantsBuilder.setBBOverlapCoefficient(2 * defaultOverlapCoefficient);
-        ExternalEnergyCalculatorBuilder externalEnergyCalculatorBuilder = new ExternalEnergyCalculatorBuilder();
-        externalEnergyCalculatorBuilder.setXPositionAndSpringConstant(defaultXPosition, defaultSpringConstant);
-        energeticsConstantsBuilder.setExternalEnergyCalculatorBuilder(externalEnergyCalculatorBuilder);
+        energeticsConstantsBuilder.setBBOverlapCoefficient(defaultOverlapCoefficient);
+        energeticsConstantsBuilder.getExternalEnergyCalculatorBuilder().setPressure(defaultPressure);
         systemParametersBuilder.setEnergeticsConstantsBuilder(energeticsConstantsBuilder);
         systemParametersBuilder.setInteractionLength(defaultInteractionLength);
         systemParametersBuilder.setPolymerCluster(getDefaultPolymerCluster());
