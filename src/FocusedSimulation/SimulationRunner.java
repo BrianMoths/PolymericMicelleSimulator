@@ -13,6 +13,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import org.apache.commons.math3.stat.descriptive.DescriptiveStatistics;
 
 /**
  *
@@ -22,9 +23,9 @@ public class SimulationRunner {
 
     static public class SimulationRunnerParameters implements Serializable {
 
-        static private final int defaultNumIterationsPerSample = 100_000; // should depend on number of beads and size of resize steps
+        static private final int defaultNumIterationsPerSample = 100_000; // should depend on number of beads and size of resize steps 100_000
         static private final int defaultNumSamples = 1_000; //should depend on desired relative precision of result 10_000
-        static private final int defaultNumIterationsPerAnneal = 300_000;
+        static private final int defaultNumIterationsPerAnneal = 3_000; //300_000
 
         static public SimulationRunnerParameters defaultSimulationRunnerParameters() {
             final SimulationRunnerParameters defaultSimulationRunnerParameters;
@@ -116,6 +117,10 @@ public class SimulationRunner {
             final List<DoubleWithUncertainty> measuredValuesForTrackedVariable = measuredValues.get(trackableVariable);
             measuredValuesForTrackedVariable.add(doubleWithUncertainty);
         }
+    }
+
+    public DescriptiveStatistics getStatisticsFor(TrackableVariable trackableVariable) {
+        return statisticsTracker.getStatisticsFor(trackableVariable);
     }
 
     private DoubleWithUncertainty getAverageWithUncertainty(TrackableVariable trackableVariable) {

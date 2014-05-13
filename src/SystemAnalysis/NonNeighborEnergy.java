@@ -16,7 +16,8 @@ public class NonNeighborEnergy {
         final double totalDensityEnergy = systemAnalyzer.densityEnergy();
         final double neighborDensityEnergy = getNeighborDensityEnergy(systemAnalyzer);
         final int numBeads = systemAnalyzer.getNumBeads();
-        return (totalDensityEnergy - neighborDensityEnergy) / numBeads;
+        final double nonNeighborEnergy = (totalDensityEnergy - neighborDensityEnergy) / numBeads;
+        return nonNeighborEnergy;
     }
 
     static private double getNeighborDensityEnergy(SystemAnalyzer systemAnalyzer) {
