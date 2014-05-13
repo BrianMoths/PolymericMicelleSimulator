@@ -6,19 +6,32 @@ package FocusedSimulation.compressibility;
 
 import Engine.PolymerSimulator;
 import Engine.SimulatorParameters;
+import FocusedSimulation.DoubleWithUncertainty;
 import FocusedSimulation.JobParameters;
 import FocusedSimulation.SimulationRunner;
 import FocusedSimulation.SimulationRunner.SimulationRunnerParameters;
+import FocusedSimulation.StatisticsTracker.TrackableVariable;
+import FocusedSimulation.bulkproperties.BulkPropertiesFinder;
 import SGEManagement.Input;
 import SGEManagement.Input.InputBuilder;
+import java.io.FileNotFoundException;
 
 /**
  *
  * @author bmoths
  */
-public class CompressibilityFinder {
+public class CompressibilityFinder extends BulkPropertiesFinder<CompressibilityResultsWriter> {
 
     public static void main(String[] args) {
+        final Input input = readInput(args);
+        try {
+            final CompressibilityFinder compressibilityFinder;
+            compressibilityFinder = new CompressibilityFinder(input);
+            compressibilityFinder.doSimulation();
+            compressibilityFinder.closeOutputWriter();
+        } catch (FileNotFoundException ex) {
+            System.out.println("File not able to be opened");
+        }
     }
 
     private static Input readInput(String[] args) {
@@ -37,18 +50,23 @@ public class CompressibilityFinder {
         }
     }
 
-    private final JobParameters jobParameters;
-    private final SimulatorParameters systemParameters;
-    private final CompressibilityOutputWriter outputWriter;
-    private final PolymerSimulator polymerSimulator;
-    private final SimulationRunner simulationRunner;
+    public CompressibilityFinder(Input input) throws FileNotFoundException {
+        super(input, new CompressibilityResultsWriter(input));
+    }
 
-    public CompressibilityFinder(Input input) {
-        jobParameters = input.getJobParameters();
-        systemParameters = input.getSystemParameters();
-        outputWriter = new CompressibilityOutputWriter();
-        polymerSimulator = systemParameters.makePolymerSimulator();
-        simulationRunner = new SimulationRunner(polymerSimulator, SimulationRunnerParameters.defaultSimulationRunnerParameters());
+    @Override
+    protected void analyzeAndPrintResults() {
+        super.analyzeAndPrintResults(); //To change body of generated methods, choose Tools | Templates.
+        analyzeAndPrintCompressibilty();
+    }
+
+    private void analyzeAndPrintCompressibilty() {
+        final DoubleWithUncertainty equilibriumDensity = new DoubleWithUncertainty(.2970, .0003);
+        final DoubleWithUncertainty compressedDensity = simulationRunner.getRecentMeasurementForTrackedVariable(TrackableVariable.NUMBER_DENSITY);
+        final double pressure = simulationRunner.getPolymerSimulator().getEnergeticsConstants().getExternalEnergyCalculator().getPressure();
+
+        final DoubleWithUncertainty compressiblity = equilibriumDensity.plus(compressedDensity.negation()).times(1 / pressure);
+        outputWriter.printCompressiblity(compressiblity);
     }
 
 }

@@ -18,8 +18,16 @@ public class DoubleWithUncertainty {
         this.uncertainty = uncertainty;
     }
 
+    public DoubleWithUncertainty plus(DoubleWithUncertainty addend) {
+        return new DoubleWithUncertainty(value + addend.value, Math.sqrt(getVariance() + addend.getVariance()));
+    }
+
     public DoubleWithUncertainty times(double factor) {
         return new DoubleWithUncertainty(value * factor, uncertainty * factor);
+    }
+
+    public DoubleWithUncertainty negation() {
+        return new DoubleWithUncertainty(-value, uncertainty);
     }
 
     public DoubleWithUncertainty reciprocal() {
@@ -41,6 +49,10 @@ public class DoubleWithUncertainty {
 
     public double getUncertainty() {
         return uncertainty;
+    }
+
+    public double getVariance() {
+        return getUncertainty() * getUncertainty();
     }
 
     public double getRelativeError() {

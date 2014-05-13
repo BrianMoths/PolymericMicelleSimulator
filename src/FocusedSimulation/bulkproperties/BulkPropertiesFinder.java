@@ -21,13 +21,13 @@ import org.apache.commons.math3.stat.descriptive.DescriptiveStatistics;
  *
  * @author bmoths
  */
-public class BulkPropertiesFinder extends AbstractFocusedSimulation<BulkPropertiesResultsWriter> {
+public class BulkPropertiesFinder<U extends BulkPropertiesResultsWriter> extends AbstractFocusedSimulation<U> {
 
     public static void main(String[] args) {
         final Input input = readInput(args);
         try {
             final BulkPropertiesFinder densityFinder;
-            densityFinder = new BulkPropertiesFinder(input);
+            densityFinder = makeBulkPropertiesFinderWithDefaultWriter(input);
             densityFinder.doSimulation();
             densityFinder.closeOutputWriter();
         } catch (FileNotFoundException ex) {
@@ -52,10 +52,14 @@ public class BulkPropertiesFinder extends AbstractFocusedSimulation<BulkProperti
         }
     }
 
-    TrackableVariable numLeftBeadsTrackable;
+    private static BulkPropertiesFinder<BulkPropertiesResultsWriter> makeBulkPropertiesFinderWithDefaultWriter(Input input) throws FileNotFoundException {
+        return new BulkPropertiesFinder<>(input, new BulkPropertiesResultsWriter(input));
+    }
 
-    private BulkPropertiesFinder(Input input) throws FileNotFoundException {
-        super(input, new BulkPropertiesResultsWriter(input));
+    private TrackableVariable numLeftBeadsTrackable;
+
+    protected BulkPropertiesFinder(Input input, U bulkPropertiesResultsWriter) throws FileNotFoundException {
+        super(input, bulkPropertiesResultsWriter);
     }
 
     //<editor-fold defaultstate="collapsed" desc="initialize">
