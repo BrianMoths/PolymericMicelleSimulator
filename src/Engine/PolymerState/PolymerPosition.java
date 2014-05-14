@@ -149,6 +149,7 @@ public class PolymerPosition implements ImmutablePolymerPosition {
     public void recenter() {
         double[] averagePosition = getAveragePosition();
         subtractFromAllPositions(averagePosition);
+        analyzersRebinBeads();
     }
 
     private double[] getAveragePosition() {
