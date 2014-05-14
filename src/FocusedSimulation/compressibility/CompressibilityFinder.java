@@ -36,8 +36,8 @@ public class CompressibilityFinder extends BulkPropertiesFinder<CompressibilityR
 
     private static Input readInput(String[] args) {
         if (args.length == 0) {
-            final double verticalScaleFactor = .25;
-            final double horizontalScaleFactor = 10;
+            final double verticalScaleFactor = .1;
+            final double horizontalScaleFactor = 4;
 
             InputBuilder inputBuilder = CompressibilityJobMaker.makeRescaleInputBuilderWithHorizontalRescaling(verticalScaleFactor, horizontalScaleFactor, 0);
             inputBuilder.getJobParametersBuilder().setNumAnneals(5);
@@ -65,7 +65,7 @@ public class CompressibilityFinder extends BulkPropertiesFinder<CompressibilityR
         final DoubleWithUncertainty compressedDensity = simulationRunner.getRecentMeasurementForTrackedVariable(TrackableVariable.NUMBER_DENSITY);
         final double pressure = simulationRunner.getPolymerSimulator().getEnergeticsConstants().getExternalEnergyCalculator().getPressure();
 
-        final DoubleWithUncertainty compressiblity = equilibriumDensity.plus(compressedDensity.negation()).times(1 / (pressure * equilibriumDensity.getValue()));
+        final DoubleWithUncertainty compressiblity = compressedDensity.plus(equilibriumDensity.negation()).times(1 / (pressure * equilibriumDensity.getValue()));
         outputWriter.printCompressiblity(compressiblity);
     }
 

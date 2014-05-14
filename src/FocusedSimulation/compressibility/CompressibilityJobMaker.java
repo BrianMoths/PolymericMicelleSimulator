@@ -58,7 +58,7 @@ public class CompressibilityJobMaker {
         PolymerCluster polymerCluster = getPolymerCluster(verticalScale, horizontalScale);
         inputBuilder.getSystemParametersBuilder().setPolymerCluster(polymerCluster);
         final ExternalEnergyCalculatorBuilder externalEnergyCalculatorBuilder = new ExternalEnergyCalculatorBuilder();
-        externalEnergyCalculatorBuilder.setPressure(25);
+        externalEnergyCalculatorBuilder.setPressure(.1);
         inputBuilder.getSystemParametersBuilder().getEnergeticsConstantsBuilder().setExternalEnergyCalculatorBuilder(externalEnergyCalculatorBuilder);
         inputBuilder.getJobParametersBuilder().setJobNumber(jobNumber);
         return inputBuilder;
@@ -148,7 +148,7 @@ public class CompressibilityJobMaker {
     static private final double defaultInteractionLength = 4.;
     static private final int defaultNumBeadsPerChain = 15;
     static private final int defaultNumChains = 75;
-    static private final double defaultDensity = .0175;
+    static private final double defaultDensity = .35;
     static private final double defaultPressure = .1;
 
     private static SystemParametersBuilder getDefaultSystemParametersBuilder() {

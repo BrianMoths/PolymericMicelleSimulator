@@ -32,8 +32,8 @@ public class ChainMoveStepGenerator implements StepGenerator {
         List<Integer> chain = getChain(systemAnalyzer);
         final double[] stepVector = getStepVector(systemAnalyzer); //need to make this bigger
 
-//        stepVector[0] *= 1;
-//        stepVector[1] *= 1;
+        stepVector[0] *= 0.2;
+        stepVector[1] *= 0.2;
 
         return new SingleChainStep(chain, stepVector);
     }

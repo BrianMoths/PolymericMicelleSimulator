@@ -88,7 +88,7 @@ public class OutputWriter {
 
     public void printAndSoutString(final CharSequence string) {
         printString(string);
-        System.out.println(string);
+        System.out.print(string);
     }
 
     public void printString(final CharSequence string) {
