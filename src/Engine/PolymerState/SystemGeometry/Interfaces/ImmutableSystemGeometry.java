@@ -106,6 +106,15 @@ public interface ImmutableSystemGeometry extends Serializable {
      */
     public boolean incrementFirstVector(double[] toStep, double[] stepVector);
 
+    /**
+     * decrements toStep by stepVector. It is meant to be called only after a
+     * successful call to incrementFirstVector, in which case this method will
+     * reverse the effect of incrementFirstVector. The function modifies toStep
+     * but leaves stepVector unmodified.
+     *
+     * @param toStep The vector to be decremented. This argument is modified.
+     * @param stepVector The step by which to decrement
+     */
     public void decrementFirstVector(double[] toStep, double[] stepVector);
 
     public void checkedCopyPosition(double[] src, double[] dest);
@@ -121,5 +130,7 @@ public interface ImmutableSystemGeometry extends Serializable {
     public CirclesAndClippedPerimeter getCirclesAndBoundaryPerimeterFromPosition(double[][] beadPositions);
 
     public Rectangle2D getBoundaryRectangle();
+
+    public boolean incrementVectors(double[][] vectors, double[] stepVector);
 
 }

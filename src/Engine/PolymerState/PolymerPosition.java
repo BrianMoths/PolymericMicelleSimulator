@@ -145,6 +145,32 @@ public class PolymerPosition implements ImmutablePolymerPosition {
         }
         analyzersRebinBeads();
     }
+
+    public void recenter() {
+        double[] averagePosition = getAveragePosition();
+        subtractFromAllPositions(averagePosition);
+    }
+
+    private double[] getAveragePosition() {
+        double[] averagePosition = {0, 0, 0};
+        final int numDimensions = systemGeometry.getNumDimensions();
+        for (int bead = 0; bead < numBeads; bead++) {
+            for (int dimension = 0; dimension < numDimensions; dimension++) {
+                averagePosition[dimension] += beadPositions[bead][dimension];
+            }
+        }
+        for (int dimension = 0; dimension < numDimensions; dimension++) {
+            averagePosition[dimension] /= numBeads;
+        }
+        return averagePosition;
+    }
+
+    private void subtractFromAllPositions(double[] subtrahend) {
+        for (int i = 0; i < subtrahend.length; i++) {
+            subtrahend[i] = -subtrahend[i];
+        }
+        systemGeometry.incrementVectors(beadPositions, subtrahend);
+    }
     //</editor-fold>
 
     //<editor-fold defaultstate="collapsed" desc="deal with analyzers">

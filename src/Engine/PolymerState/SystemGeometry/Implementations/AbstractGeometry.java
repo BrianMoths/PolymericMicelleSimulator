@@ -150,6 +150,7 @@ public abstract class AbstractGeometry implements SystemGeometry {
         return stringBuilder.toString();
     }
 
+    //<editor-fold defaultstate="collapsed" desc="random positions">
     @Override
     public double[] randomMiddlePosition() {
         return randomMiddlePosition(1. / 3.);
@@ -237,6 +238,7 @@ public abstract class AbstractGeometry implements SystemGeometry {
         }
         return randomVector;
     }
+    //</editor-fold>
 
     @Override
     public double getVolume() {
@@ -327,6 +329,22 @@ public abstract class AbstractGeometry implements SystemGeometry {
     @Override
     public void setRMax(int index, double rMax) {
         this.fullRMax[index] = rMax;
+    }
+
+    public boolean incrementVectors(double[][] vectors, double[] stepVector) {
+        final int numVectors = vectors.length;
+        boolean isSuccessful = true;
+        int currentVector;
+        for (currentVector = 0; currentVector < numVectors && isSuccessful; currentVector++) {
+            isSuccessful = incrementFirstVector(vectors[currentVector], stepVector);
+        }
+        if (!isSuccessful) {
+            currentVector--;
+            for (; currentVector >= 0; currentVector--) {
+                decrementFirstVector(vectors[currentVector], stepVector);
+            }
+        }
+        return isSuccessful;
     }
 
     @Override
