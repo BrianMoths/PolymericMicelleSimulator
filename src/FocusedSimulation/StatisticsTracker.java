@@ -68,6 +68,9 @@ public class StatisticsTracker {
             }
 
         };
+        /**
+         * gives the total volume of the system, including unoccupied volume.
+         */
         public static final TrackableVariable SYSTEM_VOLUME = new TrackableVariable() {
             @Override
             public double getValue(PolymerSimulator polymerSimulator) {
@@ -75,10 +78,20 @@ public class StatisticsTracker {
             }
 
         };
+        /**
+         * gives the number of beads divided by the total volume of the system.
+         */
         public static final TrackableVariable NUMBER_DENSITY = new TrackableVariable() {
             @Override
             public double getValue(PolymerSimulator polymerSimulator) {
                 return polymerSimulator.getNumBeads() / polymerSimulator.getGeometry().getVolume();
+            }
+
+        };
+        public static final TrackableVariable OCCUPIED_VOLUME = new TrackableVariable() {
+            @Override
+            public double getValue(PolymerSimulator polymerSimulator) {
+                return polymerSimulator.getSystemAnalyzer().findArea();
             }
 
         };

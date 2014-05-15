@@ -41,7 +41,7 @@ public class CompressibilityFinder extends BulkPropertiesFinder<CompressibilityR
 
             InputBuilder inputBuilder = CompressibilityJobMaker.makeRescaleInputBuilderWithHorizontalRescaling(verticalScaleFactor, horizontalScaleFactor, 0);
             inputBuilder.getJobParametersBuilder().setNumAnneals(5);
-            return inputBuilder.buildInputAutomaticHardOverlap();
+            return inputBuilder.buildInput();
         } else if (args.length == 1) {
             final String fileName = args[0];
             return Input.readInputFromFile(fileName);
@@ -52,6 +52,12 @@ public class CompressibilityFinder extends BulkPropertiesFinder<CompressibilityR
 
     public CompressibilityFinder(Input input) throws FileNotFoundException {
         super(input, new CompressibilityResultsWriter(input));
+    }
+
+    @Override
+    protected void printInitialOutput() {
+        super.printInitialOutput(); //To change body of generated methods, choose Tools | Templates.
+        outputWriter.printPressure(simulationRunner.getPolymerSimulator().getEnergeticsConstants().getExternalEnergyCalculator().getPressure());
     }
 
     @Override

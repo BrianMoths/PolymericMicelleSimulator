@@ -60,7 +60,7 @@ public class BulkPropertiesFinder<U extends BulkPropertiesResultsWriter> extends
 
     protected BulkPropertiesFinder(Input input, U bulkPropertiesResultsWriter) throws FileNotFoundException {
         super(input, bulkPropertiesResultsWriter);
-        final double systemfraction = .2;
+        final double systemfraction = .02;
         numLeftBeadsTrackable = new LeftBeadsTrackable(systemfraction, simulationRunner);
     }
 

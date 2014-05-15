@@ -24,4 +24,9 @@ public class CompressibilityResultsWriter extends BulkPropertiesResultsWriter {
         printAndSoutCaptionedObject(caption, compressibility);
     }
 
+    void printPressure(Double pressure) {
+        final String caption = "Pressure";
+        printAndSoutCaptionedObject(caption, pressure);
+    }
+
 }

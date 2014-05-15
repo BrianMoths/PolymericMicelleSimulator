@@ -5,13 +5,11 @@
 package FocusedSimulation.compressibility;
 
 import Engine.Energetics.EnergeticsConstants.EnergeticsConstantsBuilder;
-import Engine.Energetics.ExternalEnergyCalculator.ExternalEnergyCalculatorBuilder;
 import Engine.PolymerTopology.PolymerChain;
 import Engine.PolymerTopology.PolymerCluster;
 import Engine.SimulatorParameters.SystemParametersBuilder;
 import FocusedSimulation.AbstractFocusedSimulation;
 import FocusedSimulation.JobParameters.JobParametersBuilder;
-import static FocusedSimulation.bulkproperties.BulkPropertiesJobMaker.makeRescaleInput;
 import SGEManagement.Input;
 import SGEManagement.Input.InputBuilder;
 import SGEManagement.JobSubmitter;
@@ -57,16 +55,19 @@ public class CompressibilityJobMaker {
         inputBuilder.getSystemParametersBuilder().setAspectRatio(aspectRatio * horizontalScale / verticalScale);
         PolymerCluster polymerCluster = getPolymerCluster(verticalScale, horizontalScale);
         inputBuilder.getSystemParametersBuilder().setPolymerCluster(polymerCluster);
-        final ExternalEnergyCalculatorBuilder externalEnergyCalculatorBuilder = new ExternalEnergyCalculatorBuilder();
-        externalEnergyCalculatorBuilder.setPressure(.1);
-        inputBuilder.getSystemParametersBuilder().getEnergeticsConstantsBuilder().setExternalEnergyCalculatorBuilder(externalEnergyCalculatorBuilder);
+        inputBuilder.getSystemParametersBuilder().getEnergeticsConstantsBuilder().getExternalEnergyCalculatorBuilder().setPressure(.03);
         inputBuilder.getJobParametersBuilder().setJobNumber(jobNumber);
+        inputBuilder.getJobParametersBuilder().setNumSimulationTrials(5);
+        inputBuilder.getSystemParametersBuilder().autosetCoreParameters();
+        final EnergeticsConstantsBuilder energeticsConstantsBuilder = inputBuilder.getSystemParametersBuilder().getEnergeticsConstantsBuilder();
+        energeticsConstantsBuilder.setBBOverlapCoefficient(3 * energeticsConstantsBuilder.getBBOverlapCoefficient());
+        energeticsConstantsBuilder.setHardOverlapCoefficient(3 * energeticsConstantsBuilder.getHardOverlapCoefficient());
         return inputBuilder;
     }
 
     private static PolymerCluster getPolymerCluster(final double verticalScale, final double horizontalScale) {
         final PolymerChain polymerChain = PolymerChain.makeChainOfType(false, defaultNumBeadsPerChain);
-        final PolymerCluster polymerCluster = PolymerCluster.makeRepeatedChainCluster(polymerChain, 3 * (int) (defaultNumChains * verticalScale * horizontalScale));
+        final PolymerCluster polymerCluster = PolymerCluster.makeRepeatedChainCluster(polymerChain, (int) (defaultNumChains * verticalScale * horizontalScale));
         polymerCluster.setConcentrationInWater(defaultDensity);
         return polymerCluster;
     }

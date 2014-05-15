@@ -20,7 +20,7 @@ public class StressTrackable {
     private boolean is11Retrieved = true, is12Retrieved = true, is22Retrieved = true;
     private final double sizeFraction;
 
-    protected StressTrackable(double sizeFraction) {
+    public StressTrackable(double sizeFraction) {
         this.sizeFraction = sizeFraction;
         stress11 = new TrackableVariable() {
             @Override

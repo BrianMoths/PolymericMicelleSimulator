@@ -100,6 +100,32 @@ public class PolymerPosition implements ImmutablePolymerPosition {
         }
     }
 
+    public void reasonableMiddleRandomize(ImmutableDiscretePolymerState immutableDiscretePolymerState) {
+        List<Boolean> isRandomized = new ArrayList<>(numBeads);
+        for (int bead = 0; bead < numBeads; bead++) {
+            isRandomized.add(false);
+        }
+        for (int bead = 0; bead < numBeads; bead++) {
+            if (!isRandomized.get(bead)) {
+                List<Integer> chainOfBead = immutableDiscretePolymerState.getChainOfBead(bead);
+                reasonableMiddleChainRandomize(chainOfBead);
+                for (Integer randomizedBead : chainOfBead) {
+                    isRandomized.set(randomizedBead, true);
+                }
+            }
+
+        }
+
+    }
+
+    private void reasonableMiddleChainRandomize(List<Integer> chainOfBead) {
+        double[] currentPosition = systemGeometry.randomMiddlePosition();
+        for (int currentBead : chainOfBead) {
+            movePositionByStep(currentPosition);
+            setBeadPositionNoRebin(currentBead, currentPosition);
+        }
+    }
+
     public void reasonableRandomize(ImmutableDiscretePolymerState immutableDiscretePolymerState) {
         List<Boolean> isRandomized = new ArrayList<>(numBeads);
         for (int bead = 0; bead < numBeads; bead++) {

@@ -138,6 +138,10 @@ public class PolymerSimulator implements Serializable {
         energyEntropy = systemAnalyzer.computeEnergyEntropy();
     }
 
+    public synchronized void reasonableMiddleRandomize() {
+        polymerState.reasonableMiddleRandomize();
+    }
+
     public synchronized void reasonableColumnRandomize() {
         polymerState.reasonableColumnRandomize();
     }
@@ -150,6 +154,10 @@ public class PolymerSimulator implements Serializable {
         resetCounters();
         polymerPosition.anneal();
         energyEntropy = systemAnalyzer.computeEnergyEntropy();
+    }
+
+    public void recenter() {
+        polymerPosition.recenter();
     }
 
     public void doIterations(int n) {
