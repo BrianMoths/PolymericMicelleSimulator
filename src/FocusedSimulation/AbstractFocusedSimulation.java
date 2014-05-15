@@ -118,7 +118,7 @@ public abstract class AbstractFocusedSimulation<T extends AbstractResultsWriter>
         outputWriter.printAnnealDone(annealsDoneSoFar);
     }
 
-    private StepGenerator makeInitialStepGenerator() {
+    protected StepGenerator makeInitialStepGenerator() {
         EnumMap<StepType, Double> stepweights = new EnumMap<>(StepType.class);
         stepweights.put(StepType.SINGLE_WALL_RESIZE, .0001);
         stepweights.put(StepType.SINGLE_BEAD, 1.);

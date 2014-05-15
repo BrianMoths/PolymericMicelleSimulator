@@ -4,12 +4,16 @@
  */
 package FocusedSimulation.blob;
 
+import Engine.SimulationStepping.StepGenerators.CompoundStepGenerators.GeneralStepGenerator;
+import Engine.SimulationStepping.StepGenerators.StepGenerator;
+import Engine.SimulationStepping.StepTypes.StepType;
 import FocusedSimulation.AbstractFocusedSimulation;
 import FocusedSimulation.StatisticsTracker.TrackableVariable;
 import FocusedSimulation.surfacetension.SurfaceTensionResultsWriter;
 import SGEManagement.Input;
 import SystemAnalysis.StressTrackable;
 import java.io.FileNotFoundException;
+import java.util.EnumMap;
 
 /**
  *
@@ -32,8 +36,23 @@ public class BlobFinder extends AbstractFocusedSimulation<BlobResultsWriter> {
     }
 
     @Override
+    protected StepGenerator makeMainStepGenerator() {
+        EnumMap<StepType, Double> stepweights = new EnumMap<>(StepType.class);
+        stepweights.put(StepType.SINGLE_BEAD, 1.);
+        stepweights.put(StepType.REPTATION, .1);
+        stepweights.put(StepType.SINGLE_CHAIN, .01);
+        return new GeneralStepGenerator(stepweights);
+    }
+
+    @Override
+    protected StepGenerator makeInitialStepGenerator() {
+        EnumMap<StepType, Double> stepweights = new EnumMap<>(StepType.class);
+        stepweights.put(StepType.SINGLE_BEAD, 1.);
+        return new GeneralStepGenerator(stepweights);
+    }
+
+    @Override
     protected void registerTrackablesToSimulationRunner() {
-        simulationRunner.trackVariable(TrackableVariable.SYSTEM_WIDTH);
         simulationRunner.trackVariable(middleStressTrackable.getStress11Trackable());
         simulationRunner.trackVariable(middleStressTrackable.getStress12Trackable());
         simulationRunner.trackVariable(middleStressTrackable.getStress22Trackable());
@@ -49,8 +68,10 @@ public class BlobFinder extends AbstractFocusedSimulation<BlobResultsWriter> {
     @Override
     protected void analyzeAndPrintResults() {
         simulationRunner.getPolymerSimulator().recenter();
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-        //want to print area occupied by beads, ideal gas pressure, stress, 
+//        analyzeAndPrintDensity();
+//        analyzeAndPrintVolume();
+//        analyzeAndPrintIdealGasPressure();
+//        analyzeAndPrintStress();
     }
 
     @Override

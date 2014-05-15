@@ -1,4 +1,2 @@
 write javadocs
 make simulation runner parameters settable by each different simulation.
-decrease size of chain step if necessary
-find a good value for pressure
