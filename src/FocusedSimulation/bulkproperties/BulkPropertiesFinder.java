@@ -43,6 +43,7 @@ public class BulkPropertiesFinder<U extends BulkPropertiesResultsWriter> extends
             InputBuilder inputBuilder = BulkPropertiesJobMaker.makeRescaleInputBuilderWithHorizontalRescaling(verticalScaleFactor, horizontalScaleFactor, 0);
             inputBuilder.getJobParametersBuilder().setNumAnneals(1);
             inputBuilder.getJobParametersBuilder().setNumSimulationTrials(5);
+            inputBuilder.getSystemParametersBuilder().getEnergeticsConstantsBuilder().setHardOverlapCoefficient(0);
             return inputBuilder.buildInput();
         } else if (args.length == 1) {
             final String fileName = args[0];
@@ -60,7 +61,7 @@ public class BulkPropertiesFinder<U extends BulkPropertiesResultsWriter> extends
 
     protected BulkPropertiesFinder(Input input, U bulkPropertiesResultsWriter) throws FileNotFoundException {
         super(input, bulkPropertiesResultsWriter);
-        final double systemfraction = .02;
+        final double systemfraction = .2;//.02
         numLeftBeadsTrackable = new LeftBeadsTrackable(systemfraction, simulationRunner);
     }
 

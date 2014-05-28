@@ -21,43 +21,6 @@ import org.apache.commons.math3.stat.descriptive.DescriptiveStatistics;
  */
 public class SimulationRunner {
 
-    static public class SimulationRunnerParameters implements Serializable {
-
-        static private final int defaultNumIterationsPerSample = 100_000; // should depend on number of beads and size of resize steps 100_000
-        static private final int defaultNumSamples = 1_000; //should depend on desired relative precision of result 10_000 high precision; 1_000 low precision
-        static private final int defaultNumIterationsPerAnneal = 300_000; //300_000
-
-        static public SimulationRunnerParameters defaultSimulationRunnerParameters() {
-            final SimulationRunnerParameters defaultSimulationRunnerParameters;
-            defaultSimulationRunnerParameters = new SimulationRunnerParameters(defaultNumIterationsPerSample, defaultNumSamples, defaultNumIterationsPerAnneal);
-            return defaultSimulationRunnerParameters;
-        }
-
-        private static final long serialVersionUID = 0L;
-        private final int numIterationsPerSample;
-        private final int numSamples;
-        private final int numIterationsPerAnneal;
-
-        public SimulationRunnerParameters(int numIterationsPerSample, int numSamples, int numIterationsPerAnneal) {
-            this.numIterationsPerSample = numIterationsPerSample;
-            this.numSamples = numSamples;
-            this.numIterationsPerAnneal = numIterationsPerAnneal;
-        }
-
-        public int getNumIterationsPerSample() {
-            return numIterationsPerSample;
-        }
-
-        public int getNumSamples() {
-            return numSamples;
-        }
-
-        public int getNumIterationsPerAnneal() {
-            return numIterationsPerAnneal;
-        }
-
-    }
-
     private final PolymerSimulator polymerSimulator;
     private final StatisticsTracker statisticsTracker;
     private final SimulationRunnerParameters simulationRunnerParameters;

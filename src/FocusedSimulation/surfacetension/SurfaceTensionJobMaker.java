@@ -11,7 +11,7 @@ import Engine.PolymerTopology.PolymerCluster;
 import Engine.SimulatorParameters.SystemParametersBuilder;
 import FocusedSimulation.AbstractFocusedSimulation;
 import FocusedSimulation.JobParameters.JobParametersBuilder;
-import FocusedSimulation.SimulationRunner.SimulationRunnerParameters;
+import FocusedSimulation.SimulationRunnerParameters;
 import SGEManagement.Input;
 import SGEManagement.Input.InputBuilder;
 import SGEManagement.JobSubmitter;
@@ -27,7 +27,8 @@ public class SurfaceTensionJobMaker {
     public static final String pathToFocusedSimulationClass = AbstractFocusedSimulation.pathToFocusedSimulation + "surfacetension/SurfaceTensionFinder";
 
     public static void main(String[] args) {
-        final List<Input> inputs = smallSystemInput(1);
+//        final List<Input> inputs = smallSystemInput(1);
+        final List<Input> inputs = longRunInput(1);
         JobSubmitter.submitJobs(pathToFocusedSimulationClass, inputs);
     }
 
@@ -292,6 +293,21 @@ public class SurfaceTensionJobMaker {
         ExternalEnergyCalculatorBuilder newExternalEnergyCalculatorBuilder = new ExternalEnergyCalculatorBuilder().setXPositionAndSpringConstant(newXEquilibrium, newSpringConstant);
         inputBuilder.getSystemParametersBuilder().getEnergeticsConstantsBuilder().setExternalEnergyCalculatorBuilder(newExternalEnergyCalculatorBuilder);
         return inputBuilder.buildInputAutomaticHardOverlap();
+    }
+
+    private static List<Input> longRunInput(int jobNumber) {
+
+        List<Input> inputs = new ArrayList<>();
+
+        InputBuilder inputBuilder;
+
+        for (int i = 0; i < 20; i++) {
+            inputBuilder = makeRescaleInputBuilderWithHorizontalRescaling(.1, 1, jobNumber);
+            inputBuilder.getJobParametersBuilder().getSimulationRunnerParametersBuilder().setNumSamples(100_000);
+            inputs.add(inputBuilder.buildInput());
+            jobNumber++;
+        }
+        return inputs;
     }
 
     private static List<Input> smallSystemInput(int jobNumber) {

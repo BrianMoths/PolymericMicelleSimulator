@@ -9,7 +9,7 @@ import Engine.SimulatorParameters;
 import FocusedSimulation.DoubleWithUncertainty;
 import FocusedSimulation.JobParameters;
 import FocusedSimulation.SimulationRunner;
-import FocusedSimulation.SimulationRunner.SimulationRunnerParameters;
+import FocusedSimulation.SimulationRunnerParameters;
 import FocusedSimulation.StatisticsTracker.TrackableVariable;
 import FocusedSimulation.bulkproperties.BulkPropertiesFinder;
 import SGEManagement.Input;

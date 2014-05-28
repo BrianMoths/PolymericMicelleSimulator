@@ -10,7 +10,7 @@ import Engine.SimulationStepping.StepGenerators.CompoundStepGenerators.GeneralSt
 import Engine.SimulationStepping.StepGenerators.StepGenerator;
 import Engine.SimulationStepping.StepTypes.StepType;
 import Engine.SimulatorParameters;
-import FocusedSimulation.SimulationRunner.SimulationRunnerParameters;
+import FocusedSimulation.SimulationRunnerParameters;
 import FocusedSimulation.output.AbstractResultsWriter;
 import FocusedSimulation.output.PolymerSimulatorWriter;
 import Gui.SystemViewer;

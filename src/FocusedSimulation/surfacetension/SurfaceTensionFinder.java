@@ -43,8 +43,8 @@ public class SurfaceTensionFinder extends AbstractFocusedSimulation<SurfaceTensi
 
     private static Input readInput(String[] args) {
         if (args.length == 0) {
-            final double verticalScaleFactor = .05;
-            final double horizontalScaleFactor = 10;
+            final double verticalScaleFactor = .1;
+            final double horizontalScaleFactor = 2;
 
             InputBuilder inputBuilder = SurfaceTensionJobMaker.makeRescaleInputBuilderWithHorizontalRescaling(verticalScaleFactor, horizontalScaleFactor, 0);
             inputBuilder.getJobParametersBuilder().setNumAnneals(1);
