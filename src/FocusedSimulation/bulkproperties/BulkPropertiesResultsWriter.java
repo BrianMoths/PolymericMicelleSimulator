@@ -58,8 +58,13 @@ public class BulkPropertiesResultsWriter extends AbstractResultsWriter {
         printAndSoutCaptionedObject(caption, nonNeighborEnergy);
     }
 
-    void printCompressibility(DoubleWithUncertainty compressibility) {
-        final String caption = "Compressibility measured from fluctuation";
+    void printCompressibilityFromNumber(DoubleWithUncertainty compressibility) {
+        final String caption = "Compressibility measured from number fluctuation";
+        printAndSoutCaptionedObject(caption, compressibility);
+    }
+
+    void printCompressibilityFromVolume(DoubleWithUncertainty compressibility) {
+        final String caption = "Compressibility measured from volume fluctuation";
         printAndSoutCaptionedObject(caption, compressibility);
     }
 

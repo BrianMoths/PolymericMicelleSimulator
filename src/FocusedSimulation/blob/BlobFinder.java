@@ -8,10 +8,14 @@ import Engine.SimulationStepping.StepGenerators.CompoundStepGenerators.GeneralSt
 import Engine.SimulationStepping.StepGenerators.StepGenerator;
 import Engine.SimulationStepping.StepTypes.StepType;
 import FocusedSimulation.AbstractFocusedSimulation;
+import FocusedSimulation.DoubleWithUncertainty;
 import FocusedSimulation.StatisticsTracker.TrackableVariable;
+import FocusedSimulation.compressibility.CompressibilityFinder;
+import FocusedSimulation.compressibility.CompressibilityJobMaker;
 import FocusedSimulation.surfacetension.SurfaceTensionResultsWriter;
 import SGEManagement.Input;
-import SystemAnalysis.StressTrackable;
+import SGEManagement.Input.InputBuilder;
+import SystemAnalysis.FractionalVolumeStressTrackable;
 import java.io.FileNotFoundException;
 import java.util.EnumMap;
 
@@ -22,11 +26,41 @@ import java.util.EnumMap;
 public class BlobFinder extends AbstractFocusedSimulation<BlobResultsWriter> {
 
     static private final double stressTrackableSizeFraction = .1;
-    private final StressTrackable middleStressTrackable;
 
-    public BlobFinder(Input input, BlobResultsWriter outputWriter) throws FileNotFoundException {
-        super(input, outputWriter);
-        middleStressTrackable = new StressTrackable(stressTrackableSizeFraction);
+    public static void main(String[] args) {
+        final Input input = readInput(args);
+        try {
+            final BlobFinder blobFinder;
+            blobFinder = new BlobFinder(input);
+            blobFinder.doSimulation();
+            blobFinder.closeOutputWriter();
+        } catch (FileNotFoundException ex) {
+            System.out.println("File not able to be opened");
+        }
+    }
+
+    private static Input readInput(String[] args) {
+        if (args.length == 0) {
+            final double verticalScaleFactor = .1;
+            final double horizontalScaleFactor = 4;
+
+            InputBuilder inputBuilder = BlobJobMaker.makeRescaleInputBuilderWithHorizontalRescaling(verticalScaleFactor, horizontalScaleFactor, 0);
+            inputBuilder.getJobParametersBuilder().setNumAnneals(5);
+            inputBuilder.getJobParametersBuilder().getSimulationRunnerParametersBuilder().setNumSamples(10); //1000
+            return inputBuilder.buildInput();
+        } else if (args.length == 1) {
+            final String fileName = args[0];
+            return Input.readInputFromFile(fileName);
+        } else {
+            throw new IllegalArgumentException("At most one input allowed");
+        }
+    }
+
+    private final FractionalVolumeStressTrackable middleStressTrackable;
+
+    public BlobFinder(Input input) throws FileNotFoundException {
+        super(input, new BlobResultsWriter(input));
+        middleStressTrackable = new FractionalVolumeStressTrackable(stressTrackableSizeFraction);
     }
 
     //<editor-fold defaultstate="collapsed" desc="initialize">
@@ -48,6 +82,8 @@ public class BlobFinder extends AbstractFocusedSimulation<BlobResultsWriter> {
     protected StepGenerator makeInitialStepGenerator() {
         EnumMap<StepType, Double> stepweights = new EnumMap<>(StepType.class);
         stepweights.put(StepType.SINGLE_BEAD, 1.);
+        stepweights.put(StepType.REPTATION, .01);
+        stepweights.put(StepType.SINGLE_CHAIN, .01);
         return new GeneralStepGenerator(stepweights);
     }
 
@@ -57,7 +93,6 @@ public class BlobFinder extends AbstractFocusedSimulation<BlobResultsWriter> {
         simulationRunner.trackVariable(middleStressTrackable.getStress12Trackable());
         simulationRunner.trackVariable(middleStressTrackable.getStress22Trackable());
         simulationRunner.trackVariable(TrackableVariable.OCCUPIED_VOLUME);
-
     }
 
     @Override
@@ -68,20 +103,25 @@ public class BlobFinder extends AbstractFocusedSimulation<BlobResultsWriter> {
     @Override
     protected void analyzeAndPrintResults() {
         simulationRunner.getPolymerSimulator().recenter();
-//        analyzeAndPrintDensity();
-//        analyzeAndPrintVolume();
-//        analyzeAndPrintIdealGasPressure();
-//        analyzeAndPrintStress();
+        analyzeAndPrintDensity();
+        outputWriter.printStress(simulationRunner, middleStressTrackable);
+    }
+
+    private void analyzeAndPrintDensity() {
+        final DoubleWithUncertainty occupiedVolume = simulationRunner.getRecentMeasurementForTrackedVariable(TrackableVariable.OCCUPIED_VOLUME);
+        final DoubleWithUncertainty radius = occupiedVolume.dividedBy(Math.PI).sqrt();
+        outputWriter.printEstimatedRadius(radius);
+        final DoubleWithUncertainty measuredDensity = occupiedVolume.reciprocalTimes(simulationRunner.getPolymerSimulator().getNumBeads());
+        outputWriter.printMeasuredDensity(measuredDensity);
     }
 
     @Override
     protected boolean isConverged() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        return simulationRunner.isConverged(TrackableVariable.SYSTEM_VOLUME);
     }
 
     @Override
     protected void printFinalOutput() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
 }

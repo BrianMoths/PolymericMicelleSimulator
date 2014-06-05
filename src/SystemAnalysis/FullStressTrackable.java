@@ -10,9 +10,9 @@ import Engine.PolymerSimulator;
  *
  * @author bmoths
  */
-public class FullStressTrackable extends StressTrackable {
+public class FullStressTrackable extends FractionalVolumeStressTrackable {
 
-    static public final StressTrackable FULL_REGION_STRESS_TRACKABLE = new FullStressTrackable();
+    static public final FractionalVolumeStressTrackable FULL_REGION_STRESS_TRACKABLE = new FullStressTrackable();
     double scaleFactor;
 
     private FullStressTrackable() {

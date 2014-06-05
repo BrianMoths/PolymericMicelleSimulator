@@ -171,10 +171,12 @@ public class PolymerPosition implements ImmutablePolymerPosition {
         }
         analyzersRebinBeads();
     }
+    //</editor-fold>
 
     public void recenter() {
         double[] averagePosition = getAveragePosition();
-        subtractFromAllPositions(averagePosition);
+        double[] displacementFromMiddle = new double[]{averagePosition[0] - systemGeometry.getSizeOfDimension(0) / 2, averagePosition[1] - systemGeometry.getSizeOfDimension(1) / 2};
+        subtractFromAllPositions(displacementFromMiddle);
         analyzersRebinBeads();
     }
 
@@ -198,7 +200,6 @@ public class PolymerPosition implements ImmutablePolymerPosition {
         }
         systemGeometry.incrementVectors(beadPositions, subtrahend);
     }
-    //</editor-fold>
 
     //<editor-fold defaultstate="collapsed" desc="deal with analyzers">
     public void acceptBeadPositionsGetter(SystemAnalyzer.BeadPositionsGetter beadPositionsGetter) {

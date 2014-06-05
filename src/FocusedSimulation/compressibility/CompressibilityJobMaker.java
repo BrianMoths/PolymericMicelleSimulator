@@ -84,8 +84,9 @@ public class CompressibilityJobMaker {
 
         for (int i = 0; i < verticalRescaleFactors.length; i++) {
             for (int j = 0; j < horizontalRescaleFactors.length; j++) {
-                final Input input = makeRescaleInput(verticalRescaleFactors[i], horizontalRescaleFactors[j], jobNumber);
-                noSpringInputs.add(input);
+                final InputBuilder inputBuilder = makeRescaleInputBuilderWithHorizontalRescaling(verticalRescaleFactors[i], horizontalRescaleFactors[j], jobNumber);
+                inputBuilder.getJobParametersBuilder().getSimulationRunnerParametersBuilder().setNumSamples(100_000);
+                noSpringInputs.add(inputBuilder.buildInput());
                 jobNumber++;
             }
         }

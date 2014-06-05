@@ -43,6 +43,12 @@ public class DoubleWithUncertainty {
         return times(1 / divisor);
     }
 
+    public DoubleWithUncertainty sqrt() {
+        final double sqrtValue = Math.sqrt(value);
+        final double sqrtUncertainty = getRelativeError() * sqrtValue / 2;
+        return new DoubleWithUncertainty(sqrtValue, sqrtUncertainty);
+    }
+
     public double getValue() {
         return value;
     }

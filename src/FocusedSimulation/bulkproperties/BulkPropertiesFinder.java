@@ -13,7 +13,7 @@ import FocusedSimulation.surfacetension.SurfaceTensionJobMaker;
 import SGEManagement.Input;
 import SGEManagement.Input.InputBuilder;
 import SystemAnalysis.FullStressTrackable;
-import SystemAnalysis.StressTrackable;
+import SystemAnalysis.FractionalVolumeStressTrackable;
 import java.io.FileNotFoundException;
 import org.apache.commons.math3.stat.descriptive.DescriptiveStatistics;
 
@@ -96,14 +96,15 @@ public class BulkPropertiesFinder<U extends BulkPropertiesResultsWriter> extends
     @Override
     protected void analyzeAndPrintResults() {
         analyzeAndPrintDensity();
+        outputWriter.printIdealGasPressure(simulationRunner.getRecentMeasurementForTrackedVariable(TrackableVariable.IDEAL_GAS_PRESSURE));
         analyzeAndPrintEnergyPerBead();
         analyzeAndPrintSpringEnergyPerBead();
         analyzeAndPrintOverlapEnergyPerBead();
         analyzeAndPrintEntropyPerBead();
         analyzeAndPrintNonNeighborEnergy();
-        analyzeAndPrintCompresssibililty();
+        analyzeAndPrintCompressibilityFromNumberFluctuations();
+        analyzeAndPrintCompressibilityFromVolumeFluctuations();
 
-        outputWriter.printIdealGasPressure(simulationRunner.getRecentMeasurementForTrackedVariable(TrackableVariable.IDEAL_GAS_PRESSURE));
         outputWriter.printFullStress(simulationRunner);
     }
 
@@ -150,12 +151,16 @@ public class BulkPropertiesFinder<U extends BulkPropertiesResultsWriter> extends
         outputWriter.printNonNeighborEnergy(nonNeighborEnergy);
     }
 
-    private void analyzeAndPrintCompresssibililty() {
+    private void analyzeAndPrintCompressibilityFromNumberFluctuations() {
         final DescriptiveStatistics numLeftBeadsStatistics = simulationRunner.getStatisticsFor(numLeftBeadsTrackable);
         final double mean = numLeftBeadsStatistics.getMean();
         final double standardDeviation = numLeftBeadsStatistics.getStandardDeviation();
+        final double variance = standardDeviation * standardDeviation;
+        final double leftRegionVolume = numLeftBeadsTrackable.getLeftRegionVolume();
+        final double temperature = simulationRunner.getPolymerSimulator().getEnergeticsConstants().getTemperature();
 
-        final double compressibilityValue = standardDeviation * standardDeviation / (mean * (mean / numLeftBeadsTrackable.getLeftRegionVolume()) * simulationRunner.getPolymerSimulator().getEnergeticsConstants().getTemperature());
+//        final double compressibilityValue = standardDeviation * standardDeviation / (mean * mean / (numLeftBeadsTrackable.getLeftRegionVolume() * numLeftBeadsTrackable.getLeftRegionVolume()) * simulationRunner.getPolymerSimulator().getEnergeticsConstants().getTemperature());
+        final double compressibilityValue = leftRegionVolume * variance / (mean * mean * temperature);
 
         final double numSamples = numLeftBeadsStatistics.getN();
         final double standardError = standardDeviation / Math.sqrt(numSamples);
@@ -167,7 +172,22 @@ public class BulkPropertiesFinder<U extends BulkPropertiesResultsWriter> extends
         final double compressibiltyUncertainty = compressibilityValue * compressibiltyRelativeUncertainty;
 
         final DoubleWithUncertainty compressibility = new DoubleWithUncertainty(compressibilityValue, compressibiltyUncertainty);
-        outputWriter.printCompressibility(compressibility);
+        outputWriter.printCompressibilityFromNumber(compressibility);
+    }
+
+    private void analyzeAndPrintCompressibilityFromVolumeFluctuations() {
+        final double temperature = simulationRunner.getPolymerSimulator().getEnergeticsConstants().getTemperature();
+        final DescriptiveStatistics volumeStatistics = simulationRunner.getStatisticsFor(TrackableVariable.SYSTEM_VOLUME);
+        final double mean = volumeStatistics.getMean();
+        final double standardDeviation = volumeStatistics.getStandardDeviation();
+        final long numSamples = volumeStatistics.getN();
+        final double compressibilityValue = standardDeviation * standardDeviation / (mean * temperature);
+
+        final double compressibilityUncertainty = compressibilityValue * Math.sqrt((2 + standardDeviation / mean) / numSamples);
+
+        final DoubleWithUncertainty compressibility = new DoubleWithUncertainty(compressibilityValue, compressibilityUncertainty);
+        outputWriter.printCompressibilityFromVolume(compressibility);
+
     }
 
 }

@@ -1,2 +1,1 @@
 write javadocs
-make simulation runner parameters settable by each different simulation.

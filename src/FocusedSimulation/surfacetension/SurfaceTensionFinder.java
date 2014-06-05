@@ -18,7 +18,7 @@ import FocusedSimulation.StatisticsTracker.TrackableVariable;
 import SGEManagement.Input;
 import SGEManagement.Input.InputBuilder;
 import SystemAnalysis.HistogramMaker;
-import SystemAnalysis.StressTrackable;
+import SystemAnalysis.FractionalVolumeStressTrackable;
 import java.io.FileNotFoundException;
 import java.util.EnumMap;
 import java.util.List;
@@ -85,9 +85,9 @@ public class SurfaceTensionFinder extends AbstractFocusedSimulation<SurfaceTensi
     @Override
     protected void registerTrackablesToSimulationRunner() {
         simulationRunner.trackVariable(TrackableVariable.SYSTEM_WIDTH);
-        simulationRunner.trackVariable((StressTrackable.MIDDLE_REGION_STRESS_TRACKABLE).getStress11Trackable());
-        simulationRunner.trackVariable((StressTrackable.MIDDLE_REGION_STRESS_TRACKABLE).getStress12Trackable());
-        simulationRunner.trackVariable((StressTrackable.MIDDLE_REGION_STRESS_TRACKABLE).getStress22Trackable());
+        simulationRunner.trackVariable((FractionalVolumeStressTrackable.MIDDLE_REGION_STRESS_TRACKABLE).getStress11Trackable());
+        simulationRunner.trackVariable((FractionalVolumeStressTrackable.MIDDLE_REGION_STRESS_TRACKABLE).getStress12Trackable());
+        simulationRunner.trackVariable((FractionalVolumeStressTrackable.MIDDLE_REGION_STRESS_TRACKABLE).getStress22Trackable());
     }
 
     @Override
@@ -101,7 +101,7 @@ public class SurfaceTensionFinder extends AbstractFocusedSimulation<SurfaceTensi
         DoubleWithUncertainty measuredWidth = simulationRunner.getRecentMeasurementForTrackedVariable(TrackableVariable.SYSTEM_WIDTH);
         DoubleWithUncertainty measuredSurfaceTension = getMeasuredSurfaceTensionFromWidth(measuredWidth, polymerSimulator);
         outputWriter.printSurfaceTension(measuredSurfaceTension);
-        outputWriter.printStress(simulationRunner);
+        outputWriter.printMiddleStress(simulationRunner);
         soutYPositionHistogram();
     }
 

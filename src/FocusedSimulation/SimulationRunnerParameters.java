@@ -4,7 +4,6 @@
  */
 package FocusedSimulation;
 
-import com.sun.corba.se.spi.activation._ActivatorImplBase;
 import java.io.Serializable;
 
 /**
@@ -15,7 +14,7 @@ public class SimulationRunnerParameters implements Serializable {
 
     static public class SimulationRunnerParametersBuilder {
 
-        int numIterationsPerSample;
+        private int numIterationsPerSample;
         private int numSamples;
         private int numIterationsPerAnneal;
 
