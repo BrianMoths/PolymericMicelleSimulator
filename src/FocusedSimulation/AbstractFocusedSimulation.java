@@ -143,8 +143,10 @@ public abstract class AbstractFocusedSimulation<T extends AbstractResultsWriter>
     }
 
     private void doTrialsUntilConvergence() {
+        int numIterations = jobParameters.getSimulationRunnerParameters().getNumSamples();
         while (!isConverged()) {
-            doMeasurementTrial();
+            simulationRunner.doMeasurementRun(numIterations);
+            numIterations *= 2;
         }
     }
 
