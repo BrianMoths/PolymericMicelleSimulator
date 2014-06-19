@@ -30,6 +30,7 @@ public class JobParameters implements Serializable {
         private int numAnneals; //50
         private int numSimulationTrials; //70
         private boolean shouldIterateUntilConvergence;
+        private double convergencePrecision;
         private int jobNumber;
         private SimulationRunnerParametersBuilder simulationRunnerParametersBuilder;
 
@@ -64,6 +65,14 @@ public class JobParameters implements Serializable {
             this.shouldIterateUntilConvergence = shouldIterateUntilConvergence;
         }
 
+        public double getConvergencePrecision() {
+            return convergencePrecision;
+        }
+
+        public void setConvergencePrecision(double convergencePrecision) {
+            this.convergencePrecision = convergencePrecision;
+        }
+
         public int getJobNumber() {
             return jobNumber;
         }
@@ -85,31 +94,35 @@ public class JobParameters implements Serializable {
     static private final int defaultNumAnneals = 50;
     static private final int defaultNumSurfaceTensionTrials = 70;
     static private final int defaultJobNumber = 0;
+    static private final double defaultConvergencePrecision = .1;
 
     static public FocusedSimulation.JobParameters getDefaultJobParameters() {
-        return new FocusedSimulation.JobParameters(defaultNumAnneals, defaultNumSurfaceTensionTrials, true, defaultJobNumber, SimulationRunnerParameters.defaultSimulationRunnerParameters());
+        return new FocusedSimulation.JobParameters(defaultNumAnneals, defaultNumSurfaceTensionTrials, true, defaultConvergencePrecision, defaultJobNumber, SimulationRunnerParameters.defaultSimulationRunnerParameters());
     }
 
     private final int numAnneals; //50
     private final int numSurfaceTensionTrials; //70
     private final boolean shouldIterateUntilConvergence;
+    private final double convergencePrecision;
     private final int jobNumber;
-    private final SimulationRunnerParameters simulationRunnerParametersBuilder;
+    private final SimulationRunnerParameters simulationRunnerParameters;
 
-    public JobParameters(int numAnneals, int numSurfaceTensionTrials, boolean shouldIterateUntilConvergence, int jobNumber, SimulationRunnerParameters simulationRunnerParameters) {
+    public JobParameters(int numAnneals, int numSurfaceTensionTrials, boolean shouldIterateUntilConvergence, double precision, int jobNumber, SimulationRunnerParameters simulationRunnerParameters) {
         this.numAnneals = numAnneals;
         this.numSurfaceTensionTrials = numSurfaceTensionTrials;
         this.shouldIterateUntilConvergence = shouldIterateUntilConvergence;
+        this.convergencePrecision = precision;
         this.jobNumber = jobNumber;
-        this.simulationRunnerParametersBuilder = simulationRunnerParameters;
+        this.simulationRunnerParameters = simulationRunnerParameters;
     }
 
     private JobParameters(JobParametersBuilder jobParametersBuilder) {
         numAnneals = jobParametersBuilder.getNumAnneals();
         numSurfaceTensionTrials = jobParametersBuilder.getNumSimulationTrials();
         shouldIterateUntilConvergence = jobParametersBuilder.getShouldIterateUntilConvergence();
+        convergencePrecision = jobParametersBuilder.getConvergencePrecision();
         jobNumber = jobParametersBuilder.getJobNumber();
-        simulationRunnerParametersBuilder = jobParametersBuilder.simulationRunnerParametersBuilder.build();
+        simulationRunnerParameters = jobParametersBuilder.simulationRunnerParametersBuilder.build();
     }
 
     public int getNumAnneals() {
@@ -124,12 +137,16 @@ public class JobParameters implements Serializable {
         return shouldIterateUntilConvergence;
     }
 
+    public double getConvergencePrecision() {
+        return convergencePrecision;
+    }
+
     public int getJobNumber() {
         return jobNumber;
     }
 
     public SimulationRunnerParameters getSimulationRunnerParameters() {
-        return simulationRunnerParametersBuilder;
+        return simulationRunnerParameters;
     }
 
 }
