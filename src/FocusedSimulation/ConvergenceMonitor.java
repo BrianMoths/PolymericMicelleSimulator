@@ -68,7 +68,7 @@ public class ConvergenceMonitor {
          * @return the total number of samples
          */
         public int getNumSamples() {
-            return numSamplesPerMean * numMeans;
+            return numSamplesPerMean * NUM_MEANS;
         }
 
         /**
@@ -120,7 +120,7 @@ public class ConvergenceMonitor {
 
     }
 
-    static private final int numMeans = 20;
+    static public final int NUM_MEANS = 20;
     static private final int minSamplesPerMean = 0;
 
     /**
@@ -139,7 +139,7 @@ public class ConvergenceMonitor {
     public static ConvergenceResults getConvergenceResultsForPrecision(final DescriptiveStatistics descriptiveStatistics, double precision) throws IndexOutOfBoundsException {
         int numSamples = getNumSamples(descriptiveStatistics);
         final double mean = descriptiveStatistics.getMean();
-        final int numSamplesPerMean = numSamples / numMeans;
+        final int numSamplesPerMean = numSamples / NUM_MEANS;
         double meansStandardDeviation = getMeansStandardDeviation(descriptiveStatistics, numSamplesPerMean);
         final double standardDeviation = descriptiveStatistics.getStandardDeviation();
         ConvergenceResults convergenceResults = new ConvergenceResults(numSamplesPerMean, standardDeviation, meansStandardDeviation, mean, precision);
@@ -181,8 +181,8 @@ public class ConvergenceMonitor {
     }
 
     private static double[] getMeans(final int numSamplesPerMean, final double[] samples) {
-        final double[] means = new double[numMeans];
-        for (int i = 0; i < numMeans; i++) {
+        final double[] means = new double[NUM_MEANS];
+        for (int i = 0; i < NUM_MEANS; i++) {
             final double[] subsetValues = new double[numSamplesPerMean];
             System.arraycopy(samples, beginningIndexForSubset(numSamplesPerMean, i), subsetValues, 0, numSamplesPerMean);
             DescriptiveStatistics subsetStatistics = new DescriptiveStatistics(subsetValues);
