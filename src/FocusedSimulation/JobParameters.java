@@ -21,6 +21,8 @@ public class JobParameters implements Serializable {
             jobParametersBuilder.setNumAnneals(defaultNumAnneals);
             jobParametersBuilder.setNumSimulationTrials(defaultNumSurfaceTensionTrials);
             jobParametersBuilder.setJobNumber(defaultJobNumber);
+            jobParametersBuilder.setShouldIterateUntilConvergence(false);
+            jobParametersBuilder.setConvergencePrecision(defaultConvergencePrecision);
             jobParametersBuilder.setSimulationRunnerParameters(SimulationRunnerParametersBuilder.deSimulationRunnerParametersBuilder());
 
             return jobParametersBuilder;
@@ -95,11 +97,6 @@ public class JobParameters implements Serializable {
     static private final int defaultNumSurfaceTensionTrials = 70;
     static private final int defaultJobNumber = 0;
     static private final double defaultConvergencePrecision = .1;
-
-    static public FocusedSimulation.JobParameters getDefaultJobParameters() {
-        return new FocusedSimulation.JobParameters(defaultNumAnneals, defaultNumSurfaceTensionTrials, true, defaultConvergencePrecision, defaultJobNumber, SimulationRunnerParameters.defaultSimulationRunnerParameters());
-    }
-
     private final int numAnneals; //50
     private final int numSurfaceTensionTrials; //70
     private final boolean shouldIterateUntilConvergence;
