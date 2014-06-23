@@ -27,4 +27,20 @@ public class BlobResultsWriter extends AbstractResultsWriter {
         printAndSoutCaptionedObject("Effective radius", radius);
     }
 
+    void printExpectedMechanicalPressure(DoubleWithUncertainty expectedMechanicalPressure) {
+        printAndSoutCaptionedObject("Expected mechanical pressure", expectedMechanicalPressure);
+    }
+
+    void printMiddleDensity(DoubleWithUncertainty measuredMiddleDensity) {
+        printAndSoutCaptionedObject("Middle Density", measuredMiddleDensity);
+    }
+
+    void printOverpressure(DoubleWithUncertainty overpressure) {
+        printAndSoutCaptionedObject("Expected overpressure", overpressure);
+    }
+
+    void printExpectedMiddleDensity(DoubleWithUncertainty expectedMiddleDensity) {
+        printAndSoutCaptionedObject("Expected Middle Density", expectedMiddleDensity);
+    }
+
 }
