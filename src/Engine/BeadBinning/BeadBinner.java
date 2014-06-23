@@ -41,6 +41,19 @@ public class BeadBinner implements Serializable {
             return sum;
         }
 
+        static BinIndex subtractIndices(BinIndex firstSummand, List<Integer> secondSummand) { //TODO make projected sum
+            final int numDimensions = firstSummand.indices.size();
+
+            BinIndex sum = new BinIndex(numDimensions);
+
+            for (int dimension = 0; dimension < numDimensions; dimension++) {
+                final int newIndexOfDimension = firstSummand.indices.get(dimension) - secondSummand.get(dimension);
+                sum.setIndexOfDimension(dimension, newIndexOfDimension);
+            }
+
+            return sum;
+        }
+
 //        public int x, y;
         private final List<Integer> indices;
 
@@ -74,12 +87,10 @@ public class BeadBinner implements Serializable {
         private final BinIndex binIndex;
         private Iterator<Integer> beadIterator;
         final List<Integer> currentBinOffset;
-//        final int currentBinOffsetIndex;
         private boolean isOutOfBins;
 
         public NearbyBeadIterator(BinIndex binIndex) {
             currentBinOffset = new ArrayList<>(initialBinOffset);
-//            currentBinOffsetIndex = 0;
             isOutOfBins = false;
             this.binIndex = new BinIndex(binIndex);
             updateBeadIterator();
