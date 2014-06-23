@@ -109,7 +109,7 @@ public class StatisticsTracker {
     }
 
     public void addTrackableVariable(TrackableVariable trackableVariable) {
-        statistics.put(trackableVariable, new DescriptiveStatistics(windowSize));
+        statistics.put(trackableVariable, new DescriptiveStatistics(DescriptiveStatistics.INFINITE_WINDOW));
     }
 
     public void addSnapshotForPolymerSimulator(PolymerSimulator polymerSimulator) {
