@@ -18,12 +18,32 @@ public class DoubleWithUncertainty {
         this.uncertainty = uncertainty;
     }
 
+    public DoubleWithUncertainty plus(double addend) {
+        return new DoubleWithUncertainty(value + addend, getUncertainty());
+    }
+
     public DoubleWithUncertainty plus(DoubleWithUncertainty addend) {
         return new DoubleWithUncertainty(value + addend.value, Math.sqrt(getVariance() + addend.getVariance()));
     }
 
+    public DoubleWithUncertainty minus(double addend) {
+        return new DoubleWithUncertainty(value - addend, getUncertainty());
+    }
+
+    public DoubleWithUncertainty minus(DoubleWithUncertainty addend) {
+        return new DoubleWithUncertainty(value - addend.value, Math.sqrt(getVariance() + addend.getVariance()));
+    }
+
     public DoubleWithUncertainty times(double factor) {
         return new DoubleWithUncertainty(value * factor, uncertainty * factor);
+    }
+
+    public DoubleWithUncertainty times(DoubleWithUncertainty factor) {
+        final double productValue = value * factor.value;
+        final double thisRelativeError = getRelativeError();
+        final double factorRelativeError = factor.getRelativeError();
+        double prodcutFractionalUncertainty = Math.sqrt(thisRelativeError * thisRelativeError + factorRelativeError * factorRelativeError);
+        return new DoubleWithUncertainty(productValue, productValue * prodcutFractionalUncertainty);
     }
 
     public DoubleWithUncertainty negation() {
@@ -41,6 +61,10 @@ public class DoubleWithUncertainty {
 
     public DoubleWithUncertainty dividedBy(double divisor) {
         return times(1 / divisor);
+    }
+
+    public DoubleWithUncertainty dividedBy(DoubleWithUncertainty divisor) {
+        return times(divisor.reciprocal());
     }
 
     public DoubleWithUncertainty sqrt() {
