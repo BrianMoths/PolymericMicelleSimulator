@@ -10,14 +10,21 @@ import Engine.SimulationStepping.StepGenerators.CompoundStepGenerators.GeneralSt
 import Engine.SimulationStepping.StepGenerators.StepGenerator;
 import Engine.SimulationStepping.StepTypes.StepType;
 import Engine.SimulatorParameters;
+import FocusedSimulation.ConvergenceMonitor.ConvergenceResults;
 import FocusedSimulation.SimulationRunnerParameters;
+import FocusedSimulation.StatisticsTracker.TrackableVariable;
 import FocusedSimulation.output.AbstractResultsWriter;
 import FocusedSimulation.output.PolymerSimulatorWriter;
 import Gui.SystemViewer;
 import SGEManagement.Input;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.EnumMap;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -41,6 +48,7 @@ public abstract class AbstractFocusedSimulation<T extends AbstractResultsWriter>
     }
 
     private final JobParameters jobParameters;
+    private final List<TrackableVariable> variablesTestedForConvergence;
     private final SimulatorParameters systemParameters;
     private PolymerSimulatorWriter polymerSimulatorWriter;
     protected final T outputWriter;
@@ -48,6 +56,7 @@ public abstract class AbstractFocusedSimulation<T extends AbstractResultsWriter>
     protected final SimulationRunner simulationRunner;
 
     protected AbstractFocusedSimulation(Input input, T outputWriter) throws FileNotFoundException {
+        variablesTestedForConvergence = new ArrayList<>();
         jobParameters = input.getJobParameters();
         systemParameters = input.getSystemParameters();
         polymerSimulator = systemParameters.makePolymerSimulator();
@@ -81,6 +90,10 @@ public abstract class AbstractFocusedSimulation<T extends AbstractResultsWriter>
     protected abstract void initializePositions();
 
     protected abstract void registerTrackablesToSimulationRunner();
+
+    protected final void setVariablesTestedForConvergence(TrackableVariable... trackableVariables) {
+        variablesTestedForConvergence.addAll(Arrays.asList(trackableVariables));
+    }
 
     private void tryInitializeSystemViewer() {
         try {
@@ -128,7 +141,7 @@ public abstract class AbstractFocusedSimulation<T extends AbstractResultsWriter>
 
     protected StepGenerator makeMainStepGenerator() {
         EnumMap<StepType, Double> stepweights = new EnumMap<>(StepType.class);
-        stepweights.put(StepType.SINGLE_WALL_RESIZE, 1. / polymerSimulator.getNumBeads());
+        stepweights.put(StepType.SINGLE_WALL_RESIZE, 1. / (10 * polymerSimulator.getNumBeads()));
         stepweights.put(StepType.SINGLE_BEAD, 1.);
         stepweights.put(StepType.REPTATION, .1);
         stepweights.put(StepType.SINGLE_CHAIN, .01);
@@ -143,11 +156,13 @@ public abstract class AbstractFocusedSimulation<T extends AbstractResultsWriter>
     }
 
     private void doTrialsUntilConvergence() {
-        int numIterations = jobParameters.getSimulationRunnerParameters().getNumSamples();
-        while (!isConverged()) {
-            simulationRunner.doMeasurementRun(numIterations);
-            numIterations *= 2;
-        }
+        final double precision = .01;
+        final SimulationRunnerParameters simulationRunnerParameters = jobParameters.getSimulationRunnerParameters();
+        int numIterationsPerSample = simulationRunnerParameters.getNumIterationsPerSample();
+
+        numIterationsPerSample = iterateToFindNumSamplesPerIteration(numIterationsPerSample, precision);
+        iterateUntilConverged(numIterationsPerSample, precision);
+        analyzeAndPrintResults();
     }
 
     private void doMeasurementTrial() {
@@ -212,5 +227,39 @@ public abstract class AbstractFocusedSimulation<T extends AbstractResultsWriter>
         return simulationRunner;
     }
     //</editor-fold>
+
+    private int iterateToFindNumSamplesPerIteration(int numIterationsPerSample, final double precision) throws IndexOutOfBoundsException {
+        boolean enoughSamplesLastIteration;
+        int newNumIterationsPerSample = numIterationsPerSample;
+//        final int numSamples = jobParameters.getSimulationRunnerParameters().getNumSamples();
+        final int numSamples = ConvergenceMonitor.NUM_MEANS * 10;
+        do {
+            enoughSamplesLastIteration = true;
+            numIterationsPerSample = newNumIterationsPerSample;
+            System.out.println("Number of samples per iteration: " + numIterationsPerSample);
+
+            System.out.println("Number of samples: " + numSamples);
+            simulationRunner.doMeasurementRun(numSamples, numIterationsPerSample);
+            for (TrackableVariable trackableVariable : variablesTestedForConvergence) {
+                final ConvergenceResults convergenceResults = ConvergenceMonitor.getConvergenceResultsForPrecision(simulationRunner.getStatisticsFor(trackableVariable), precision);
+                final boolean isConverged = convergenceResults.isConverged();
+                System.out.println("isConverged: " + isConverged);
+                if (!isConverged) {
+                    enoughSamplesLastIteration = false;
+                    break;
+                }
+            }
+            newNumIterationsPerSample *= 2;
+            System.out.println("Enough samples last iteration: " + enoughSamplesLastIteration);
+        } while (!enoughSamplesLastIteration);
+        System.out.println("Number of samples per iteration found: " + numIterationsPerSample);
+        return numIterationsPerSample;
+    }
+
+    private void iterateUntilConverged(int numIterationsPerSample, final double precision) throws IndexOutOfBoundsException {
+        final int numSamples = (int) (2 / (precision * precision));
+        System.out.println("Number of samples: " + numSamples);
+        simulationRunner.doMeasurementRun(numSamples, numIterationsPerSample);
+    }
 
 }
