@@ -105,6 +105,7 @@ public abstract class AbstractFocusedSimulation<T extends AbstractResultsWriter>
     }
 
     private void printInitialOutputGeneric() {
+        outputWriter.printSimulationType();
         outputWriter.printParameters();
         printInitialOutput();
     }
