@@ -10,6 +10,8 @@ package FocusedSimulation;
  */
 public class DoubleWithUncertainty {
 
+    static public DoubleWithUncertainty ZERO = new DoubleWithUncertainty(0, 0);
+    static public DoubleWithUncertainty ONE = new DoubleWithUncertainty(1, 0);
     private final double value;
     private final double uncertainty;
 
