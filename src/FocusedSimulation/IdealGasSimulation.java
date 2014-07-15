@@ -17,6 +17,7 @@ import Engine.PolymerState.SystemGeometry.Interfaces.SystemGeometry;
 import Engine.SimulationStepping.StepGenerators.CompoundStepGenerators.GeneralStepGenerator;
 import Engine.SimulationStepping.StepTypes.StepType;
 import Engine.SystemAnalyzer;
+import FocusedSimulation.ConvergenceMonitor.ConvergenceResults;
 //import static FocusedSimulation.SurfaceTensionFinder.generateLengthStatistics;
 import Gui.SystemViewer;
 import java.util.EnumMap;
@@ -36,18 +37,18 @@ public class IdealGasSimulation {
 
         final IdealGasSimulation idealGasSimulation;
         idealGasSimulation = new IdealGasSimulation();
-        idealGasSimulation.findVolume(.1);
+        idealGasSimulation.findVolumeWithPressure(.1);
 
     }
 
-    static public DescriptiveStatistics generateLengthStatistics(int numSamples, PolymerSimulator polymerSimulator) {
-        final int iterationsPerSample = 5000;//1000000
+    static public DescriptiveStatistics generateLengthStatistics(int numSamples, int numIterationsPerSample, PolymerSimulator polymerSimulator) {
+//        final int iterationsPerSample = 100;//5000
         int numSamplesTaken = 0;
         SystemAnalyzer systemAnalyzer = polymerSimulator.getSystemAnalyzer();
 
         DescriptiveStatistics lengthStatistics = new DescriptiveStatistics(numSamples);
         while (numSamplesTaken < numSamples) {
-            polymerSimulator.doIterations(iterationsPerSample);
+            polymerSimulator.doIterations(numIterationsPerSample);
             lengthStatistics.addValue(systemAnalyzer.getSystemGeometry().getSizeOfDimension(0));
             numSamplesTaken++;
         }
@@ -99,21 +100,15 @@ public class IdealGasSimulation {
         return energeticsConstantsBuilder.buildEnergeticsConstants();
     }
 
-    private int numSurfaceTensionTrials = 100;
+    private int numSurfaceTensionTrials = 3;
 
     private IdealGasSimulation() {
     }
 
-    private void findVolume(double pressure) {
+    private void findVolumeWithPressure(double pressure) {
         PolymerSimulator polymerSimulator = makePolymerSimulator(pressure);
         polymerSimulator.columnRandomizePositions();
 
-//        final int numIterations = 5000000;
-//        final long beginTime = System.currentTimeMillis();
-//        polymerSimulator.doIterations(numIterations);
-//        final long timeTaken = System.currentTimeMillis() - beginTime;
-//        System.out.println("Total milleseconds taken for " + numIterations + " iterations: " + timeTaken);
-//        System.out.println("Microseconds per iteration: " + (1000. * (double) timeTaken / numIterations));
 
         try {
             SystemViewer systemViewer = new SystemViewer(polymerSimulator);
@@ -127,14 +122,34 @@ public class IdealGasSimulation {
         System.out.println("System is initialized.");
 
         for (int i = 0; i < numSurfaceTensionTrials; i++) {
-            System.out.println("Equilibrating System");
-//            polymerSimulator.equilibrate();
-
-            System.out.println("System equilibrated.");
             System.out.println("Gathering statistics to find equilibrium length.");
 
-            final int numSamples = 100;//100
-            DescriptiveStatistics lengthStatistics = generateLengthStatistics(numSamples, polymerSimulator);
+            final double precision = .01;
+            ConvergenceResults convergenceResults;
+            boolean hasEnoughSamplesPerIteration = false;
+            double oldMeansPerStandardDeviation = 0;
+            int numSamples = 1000;
+            int numIterationsPerSample = 100;
+            DescriptiveStatistics lengthStatistics;
+            do {
+                System.out.println("New Run");
+                System.out.println("Generating " + numSamples + " samples.");
+                System.out.println(numIterationsPerSample + " iterations per sample.");
+                System.out.println();
+                lengthStatistics = generateLengthStatistics(numSamples, numIterationsPerSample, polymerSimulator);
+                convergenceResults = ConvergenceMonitor.getConvergenceResultsForPrecision(lengthStatistics, precision);
+                if (!hasEnoughSamplesPerIteration) {
+                    final double relativeStandardDeviationChange = oldMeansPerStandardDeviation / convergenceResults.getMeansStandardDeviation();
+                    hasEnoughSamplesPerIteration = relativeStandardDeviationChange > .9 && relativeStandardDeviationChange < 1.1 && convergenceResults.getMeansStandardDeviation() < 1.1 * convergenceResults.getStandardDeviation() / Math.sqrt(convergenceResults.getNumSamplesPerMean());
+                }
+                if (!hasEnoughSamplesPerIteration) {
+                    numIterationsPerSample *= 2;
+//                    numSamples *= 2;
+                } else {
+                    numSamples *= 2;
+                }
+                oldMeansPerStandardDeviation = convergenceResults.getMeansStandardDeviation();
+            } while (!convergenceResults.isConverged());
             System.out.println("Pressure times Volume found is: " + pressure * polymerSimulator.getSystemAnalyzer().getSystemGeometry().getSizeOfDimension(1) * lengthStatistics.getMean());
         }
 
