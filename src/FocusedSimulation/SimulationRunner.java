@@ -59,16 +59,38 @@ public class SimulationRunner {
         }
     }
 
+    public void doMeasurementRuns(int numMeasurementRuns, int numSamples) {
+        for (int i = 0; i < numMeasurementRuns; i++) {
+            doMeasurementRun(numSamples);
+        }
+    }
+
     public void doMeasurementRun() {
         statisticsTracker.clearAll();
-        generateStatistics();
+        generateSamples(simulationRunnerParameters.getNumSamples());
         updateMeasuredValuesWithStatistics();
     }
 
-    private void generateStatistics() {
+    public void doMeasurementRun(int numSamples) {
+        statisticsTracker.clearAll();
+        generateSamples(numSamples);
+        updateMeasuredValuesWithStatistics();
+    }
+
+    public void doMeasurementRun(int numSamples, int numIterationsPerSample) {
+        statisticsTracker.clearAll();
+        generateSamplesWithIterationsPerSample(numSamples, numIterationsPerSample);
+        updateMeasuredValuesWithStatistics();
+    }
+
+    private void generateSamples(int numSamples) {
+        generateSamplesWithIterationsPerSample(numSamples, simulationRunnerParameters.numIterationsPerSample);
+    }
+
+    private void generateSamplesWithIterationsPerSample(int numSamples, int numIterationsPerSample) {
         int numSamplesTaken = 0;
-        while (numSamplesTaken < simulationRunnerParameters.getNumSamples()) {
-            polymerSimulator.doIterations(simulationRunnerParameters.numIterationsPerSample);
+        while (numSamplesTaken < numSamples) {
+            polymerSimulator.doIterations(numIterationsPerSample);
             statisticsTracker.addSnapshotForPolymerSimulator(polymerSimulator);
             numSamplesTaken++;
         }
@@ -88,20 +110,6 @@ public class SimulationRunner {
 
     private DoubleWithUncertainty getAverageWithUncertainty(TrackableVariable trackableVariable) {
         return statisticsTracker.getDoubleWithUncertainty(trackableVariable);
-    }
-
-    public void doTrialsUntilConverged() {
-        while (!isConverged()) {
-            doMeasurementRun();
-        }
-    }
-
-    private boolean isConverged() {
-        boolean isConverged = true;
-        for (TrackableVariable trackableVariable : statisticsTracker.getTrackedVariables()) {
-            isConverged &= isConverged(trackableVariable);
-        }
-        return isConverged;
     }
 
     public boolean isConverged(TrackableVariable trackableVariable) {
