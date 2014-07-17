@@ -73,7 +73,7 @@ public class BulkMixtureJobMaker {
         inputBuilder = getDefaultInputDensityBuilder();
         final double aspectRatio = inputBuilder.getSystemParametersBuilder().getAspectRatio();
         inputBuilder.getSystemParametersBuilder().setAspectRatio(aspectRatio * horizontalScale / verticalScale);
-        PolymerCluster polymerCluster = getPolymerCluster(verticalScale, horizontalScale);
+        PolymerCluster polymerCluster = getRescaledPolymerCluster(verticalScale, horizontalScale);
         inputBuilder.getSystemParametersBuilder().setPolymerCluster(polymerCluster);
         inputBuilder.getJobParametersBuilder().setJobNumber(jobNumber);
         inputBuilder.getJobParametersBuilder().setNumAnneals(5);
@@ -81,15 +81,14 @@ public class BulkMixtureJobMaker {
         inputBuilder.getSystemParametersBuilder().autosetCoreParameters();
         final EnergeticsConstantsBuilder energeticsConstantsBuilder = inputBuilder.getSystemParametersBuilder().getEnergeticsConstantsBuilder();
         energeticsConstantsBuilder.setBBOverlapCoefficient(3 * energeticsConstantsBuilder.getBBOverlapCoefficient());
+        energeticsConstantsBuilder.setAAOverlapCoefficient(3 * energeticsConstantsBuilder.getAAOverlapCoefficient());
         energeticsConstantsBuilder.setHardOverlapCoefficient(3 * energeticsConstantsBuilder.getHardOverlapCoefficient());
         return inputBuilder;
     }
 
-    private static PolymerCluster getPolymerCluster(final double verticalScale, final double horizontalScale) {
-        final PolymerChain polymerChain = PolymerChain.makeChainOfType(false, defaultNumBeadsPerChain);
-        final PolymerCluster polymerCluster = PolymerCluster.makeRepeatedChainCluster(polymerChain, (int) (defaultNumChains * verticalScale * horizontalScale));
-        polymerCluster.setConcentrationInWater(defaultDensity);
-        return polymerCluster;
+    private static PolymerCluster getRescaledPolymerCluster(final double verticalScale, final double horizontalScale) {
+        final int numChains = (int) (defaultNumChains * verticalScale * horizontalScale);
+        return getPolymerCluster(defaultHydrophobicFraction, numChains, defaultNumBeadsPerChain, 1);
     }
 
     //<editor-fold defaultstate="collapsed" desc="default input">
@@ -108,12 +107,15 @@ public class BulkMixtureJobMaker {
     static private final int defaultNumBeadsPerChain = 15;
     static private final int defaultNumChains = 75;
     static private final double defaultDensity = .35;
+    private static final double defaultHydrophobicFraction = .5;//.15
 
     private static SystemParametersBuilder getDefaultSystemParametersBuilder() {
         SystemParametersBuilder systemParametersBuilder = new SystemParametersBuilder();
         systemParametersBuilder.setAspectRatio(defaultAspectRatio);
         EnergeticsConstantsBuilder energeticsConstantsBuilder = EnergeticsConstantsBuilder.zeroEnergeticsConstantsBuilder();
         energeticsConstantsBuilder.setBBOverlapCoefficient(defaultOverlapCoefficient);
+        energeticsConstantsBuilder.setAAOverlapCoefficient(defaultOverlapCoefficient);
+        energeticsConstantsBuilder.setABOverlapCoefficient(-defaultOverlapCoefficient / 2);
         systemParametersBuilder.setEnergeticsConstantsBuilder(energeticsConstantsBuilder);
         systemParametersBuilder.setInteractionLength(defaultInteractionLength);
         systemParametersBuilder.setPolymerCluster(getDefaultPolymerCluster());
@@ -121,10 +123,53 @@ public class BulkMixtureJobMaker {
     }
 
     private static PolymerCluster getDefaultPolymerCluster() {
-        PolymerChain polymerChain = PolymerChain.makeChainStartingWithA(0, defaultNumBeadsPerChain);
-        PolymerCluster polymerCluster = PolymerCluster.makeRepeatedChainCluster(polymerChain, defaultNumChains);
-        polymerCluster.setConcentrationInWater(defaultDensity);
-        return polymerCluster;
+        return getDefaultPolymerCluster(defaultHydrophobicFraction);
+    }
+
+    private static PolymerCluster getDefaultPolymerCluster(double hydrophobicFraction) {
+        return getPolymerCluster(hydrophobicFraction, defaultNumChains, defaultNumBeadsPerChain, 1);
+    }
+
+    private static PolymerCluster getPolymerCluster(double hydrophobicFraction, final int numChains, int numBeadsPerChain, int numSubblocks) {
+        if (numSubblocks < 0) {
+            throw new IllegalArgumentException("numSubblocks must be non-negative");
+        } else if (numSubblocks == 0) {
+            final int numHydrophobicChains = (int) Math.ceil(hydrophobicFraction * numChains);
+            final int numHydrophilicChains = numChains - numHydrophobicChains;
+
+            PolymerChain hydrophobicPolymerChain = PolymerChain.makeChainStartingWithA(0, numBeadsPerChain);
+            PolymerChain hydrophilicPolymerChain = PolymerChain.makeChainStartingWithA(numBeadsPerChain);
+
+            PolymerCluster polymerCluster = PolymerCluster.makeRepeatedChainCluster(hydrophobicPolymerChain, numHydrophobicChains);
+            polymerCluster.addChainMultipleTimes(hydrophilicPolymerChain, numHydrophilicChains);
+            polymerCluster.setConcentrationInWater(defaultDensity);
+            return polymerCluster;
+        } else {
+            final PolymerChain polymerChain = makeMultiblockPolymerChain(numBeadsPerChain, numSubblocks, hydrophobicFraction);
+            return PolymerCluster.makeRepeatedChainCluster(polymerChain, numChains);
+        }
+    }
+
+    private static PolymerChain makeMultiblockPolymerChain(int numBeads, int numBlocks, double hydrophobicFraction) {
+        final double numHydrophobicBeadsPerBlock = hydrophobicFraction * numBeads / numBlocks;
+        final double numHydrophilicBeadsPerBlock = (1 - hydrophobicFraction) * numBeads / numBlocks;
+
+        int numHydrophilicBeadsAddedSoFar = 0;
+        int numHydrophobicBeadsAddedSoFar = 0;
+        PolymerChain polymerChain = new PolymerChain();
+        for (int currentBlock = 1; currentBlock <= numBlocks; currentBlock++) {
+            final int numHydrophilicBeadsToBeAdded = (int) Math.round(numHydrophilicBeadsPerBlock * currentBlock - .000001) - numHydrophilicBeadsAddedSoFar; //avoid case when both numbers of blocks are rounded up
+            final int numHydrophobicBeadsToBeAdded = (int) Math.round(numHydrophobicBeadsPerBlock * currentBlock) - numHydrophobicBeadsAddedSoFar;
+
+            polymerChain.addBeads(true, numHydrophilicBeadsToBeAdded);
+            numHydrophilicBeadsAddedSoFar += numHydrophilicBeadsToBeAdded;
+            polymerChain.addBeads(false, numHydrophobicBeadsToBeAdded);
+            numHydrophobicBeadsAddedSoFar += numHydrophobicBeadsToBeAdded;
+        }
+        if (polymerChain.getNumBeads() != numBeads) {
+            throw new AssertionError("polymer chain has the wrong length, length is supposed to be " + numBeads + ", but actual length was " + polymerChain.getNumBeads());
+        }
+        return polymerChain;
     }
 
     static private final int defaultNumAnneals = 50;//50
@@ -139,4 +184,5 @@ public class BulkMixtureJobMaker {
         return jobParametersBuilder;
     }
     //</editor-fold>
+
 }
