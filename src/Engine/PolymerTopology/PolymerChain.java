@@ -44,7 +44,7 @@ public class PolymerChain implements Serializable {
     private final List<Boolean> types;
     private int numABeads;
 
-    private PolymerChain() {
+    public PolymerChain() {
         types = new ArrayList<>();
         numABeads = 0;
     }
