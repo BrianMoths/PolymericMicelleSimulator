@@ -136,7 +136,7 @@ public class BlobFinder extends AbstractFocusedSimulation<BlobResultsWriter> {
         outputWriter.printMiddleDensity(measuredMiddleDensity);
         final DoubleWithUncertainty overpressure = SURFACE_TENSION.dividedBy(radius);
         outputWriter.printOverpressure(overpressure);
-        final DoubleWithUncertainty expectedMiddleDensity = NATURAL_DENSITY.dividedBy(new DoubleWithUncertainty(1, 0).minus(COMPRESSIBILITY.times(overpressure)));
+        final DoubleWithUncertainty expectedMiddleDensity = NATURAL_DENSITY.dividedBy(DoubleWithUncertainty.ONE.minus(COMPRESSIBILITY.times(overpressure)));
         outputWriter.printExpectedMiddleDensity(expectedMiddleDensity);
         final DoubleWithUncertainty expectedDensityIncrease = NATURAL_DENSITY.dividedBy(COMPRESSIBILITY.times(overpressure).reciprocal().minus(1));
         outputWriter.printExpectedDensityIncrease(expectedDensityIncrease);
