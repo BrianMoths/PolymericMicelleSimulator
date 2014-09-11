@@ -47,6 +47,10 @@ public class GeneralStepGenerator implements StepGenerator {
         weightSum = calculateWeightSum();
     }
 
+    public GeneralStepGenerator(GeneralStepGenerator generalStepGenerator) {
+        this(generalStepGenerator.weights);
+    }
+
     @Override
     public SimulationStep generateStep(SystemAnalyzer systemAnalyzer) {
         StepType moveType = getRandomMoveType();

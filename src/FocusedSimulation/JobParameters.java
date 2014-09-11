@@ -40,6 +40,15 @@ public class JobParameters implements Serializable {
         public JobParametersBuilder() {
         }
 
+        public JobParametersBuilder(JobParametersBuilder jobParametersBuilder) {
+            numAnneals = jobParametersBuilder.numAnneals;
+            numSimulationTrials = jobParametersBuilder.numSimulationTrials;
+            shouldIterateUntilConvergence = jobParametersBuilder.shouldIterateUntilConvergence;
+            convergencePrecision = jobParametersBuilder.convergencePrecision;
+            jobNumber = jobParametersBuilder.jobNumber;
+            simulationRunnerParametersBuilder = new SimulationRunnerParametersBuilder(jobParametersBuilder.simulationRunnerParametersBuilder);
+        }
+
         public FocusedSimulation.JobParameters buildJobParameters() {
             return new FocusedSimulation.JobParameters(this);
         }

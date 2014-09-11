@@ -251,47 +251,7 @@ public class BulkMixtureJobMaker {
     }
 
     public static PolymerCluster getPolymerCluster(double hydrophobicFraction, final int numChains, int numBeadsPerChain, int numSubblocks) {
-        if (numSubblocks < 0) {
-            throw new IllegalArgumentException("numSubblocks must be non-negative");
-        } else if (numSubblocks == 0) {
-            final int numHydrophobicChains = (int) Math.ceil(hydrophobicFraction * numChains);
-            final int numHydrophilicChains = numChains - numHydrophobicChains;
-
-            PolymerChain hydrophobicPolymerChain = PolymerChain.makeChainStartingWithA(0, numBeadsPerChain);
-            PolymerChain hydrophilicPolymerChain = PolymerChain.makeChainStartingWithA(numBeadsPerChain);
-
-            PolymerCluster polymerCluster = PolymerCluster.makeRepeatedChainCluster(hydrophobicPolymerChain, numHydrophobicChains);
-            polymerCluster.addChainMultipleTimes(hydrophilicPolymerChain, numHydrophilicChains);
-            polymerCluster.setConcentrationInWater(defaultDensity);
-            return polymerCluster;
-        } else {
-            final PolymerChain polymerChain = makeMultiblockPolymerChain(numBeadsPerChain, numSubblocks, hydrophobicFraction);
-            final PolymerCluster polymerCluster = PolymerCluster.makeRepeatedChainCluster(polymerChain, numChains);
-            polymerCluster.setConcentrationInWater(defaultDensity);
-            return polymerCluster;
-        }
-    }
-
-    private static PolymerChain makeMultiblockPolymerChain(int numBeads, int numBlocks, double hydrophobicFraction) {
-        final double numHydrophobicBeadsPerBlock = hydrophobicFraction * numBeads / numBlocks;
-        final double numHydrophilicBeadsPerBlock = (1 - hydrophobicFraction) * numBeads / numBlocks;
-
-        int numHydrophilicBeadsAddedSoFar = 0;
-        int numHydrophobicBeadsAddedSoFar = 0;
-        PolymerChain polymerChain = new PolymerChain();
-        for (int currentBlock = 1; currentBlock <= numBlocks; currentBlock++) {
-            final int numHydrophilicBeadsToBeAdded = (int) Math.round(numHydrophilicBeadsPerBlock * currentBlock - .000001) - numHydrophilicBeadsAddedSoFar; //avoid case when both numbers of blocks are rounded up
-            final int numHydrophobicBeadsToBeAdded = (int) Math.round(numHydrophobicBeadsPerBlock * currentBlock) - numHydrophobicBeadsAddedSoFar;
-
-            polymerChain.addBeads(true, numHydrophilicBeadsToBeAdded);
-            numHydrophilicBeadsAddedSoFar += numHydrophilicBeadsToBeAdded;
-            polymerChain.addBeads(false, numHydrophobicBeadsToBeAdded);
-            numHydrophobicBeadsAddedSoFar += numHydrophobicBeadsToBeAdded;
-        }
-        if (polymerChain.getNumBeads() != numBeads) {
-            throw new AssertionError("polymer chain has the wrong length, length is supposed to be " + numBeads + ", but actual length was " + polymerChain.getNumBeads());
-        }
-        return polymerChain;
+        return PolymerCluster.makePolymerCluster(hydrophobicFraction, numChains, numBeadsPerChain, numSubblocks, defaultDensity);
     }
 
     static private final int defaultNumAnneals = 50;//50

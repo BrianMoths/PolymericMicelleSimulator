@@ -96,6 +96,10 @@ public final class EnergeticsConstants implements Serializable {
         private EnergeticsConstantsBuilder() {
         }
 
+        public EnergeticsConstantsBuilder(EnergeticsConstantsBuilder energeticsConstantsBuilder) {
+            this(energeticsConstantsBuilder.buildEnergeticsConstants());
+        }
+
         /**
          * constructs an energetics constants builder corresponding to a given
          * energetics constants. When build is called on the builder, it should
@@ -342,7 +346,7 @@ public final class EnergeticsConstants implements Serializable {
         //</editor-fold>
 
     }
-    //</editor-fold>
+//</editor-fold>
 
     private static final long serialVersionUID = 0L;
     static private Random randomNumberGenerator = new Random();

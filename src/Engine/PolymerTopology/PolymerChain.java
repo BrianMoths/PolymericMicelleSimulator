@@ -34,6 +34,28 @@ public class PolymerChain implements Serializable {
         return polymerChain;
     }
 
+    static public PolymerChain makeMultiblockPolymerChain(int numBeads, int numBlocks, double hydrophobicFraction) {
+        final double numHydrophobicBeadsPerBlock = hydrophobicFraction * numBeads / numBlocks;
+        final double numHydrophilicBeadsPerBlock = (1 - hydrophobicFraction) * numBeads / numBlocks;
+
+        int numHydrophilicBeadsAddedSoFar = 0;
+        int numHydrophobicBeadsAddedSoFar = 0;
+        PolymerChain polymerChain = new PolymerChain();
+        for (int currentBlock = 1; currentBlock <= numBlocks; currentBlock++) {
+            final int numHydrophilicBeadsToBeAdded = (int) Math.round(numHydrophilicBeadsPerBlock * currentBlock - .000001) - numHydrophilicBeadsAddedSoFar; //avoid case when both numbers of blocks are rounded up
+            final int numHydrophobicBeadsToBeAdded = (int) Math.round(numHydrophobicBeadsPerBlock * currentBlock) - numHydrophobicBeadsAddedSoFar;
+
+            polymerChain.addBeads(true, numHydrophilicBeadsToBeAdded);
+            numHydrophilicBeadsAddedSoFar += numHydrophilicBeadsToBeAdded;
+            polymerChain.addBeads(false, numHydrophobicBeadsToBeAdded);
+            numHydrophobicBeadsAddedSoFar += numHydrophobicBeadsToBeAdded;
+        }
+        if (polymerChain.getNumBeads() != numBeads) {
+            throw new AssertionError("polymer chain has the wrong length, length is supposed to be " + numBeads + ", but actual length was " + polymerChain.getNumBeads());
+        }
+        return polymerChain;
+    }
+
     static public PolymerChain copy(PolymerChain polymerChain) {
         PolymerChain chainCopy = new PolymerChain();
         chainCopy.numABeads = polymerChain.numABeads;

@@ -4,6 +4,8 @@
  */
 package SGEManagement;
 
+import Engine.Energetics.EnergeticsConstants.EnergeticsConstantsBuilder;
+import Engine.PolymerTopology.PolymerCluster;
 import Engine.SimulatorParameters;
 import Engine.SimulatorParameters.SystemParametersBuilder;
 import FocusedSimulation.JobParameters;
@@ -32,8 +34,25 @@ public class Input implements Serializable {
             return inputBuilder;
         }
 
+        static public InputBuilder rescaleInputBuilder(InputBuilder inputBuilderOriginal, final double verticalScale, final double horizontalScale) {
+            InputBuilder inputBuilder = new InputBuilder(inputBuilderOriginal);
+            final double aspectRatio = inputBuilder.getSystemParametersBuilder().getAspectRatio();
+            inputBuilder.getSystemParametersBuilder().setAspectRatio(aspectRatio * horizontalScale / verticalScale);
+            PolymerCluster polymerCluster = PolymerCluster.makeRescaledHomogenousPolymerCluster(inputBuilder.getSystemParametersBuilder().getPolymerCluster(), verticalScale, horizontalScale);
+            inputBuilder.getSystemParametersBuilder().setPolymerCluster(polymerCluster);
+            return inputBuilder;
+        }
+
         public SystemParametersBuilder systemParametersBuilder;
         public JobParametersBuilder jobParametersBuilder;
+
+        public InputBuilder() {
+        }
+
+        public InputBuilder(InputBuilder inputBuilder) {
+            systemParametersBuilder = new SystemParametersBuilder(inputBuilder.systemParametersBuilder);
+            jobParametersBuilder = new JobParametersBuilder(inputBuilder.jobParametersBuilder);
+        }
 
         public Input buildInputAutomaticHardOverlap() {
             return new Input(systemParametersBuilder.buildSystemParametersWithAutomaticHardOverlap(), jobParametersBuilder.buildJobParameters());

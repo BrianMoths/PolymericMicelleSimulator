@@ -28,6 +28,12 @@ public class SimulationRunnerParameters implements Serializable {
             this.numIterationsPerAnneal = numIterationsPerAnneal;
         }
 
+        public SimulationRunnerParametersBuilder(SimulationRunnerParametersBuilder simulationRunnerParametersBuilder) {
+            numIterationsPerSample = simulationRunnerParametersBuilder.numIterationsPerSample;
+            numSamples = simulationRunnerParametersBuilder.numSamples;
+            numIterationsPerAnneal = simulationRunnerParametersBuilder.numIterationsPerAnneal;
+        }
+
         public SimulationRunnerParameters build() {
             return new SimulationRunnerParameters(this);
         }

@@ -61,6 +61,17 @@ public class SimulatorParameters implements Serializable {
         private double aspectRatio;
         private GeneralStepGenerator generalStepGenerator;
 
+        public SystemParametersBuilder() {
+        }
+
+        public SystemParametersBuilder(SystemParametersBuilder systemParametersBuilder) {
+            this.interactionLength = systemParametersBuilder.interactionLength;
+            this.energeticsConstantsBuilder = new EnergeticsConstantsBuilder(systemParametersBuilder.energeticsConstantsBuilder);
+            this.polymerCluster = new PolymerCluster(systemParametersBuilder.polymerCluster);
+            this.aspectRatio = systemParametersBuilder.aspectRatio;
+            this.generalStepGenerator = new GeneralStepGenerator(systemParametersBuilder.generalStepGenerator);
+        }
+
         public SimulatorParameters buildSystemParametersWithAutomaticHardOverlap() {
             autosetCoreParameters();
             return buildSystemParameters();

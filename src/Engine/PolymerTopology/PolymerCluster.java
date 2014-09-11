@@ -37,17 +37,40 @@ public class PolymerCluster implements Serializable {
         return polymerCluster;
     }
 
-    public static PolymerCluster copy(PolymerCluster polymerCluster) {
-        PolymerCluster copy = new PolymerCluster();
+    static public PolymerCluster makePolymerCluster(double hydrophobicFraction, final int numChains, int numBeadsPerChain, int numSubblocks, double density) {
+        if (numSubblocks < 0) {
+            throw new IllegalArgumentException("numSubblocks must be non-negative");
+        } else if (numSubblocks == 0) {
+            final int numHydrophobicChains = (int) Math.ceil(hydrophobicFraction * numChains);
+            final int numHydrophilicChains = numChains - numHydrophobicChains;
 
-        copy.numBeads = polymerCluster.numBeads;
-        copy.numABeads = polymerCluster.numABeads;
+            PolymerChain hydrophobicPolymerChain = PolymerChain.makeChainStartingWithA(0, numBeadsPerChain);
+            PolymerChain hydrophilicPolymerChain = PolymerChain.makeChainStartingWithA(numBeadsPerChain);
 
-        for (PolymerChain polymerChain : polymerCluster.polymerChainList) {
-            copy.addChain(polymerChain);
+            PolymerCluster polymerCluster = PolymerCluster.makeRepeatedChainCluster(hydrophobicPolymerChain, numHydrophobicChains);
+            polymerCluster.addChainMultipleTimes(hydrophilicPolymerChain, numHydrophilicChains);
+            polymerCluster.setConcentrationInWater(density);
+            return polymerCluster;
+        } else {
+            final PolymerChain polymerChain = PolymerChain.makeMultiblockPolymerChain(numBeadsPerChain, numSubblocks, hydrophobicFraction);
+            final PolymerCluster polymerCluster = PolymerCluster.makeRepeatedChainCluster(polymerChain, numChains);
+            polymerCluster.setConcentrationInWater(density);
+            return polymerCluster;
         }
+    }
 
-        return copy;
+    static public PolymerCluster makeRescaledHomogenousPolymerCluster(PolymerCluster polymerCluster, final double verticalScale, final double horizontalScale) {
+        if (polymerCluster.getNumChains() == 0) {
+            return new PolymerCluster();
+        } else {
+            final int numChains = (int) (polymerCluster.getNumChains() * verticalScale * horizontalScale);
+            PolymerChain firstChain = polymerCluster.polymerChainList.get(0);
+            return PolymerCluster.makeRepeatedChainCluster(firstChain, numChains);
+        }
+    }
+
+    public static PolymerCluster copy(PolymerCluster polymerCluster) {
+        return new PolymerCluster(polymerCluster);
     }
 
     private final List<PolymerChain> polymerChainList;
@@ -61,11 +84,15 @@ public class PolymerCluster implements Serializable {
     }
 
     public PolymerCluster(PolymerChain polymerChain) {
-        polymerChainList = new ArrayList<>();
-        numBeads = 0;
-        numABeads = 0;
-
+        this();
         addChainPrivate(polymerChain);
+    }
+
+    public PolymerCluster(PolymerCluster polymerCluster) {
+        this();
+        for (PolymerChain polymerChain : polymerCluster.polymerChainList) {
+            addChainPrivate(polymerChain);
+        }
     }
 
     public void addChain(PolymerChain polymerChain) {
