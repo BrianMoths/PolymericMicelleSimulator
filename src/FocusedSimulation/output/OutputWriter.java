@@ -4,7 +4,7 @@
  */
 package FocusedSimulation.output;
 
-import FocusedSimulation.surfacetension.SurfaceTensionResultsWriter;
+import FocusedSimulation.homopolymer.surfacetension.SurfaceTensionResultsWriter;
 import java.io.FileNotFoundException;
 import java.io.PrintWriter;
 import java.util.Calendar;
@@ -70,7 +70,6 @@ public class OutputWriter {
 
     private PrintWriter makeDataWriter(int jobNumber) throws FileNotFoundException {
         String projectPath = getProjectPath();
-        System.out.println(projectPath);
         final String path = projectPath + "../simulationResults/";
         String fileName;
         fileName = makeFileName(jobNumber);

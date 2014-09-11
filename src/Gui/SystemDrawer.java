@@ -103,9 +103,9 @@ public class SystemDrawer {
     }
 
     private void drawBead(int i) {
-        Point point = beadCenterPixel(i);
+        Point beadCenter = beadCenterPixel(i);
 //        graphics.fillRect(point.x - radius, point.y - radius, diameter, diameter);
-        graphics.fillOval(point.x - radius, point.y - radius, diameter, diameter);
+        graphics.fillOval(beadCenter.x - radius, beadCenter.y - radius, diameter, diameter);
     }
 
     private void drawBonds() {

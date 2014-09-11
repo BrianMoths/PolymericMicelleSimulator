@@ -75,7 +75,7 @@ public class AnalysisWindow extends javax.swing.JFrame {
     private void initializeIterationsStatistics() {
         aggregateStatistics.setSimulatorForAggregate(polymerSimulator);
         singleBeadStatistics.setSimulatorAndStepType(polymerSimulator, StepType.SINGLE_BEAD);
-        wallMoveStatistics.setSimulatorAndStepType(polymerSimulator, StepType.SINGLE_WALL_RESIZE);
+        wallMoveStatistics.setSimulatorAndStepType(polymerSimulator, StepType.SINGLE_WALL_HORIZONTAL_RESIZE);
         reptationStatistics.setSimulatorAndStepType(polymerSimulator, StepType.REPTATION);
     }
 

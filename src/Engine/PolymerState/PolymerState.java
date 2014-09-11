@@ -53,6 +53,9 @@ public class PolymerState implements ImmutablePolymerState {
 //</editor-fold>
 
     public boolean reptate(int bead, boolean isGoingRight) {
+        if (discretePolymerState.getLeftBeadOfChain(bead) == discretePolymerState.getRightBeadOfChain(bead)) {
+            return false;
+        }
         int movingBead = discretePolymerState.getReptatingBead(bead, isGoingRight);
         double[] stepVector = getStepVector(movingBead, isGoingRight);
         boolean isSuccessful = polymerPosition.moveBead(movingBead, stepVector);
@@ -159,6 +162,10 @@ public class PolymerState implements ImmutablePolymerState {
 
     public void anneal() {
         polymerPosition.anneal();
+    }
+
+    public void rescaleBeadPositions(double rescaleFactor) {
+        polymerPosition.rescaleBeadPositions(rescaleFactor);
     }
 
     public boolean moveBead(int stepBead, double[] stepVector) {

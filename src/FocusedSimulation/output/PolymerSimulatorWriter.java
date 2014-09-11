@@ -5,7 +5,7 @@
 package FocusedSimulation.output;
 
 import Engine.PolymerSimulator;
-import FocusedSimulation.surfacetension.SurfaceTensionResultsWriter;
+import FocusedSimulation.homopolymer.surfacetension.SurfaceTensionResultsWriter;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -19,7 +19,7 @@ import java.util.logging.Logger;
  * @author bmoths
  */
 public class PolymerSimulatorWriter {
-
+    
     static public String makeDatePrefix() {
         StringBuilder fileNameBuilder = new StringBuilder();
         Calendar calendar = Calendar.getInstance();
@@ -42,7 +42,7 @@ public class PolymerSimulatorWriter {
                 .append(makeDoubleDigitString(second));
         return fileNameBuilder.toString();
     }
-
+    
     static public String makeDoubleDigitString(int num) {
         num %= 100;
         StringBuilder stringBuilder = new StringBuilder();
@@ -52,7 +52,7 @@ public class PolymerSimulatorWriter {
         stringBuilder.append(Integer.toString(num));
         return stringBuilder.toString();
     }
-
+    
     static public String getProjectPath() throws AssertionError {
         String jarPath = SurfaceTensionResultsWriter.class.getProtectionDomain().getCodeSource().getLocation().getPath();
         if (jarPath.contains("build/")) {
@@ -64,38 +64,48 @@ public class PolymerSimulatorWriter {
         }
         return jarPath;
     }
-
-    static private String makeFileName(int fileNameNumber) {
+    
+    static private String makeFileName(int fileNameNumber, String jobString) {
         StringBuilder fileNameBuilder = new StringBuilder();
         String datePrefix = makeDatePrefix();
         fileNameBuilder.append(datePrefix);
-        fileNameBuilder.append("_").append(makeDoubleDigitString(fileNameNumber));
+        fileNameBuilder.append(makeFileNameBesidesDate(fileNameNumber, jobString))
+                .append(".simstate");
         return fileNameBuilder.toString();
     }
-
-    private static String getPathAndFileString(int jobNumber) throws AssertionError {
+    
+    static private StringBuilder makeFileNameBesidesDate(int fileNameNumber, String jobString) {
+        StringBuilder stringBuilder = new StringBuilder();
+        if ("".equals(jobString)) {
+            stringBuilder.append("_").append(jobString);
+        }
+        stringBuilder.append("_").append(makeDoubleDigitString(fileNameNumber));
+        return stringBuilder;
+    }
+    
+    private static String getPathAndFileString(int jobNumber, String jobString) throws AssertionError {
         String projectPath = getProjectPath();
         final String path = projectPath + "../simulationSnapshots/";
-        String fileName = makeFileName(jobNumber);
+        String fileName = makeFileName(jobNumber, jobString);
         final String pathAndFileString = path + fileName;
         return pathAndFileString;
     }
-
+    
     private static ObjectOutputStream getObjectOutputStreamFromAbsoluteFile(String pathAndFileString) throws IOException {
         final ObjectOutputStream objectOutputStream = new ObjectOutputStream(new FileOutputStream(pathAndFileString));
         return objectOutputStream;
     }
-
+    
     private class PolymerSimulatorOutputRunnable implements Runnable {
-
+        
         private final PolymerSimulator polymerSimulator;
         private final String absoluteFileName;
-
-        public PolymerSimulatorOutputRunnable(final PolymerSimulator polymerSimulator, int jobNumber) {
+        
+        public PolymerSimulatorOutputRunnable(final PolymerSimulator polymerSimulator, int jobNumber, String jobString) {
             this.polymerSimulator = polymerSimulator;
-            this.absoluteFileName = getPathAndFileString(jobNumber);
+            this.absoluteFileName = getPathAndFileString(jobNumber, jobString);
         }
-
+        
         @Override
         public void run() {
             while (isStillWriting) {
@@ -120,18 +130,18 @@ public class PolymerSimulatorWriter {
                 }
             }
         }
-
+        
     }
-
+    
     private boolean isStillWriting = true;
-
-    public PolymerSimulatorWriter(final PolymerSimulator polymerSimulator, int jobNumber) throws FileNotFoundException, IOException {
-        Thread outputThread = new Thread(new PolymerSimulatorOutputRunnable(polymerSimulator, jobNumber));
+    
+    public PolymerSimulatorWriter(final PolymerSimulator polymerSimulator, int jobNumber, String jobString) throws FileNotFoundException, IOException {
+        Thread outputThread = new Thread(new PolymerSimulatorOutputRunnable(polymerSimulator, jobNumber, jobString));
         outputThread.start();
     }
-
+    
     public void stopWriting() {
         isStillWriting = false;
     }
-
+    
 }

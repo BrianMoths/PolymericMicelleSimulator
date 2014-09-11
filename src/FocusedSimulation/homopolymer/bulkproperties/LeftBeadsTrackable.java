@@ -2,13 +2,13 @@
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
-package FocusedSimulation.bulkproperties;
+package FocusedSimulation.homopolymer.bulkproperties;
 
 import Engine.PolymerSimulator;
 import Engine.PolymerState.SystemGeometry.Interfaces.SystemGeometry;
 import Engine.SystemAnalyzer;
-import FocusedSimulation.SimulationRunner;
-import FocusedSimulation.StatisticsTracker.TrackableVariable;
+import FocusedSimulation.simulationrunner.SimulationRunner;
+import FocusedSimulation.simulationrunner.StatisticsTracker.TrackableVariable;
 
 /**
  *

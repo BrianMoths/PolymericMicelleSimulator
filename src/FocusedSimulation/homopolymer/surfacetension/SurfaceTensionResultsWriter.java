@@ -2,7 +2,7 @@
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
-package FocusedSimulation.surfacetension;
+package FocusedSimulation.homopolymer.surfacetension;
 
 import Engine.PolymerSimulator;
 import FocusedSimulation.DoubleWithUncertainty;
@@ -39,6 +39,11 @@ public class SurfaceTensionResultsWriter extends AbstractResultsWriter {
     public void printSurfaceTension(DoubleWithUncertainty measuredSurfaceTension) {
         String surfaceTensionString = makeSurfaceTensionString(measuredSurfaceTension);
         printAndSoutString(surfaceTensionString);
+    }
+
+    @Override
+    public void printSimulationType() {
+        printAndSoutString("Surface Tension\n");
     }
 
 }

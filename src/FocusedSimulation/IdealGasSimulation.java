@@ -4,6 +4,7 @@
  */
 package FocusedSimulation;
 
+import FocusedSimulation.simulationrunner.ConvergenceMonitor;
 import Engine.Energetics.EnergeticsConstants;
 import Engine.Energetics.EnergeticsConstants.EnergeticsConstantsBuilder;
 import Engine.Energetics.ExternalEnergyCalculator.ExternalEnergyCalculatorBuilder;
@@ -17,7 +18,7 @@ import Engine.PolymerState.SystemGeometry.Interfaces.SystemGeometry;
 import Engine.SimulationStepping.StepGenerators.CompoundStepGenerators.GeneralStepGenerator;
 import Engine.SimulationStepping.StepTypes.StepType;
 import Engine.SystemAnalyzer;
-import FocusedSimulation.ConvergenceMonitor.ConvergenceResults;
+import FocusedSimulation.simulationrunner.ConvergenceMonitor.ConvergenceResults;
 //import static FocusedSimulation.SurfaceTensionFinder.generateLengthStatistics;
 import Gui.SystemViewer;
 import java.util.EnumMap;
@@ -30,7 +31,7 @@ import org.apache.commons.math3.stat.descriptive.DescriptiveStatistics;
 public class IdealGasSimulation {
 
     static private final int numBeadsPerChain = 1;
-    static private final int numBeads = 4;
+    static private final int numBeads = 50;
     static private final double density = .01;
 
     public static void main(String[] args) {
@@ -65,7 +66,8 @@ public class IdealGasSimulation {
         final SystemGeometry systemGeometry = makeSystemGeometry(polymerCluster.getNumBeadsIncludingWater(), geometricalParameters);
         final PolymerSimulator polymerSimulator = new PolymerSimulator(systemGeometry, polymerCluster, energeticsConstants);
         final EnumMap<StepType, Double> stepWeights = GeneralStepGenerator.makeDefaultWeights();
-        stepWeights.put(StepType.SINGLE_WALL_RESIZE, .5);
+        stepWeights.put(StepType.SINGLE_WALL_HORIZONTAL_RESIZE, .5);
+        stepWeights.put(StepType.SINGLE_BEAD, 50.);
         polymerSimulator.setStepGenerator(new GeneralStepGenerator(stepWeights));
         return polymerSimulator;
     }

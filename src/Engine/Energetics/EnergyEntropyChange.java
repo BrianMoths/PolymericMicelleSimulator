@@ -66,7 +66,7 @@ public class EnergyEntropyChange implements Serializable {
      * entropy took place.
      * @return the resulting change in free energy
      */
-    public double calculateFreeEnergyChange(double temperature) {
+    public double calculateFreeEnergy(double temperature) {
         return energy - temperature * entropy;
     }
 

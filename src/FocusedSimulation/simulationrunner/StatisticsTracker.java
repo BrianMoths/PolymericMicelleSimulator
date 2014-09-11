@@ -2,9 +2,10 @@
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
-package FocusedSimulation;
+package FocusedSimulation.simulationrunner;
 
 import Engine.PolymerSimulator;
+import FocusedSimulation.DoubleWithUncertainty;
 import SystemAnalysis.NonNeighborEnergy;
 import java.util.HashMap;
 import java.util.Map;
@@ -61,10 +62,24 @@ public class StatisticsTracker {
             }
 
         };
+        public static final TrackableVariable FREE_ENERGY_PER_BEAD = new TrackableVariable() {
+            @Override
+            public double getValue(PolymerSimulator polymerSimulator) {
+                return polymerSimulator.getFreeEnergy() / polymerSimulator.getNumBeads();
+            }
+
+        };
         public static final TrackableVariable SYSTEM_WIDTH = new TrackableVariable() {
             @Override
             public double getValue(PolymerSimulator polymerSimulator) {
                 return polymerSimulator.getSystemAnalyzer().getSystemGeometry().getSizeOfDimension(0);
+            }
+
+        };
+        public static final TrackableVariable SYSTEM_HEIGHT = new TrackableVariable() {
+            @Override
+            public double getValue(PolymerSimulator polymerSimulator) {
+                return polymerSimulator.getSystemAnalyzer().getSystemGeometry().getSizeOfDimension(1);
             }
 
         };

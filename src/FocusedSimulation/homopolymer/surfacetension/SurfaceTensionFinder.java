@@ -2,7 +2,7 @@
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
-package FocusedSimulation.surfacetension;
+package FocusedSimulation.homopolymer.surfacetension;
 
 import Engine.Energetics.EnergeticsConstants.EnergeticsConstantsBuilder;
 import Engine.Energetics.ExternalEnergyCalculator;
@@ -14,7 +14,7 @@ import Engine.SimulationStepping.StepGenerators.StepGenerator;
 import Engine.SimulationStepping.StepTypes.StepType;
 import FocusedSimulation.AbstractFocusedSimulation;
 import FocusedSimulation.DoubleWithUncertainty;
-import FocusedSimulation.StatisticsTracker.TrackableVariable;
+import FocusedSimulation.simulationrunner.StatisticsTracker.TrackableVariable;
 import SGEManagement.Input;
 import SGEManagement.Input.InputBuilder;
 import SystemAnalysis.HistogramMaker;

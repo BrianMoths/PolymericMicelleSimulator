@@ -160,6 +160,10 @@ public class PolymerSimulator implements Serializable {
         polymerPosition.recenter();
     }
 
+    public void rescaleBeadPositions(double rescaleFactor) {
+        polymerState.rescaleBeadPositions(rescaleFactor);
+    }
+
     public void doIterations(int n) {
         for (int i = 0; i < n; i++) {
             synchronized (this) {
@@ -222,6 +226,10 @@ public class PolymerSimulator implements Serializable {
 
     public double getEntropy() {
         return energyEntropy.getEntropy();
+    }
+
+    public double getFreeEnergy() {
+        return energyEntropy.calculateFreeEnergy(systemAnalyzer.getEnergeticsConstants().getTemperature());
     }
 
     public EnergyEntropyChange getEnergyEntropy() {

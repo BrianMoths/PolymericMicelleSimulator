@@ -2,7 +2,7 @@
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
-package FocusedSimulation.surfacetension;
+package FocusedSimulation.homopolymer.surfacetension;
 
 import Engine.Energetics.EnergeticsConstants.EnergeticsConstantsBuilder;
 import Engine.Energetics.ExternalEnergyCalculator.ExternalEnergyCalculatorBuilder;
@@ -11,7 +11,7 @@ import Engine.PolymerTopology.PolymerCluster;
 import Engine.SimulatorParameters.SystemParametersBuilder;
 import FocusedSimulation.AbstractFocusedSimulation;
 import FocusedSimulation.JobParameters.JobParametersBuilder;
-import FocusedSimulation.SimulationRunnerParameters;
+import FocusedSimulation.simulationrunner.SimulationRunnerParameters;
 import SGEManagement.Input;
 import SGEManagement.Input.InputBuilder;
 import SGEManagement.JobSubmitter;

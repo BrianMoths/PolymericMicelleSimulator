@@ -2,10 +2,11 @@
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
-package FocusedSimulation.compressibility;
+package FocusedSimulation.homopolymer.compressibility;
 
 import FocusedSimulation.DoubleWithUncertainty;
-import FocusedSimulation.bulkproperties.BulkPropertiesResultsWriter;
+import FocusedSimulation.homopolymer.blob.BlobFinder;
+import FocusedSimulation.homopolymer.bulkproperties.BulkPropertiesResultsWriter;
 import SGEManagement.Input;
 import java.io.FileNotFoundException;
 
@@ -27,6 +28,15 @@ public class CompressibilityResultsWriter extends BulkPropertiesResultsWriter {
     void printPressure(Double pressure) {
         final String caption = "Pressure";
         printAndSoutCaptionedObject(caption, pressure);
+    }
+
+    void printNaturalDensity() {
+        printAndSoutCaptionedObject("Natural Density assumed: ", BlobFinder.NATURAL_DENSITY);
+    }
+
+    @Override
+    public void printSimulationType() {
+        printAndSoutString("compressibility\n");
     }
 
 }

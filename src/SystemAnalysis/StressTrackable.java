@@ -4,7 +4,7 @@
  */
 package SystemAnalysis;
 
-import FocusedSimulation.StatisticsTracker.TrackableVariable;
+import FocusedSimulation.simulationrunner.StatisticsTracker.TrackableVariable;
 
 /**
  *

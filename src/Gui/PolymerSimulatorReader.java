@@ -20,7 +20,13 @@ import javax.swing.JFileChooser;
 public class PolymerSimulatorReader {
 
     public static void main(String[] args) {
-        File file = getPolymerSimulatorFile();
+        File file;
+        if (args.length != 1) {
+            file = getPolymerSimulatorFile();
+        } else {
+            file = new File(args[0]);
+            System.out.println(file.getAbsolutePath());
+        }
         try {
             PolymerSimulatorReader polymerSimulatorReader = new PolymerSimulatorReader(file);
             polymerSimulatorReader.run();

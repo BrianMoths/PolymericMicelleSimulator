@@ -133,4 +133,8 @@ public interface ImmutableSystemGeometry extends Serializable {
 
     public boolean incrementVectors(double[][] vectors, double[] stepVector);
 
+    void rescaleVector(double[] vector, double rescaleFactor);
+
+    void rescaleVectors(double[][] vectors, double rescaleFactor);
+
 }

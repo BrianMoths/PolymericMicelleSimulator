@@ -4,7 +4,7 @@
  */
 package SGEManagement;
 
-import FocusedSimulation.surfacetension.SurfaceTensionJobMaker;
+import FocusedSimulation.homopolymer.surfacetension.SurfaceTensionJobMaker;
 import java.io.IOException;
 import java.util.logging.Level;
 import java.util.logging.Logger;

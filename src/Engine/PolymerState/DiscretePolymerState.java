@@ -43,15 +43,23 @@ public class DiscretePolymerState implements ImmutableDiscretePolymerState {
         }
     }
 
+    /**
+     * reptates a chain.
+     *
+     * @param bead a bead on the chain to be reptated
+     * @param isGoingRight true if the bead on the right of the chain is to move
+     * to the left of the chain, false for going the other direction
+     */
     public void reptateChainOfBead(int bead, boolean isGoingRight) {
         final int leftBead = getLeftBeadOfChain(bead);
         final int rightBead = getRightBeadOfChain(bead);
-        if (leftBead != rightBead) {
+        final boolean isMoveNontrivial = leftBead != rightBead;
+        if (isMoveNontrivial) {
             reptateBeads(leftBead, rightBead, isGoingRight);
         }
     }
-
     //<editor-fold defaultstate="collapsed" desc="reptateChainOfBead helpers">
+
     private void reptateBeads(int leftBead, int rightBead, boolean isGoingRight) {
         if (isGoingRight) {
             breakBondToRight(leftBead);

@@ -6,7 +6,7 @@ package SystemAnalysis;
 
 import Engine.PolymerSimulator;
 import Engine.PolymerState.SystemGeometry.Interfaces.SystemGeometry;
-import FocusedSimulation.StatisticsTracker.TrackableVariable;
+import FocusedSimulation.simulationrunner.StatisticsTracker.TrackableVariable;
 import SystemAnalysis.AreaPerimeter.rectangleareaperimeter.BeadRectangle;
 
 /**

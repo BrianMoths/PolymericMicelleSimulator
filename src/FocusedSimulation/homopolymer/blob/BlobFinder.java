@@ -2,17 +2,19 @@
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
-package FocusedSimulation.blob;
+package FocusedSimulation.homopolymer.blob;
 
+import Engine.PolymerTopology.PolymerChain;
+import Engine.PolymerTopology.PolymerCluster;
 import Engine.SimulationStepping.StepGenerators.CompoundStepGenerators.GeneralStepGenerator;
 import Engine.SimulationStepping.StepGenerators.StepGenerator;
 import Engine.SimulationStepping.StepTypes.StepType;
 import FocusedSimulation.AbstractFocusedSimulation;
 import FocusedSimulation.DoubleWithUncertainty;
-import FocusedSimulation.StatisticsTracker.TrackableVariable;
-import FocusedSimulation.compressibility.CompressibilityFinder;
-import FocusedSimulation.compressibility.CompressibilityJobMaker;
-import FocusedSimulation.surfacetension.SurfaceTensionResultsWriter;
+import FocusedSimulation.simulationrunner.StatisticsTracker.TrackableVariable;
+import FocusedSimulation.homopolymer.compressibility.CompressibilityFinder;
+import FocusedSimulation.homopolymer.compressibility.CompressibilityJobMaker;
+import FocusedSimulation.homopolymer.surfacetension.SurfaceTensionResultsWriter;
 import SGEManagement.Input;
 import SGEManagement.Input.InputBuilder;
 import SystemAnalysis.CenterDensityTrackable;
@@ -54,6 +56,12 @@ public class BlobFinder extends AbstractFocusedSimulation<BlobResultsWriter> {
             inputBuilder.getJobParametersBuilder().getSimulationRunnerParametersBuilder().setNumSamples(200); //1000
             inputBuilder.getJobParametersBuilder().setShouldIterateUntilConvergence(true);
             inputBuilder.getJobParametersBuilder().setConvergencePrecision(.1);
+            final double concentrationInWater = inputBuilder.getSystemParametersBuilder().getPolymerCluster().getConcentrationInWater();
+//            final PolymerCluster polymerCluster = PolymerCluster.makeRepeatedChainCluster(PolymerChain.makeSingletChainOfType(false), 450);
+            final PolymerCluster polymerCluster = PolymerCluster.makeRepeatedChainCluster(PolymerChain.makeChainOfType(false, 15), 30);
+            polymerCluster.setConcentrationInWater(concentrationInWater);
+//            polymerCluster.setConcentrationInWater(.3);
+            inputBuilder.getSystemParametersBuilder().setPolymerCluster(polymerCluster);
             return inputBuilder.buildInput();
         } else if (args.length == 1) {
             final String fileName = args[0];

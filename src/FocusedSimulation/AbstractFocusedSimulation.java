@@ -4,15 +4,17 @@
  */
 package FocusedSimulation;
 
+import FocusedSimulation.simulationrunner.SimulationRunner;
+import FocusedSimulation.simulationrunner.ConvergenceMonitor;
 import Engine.Energetics.ExternalEnergyCalculator;
 import Engine.PolymerSimulator;
 import Engine.SimulationStepping.StepGenerators.CompoundStepGenerators.GeneralStepGenerator;
 import Engine.SimulationStepping.StepGenerators.StepGenerator;
 import Engine.SimulationStepping.StepTypes.StepType;
 import Engine.SimulatorParameters;
-import FocusedSimulation.ConvergenceMonitor.ConvergenceResults;
-import FocusedSimulation.SimulationRunnerParameters;
-import FocusedSimulation.StatisticsTracker.TrackableVariable;
+import FocusedSimulation.simulationrunner.ConvergenceMonitor.ConvergenceResults;
+import FocusedSimulation.simulationrunner.SimulationRunnerParameters;
+import FocusedSimulation.simulationrunner.StatisticsTracker.TrackableVariable;
 import FocusedSimulation.output.AbstractResultsWriter;
 import FocusedSimulation.output.PolymerSimulatorWriter;
 import Gui.SystemViewer;
@@ -63,7 +65,7 @@ public abstract class AbstractFocusedSimulation<T extends AbstractResultsWriter>
         simulationRunner = new SimulationRunner(polymerSimulator, input.getJobParameters().getSimulationRunnerParameters());
         this.outputWriter = outputWriter;
         try {
-            polymerSimulatorWriter = new PolymerSimulatorWriter(polymerSimulator, input.getJobNumber());
+            polymerSimulatorWriter = new PolymerSimulatorWriter(polymerSimulator, input.getJobNumber(), input.jobParameters.getJobString());
         } catch (IOException ex) {
             Logger.getLogger(AbstractFocusedSimulation.class.getName()).log(Level.SEVERE, null, ex);
         }
@@ -134,7 +136,7 @@ public abstract class AbstractFocusedSimulation<T extends AbstractResultsWriter>
 
     protected StepGenerator makeInitialStepGenerator() {
         EnumMap<StepType, Double> stepweights = new EnumMap<>(StepType.class);
-        stepweights.put(StepType.SINGLE_WALL_RESIZE, .0001);
+        stepweights.put(StepType.SINGLE_WALL_HORIZONTAL_RESIZE, .0001);
         stepweights.put(StepType.SINGLE_BEAD, 1.);
         return new GeneralStepGenerator(stepweights);
 
@@ -142,7 +144,7 @@ public abstract class AbstractFocusedSimulation<T extends AbstractResultsWriter>
 
     protected StepGenerator makeMainStepGenerator() {
         EnumMap<StepType, Double> stepweights = new EnumMap<>(StepType.class);
-        stepweights.put(StepType.SINGLE_WALL_RESIZE, 1. / (10 * polymerSimulator.getNumBeads()));
+        stepweights.put(StepType.SINGLE_WALL_HORIZONTAL_RESIZE, 1. / (10 * polymerSimulator.getNumBeads()));
         stepweights.put(StepType.SINGLE_BEAD, 1.);
         stepweights.put(StepType.REPTATION, .1);
         stepweights.put(StepType.SINGLE_CHAIN, .01);
@@ -166,7 +168,7 @@ public abstract class AbstractFocusedSimulation<T extends AbstractResultsWriter>
         analyzeAndPrintResults();
     }
 
-    private void doMeasurementTrial() {
+    protected void doMeasurementTrial() {
         simulationRunner.doMeasurementRun();
         analyzeAndPrintResults();
     }

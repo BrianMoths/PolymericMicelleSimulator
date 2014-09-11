@@ -2,11 +2,12 @@
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
-package FocusedSimulation;
+package FocusedSimulation.simulationrunner;
 
 import Engine.PolymerSimulator;
 import Engine.SimulationStepping.StepGenerators.StepGenerator;
-import FocusedSimulation.StatisticsTracker.TrackableVariable;
+import FocusedSimulation.DoubleWithUncertainty;
+import FocusedSimulation.simulationrunner.StatisticsTracker.TrackableVariable;
 import Gui.SystemViewer;
 import java.io.Serializable;
 import java.util.ArrayList;

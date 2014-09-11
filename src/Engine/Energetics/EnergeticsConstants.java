@@ -8,7 +8,6 @@ import Engine.Energetics.ExternalEnergyCalculator.ExternalEnergyCalculatorBuilde
 import Engine.PolymerState.SystemGeometry.AreaOverlap;
 import Engine.PolymerState.SystemGeometry.GeometricalParameters;
 import Engine.PolymerState.SystemGeometry.Interfaces.ImmutableSystemGeometry;
-import Engine.PolymerState.SystemGeometry.Interfaces.SystemGeometry;
 import java.io.Serializable;
 import java.util.Random;
 
@@ -81,7 +80,7 @@ public final class EnergeticsConstants implements Serializable {
             energeticsConstantsBuilder.setABOverlapCoefficient(2 * .1);
             energeticsConstantsBuilder.setBBOverlapCoefficient(2 * 5. / 120.);
             energeticsConstantsBuilder.setTemperature(1);
-            energeticsConstantsBuilder.setSpringConstant(2. / 3.);
+            energeticsConstantsBuilder.setSpringConstant(2.); //want springConstant = 2 so that 2/2 T = 1/2 springConstant L^2 when L=1 and T =1
             energeticsConstantsBuilder.setHardOverlapCoefficient(2 * 0);
             return energeticsConstantsBuilder;
         }
@@ -456,7 +455,7 @@ public final class EnergeticsConstants implements Serializable {
      * @return whether or not a change with such energy and entropy is allowed
      */
     public boolean isEnergeticallyAllowed(EnergyEntropyChange energyEntropyChange) {
-        final double freeEnergyChange = energyEntropyChange.calculateFreeEnergyChange(temperature);
+        final double freeEnergyChange = energyEntropyChange.calculateFreeEnergy(temperature);
         return freeEnergyChange < 0
                 || randomNumberGenerator.nextDouble() < Math.exp(-freeEnergyChange / temperature);
     }

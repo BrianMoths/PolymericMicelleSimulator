@@ -331,6 +331,7 @@ public abstract class AbstractGeometry implements SystemGeometry {
         this.fullRMax[index] = rMax;
     }
 
+    @Override
     public boolean incrementVectors(double[][] vectors, double[] stepVector) {
         final int numVectors = vectors.length;
         boolean isSuccessful = true;
@@ -345,6 +346,24 @@ public abstract class AbstractGeometry implements SystemGeometry {
             }
         }
         return isSuccessful;
+    }
+
+    @Override
+    public void rescaleVectors(double[][] vectors, double rescaleFactor) {
+        if (rescaleFactor > 1) {
+            throw new IllegalArgumentException("When rescaling positons, the rescale factor must be less than one.");
+        }
+        final int numVectors = vectors.length;
+        for (int currentVector = 0; currentVector < numVectors; currentVector++) {
+            rescaleVector(vectors[currentVector], rescaleFactor);
+        }
+    }
+
+    @Override
+    public void rescaleVector(double[] vector, double rescaleFactor) {
+        for (int dimension = 0; dimension < numDimensions; dimension++) {
+            vector[dimension] *= rescaleFactor;
+        }
     }
 
     @Override

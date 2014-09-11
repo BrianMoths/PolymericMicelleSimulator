@@ -10,7 +10,7 @@ import Engine.PolymerState.SystemGeometry.Interfaces.ImmutableSystemGeometry;
 import Engine.SimulationStepping.StepTypes.StepType;
 import Engine.SystemAnalyzer;
 import FocusedSimulation.DoubleWithUncertainty;
-import FocusedSimulation.SimulationRunner;
+import FocusedSimulation.simulationrunner.SimulationRunner;
 import SGEManagement.Input;
 import SystemAnalysis.FullStressTrackable;
 import SystemAnalysis.FractionalVolumeStressTrackable;
@@ -21,7 +21,7 @@ import java.io.FileNotFoundException;
  *
  * @author bmoths
  */
-public class AbstractResultsWriter {
+public abstract class AbstractResultsWriter {
 
     protected static String makeFinalOutputString(PolymerSimulator polymerSimulator) {
         try {
@@ -119,6 +119,8 @@ public class AbstractResultsWriter {
         outputWriter.printAndSoutString(parametersString);
     }
 
+    public abstract void printSimulationType();
+
     public void printMiddleStress(SimulationRunner simulationRunner) {
         printStress(simulationRunner, FullStressTrackable.MIDDLE_REGION_STRESS_TRACKABLE);
     }
@@ -141,10 +143,6 @@ public class AbstractResultsWriter {
         printAndSoutString(captionedDoubleWithUncertaintyCharSequence);
     }
 
-    public void closeWriter() {
-        outputWriter.closeWriter();
-    }
-
     private CharSequence makeCaptionedDoubleWithUncertaintyCharSequence(CharSequence caption, Object object) {
         StringBuilder stringBuilder = new StringBuilder();
         stringBuilder
@@ -153,6 +151,10 @@ public class AbstractResultsWriter {
                 .append(object.toString())
                 .append("\n");
         return stringBuilder;
+    }
+
+    public void closeWriter() {
+        outputWriter.closeWriter();
     }
 
 }

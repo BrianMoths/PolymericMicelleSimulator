@@ -2,7 +2,7 @@
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
-package FocusedSimulation.blob;
+package FocusedSimulation.homopolymer.blob;
 
 import Engine.Energetics.EnergeticsConstants.EnergeticsConstantsBuilder;
 import Engine.Energetics.ExternalEnergyCalculator.ExternalEnergyCalculatorBuilder;
@@ -11,8 +11,8 @@ import Engine.PolymerTopology.PolymerCluster;
 import Engine.SimulatorParameters.SystemParametersBuilder;
 import FocusedSimulation.AbstractFocusedSimulation;
 import FocusedSimulation.JobParameters.JobParametersBuilder;
-import static FocusedSimulation.surfacetension.SurfaceTensionJobMaker.makeRescaleInputBuilderWithHorizontalRescaling;
-import static FocusedSimulation.surfacetension.SurfaceTensionJobMaker.pathToFocusedSimulationClass;
+import static FocusedSimulation.homopolymer.surfacetension.SurfaceTensionJobMaker.makeRescaleInputBuilderWithHorizontalRescaling;
+import static FocusedSimulation.homopolymer.surfacetension.SurfaceTensionJobMaker.pathToFocusedSimulationClass;
 import SGEManagement.Input;
 import SGEManagement.Input.InputBuilder;
 import SGEManagement.JobSubmitter;
@@ -28,15 +28,79 @@ public class BlobJobMaker {
     public static final String pathToFocusedSimulationClass = AbstractFocusedSimulation.pathToFocusedSimulation + "blob/BlobFinder";
 
     public static void main(String[] args) {
-        final List<Input> inputs = makeInput(1);
+        final List<Input> inputs = makeInputs(1);
         JobSubmitter.submitJobs(pathToFocusedSimulationClass, inputs);
     }
 
-    private static List<Input> makeInput(int i) {
+    private static List<Input> makeConvergenceInputs(int i) {
         final List<Input> inputs = new ArrayList<>();
-        InputBuilder inputBuilder = makeRescaleInputBuilderWithHorizontalRescaling(.1, 4, 1);
-        inputBuilder.getJobParametersBuilder().getSimulationRunnerParametersBuilder().setNumSamples(10_000);
+        int jobNumber = i;
+        InputBuilder inputBuilder = makeRescaleInputBuilderWithHorizontalRescaling(.1, 4, jobNumber);
+        inputBuilder.getJobParametersBuilder().getSimulationRunnerParametersBuilder().setNumSamples(200);
+        inputBuilder.getJobParametersBuilder().setShouldIterateUntilConvergence(true);
+        inputBuilder.getJobParametersBuilder().setConvergencePrecision(.01);
         inputs.add(inputBuilder.buildInput());
+
+        jobNumber++;
+        inputBuilder = makeRescaleInputBuilderWithHorizontalRescaling(.1, 4, jobNumber);
+        inputBuilder.getJobParametersBuilder().getSimulationRunnerParametersBuilder().setNumSamples(200);
+        inputBuilder.getJobParametersBuilder().setShouldIterateUntilConvergence(true);
+        inputBuilder.getJobParametersBuilder().setConvergencePrecision(.001);
+        inputs.add(inputBuilder.buildInput());
+
+        jobNumber++;
+        inputBuilder = makeRescaleInputBuilderWithHorizontalRescaling(.2, 8, jobNumber);
+        inputBuilder.getJobParametersBuilder().getSimulationRunnerParametersBuilder().setNumSamples(200);
+        inputBuilder.getJobParametersBuilder().setShouldIterateUntilConvergence(true);
+        inputBuilder.getJobParametersBuilder().setConvergencePrecision(.01);
+        inputs.add(inputBuilder.buildInput());
+
+        jobNumber++;
+        inputBuilder = makeRescaleInputBuilderWithHorizontalRescaling(.2, 8, jobNumber);
+        inputBuilder.getJobParametersBuilder().getSimulationRunnerParametersBuilder().setNumSamples(200);
+        inputBuilder.getJobParametersBuilder().setShouldIterateUntilConvergence(true);
+        inputBuilder.getJobParametersBuilder().setConvergencePrecision(.001);
+        inputs.add(inputBuilder.buildInput());
+        return inputs;
+    }
+
+    private static List<Input> makeInputs(int i) {
+        final List<Input> inputs = new ArrayList<>();
+        int jobNumber = i;
+        InputBuilder inputBuilder = makeRescaleInputBuilderWithHorizontalRescaling(.05, 2, jobNumber);
+        inputs.add(inputBuilder.buildInput());
+
+        jobNumber++;
+        inputBuilder = makeRescaleInputBuilderWithHorizontalRescaling(.1, 4, jobNumber);
+        inputs.add(inputBuilder.buildInput());
+
+        jobNumber++;
+        inputBuilder = makeRescaleInputBuilderWithHorizontalRescaling(.15, 6, jobNumber);
+        inputs.add(inputBuilder.buildInput());
+
+        jobNumber++;
+        inputBuilder = makeRescaleInputBuilderWithHorizontalRescaling(.2, 8, jobNumber);
+        inputs.add(inputBuilder.buildInput());
+
+        jobNumber++;
+        inputBuilder = makeRescaleInputBuilderWithHorizontalRescaling(.25, 10, jobNumber);
+        inputs.add(inputBuilder.buildInput());
+
+        jobNumber++;
+        inputBuilder = makeRescaleInputBuilderWithHorizontalRescaling(.3, 12, jobNumber);
+        inputs.add(inputBuilder.buildInput());
+
+        jobNumber++;
+        inputBuilder = makeRescaleInputBuilderWithHorizontalRescaling(.4, 16, jobNumber);
+        inputs.add(inputBuilder.buildInput());
+
+//        jobNumber++;
+//        inputBuilder = makeRescaleInputBuilderWithHorizontalRescaling(.2, 8, jobNumber);
+//        inputs.add(inputBuilder.buildInput());
+//
+//        jobNumber++;
+//        inputBuilder = makeRescaleInputBuilderWithHorizontalRescaling(.2, 8, jobNumber);
+//        inputs.add(inputBuilder.buildInput());
         return inputs;
     }
 
@@ -52,17 +116,16 @@ public class BlobJobMaker {
         inputBuilder.getSystemParametersBuilder().setAspectRatio(aspectRatio * horizontalScale / verticalScale);
         PolymerCluster polymerCluster = getPolymerCluster(verticalScale, horizontalScale);
         inputBuilder.getSystemParametersBuilder().setPolymerCluster(polymerCluster);
-        final ExternalEnergyCalculatorBuilder externalEnergyCalculatorBuilder = new ExternalEnergyCalculatorBuilder();
-        externalEnergyCalculatorBuilder.setXPositionAndSpringConstant(16 * horizontalScale, 50);
-        inputBuilder.getSystemParametersBuilder().getEnergeticsConstantsBuilder().setExternalEnergyCalculatorBuilder(externalEnergyCalculatorBuilder);
         inputBuilder.getJobParametersBuilder().setJobNumber(jobNumber);
         inputBuilder.getJobParametersBuilder().setNumAnneals(5);
-        inputBuilder.getJobParametersBuilder().setNumSimulationTrials(4);
+        inputBuilder.getJobParametersBuilder().setNumSimulationTrials(5);
         inputBuilder.getSystemParametersBuilder().autosetCoreParameters();
         final EnergeticsConstantsBuilder energeticsConstantsBuilder = inputBuilder.getSystemParametersBuilder().getEnergeticsConstantsBuilder();
         energeticsConstantsBuilder.setBBOverlapCoefficient(3 * energeticsConstantsBuilder.getBBOverlapCoefficient());
         energeticsConstantsBuilder.setHardOverlapCoefficient(3 * energeticsConstantsBuilder.getHardOverlapCoefficient());
-
+        inputBuilder.getJobParametersBuilder().getSimulationRunnerParametersBuilder().setNumIterationsPerSample(50_000);
+        inputBuilder.getJobParametersBuilder().getSimulationRunnerParametersBuilder().setNumSamples(100_000);
+        inputBuilder.getJobParametersBuilder().setShouldIterateUntilConvergence(false);
         return inputBuilder;
     }
 

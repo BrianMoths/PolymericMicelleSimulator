@@ -16,37 +16,52 @@ import java.util.Random;
  */
 public class RelativeResizeStepGenerator implements StepGenerator {
 
-    static private final int resizeDimension = 0;
+    static private final double defaultMaxScalingFactor = .01;
+    private final int resizeDimension;
     static private final Random random;
 
     static {
         random = new Random();
     }
 
-    static public SimulationStep getRelativeResizeStep(SystemAnalyzer systemAnalyzer) {
+    static public SimulationStep getHorizontalRelativeResizeStep(SystemAnalyzer systemAnalyzer) {
         RelativeResizeStepGenerator relativeResizeStepGenerator = new RelativeResizeStepGenerator();
         return relativeResizeStepGenerator.generateStep(systemAnalyzer);
     }
 
-    static public SimulationStep getRelativeResizeStep(SystemAnalyzer systemAnalyzer, double maxScalingFactor) {
+    static public SimulationStep getHorizontalRelativeResizeStep(SystemAnalyzer systemAnalyzer, double maxScalingFactor) {
         RelativeResizeStepGenerator relativeResizeStepGenerator = new RelativeResizeStepGenerator(maxScalingFactor);
         return relativeResizeStepGenerator.generateStep(systemAnalyzer);
     }
 
-    private final double lowerRandom, randomRange, power;
+    static public SimulationStep getRelativeResizeStep(SystemAnalyzer systemAnalyzer, int resizeDimension) {
+        RelativeResizeStepGenerator relativeResizeStepGenerator = new RelativeResizeStepGenerator(defaultMaxScalingFactor, resizeDimension);
+        return relativeResizeStepGenerator.generateStep(systemAnalyzer);
+    }
+
+    static public SimulationStep getRelativeResizeStep(SystemAnalyzer systemAnalyzer, double maxScalingFactor, int resizeDimension) {
+        RelativeResizeStepGenerator relativeResizeStepGenerator = new RelativeResizeStepGenerator(maxScalingFactor, resizeDimension);
+        return relativeResizeStepGenerator.generateStep(systemAnalyzer);
+    }
+
+    private final double lowerRandom, randomRange;
 
     public RelativeResizeStepGenerator() {
-        this(.01);//.01
+        this(defaultMaxScalingFactor);
     }
 
     public RelativeResizeStepGenerator(double maxScalingFactor) {
-        power = .5;
-//        final double upperRandom = Math.pow(1 + maxScalingFactor, power);
-//        lowerRandom = 1 / upperRandom;
+        resizeDimension = 0;
         final double upperRandom = Math.log(1 + maxScalingFactor);
         lowerRandom = -upperRandom;
         randomRange = upperRandom - lowerRandom;
+    }
 
+    public RelativeResizeStepGenerator(double maxScalingFactor, int resizeDimension) {
+        this.resizeDimension = resizeDimension;
+        final double upperRandom = Math.log(1 + maxScalingFactor);
+        lowerRandom = -upperRandom;
+        randomRange = upperRandom - lowerRandom;
     }
 
     @Override
@@ -58,7 +73,6 @@ public class RelativeResizeStepGenerator implements StepGenerator {
 
     private double generateRescaleFactor() {
         final double transformedScaleFactor = lowerRandom + random.nextDouble() * randomRange;
-//        final double rescaleFactor = Math.pow(transformedScaleFactor, 1. / power);
         final double rescaleFactor = Math.exp(transformedScaleFactor);
         return rescaleFactor;
     }

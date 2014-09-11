@@ -148,8 +148,20 @@ public class PolymerCluster implements Serializable {
         return numABeads;
     }
 
+    public int getNumBBeads() {
+        return getNumBeads() - getNumABeads();
+    }
+
     public double getNumBeadsPerChain() {
-        return getNumBeads() / getNumChains();
+        return ((double) getNumBeads()) / getNumChains();
+    }
+
+    public double getNumABeadsPerChain() {
+        return ((double) getNumABeads()) / getNumChains();
+    }
+
+    public double getNumBBeadsPerChain() {
+        return ((double) getNumBBeads()) / getNumChains();
     }
 
 }

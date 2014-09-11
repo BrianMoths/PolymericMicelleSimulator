@@ -33,7 +33,7 @@ public class GeneralStepGenerator implements StepGenerator {
         EnumMap<StepType, Double> weights = new EnumMap<>(StepType.class);
         weights.put(StepType.SINGLE_BEAD, 1.);//1
         weights.put(StepType.SINGLE_CHAIN, .00);//.01
-        weights.put(StepType.SINGLE_WALL_RESIZE, .0001);//.0001
+        weights.put(StepType.SINGLE_WALL_HORIZONTAL_RESIZE, .0001);//.0001
         weights.put(StepType.REPTATION, .0);//.01
         weights.put(StepType.NO_STRETCH_WALL, .0000);//.0001
         return weights;

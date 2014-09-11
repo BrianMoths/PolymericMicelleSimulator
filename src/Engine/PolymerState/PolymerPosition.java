@@ -180,6 +180,10 @@ public class PolymerPosition implements ImmutablePolymerPosition {
         analyzersRebinBeads();
     }
 
+    public void rescaleBeadPositions(double rescaleFactor) {
+        systemGeometry.rescaleVectors(beadPositions, rescaleFactor);
+    }
+
     private double[] getAveragePosition() {
         double[] averagePosition = {0, 0, 0};
         final int numDimensions = systemGeometry.getNumDimensions();

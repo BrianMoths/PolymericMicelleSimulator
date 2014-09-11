@@ -2,18 +2,15 @@
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
-package FocusedSimulation.bulkproperties;
+package FocusedSimulation.homopolymer.bulkproperties;
 
-import Engine.PolymerSimulator;
-import Engine.SystemAnalyzer;
 import FocusedSimulation.AbstractFocusedSimulation;
+import FocusedSimulation.simulationrunner.ConvergenceMonitor;
 import FocusedSimulation.DoubleWithUncertainty;
-import FocusedSimulation.StatisticsTracker.TrackableVariable;
-import FocusedSimulation.surfacetension.SurfaceTensionJobMaker;
+import FocusedSimulation.simulationrunner.StatisticsTracker.TrackableVariable;
 import SGEManagement.Input;
 import SGEManagement.Input.InputBuilder;
 import SystemAnalysis.FullStressTrackable;
-import SystemAnalysis.FractionalVolumeStressTrackable;
 import java.io.FileNotFoundException;
 import org.apache.commons.math3.stat.descriptive.DescriptiveStatistics;
 
@@ -42,8 +39,19 @@ public class BulkPropertiesFinder<U extends BulkPropertiesResultsWriter> extends
 
             InputBuilder inputBuilder = BulkPropertiesJobMaker.makeRescaleInputBuilderWithHorizontalRescaling(verticalScaleFactor, horizontalScaleFactor, 0);
             inputBuilder.getJobParametersBuilder().setNumAnneals(1);
-            inputBuilder.getJobParametersBuilder().setNumSimulationTrials(5);
-            inputBuilder.getSystemParametersBuilder().getEnergeticsConstantsBuilder().setHardOverlapCoefficient(0);
+            inputBuilder.getJobParametersBuilder().setNumSimulationTrials(2);
+            inputBuilder.getJobParametersBuilder().getSimulationRunnerParametersBuilder().setNumIterationsPerAnneal(10000);
+            inputBuilder.getJobParametersBuilder().getSimulationRunnerParametersBuilder().setNumIterationsPerSample(10000);
+            inputBuilder.getJobParametersBuilder().getSimulationRunnerParametersBuilder().setNumSamples(200);
+            inputBuilder.getJobParametersBuilder().setShouldIterateUntilConvergence(true);
+//            final EnergeticsConstantsBuilder energeticsConstantsBuilder = inputBuilder.getSystemParametersBuilder().getEnergeticsConstantsBuilder();
+//            energeticsConstantsBuilder.setHardOverlapCoefficient(0);
+//            energeticsConstantsBuilder.setAAOverlapCoefficient(energeticsConstantsBuilder.getBBOverlapCoefficient());
+//            energeticsConstantsBuilder.setABOverlapCoefficient(-energeticsConstantsBuilder.getAAOverlapCoefficient());
+//            final PolymerCluster polymerCluster = PolymerCluster.makeRepeatedChainCluster(PolymerChain.makeSingletChainOfType(false), 500);
+//            polymerCluster.addChainMultipleTimes(PolymerChain.makeSingletChainOfType(true), 500);
+//            polymerCluster.setConcentrationInWater(.3);
+//            inputBuilder.getSystemParametersBuilder().setPolymerCluster(polymerCluster);
             return inputBuilder.buildInput();
         } else if (args.length == 1) {
             final String fileName = args[0];
@@ -61,8 +69,8 @@ public class BulkPropertiesFinder<U extends BulkPropertiesResultsWriter> extends
 
     protected BulkPropertiesFinder(Input input, U bulkPropertiesResultsWriter) throws FileNotFoundException {
         super(input, bulkPropertiesResultsWriter);
-        final double systemfraction = .2;//.02
-        numLeftBeadsTrackable = new LeftBeadsTrackable(systemfraction, simulationRunner);
+        final double systemFraction = .2;//.02
+        numLeftBeadsTrackable = new LeftBeadsTrackable(systemFraction, simulationRunner);
     }
 
     //<editor-fold defaultstate="collapsed" desc="initialize">
@@ -85,6 +93,7 @@ public class BulkPropertiesFinder<U extends BulkPropertiesResultsWriter> extends
         simulationRunner.trackVariable((FullStressTrackable.FULL_REGION_STRESS_TRACKABLE).getStress11Trackable());
         simulationRunner.trackVariable((FullStressTrackable.FULL_REGION_STRESS_TRACKABLE).getStress12Trackable());
         simulationRunner.trackVariable((FullStressTrackable.FULL_REGION_STRESS_TRACKABLE).getStress22Trackable());
+        setVariablesTestedForConvergence(TrackableVariable.SYSTEM_VOLUME);
     }
 
     @Override
@@ -110,7 +119,7 @@ public class BulkPropertiesFinder<U extends BulkPropertiesResultsWriter> extends
 
     @Override
     protected boolean isConverged() {
-        return simulationRunner.isConverged(TrackableVariable.SYSTEM_VOLUME);
+        return ConvergenceMonitor.isConvergedWithPrecision(simulationRunner.getStatisticsFor(TrackableVariable.SYSTEM_VOLUME), .1);
     }
 
     @Override
@@ -178,12 +187,12 @@ public class BulkPropertiesFinder<U extends BulkPropertiesResultsWriter> extends
     private void analyzeAndPrintCompressibilityFromVolumeFluctuations() {
         final double temperature = simulationRunner.getPolymerSimulator().getEnergeticsConstants().getTemperature();
         final DescriptiveStatistics volumeStatistics = simulationRunner.getStatisticsFor(TrackableVariable.SYSTEM_VOLUME);
-        final double mean = volumeStatistics.getMean();
-        final double standardDeviation = volumeStatistics.getStandardDeviation();
+        final double meanVolume = volumeStatistics.getMean();
+        final double volumeStandardDeviation = volumeStatistics.getStandardDeviation();
         final long numSamples = volumeStatistics.getN();
-        final double compressibilityValue = standardDeviation * standardDeviation / (mean * temperature);
+        final double compressibilityValue = volumeStandardDeviation * volumeStandardDeviation / (meanVolume * temperature);
 
-        final double compressibilityUncertainty = compressibilityValue * Math.sqrt((2 + standardDeviation / mean) / numSamples);
+        final double compressibilityUncertainty = compressibilityValue * Math.sqrt((2 + volumeStandardDeviation / meanVolume) / numSamples);
 
         final DoubleWithUncertainty compressibility = new DoubleWithUncertainty(compressibilityValue, compressibilityUncertainty);
         outputWriter.printCompressibilityFromVolume(compressibility);

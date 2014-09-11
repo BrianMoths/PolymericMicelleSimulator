@@ -14,6 +14,7 @@ import Engine.SystemAnalyzer;
 import java.io.Serializable;
 
 /**
+ * Used for keeping track of statistics
  *
  * @author bmoths
  */
@@ -35,10 +36,18 @@ public enum StepType implements Serializable {
 
     },
     "chain"),
-    SINGLE_WALL_RESIZE(new StepGenerator() {
+    SINGLE_WALL_HORIZONTAL_RESIZE(new StepGenerator() {
         @Override
         public SimulationStep generateStep(SystemAnalyzer systemAnalyzer) {
-            return RelativeResizeStepGenerator.getRelativeResizeStep(systemAnalyzer);
+            return RelativeResizeStepGenerator.getHorizontalRelativeResizeStep(systemAnalyzer);
+        }
+
+    },
+    "wall scaling"),
+    SINGLE_WALL_VERTICAL_RESIZE(new StepGenerator() {
+        @Override
+        public SimulationStep generateStep(SystemAnalyzer systemAnalyzer) {
+            return RelativeResizeStepGenerator.getRelativeResizeStep(systemAnalyzer, 1);
         }
 
     },

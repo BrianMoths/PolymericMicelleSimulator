@@ -5,7 +5,7 @@
 package SystemAnalysis;
 
 import Engine.PolymerSimulator;
-import FocusedSimulation.StatisticsTracker.TrackableVariable;
+import FocusedSimulation.simulationrunner.StatisticsTracker.TrackableVariable;
 
 /**
  *

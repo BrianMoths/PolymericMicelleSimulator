@@ -5,7 +5,7 @@
 package SGEManagement;
 
 import FocusedSimulation.output.OutputWriter;
-import FocusedSimulation.surfacetension.SurfaceTensionJobMaker;
+import FocusedSimulation.homopolymer.surfacetension.SurfaceTensionJobMaker;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;

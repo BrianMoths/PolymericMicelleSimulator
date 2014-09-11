@@ -2,12 +2,12 @@
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
-package FocusedSimulation.bridgecollapse;
+package FocusedSimulation.homopolymer.bridgecollapse;
 
 import Engine.Energetics.EnergeticsConstants.EnergeticsConstantsBuilder;
 import FocusedSimulation.AbstractFocusedSimulation;
 import FocusedSimulation.DoubleWithUncertainty;
-import FocusedSimulation.StatisticsTracker.TrackableVariable;
+import FocusedSimulation.simulationrunner.StatisticsTracker.TrackableVariable;
 import SGEManagement.Input;
 import SGEManagement.Input.InputBuilder;
 import java.io.FileNotFoundException;
