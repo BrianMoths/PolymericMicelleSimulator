@@ -91,7 +91,7 @@ public final class GeometricalParameters implements Serializable {
         final double attractionInT = .5; //.5
         double thermalForce = attractionInT * energeticsConstantsBuilder.getTemperature() / interactionLength;
         double minCoefficientForBonding = -thermalForce / interactionLength;
-        double minAttraction = Math.min(Math.min(energeticsConstantsBuilder.getBBOverlapCoefficient() / 2, energeticsConstantsBuilder.getAAOverlapCoefficient() / 2), minCoefficientForBonding);
+        double minAttraction = Math.min(Math.min(energeticsConstantsBuilder.getBBOverlapCoefficient() / 6, energeticsConstantsBuilder.getAAOverlapCoefficient() / 6), minCoefficientForBonding);
         return interactionLength + thermalForce / minAttraction;
     }
 

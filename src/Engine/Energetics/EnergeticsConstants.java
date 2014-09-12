@@ -150,8 +150,8 @@ public final class EnergeticsConstants implements Serializable {
          */
         public double hardOverlapCoefficientFromParameters(GeometricalParameters geometricalParameters) {
             if (geometricalParameters.getCoreLength() > 1e-10) {
-                final double bondingEnergyInT = 1;
-                final double coreRepulsionInT = 10; //10
+                final double bondingEnergyInT = 3;
+                final double coreRepulsionInT = 30; //10
                 double minCoefficientForBonding = -bondingEnergyInT * getTemperature() / (geometricalParameters.getInteractionLength() * geometricalParameters.getInteractionLength());
                 double minAttraction = Math.min(Math.min(getBBOverlapCoefficient(), getAAOverlapCoefficient()), minCoefficientForBonding);
                 return (coreRepulsionInT * getTemperature() - geometricalParameters.getInteractionLength() * geometricalParameters.getInteractionLength() * minAttraction) / (geometricalParameters.getCoreLength() * geometricalParameters.getCoreLength());

@@ -119,10 +119,10 @@ public class BlobJobMaker {
         inputBuilder.getJobParametersBuilder().setJobNumber(jobNumber);
         inputBuilder.getJobParametersBuilder().setNumAnneals(5);
         inputBuilder.getJobParametersBuilder().setNumSimulationTrials(5);
-        inputBuilder.getSystemParametersBuilder().autosetCoreParameters();
         final EnergeticsConstantsBuilder energeticsConstantsBuilder = inputBuilder.getSystemParametersBuilder().getEnergeticsConstantsBuilder();
         energeticsConstantsBuilder.setBBOverlapCoefficient(3 * energeticsConstantsBuilder.getBBOverlapCoefficient());
         energeticsConstantsBuilder.setHardOverlapCoefficient(3 * energeticsConstantsBuilder.getHardOverlapCoefficient());
+        inputBuilder.getSystemParametersBuilder().autosetCoreParameters();
         inputBuilder.getJobParametersBuilder().getSimulationRunnerParametersBuilder().setNumIterationsPerSample(50_000);
         inputBuilder.getJobParametersBuilder().getSimulationRunnerParametersBuilder().setNumSamples(100_000);
         inputBuilder.getJobParametersBuilder().setShouldIterateUntilConvergence(false);

@@ -189,20 +189,12 @@ public class BulkMixtureJobMaker {
     }
 
     public static InputBuilder makeRescaleInputBuilderWithHorizontalRescaling(final double verticalScale, final double horizontalScale, int jobNumber) {
-        InputBuilder inputBuilder;
-        inputBuilder = getDefaultInputDensityBuilder();
-        final double aspectRatio = inputBuilder.getSystemParametersBuilder().getAspectRatio();
-        inputBuilder.getSystemParametersBuilder().setAspectRatio(aspectRatio * horizontalScale / verticalScale);
-        PolymerCluster polymerCluster = getRescaledPolymerCluster(verticalScale, horizontalScale);
-        inputBuilder.getSystemParametersBuilder().setPolymerCluster(polymerCluster);
+        InputBuilder inputBuilder = getDefaultInputDensityBuilder();
+        inputBuilder.rescale(verticalScale, horizontalScale);
         inputBuilder.getJobParametersBuilder().setJobNumber(jobNumber);
         inputBuilder.getJobParametersBuilder().setNumAnneals(5);
         inputBuilder.getJobParametersBuilder().setNumSimulationTrials(5);
         inputBuilder.getSystemParametersBuilder().autosetCoreParameters();
-        final EnergeticsConstantsBuilder energeticsConstantsBuilder = inputBuilder.getSystemParametersBuilder().getEnergeticsConstantsBuilder();
-        energeticsConstantsBuilder.setBBOverlapCoefficient(3 * energeticsConstantsBuilder.getBBOverlapCoefficient());
-        energeticsConstantsBuilder.setAAOverlapCoefficient(3 * energeticsConstantsBuilder.getAAOverlapCoefficient());
-        energeticsConstantsBuilder.setHardOverlapCoefficient(3 * energeticsConstantsBuilder.getHardOverlapCoefficient());
         return inputBuilder;
     }
 
@@ -222,7 +214,7 @@ public class BulkMixtureJobMaker {
     }
 
     static private final double defaultAspectRatio = .0286;
-    static private final double defaultOverlapCoefficient = -.126;
+    static private final double defaultOverlapCoefficient = -.378;
     static private final double defaultInteractionLength = 4.;
     static private final int defaultNumBeadsPerChain = 16;
     static private final int defaultNumChains = 75;

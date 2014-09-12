@@ -84,10 +84,10 @@ public class BulkPropertiesJobMaker {
         inputBuilder.getJobParametersBuilder().setJobNumber(jobNumber);
         inputBuilder.getJobParametersBuilder().setNumAnneals(5);
         inputBuilder.getJobParametersBuilder().setNumSimulationTrials(5);
-        inputBuilder.getSystemParametersBuilder().autosetCoreParameters();
         final EnergeticsConstantsBuilder energeticsConstantsBuilder = inputBuilder.getSystemParametersBuilder().getEnergeticsConstantsBuilder();
         energeticsConstantsBuilder.setBBOverlapCoefficient(3 * energeticsConstantsBuilder.getBBOverlapCoefficient());
         energeticsConstantsBuilder.setHardOverlapCoefficient(3 * energeticsConstantsBuilder.getHardOverlapCoefficient());
+        inputBuilder.getSystemParametersBuilder().autosetCoreParameters();
         return inputBuilder;
     }
 

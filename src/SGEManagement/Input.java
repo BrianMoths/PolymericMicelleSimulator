@@ -34,15 +34,6 @@ public class Input implements Serializable {
             return inputBuilder;
         }
 
-        static public InputBuilder rescaleInputBuilder(InputBuilder inputBuilderOriginal, final double verticalScale, final double horizontalScale) {
-            InputBuilder inputBuilder = new InputBuilder(inputBuilderOriginal);
-            final double aspectRatio = inputBuilder.getSystemParametersBuilder().getAspectRatio();
-            inputBuilder.getSystemParametersBuilder().setAspectRatio(aspectRatio * horizontalScale / verticalScale);
-            PolymerCluster polymerCluster = PolymerCluster.makeRescaledHomogenousPolymerCluster(inputBuilder.getSystemParametersBuilder().getPolymerCluster(), verticalScale, horizontalScale);
-            inputBuilder.getSystemParametersBuilder().setPolymerCluster(polymerCluster);
-            return inputBuilder;
-        }
-
         public SystemParametersBuilder systemParametersBuilder;
         public JobParametersBuilder jobParametersBuilder;
 
@@ -52,6 +43,13 @@ public class Input implements Serializable {
         public InputBuilder(InputBuilder inputBuilder) {
             systemParametersBuilder = new SystemParametersBuilder(inputBuilder.systemParametersBuilder);
             jobParametersBuilder = new JobParametersBuilder(inputBuilder.jobParametersBuilder);
+        }
+
+        public void rescale(final double verticalScale, final double horizontalScale) {
+            final double aspectRatio = getSystemParametersBuilder().getAspectRatio();
+            getSystemParametersBuilder().setAspectRatio(aspectRatio * horizontalScale / verticalScale);
+            PolymerCluster polymerCluster = PolymerCluster.makeRescaledHomogenousPolymerCluster(getSystemParametersBuilder().getPolymerCluster(), verticalScale, horizontalScale);
+            getSystemParametersBuilder().setPolymerCluster(polymerCluster);
         }
 
         public Input buildInputAutomaticHardOverlap() {
