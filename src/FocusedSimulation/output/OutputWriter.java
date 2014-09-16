@@ -17,39 +17,6 @@ import java.util.logging.Logger;
  */
 public class OutputWriter {
 
-    static public String makeDatePrefix() {
-        StringBuilder fileNameBuilder = new StringBuilder();
-        Calendar calendar = Calendar.getInstance();
-        final int year = calendar.get(Calendar.YEAR);
-        final int month = calendar.get(Calendar.MONTH) + 1;
-        final int day = calendar.get(Calendar.DAY_OF_MONTH);
-        final int hour = calendar.get(Calendar.HOUR_OF_DAY);
-        final int minute = calendar.get(Calendar.MINUTE);
-        final int second = calendar.get(Calendar.SECOND);
-        fileNameBuilder.append(makeDoubleDigitString(year))
-                .append("_")
-                .append(makeDoubleDigitString(month))
-                .append("_")
-                .append(makeDoubleDigitString(day))
-                .append("_")
-                .append(makeDoubleDigitString(hour))
-                .append("_")
-                .append(makeDoubleDigitString(minute))
-                .append("_")
-                .append(makeDoubleDigitString(second));
-        return fileNameBuilder.toString();
-    }
-
-    static public String makeDoubleDigitString(int num) {
-        num %= 100;
-        StringBuilder stringBuilder = new StringBuilder();
-        if (num < 10) {
-            stringBuilder.append("0");
-        }
-        stringBuilder.append(Integer.toString(num));
-        return stringBuilder.toString();
-    }
-
     static public String getProjectPath() throws AssertionError {
         String jarPath = SurfaceTensionResultsWriter.class.getProtectionDomain().getCodeSource().getLocation().getPath();
         if (jarPath.contains("build/")) {
@@ -62,27 +29,85 @@ public class OutputWriter {
         return jarPath;
     }
 
+    static public String makeDateString() {
+        Calendar calendar = Calendar.getInstance();
+        final int year = calendar.get(Calendar.YEAR);
+        final int month = calendar.get(Calendar.MONTH) + 1;
+        final int day = calendar.get(Calendar.DAY_OF_MONTH);
+        return joinStringsWithUnderscore(makeDoubleDigitString(year), makeDoubleDigitString(month), makeDoubleDigitString(day));
+    }
+
+    static public String makeTimeString() {
+
+        Calendar calendar = Calendar.getInstance();
+        final int hour = calendar.get(Calendar.HOUR_OF_DAY);
+        final int minute = calendar.get(Calendar.MINUTE);
+        final int second = calendar.get(Calendar.SECOND);
+        return joinStringsWithUnderscore(makeDoubleDigitString(hour), makeDoubleDigitString(minute), makeDoubleDigitString(second));
+    }
+
+    static public String makeDoubleDigitString(int num) {
+        num %= 100;
+        StringBuilder stringBuilder = new StringBuilder();
+        if (num < 10) {
+            stringBuilder.append("0");
+        }
+        stringBuilder.append(Integer.toString(num));
+        return stringBuilder.toString();
+    }
+
+    static public String makeFileName(int fileNameNumber, String jobString) {
+        StringBuilder fileNameBuilder = new StringBuilder();
+        String dateString = makeDateString();
+        String timeString = makeTimeString();
+        String jobFileString = makeFileNameNumberJobStringLabel(fileNameNumber, jobString);
+        fileNameBuilder.append(joinStringsWithUnderscore(dateString, jobFileString, timeString));
+        return fileNameBuilder.toString();
+    }
+
+    static private String makeFileNameNumberJobStringLabel(int fileNameNumber, String jobString) {
+        StringBuilder stringBuilder = new StringBuilder();
+        if (!"".equals(jobString)) {
+            stringBuilder.append(jobString).append("_");
+        }
+        stringBuilder.append(makeDoubleDigitString(fileNameNumber));
+        return stringBuilder.toString();
+    }
+
+    private static String joinStringsWithUnderscore(String... strings) {
+        final int numStrings = strings.length;
+        StringBuilder stringBuilder = new StringBuilder();
+        if (numStrings == 0) {
+            return stringBuilder.toString();
+        }
+        stringBuilder.append(strings[0]);
+        for (int stringIndex = 1; stringIndex < numStrings; stringIndex++) {
+            stringBuilder.append("_");
+            stringBuilder.append(strings[stringIndex]);
+        }
+        return stringBuilder.toString();
+    }
+
+    private static String getPathAndFileString(int jobNumber, String jobString) throws AssertionError {
+        String projectPath = getProjectPath();
+        final String path = projectPath + "../simulationResults/";
+        String fileName = makeFileName(jobNumber, jobString);
+        final String pathAndFileString = path + fileName;
+        return pathAndFileString;
+    }
+
     private final PrintWriter dataWriter;
 
     public OutputWriter(final int jobNumber) throws FileNotFoundException {
-        dataWriter = makeDataWriter(jobNumber);
+        this(jobNumber, "");
     }
 
-    private PrintWriter makeDataWriter(int jobNumber) throws FileNotFoundException {
-        String projectPath = getProjectPath();
-        final String path = projectPath + "../simulationResults/";
-        String fileName;
-        fileName = makeFileName(jobNumber);
-
-        return new PrintWriter(path + fileName);
+    public OutputWriter(final int jobNumber, final String jobString) throws FileNotFoundException {
+        dataWriter = makeDataWriter(jobNumber, jobString);
     }
 
-    private String makeFileName(int fileNameNumber) {
-        StringBuilder fileNameBuilder = new StringBuilder();
-        String datePrefix = makeDatePrefix();
-        fileNameBuilder.append(datePrefix);
-        fileNameBuilder.append("_").append(makeDoubleDigitString(fileNameNumber));
-        return fileNameBuilder.toString();
+    private PrintWriter makeDataWriter(int jobNumber, String jobString) throws FileNotFoundException {
+        return new PrintWriter(getPathAndFileString(jobNumber, jobString));
     }
 
     public void printAndSoutString(final CharSequence string) {
