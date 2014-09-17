@@ -4,8 +4,8 @@
  */
 package SGEManagement;
 
-import FocusedSimulation.output.OutputWriter;
 import FocusedSimulation.homopolymer.surfacetension.SurfaceTensionJobMaker;
+import FocusedSimulation.output.OutputWriter;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -39,27 +39,18 @@ public class JobSubmitter {
     //</editor-fold>
 
     static private void submitJob(String commandExceptInput, Input input) {
-        final String fileName = makeFileName(input);
-        final String path = makePath(fileName);
-        makeInputFIle(path, input);
-        final String completeCommand = makeCompleteCommand(commandExceptInput, path);
+        final String relativePath = makeRelativePath(input);
+        makeInputFIle(relativePath, input);
+        final String completeCommand = makeCompleteCommand(commandExceptInput, relativePath);
         QSubAdapter.runCommandForQsub(completeCommand);
     }
 
-    static private String makeCompleteCommand(String commandExceptInput, String inputString) {
-        StringBuilder completeCommandBuilder = new StringBuilder();
-        completeCommandBuilder.append(commandExceptInput)
-                .append(" ")
-                .append(inputString);
-        return completeCommandBuilder.toString();
+    private static String makeRelativePath(Input input) {
+        return "../simulationInputs/" + makeFileName(input);
     }
 
     static private String makeFileName(Input input) {
-        return OutputWriter.makeDatePrefix() + "_" + OutputWriter.makeDoubleDigitString(input.getJobNumber());
-    }
-
-    static private String makePath(String fileName) {
-        return "../simulationInputs/" + fileName;
+        return OutputWriter.makeFileName(input.getJobNumber(), input.getJobParameters().getJobString());
     }
 
     private static void makeInputFIle(String relativePath, Input input) {
@@ -73,6 +64,14 @@ public class JobSubmitter {
         } catch (IOException ex) {
             Logger.getLogger(SurfaceTensionJobMaker.class.getName()).log(Level.SEVERE, null, ex);
         }
+    }
+
+    static private String makeCompleteCommand(String commandExceptInput, String inputString) {
+        StringBuilder completeCommandBuilder = new StringBuilder();
+        completeCommandBuilder.append(commandExceptInput)
+                .append(" ")
+                .append(inputString);
+        return completeCommandBuilder.toString();
     }
 
 }
