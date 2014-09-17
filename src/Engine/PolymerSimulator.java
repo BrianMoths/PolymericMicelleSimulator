@@ -7,6 +7,7 @@ package Engine;
 import Engine.Energetics.EnergeticsConstants;
 import Engine.Energetics.EnergyEntropyChange;
 import Engine.PolymerState.DiscretePolymerState;
+import Engine.PolymerState.ImmutablePolymerState;
 import Engine.PolymerState.PolymerPosition;
 import Engine.PolymerState.PolymerState;
 import Engine.PolymerState.SystemGeometry.GeometricalParameters;
@@ -17,8 +18,6 @@ import Engine.SimulationStepping.StepGenerators.CompoundStepGenerators.GeneralSt
 import Engine.SimulationStepping.StepGenerators.StepGenerator;
 import Engine.SimulationStepping.StepTypes.SimulationStep;
 import Engine.SimulationStepping.StepTypes.StepType;
-import SystemAnalysis.AreaPerimeter.AreaPerimeter;
-import SystemAnalysis.GeometryAnalyzer;
 import java.io.Serializable;
 
 /**
@@ -85,7 +84,6 @@ public class PolymerSimulator implements Serializable {
     public PolymerSimulator(SystemGeometry systemGeometry, PolymerCluster polymerCluster, EnergeticsConstants energeticsConstants) {
 
         this.geometry = systemGeometry;
-
 
         polymerPosition = new PolymerPosition(polymerCluster.getNumBeads(), geometry);
 
@@ -270,6 +268,10 @@ public class PolymerSimulator implements Serializable {
 
     public EnergeticsConstants getEnergeticsConstants() {
         return systemAnalyzer.getEnergeticsConstants();
+    }
+
+    public ImmutablePolymerState getPolymerState() {
+        return polymerState;
     }
     // </editor-fold>
 
