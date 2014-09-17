@@ -7,7 +7,6 @@ package Engine.PolymerState;
 import Engine.PolymerState.SystemGeometry.Interfaces.SystemGeometry;
 import Engine.SystemAnalyzer;
 import Engine.SystemAnalyzer.AnalyzerListener;
-import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -74,82 +73,82 @@ public class PolymerPosition implements ImmutablePolymerPosition {
         setBeadPositions(systemGeometry.randomColumnPositions(numBeads));
     }
 
-    public void reasonableColumnRandomize(ImmutableDiscretePolymerState immutableDiscretePolymerState) {
+    public void reasonableRandomize(ImmutableDiscretePolymerState immutableDiscretePolymerState, PositionGenerator positionGenerator) {
+        setBeadPositions(reasonableRandomPositions(immutableDiscretePolymerState, positionGenerator));
+    }
+
+    @Override
+    public double[][] reasonableRandomPositions(ImmutableDiscretePolymerState immutableDiscretePolymerState, PositionGenerator positionGenerator) {
         List<Boolean> isRandomized = new ArrayList<>(numBeads);
         for (int bead = 0; bead < numBeads; bead++) {
             isRandomized.add(false);
         }
+        final double[][] randomPositions = new double[numBeads][systemGeometry.getNumDimensions()];
         for (int bead = 0; bead < numBeads; bead++) {
             if (!isRandomized.get(bead)) {
                 List<Integer> chainOfBead = immutableDiscretePolymerState.getChainOfBead(bead);
-                reasonableColumnChainRandomize(chainOfBead);
+                reasonableChainRandomize(chainOfBead, positionGenerator, randomPositions);
                 for (Integer randomizedBead : chainOfBead) {
                     isRandomized.set(randomizedBead, true);
                 }
             }
 
         }
-
+        return randomPositions;
     }
 
-    private void reasonableColumnChainRandomize(List<Integer> chainOfBead) {
-        double[] currentPosition = systemGeometry.randomColumnPosition(.15);
+    @Override
+    public void reasonableChainRandomize(List<Integer> chainOfBead, PositionGenerator positionGenerator, double[][] randomPositions) {
+        double[] currentPosition = positionGenerator.generatePosition();
+        reasonableChainRandomizeAtPosition(chainOfBead, currentPosition, randomPositions);
+    }
+
+    private void reasonableChainRandomizeAtPosition(List<Integer> chainOfBead, double[] currentPosition, double[][] randomPositions) {
         for (int currentBead : chainOfBead) {
             movePositionByStep(currentPosition);
-            setBeadPositionNoRebin(currentBead, currentPosition);
+            systemGeometry.checkedCopyPosition(currentPosition, randomPositions[currentBead]);
         }
+    }
+
+    public void reasonableColumnRandomize(ImmutableDiscretePolymerState immutableDiscretePolymerState) {
+        PositionGenerator positionGenerator = new PositionGenerator() {
+
+            @Override
+            public double[] generatePosition() {
+                return systemGeometry.randomColumnPosition(.15);
+            }
+
+        };
+        reasonableRandomize(immutableDiscretePolymerState, positionGenerator);
     }
 
     public void reasonableMiddleRandomize(ImmutableDiscretePolymerState immutableDiscretePolymerState) {
-        List<Boolean> isRandomized = new ArrayList<>(numBeads);
-        for (int bead = 0; bead < numBeads; bead++) {
-            isRandomized.add(false);
-        }
-        for (int bead = 0; bead < numBeads; bead++) {
-            if (!isRandomized.get(bead)) {
-                List<Integer> chainOfBead = immutableDiscretePolymerState.getChainOfBead(bead);
-                reasonableMiddleChainRandomize(chainOfBead);
-                for (Integer randomizedBead : chainOfBead) {
-                    isRandomized.set(randomizedBead, true);
-                }
+        PositionGenerator positionGenerator = new PositionGenerator() {
+
+            @Override
+            public double[] generatePosition() {
+                return systemGeometry.randomMiddlePosition();
             }
 
-        }
-
-    }
-
-    private void reasonableMiddleChainRandomize(List<Integer> chainOfBead) {
-        double[] currentPosition = systemGeometry.randomMiddlePosition();
-        for (int currentBead : chainOfBead) {
-            movePositionByStep(currentPosition);
-            setBeadPositionNoRebin(currentBead, currentPosition);
-        }
+        };
+        reasonableRandomize(immutableDiscretePolymerState, positionGenerator);
     }
 
     public void reasonableRandomize(ImmutableDiscretePolymerState immutableDiscretePolymerState) {
-        List<Boolean> isRandomized = new ArrayList<>(numBeads);
-        for (int bead = 0; bead < numBeads; bead++) {
-            isRandomized.add(false);
-        }
-        for (int bead = 0; bead < numBeads; bead++) {
-            if (!isRandomized.get(bead)) {
-                List<Integer> chainOfBead = immutableDiscretePolymerState.getChainOfBead(bead);
-                reasonableChainRandomize(chainOfBead);
-                for (Integer randomizedBead : chainOfBead) {
-                    isRandomized.set(randomizedBead, true);
-                }
+        PositionGenerator positionGenerator = new PositionGenerator() {
+
+            @Override
+            public double[] generatePosition() {
+                return systemGeometry.randomPosition();
             }
 
-        }
-
+        };
+        reasonableRandomize(immutableDiscretePolymerState, positionGenerator);
     }
 
-    private void reasonableChainRandomize(List<Integer> chainOfBead) {
-        double[] currentPosition = systemGeometry.randomPosition();
-        for (int currentBead : chainOfBead) {
-            movePositionByStep(currentPosition);
-            setBeadPositionNoRebin(currentBead, currentPosition);
-        }
+    public void reasonableBoxRandomize(ImmutableDiscretePolymerState immutableDiscretePolymerState, double[] lowerLimits, double[] upperLimits) {
+        PositionGenerator positionGenerator = new BoxPositionGenerator(lowerLimits, upperLimits, systemGeometry);
+        reasonableRandomize(immutableDiscretePolymerState, positionGenerator);
     }
 
     private void movePositionByStep(double[] currentPosition) {
@@ -173,15 +172,16 @@ public class PolymerPosition implements ImmutablePolymerPosition {
     }
     //</editor-fold>
 
+    public void rescaleBeadPositionsHorizontally(double rescaleFactor) {
+        systemGeometry.rescaleVectorsHorizontally(beadPositions, rescaleFactor);
+    }
+
+    //<editor-fold defaultstate="collapsed" desc="recenter">
     public void recenter() {
         double[] averagePosition = getAveragePosition();
         double[] displacementFromMiddle = new double[]{averagePosition[0] - systemGeometry.getSizeOfDimension(0) / 2, averagePosition[1] - systemGeometry.getSizeOfDimension(1) / 2};
         subtractFromAllPositions(displacementFromMiddle);
         analyzersRebinBeads();
-    }
-
-    public void rescaleBeadPositions(double rescaleFactor) {
-        systemGeometry.rescaleVectors(beadPositions, rescaleFactor);
     }
 
     private double[] getAveragePosition() {
@@ -204,6 +204,7 @@ public class PolymerPosition implements ImmutablePolymerPosition {
         }
         systemGeometry.incrementVectors(beadPositions, subtrahend);
     }
+    //</editor-fold>
 
     //<editor-fold defaultstate="collapsed" desc="deal with analyzers">
     public void acceptBeadPositionsGetter(SystemAnalyzer.BeadPositionsGetter beadPositionsGetter) {
