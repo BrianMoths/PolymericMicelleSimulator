@@ -4,22 +4,21 @@
  */
 package FocusedSimulation;
 
-import FocusedSimulation.simulationrunner.ConvergenceMonitor;
 import Engine.Energetics.EnergeticsConstants;
 import Engine.Energetics.EnergeticsConstants.EnergeticsConstantsBuilder;
 import Engine.Energetics.ExternalEnergyCalculator.ExternalEnergyCalculatorBuilder;
-import Engine.PolymerTopology.PolymerChain;
-import Engine.PolymerTopology.PolymerCluster;
 import Engine.PolymerSimulator;
 import Engine.PolymerState.SystemGeometry.GeometricalParameters;
 import Engine.PolymerState.SystemGeometry.Implementations.AbstractGeometry.AbstractGeometryBuilder;
 import Engine.PolymerState.SystemGeometry.Implementations.PeriodicGeometry;
 import Engine.PolymerState.SystemGeometry.Interfaces.SystemGeometry;
+import Engine.PolymerTopology.PolymerChain;
+import Engine.PolymerTopology.PolymerCluster;
 import Engine.SimulationStepping.StepGenerators.CompoundStepGenerators.GeneralStepGenerator;
 import Engine.SimulationStepping.StepTypes.StepType;
 import Engine.SystemAnalyzer;
+import FocusedSimulation.simulationrunner.ConvergenceMonitor;
 import FocusedSimulation.simulationrunner.ConvergenceMonitor.ConvergenceResults;
-//import static FocusedSimulation.SurfaceTensionFinder.generateLengthStatistics;
 import Gui.SystemViewer;
 import java.util.EnumMap;
 import org.apache.commons.math3.stat.descriptive.DescriptiveStatistics;
@@ -111,7 +110,6 @@ public class IdealGasSimulation {
         PolymerSimulator polymerSimulator = makePolymerSimulator(pressure);
         polymerSimulator.columnRandomizePositions();
 
-
         try {
             SystemViewer systemViewer = new SystemViewer(polymerSimulator);
             systemViewer.setVisible(true);
@@ -120,7 +118,6 @@ public class IdealGasSimulation {
         }
 
         System.out.println("System Height " + polymerSimulator.getSystemAnalyzer().getSystemGeometry().getSizeOfDimension(1));
-
         System.out.println("System is initialized.");
 
         for (int i = 0; i < numSurfaceTensionTrials; i++) {
