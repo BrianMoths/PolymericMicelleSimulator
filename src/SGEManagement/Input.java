@@ -50,6 +50,7 @@ public class Input implements Serializable {
             getSystemParametersBuilder().setAspectRatio(aspectRatio * horizontalScale / verticalScale);
             PolymerCluster polymerCluster = PolymerCluster.makeRescaledHomogenousPolymerCluster(getSystemParametersBuilder().getPolymerCluster(), verticalScale, horizontalScale);
             getSystemParametersBuilder().setPolymerCluster(polymerCluster);
+            getSystemParametersBuilder().getEnergeticsConstantsBuilder().getExternalEnergyCalculatorBuilder().rescale(horizontalScale, verticalScale);
         }
 
         public Input buildInputAutomaticHardOverlap() {
