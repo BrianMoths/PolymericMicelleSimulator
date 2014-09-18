@@ -61,6 +61,26 @@ public class ExternalEnergyCalculator implements Serializable {
             return this;
         }
 
+        public ExternalEnergyCalculatorBuilder rescaleHorizontally(double horizontalRescaleFactor) {
+            final double xSpringConstant = getxSpringConstant();
+            final double oldEquilibriumPosition = getxEquilibriumPosition();
+            final double newEquilibriumPosition = oldEquilibriumPosition * horizontalRescaleFactor;
+            setXPositionAndSpringConstant(newEquilibriumPosition, xSpringConstant);
+            return this;
+        }
+
+        public ExternalEnergyCalculatorBuilder rescaleVertically(double verticalRescaleFactor) {
+            final double ySpringConstant = getySpringConstant();
+            final double oldEquilibriumPosition = getyEquilibriumPosition();
+            final double newEquilibriumPosition = oldEquilibriumPosition * verticalRescaleFactor;
+            setXPositionAndSpringConstant(newEquilibriumPosition, ySpringConstant);
+            return this;
+        }
+
+        public ExternalEnergyCalculatorBuilder rescale(double horizontalRescaleFactor, double verticalRescaleFactor) {
+            return rescaleHorizontally(horizontalRescaleFactor).rescaleVertically(verticalRescaleFactor);
+        }
+
         public ExternalEnergyCalculatorBuilder setPressure(double pressure) {
             this.pressure = pressure;
             return this;
@@ -122,6 +142,7 @@ public class ExternalEnergyCalculator implements Serializable {
         return (2 * quadratic);
     }
     //</editor-fold>
+
     private static final long serialVersionUID = 0L;
     private final double xTension, xQuadratic, yTension, yQuadratic, pressure;
 
