@@ -32,7 +32,7 @@ public class InterfacialEnergyJobMaker {
     }
 
     static private List<Input> makeInputs() {
-        return makePressureInputs(1);
+        return makeInterfacialEnergyInputsNoABInteraction(1);
     }
 
     private static List<Input> makeInterfacialEnergyInputs(int jobNumber) {
@@ -44,6 +44,25 @@ public class InterfacialEnergyJobMaker {
         for (double verticalRescaleFactor : verticalRescaleFactors) {
             for (double horizontalRescaleFactor : horizontalRescaleFactors) {
                 InputBuilder inputBuilder = makeRescaledInputBuilder(verticalRescaleFactor, horizontalRescaleFactor, jobNumber);
+                inputBuilder.getJobParametersBuilder().setJobNumber(jobNumber);
+                inputBuilder.getJobParametersBuilder().setJobString(jobString);
+                inputs.add(inputBuilder.buildInput());
+                jobNumber++;
+            }
+        }
+        return inputs;
+    }
+
+    private static List<Input> makeInterfacialEnergyInputsNoABInteraction(int jobNumber) {
+        final double[] horizontalRescaleFactors = {1, 1.5, 2};
+        final double[] verticalRescaleFactors = {1, 1.5, 2};
+        final String jobString = "InterfacialEnergy";
+
+        List<Input> inputs = new ArrayList<>();
+        for (double verticalRescaleFactor : verticalRescaleFactors) {
+            for (double horizontalRescaleFactor : horizontalRescaleFactors) {
+                InputBuilder inputBuilder = makeRescaledInputBuilder(verticalRescaleFactor, horizontalRescaleFactor, jobNumber);
+                inputBuilder.getSystemParametersBuilder().getEnergeticsConstantsBuilder().setABOverlapCoefficient(0);
                 inputBuilder.getJobParametersBuilder().setJobNumber(jobNumber);
                 inputBuilder.getJobParametersBuilder().setJobString(jobString);
                 inputs.add(inputBuilder.buildInput());
