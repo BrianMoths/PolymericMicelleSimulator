@@ -27,6 +27,13 @@ public class JobSubmitter {
         }
     }
 
+    static public void submitNamedJobs(String focusedSimulationPath, List<Input> inputs) {
+        final String commandExceptInput = makeCommandExceptInput(focusedSimulationPath);
+        for (Input input : inputs) {
+            submitNamedJob(commandExceptInput, input);
+        }
+    }
+
     //<editor-fold defaultstate="collapsed" desc="makeCommandExceptInput">
     static private String makeCommandExceptInput(String focusedSimulationPath) {
         StringBuilder commandBuilder = new StringBuilder();
@@ -43,6 +50,13 @@ public class JobSubmitter {
         makeInputFIle(relativePath, input);
         final String completeCommand = makeCompleteCommand(commandExceptInput, relativePath);
         QSubAdapter.runCommandForQsub(completeCommand);
+    }
+
+    static private void submitNamedJob(String commandExceptInput, Input input) {
+        final String relativePath = makeRelativePath(input);
+        makeInputFIle(relativePath, input);
+        final String completeCommand = makeCompleteCommand(commandExceptInput, relativePath);
+        QSubAdapter.runCommandForQsub(completeCommand, makeFileName(input));
     }
 
     private static String makeRelativePath(Input input) {
@@ -72,6 +86,9 @@ public class JobSubmitter {
                 .append(" ")
                 .append(inputString);
         return completeCommandBuilder.toString();
+    }
+
+    private JobSubmitter() {
     }
 
 }

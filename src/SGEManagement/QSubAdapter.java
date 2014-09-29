@@ -27,6 +27,22 @@ public class QSubAdapter {
         }
     }
 
+    static public void runCommandForQsub(String qsubCommand, String jobName) {
+        if (qsubCommand.contains("\"")) {
+            throw new IllegalArgumentException("command submitted to qsub must not contain double quotes. Use single quotes if necessary.");
+        }
+        if (jobName == null || jobName.length() == 0 || jobName.matches(".*[\\n\\t\\r/:@\\\\\\*\\?].*")) {
+            throw new IllegalArgumentException("job name is null, length zero, or contains illegal characters \\n,\\t,\\r,/,:,@,\\,*, or ?.");
+        }
+        String qsubOptionsString = "-e /dev/null -o /dev/null -N " + jobName;
+        String qsubWrappedCommand = "qsub " + qsubOptionsString + " <<< \"" + qsubCommand + "\"";
+        try {
+            runCommandForBash(qsubWrappedCommand);
+        } catch (IOException ex) {
+            Logger.getLogger(SurfaceTensionJobMaker.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
+
     static private Process runCommandForBash(String commandForBash) throws IOException {
         Runtime runtime = Runtime.getRuntime();
         String[] bashWrappedCommand = makeBashWrappedCommand(commandForBash);
