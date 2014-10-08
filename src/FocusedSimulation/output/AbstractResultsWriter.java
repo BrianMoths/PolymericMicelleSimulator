@@ -56,7 +56,9 @@ public abstract class AbstractResultsWriter {
             final EnergeticsConstants energeticsConstants = input.getSystemParameters().getEnergeticsConstants();
             final double springConstant = energeticsConstants.getExternalEnergyCalculator().getxSpringConstant();
             final double equilibriumPosition = energeticsConstants.getExternalEnergyCalculator().getxEquilibriumPosition();
-            final double softOverlapCoefficient = energeticsConstants.getBBOverlapCoefficient();
+            final double softBBOverlapCoefficient = energeticsConstants.getBBOverlapCoefficient();
+            final double softAAOverlapCoefficient = energeticsConstants.getAAOverlapCoefficient();
+            final double softABOverlapCoefficient = energeticsConstants.getABOverlapCoefficient();
             final double hardOverlapCoefficient = energeticsConstants.getHardOverlapCoefficient();
             final double interactionLength = input.getSystemParameters().getSystemGeometry().getGeometricalParameters().getInteractionLength();
             final double hardCoreLength = input.getSystemParameters().getSystemGeometry().getGeometricalParameters().getCoreLength();
@@ -66,13 +68,15 @@ public abstract class AbstractResultsWriter {
                     .append("Number of Beads per Chain: ").append(Integer.toString(numBeadsPerChain)).append("\n")
                     .append("Density: ").append(Double.toString(density)).append("\n")
                     .append("number  of anneals: ").append(Integer.toString(numAnneals)).append("\n")
-                    .append("number of iterations finding results: ").append(Integer.toString(numSurfaceTensionTrials)).append("\n")
-                    .append("number of samples per surface tension measurement: ").append(Integer.toString(input.getJobParameters().getSimulationRunnerParameters().getNumSamples())).append("\n")
+                    .append("number of measurements per simulation: ").append(Integer.toString(numSurfaceTensionTrials)).append("\n")
+                    .append("number of samples per measurement: ").append(Integer.toString(input.getJobParameters().getSimulationRunnerParameters().getNumSamples())).append("\n")
                     .append("number of simulator iterations per sample: ").append(Integer.toString(input.getJobParameters().getSimulationRunnerParameters().getNumIterationsPerSample())).append("\n")
                     .append("number of simulator iterations per anneal: ").append(Integer.toString(input.getJobParameters().getSimulationRunnerParameters().getNumIterationsPerAnneal())).append("\n")
                     .append("Interaction length of beads: ").append(Double.toString(interactionLength)).append("\n")
                     .append("hard core length of beads: ").append(Double.toString(hardCoreLength)).append("\n")
-                    .append("soft overlap coefficient: ").append(Double.toString(softOverlapCoefficient)).append("\n")
+                    .append("soft BB overlap coefficient: ").append(Double.toString(softBBOverlapCoefficient)).append("\n")
+                    .append("soft AA overlap coefficient: ").append(Double.toString(softAAOverlapCoefficient)).append("\n")
+                    .append("soft AB overlap coefficient: ").append(Double.toString(softABOverlapCoefficient)).append("\n")
                     .append("hard overlap coefficient: ").append(Double.toString(hardOverlapCoefficient)).append("\n")
                     .append("E=(1/2)a(L-b)^2 with a: ").append(Double.toString(springConstant)).append("\n")
                     .append("b: ").append(Double.toString(equilibriumPosition))
@@ -100,7 +104,7 @@ public abstract class AbstractResultsWriter {
     protected final Input input;
 
     public AbstractResultsWriter(Input input) throws FileNotFoundException {
-        outputWriter = new OutputWriter(input.getJobNumber());
+        outputWriter = new OutputWriter(input.getJobNumber(), input.getJobParameters().getJobString());
         this.input = input;
     }
 

@@ -5,6 +5,7 @@
 package Engine.PolymerState;
 
 import java.io.Serializable;
+import java.util.List;
 
 /**
  *
@@ -17,5 +18,9 @@ public interface ImmutablePolymerPosition extends Serializable {
     public double[] getBeadPosition(int bead);
 
     public double[][] getBeadPositions();
+
+    double[][] reasonableRandomPositions(ImmutableDiscretePolymerState immutableDiscretePolymerState, PositionGenerator positionGenerator);
+
+    void reasonableChainRandomize(List<Integer> chainOfBead, PositionGenerator positionGenerator, double[][] randomPositions);
 
 }

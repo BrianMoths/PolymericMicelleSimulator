@@ -17,6 +17,7 @@ import java.util.List;
  */
 public class PolymerState implements ImmutablePolymerState {
 
+    private static final long serialVersionUID = 5254646349028284040L;
     private final DiscretePolymerState discretePolymerState;
     private final PolymerPosition polymerPosition;
     private final SystemGeometry systemGeometry;
@@ -160,12 +161,16 @@ public class PolymerState implements ImmutablePolymerState {
         polymerPosition.reasonableRandomize(discretePolymerState);
     }
 
+    public void linearInitialize() {
+        polymerPosition.linearInitialize(discretePolymerState);
+    }
+
     public void anneal() {
         polymerPosition.anneal();
     }
 
     public void rescaleBeadPositions(double rescaleFactor) {
-        polymerPosition.rescaleBeadPositions(rescaleFactor);
+        polymerPosition.rescaleBeadPositionsHorizontally(rescaleFactor);
     }
 
     public boolean moveBead(int stepBead, double[] stepVector) {

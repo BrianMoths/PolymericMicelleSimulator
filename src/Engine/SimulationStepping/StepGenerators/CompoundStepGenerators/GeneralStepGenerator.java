@@ -18,6 +18,7 @@ import java.util.Random;
  */
 public class GeneralStepGenerator implements StepGenerator {
 
+    private static final long serialVersionUID = 1410995193191807822L;
     static private Random random;
 
     static {

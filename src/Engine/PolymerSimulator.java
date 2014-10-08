@@ -148,17 +148,21 @@ public class PolymerSimulator implements Serializable {
         polymerState.reasonableRandomize();
     }
 
+    public synchronized void linearInitialize() {
+        polymerState.linearInitialize();
+    }
+
     public synchronized void anneal() {
         resetCounters();
         polymerPosition.anneal();
         energyEntropy = systemAnalyzer.computeEnergyEntropy();
     }
 
-    public void recenter() {
+    public synchronized void recenter() {
         polymerPosition.recenter();
     }
 
-    public void rescaleBeadPositions(double rescaleFactor) {
+    public synchronized void rescaleBeadPositions(double rescaleFactor) {
         polymerState.rescaleBeadPositions(rescaleFactor);
     }
 

@@ -15,6 +15,7 @@ import java.util.List;
  */
 public class DiscretePolymerState implements ImmutableDiscretePolymerState {
 
+    private static final long serialVersionUID = -7787663309633497712L;
     private final int[][] neighbors;
     private final int numBeads;
     private final int numABeads;
@@ -212,6 +213,38 @@ public class DiscretePolymerState implements ImmutableDiscretePolymerState {
     @Override
     public int getNumBBeads() {
         return numBBeads;
+    }
+
+    @Override
+    public List<List<Integer>> getChains() {
+        List<Boolean> isRandomized = new ArrayList<>(numBeads);
+        for (int bead = 0; bead < numBeads; bead++) {
+            isRandomized.add(false);
+        }
+        List<List<Integer>> chains = new ArrayList<>();
+        for (int bead = 0; bead < numBeads; bead++) {
+            if (!isRandomized.get(bead)) {
+                List<Integer> chainOfBead = getChainOfBead(bead);
+                chains.add(chainOfBead);
+                for (Integer randomizedBead : chainOfBead) {
+                    isRandomized.set(randomizedBead, true);
+                }
+            }
+        }
+        return chains;
+    }
+
+    public List<Integer> getLeftBeadsOfChains() {
+        List<List<Integer>> chains = getChains();
+        List<Integer> leftBeads = new ArrayList<>();
+        for (List<Integer> chain : chains) {
+            leftBeads.add(chain.get(0));
+        }
+        return leftBeads;
+    }
+
+    public int getNumChains() {
+        return getLeftBeadsOfChains().size();
     }
 
     @Override

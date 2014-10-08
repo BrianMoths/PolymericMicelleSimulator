@@ -152,16 +152,40 @@ public abstract class AbstractGeometry implements SystemGeometry {
 
     //<editor-fold defaultstate="collapsed" desc="random positions">
     @Override
+    public double[] randomBoxPosition(double[] lowerFractions, double[] upperFractions) {
+        double[] position = new double[numDimensions];
+        for (int i = 0; i < numDimensions; i++) {
+            position[i] = getRandomNumberInRange(lowerFractions[i], upperFractions[i]) * fullRMax[i];
+        }
+        return position;
+    }
+
+    @Override
+    public double[][] randomBoxPositions(double[] lowerFraction, double[] upperFraction, int numPositions) {
+        double[][] randomPositions = new double[numPositions][];
+        for (int i = 0; i < numPositions; i++) {
+            randomPositions[i] = randomBoxPosition(lowerFraction, upperFraction);
+        }
+        return randomPositions;
+    }
+
+    private double getRandomNumberInRange(double rightFraction, double leftFraction) {
+        final double xRange = rightFraction - leftFraction;
+        final double xFraction = leftFraction + randomNumberGenerator.nextDouble() * xRange;
+        return xFraction;
+    }
+
+    @Override
     public double[] randomMiddlePosition() {
         return randomMiddlePosition(1. / 3.);
     }
 
     public double[] randomMiddlePosition(double frac) {
-        double[] position = new double[numDimensions];
-        for (int i = 0; i < numDimensions; i++) {
-            position[i] = (randomNumberGenerator.nextDouble() * frac + (1 - frac) / 2) * fullRMax[i];
-        }
-        return position;
+        final double lowerFraction = 0.5 - frac / 2;
+        double[] lowerFractions = makeUniformComponentVector(lowerFraction);
+        final double upperFraction = lowerFraction + frac;
+        double[] upperFractions = makeUniformComponentVector(upperFraction);
+        return randomBoxPosition(lowerFractions, upperFractions);
     }
 
     public double[][] randomMiddlePositions(int numPositions, double frac) {
@@ -198,10 +222,13 @@ public abstract class AbstractGeometry implements SystemGeometry {
 
     @Override
     public double[] randomColumnPosition(double frac) {
-        double[] position = new double[numDimensions];
-        position[0] = randomNumberGenerator.nextDouble() * fullRMax[0];
-        position[1] = (randomNumberGenerator.nextDouble() * frac + (1 - frac) / 2) * fullRMax[1];
-        return position;
+        final double lowerFraction = 0.5 - frac / 2;
+        double[] lowerFractions = makeUniformComponentVector(lowerFraction);
+        lowerFractions[0] = 0.;
+        final double upperFraction = lowerFraction + frac;
+        double[] upperFractions = makeUniformComponentVector(upperFraction);
+        upperFractions[0] = 1;
+        return randomBoxPosition(lowerFractions, upperFractions);
     }
 
     @Override
@@ -215,10 +242,17 @@ public abstract class AbstractGeometry implements SystemGeometry {
 
     @Override
     public double[] randomPosition() {
-        double[] position = new double[numDimensions];
-        position[0] = randomNumberGenerator.nextDouble() * fullRMax[0];
-        position[1] = randomNumberGenerator.nextDouble() * fullRMax[1];
-        return position;
+        double[] lowerFractions = makeUniformComponentVector(0.);
+        double[] upperFractions = makeUniformComponentVector(1.);
+        return randomBoxPosition(lowerFractions, upperFractions);
+    }
+
+    private double[] makeUniformComponentVector(double component) {
+        double[] uniformComponentVector = new double[numDimensions];
+        for (int i = 0; i < uniformComponentVector.length; i++) {
+            uniformComponentVector[i] = component;
+        }
+        return uniformComponentVector;
     }
 
     @Override
@@ -349,18 +383,18 @@ public abstract class AbstractGeometry implements SystemGeometry {
     }
 
     @Override
-    public void rescaleVectors(double[][] vectors, double rescaleFactor) {
+    public void rescaleVectorsHorizontally(double[][] vectors, double rescaleFactor) {
         if (rescaleFactor > 1) {
             throw new IllegalArgumentException("When rescaling positons, the rescale factor must be less than one.");
         }
         final int numVectors = vectors.length;
         for (int currentVector = 0; currentVector < numVectors; currentVector++) {
-            rescaleVector(vectors[currentVector], rescaleFactor);
+            rescaleVectorHorizontally(vectors[currentVector], rescaleFactor);
         }
     }
 
     @Override
-    public void rescaleVector(double[] vector, double rescaleFactor) {
+    public void rescaleVectorHorizontally(double[] vector, double rescaleFactor) {
         for (int dimension = 0; dimension < numDimensions; dimension++) {
             vector[dimension] *= rescaleFactor;
         }

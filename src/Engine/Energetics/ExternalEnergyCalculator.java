@@ -73,7 +73,7 @@ public class ExternalEnergyCalculator implements Serializable {
             final double ySpringConstant = getySpringConstant();
             final double oldEquilibriumPosition = getyEquilibriumPosition();
             final double newEquilibriumPosition = oldEquilibriumPosition * verticalRescaleFactor;
-            setXPositionAndSpringConstant(newEquilibriumPosition, ySpringConstant);
+            setYPositionAndSpringConstant(newEquilibriumPosition, ySpringConstant);
             return this;
         }
 
@@ -135,7 +135,11 @@ public class ExternalEnergyCalculator implements Serializable {
     }
 
     static private double equilbriumPositionFromTensionAndQuadratic(double tension, double quadratic) {
-        return -tension / (2 * quadratic);
+        if (quadratic == 0) {
+            return 0;
+        } else {
+            return -tension / (2 * quadratic);
+        }
     }
 
     static private double springConstantFromTensionAndQuadratic(double tension, double quadratic) {

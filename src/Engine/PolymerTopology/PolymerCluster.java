@@ -65,7 +65,9 @@ public class PolymerCluster implements Serializable {
         } else {
             final int numChains = (int) (polymerCluster.getNumChains() * verticalScale * horizontalScale);
             PolymerChain firstChain = polymerCluster.polymerChainList.get(0);
-            return PolymerCluster.makeRepeatedChainCluster(firstChain, numChains);
+            final PolymerCluster newPolymerCluster = PolymerCluster.makeRepeatedChainCluster(firstChain, numChains);
+            newPolymerCluster.setConcentrationInWater(polymerCluster.concentrationInWater);
+            return newPolymerCluster;
         }
     }
 

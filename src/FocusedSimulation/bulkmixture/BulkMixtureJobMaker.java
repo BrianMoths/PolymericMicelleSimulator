@@ -34,7 +34,7 @@ public class BulkMixtureJobMaker {
     }
 
     private static List<Input> makeBulkMixtureInputs() {
-        return makeResizingInputs(1);
+        return makeBulkMixtureInputsSmallAsymmetry(1);
     }
 
     private static List<Input> makeBulkMixtureInputs(int jobNumber) {
@@ -54,6 +54,33 @@ public class BulkMixtureJobMaker {
                     final SystemParametersBuilder systemParametersBuilder = inputBuilder.systemParametersBuilder;
                     final int numChains = systemParametersBuilder.getPolymerCluster().getNumChains();
                     PolymerCluster newPolymerCluster = getPolymerCluster(.5, (int) (numChains * polymericityFactors[k]), (int) (16 / polymericityFactors[k]), 1);
+                    systemParametersBuilder.setPolymerCluster(newPolymerCluster);
+                    noSpringInputs.add(inputBuilder.buildInput());
+                    jobNumber++;
+                }
+            }
+        }
+
+        return noSpringInputs;
+    }
+
+    private static List<Input> makeBulkMixtureInputsSmallAsymmetry(int jobNumber) {
+        final double[] verticalRescaleFactors = {.1, .15, .2, .3};
+        final double[] horizontalRescaleFactors = {2, 3, 4, 6};
+        final double[] polymericityFactors = {1};
+
+        final List<Input> noSpringInputs = new ArrayList<>();
+
+        for (int i = 0; i < verticalRescaleFactors.length; i++) {
+            for (int j = 0; j < horizontalRescaleFactors.length; j++) {
+                for (int k = 0; k < polymericityFactors.length; k++) {
+                    final InputBuilder inputBuilder = makeRescaleInputBuilderWithHorizontalRescaling(verticalRescaleFactors[i], horizontalRescaleFactors[j], jobNumber);
+                    inputBuilder.getJobParametersBuilder().getSimulationRunnerParametersBuilder().setNumIterationsPerAnneal(10000);
+                    inputBuilder.getJobParametersBuilder().getSimulationRunnerParametersBuilder().setNumIterationsPerSample(30000);
+                    inputBuilder.getJobParametersBuilder().getSimulationRunnerParametersBuilder().setNumSamples(2000);
+                    final SystemParametersBuilder systemParametersBuilder = inputBuilder.systemParametersBuilder;
+                    final int numChains = systemParametersBuilder.getPolymerCluster().getNumChains();
+                    PolymerCluster newPolymerCluster = getPolymerCluster(.38, (int) (numChains * polymericityFactors[k]), (int) (16 / polymericityFactors[k]), 1);
                     systemParametersBuilder.setPolymerCluster(newPolymerCluster);
                     noSpringInputs.add(inputBuilder.buildInput());
                     jobNumber++;
@@ -148,6 +175,10 @@ public class BulkMixtureJobMaker {
 
     }
 
+    static private List<Input> makeInterfacialEnergyInputs(int jobNumber) {
+        return new ArrayList<>();
+    }
+
     static private List<Input> makeLargeSystemResizingInputs(int jobNumber) {
         final double verticalRescaleFactor = .15;
         final double horizontalRescaleFactor = 4;
@@ -192,15 +223,8 @@ public class BulkMixtureJobMaker {
         InputBuilder inputBuilder = getDefaultInputDensityBuilder();
         inputBuilder.rescale(verticalScale, horizontalScale);
         inputBuilder.getJobParametersBuilder().setJobNumber(jobNumber);
-        inputBuilder.getJobParametersBuilder().setNumAnneals(5);
-        inputBuilder.getJobParametersBuilder().setNumSimulationTrials(5);
-        inputBuilder.getSystemParametersBuilder().autosetCoreParameters();
-        return inputBuilder;
-    }
 
-    private static PolymerCluster getRescaledPolymerCluster(final double verticalScale, final double horizontalScale) {
-        final int numChains = (int) (defaultNumChains * verticalScale * horizontalScale);
-        return getPolymerCluster(defaultHydrophobicFraction, numChains, defaultNumBeadsPerChain, 1);
+        return inputBuilder;
     }
 
     //<editor-fold defaultstate="collapsed" desc="default input">
@@ -227,9 +251,10 @@ public class BulkMixtureJobMaker {
         EnergeticsConstantsBuilder energeticsConstantsBuilder = EnergeticsConstantsBuilder.zeroEnergeticsConstantsBuilder();
         energeticsConstantsBuilder.setBBOverlapCoefficient(defaultOverlapCoefficient);
         energeticsConstantsBuilder.setAAOverlapCoefficient(defaultOverlapCoefficient);
-        energeticsConstantsBuilder.setABOverlapCoefficient(-defaultOverlapCoefficient / 2);
+        energeticsConstantsBuilder.setABOverlapCoefficient(defaultOverlapCoefficient / 2);
         systemParametersBuilder.setEnergeticsConstantsBuilder(energeticsConstantsBuilder);
         systemParametersBuilder.setInteractionLength(defaultInteractionLength);
+        systemParametersBuilder.autosetCoreParameters();
         systemParametersBuilder.setPolymerCluster(getDefaultPolymerCluster());
         return systemParametersBuilder;
     }
@@ -246,8 +271,8 @@ public class BulkMixtureJobMaker {
         return PolymerCluster.makePolymerCluster(hydrophobicFraction, numChains, numBeadsPerChain, numSubblocks, defaultDensity);
     }
 
-    static private final int defaultNumAnneals = 50;//50
-    static private final int defaultNumSurfaceTensionTrials = 70;
+    static private final int defaultNumAnneals = 5;
+    static private final int defaultNumSurfaceTensionTrials = 5;
     static private final int defaultJobNumber = 0;
 
     static public JobParametersBuilder getDefaultJobParametersBuilder() {

@@ -4,7 +4,6 @@
  */
 package SGEManagement;
 
-import Engine.Energetics.EnergeticsConstants.EnergeticsConstantsBuilder;
 import Engine.PolymerTopology.PolymerCluster;
 import Engine.SimulatorParameters;
 import Engine.SimulatorParameters.SystemParametersBuilder;

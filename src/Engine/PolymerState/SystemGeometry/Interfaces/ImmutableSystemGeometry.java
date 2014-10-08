@@ -48,6 +48,7 @@ public interface ImmutableSystemGeometry extends Serializable {
      * calculated
      * @param position2 the position form which the displacement is being
      * calculated
+     *
      * @return the displacement to position1 from position2.
      */
     public double[] getDisplacement(double[] position1, double[] position2);
@@ -57,6 +58,10 @@ public interface ImmutableSystemGeometry extends Serializable {
     public TwoBeadOverlap twoBeadRectangularOverlap(double[] position1, double[] position2);
 
     public TwoBeadOverlap twoBeadCircularOverlap(double[] position1, double[] position2);
+
+    public double[] randomBoxPosition(double[] lowerFraction, double[] upperFraction);
+
+    public double[][] randomBoxPositions(double[] lowerFraction, double[] upperFraction, int numPositions);
 
     public double[] randomMiddlePosition();
 
@@ -84,6 +89,7 @@ public interface ImmutableSystemGeometry extends Serializable {
     /**
      *
      * @param scaleFactor factor by which to scale the Gaussian
+     *
      * @return a random vector whose components are normally distributed with
      * standard deviation of step length times the scale factor.
      */
@@ -102,6 +108,7 @@ public interface ImmutableSystemGeometry extends Serializable {
      * getNumDimensions()
      * @param stepVector the amount toStep ought to be incremented by. Must have
      * length equal to getNumDimensions()
+     *
      * @return a boolean indicating whether or not the move was legal
      */
     public boolean incrementFirstVector(double[] toStep, double[] stepVector);
@@ -133,8 +140,8 @@ public interface ImmutableSystemGeometry extends Serializable {
 
     public boolean incrementVectors(double[][] vectors, double[] stepVector);
 
-    void rescaleVector(double[] vector, double rescaleFactor);
+    void rescaleVectorHorizontally(double[] vector, double rescaleFactor);
 
-    void rescaleVectors(double[][] vectors, double rescaleFactor);
+    void rescaleVectorsHorizontally(double[][] vectors, double rescaleFactor);
 
 }

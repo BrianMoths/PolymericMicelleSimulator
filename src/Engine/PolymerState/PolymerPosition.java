@@ -17,6 +17,8 @@ import java.util.List;
  */
 public class PolymerPosition implements ImmutablePolymerPosition {
 
+    private static final long serialVersionUID = 4900713033979996279L;
+//    private static final long serialVersionUID = 4609888276995786165L;
     private final int numBeads;
     private List<AnalyzerListener> registeredAnalyzerListeners;
     private final SystemGeometry systemGeometry;
@@ -79,25 +81,46 @@ public class PolymerPosition implements ImmutablePolymerPosition {
 
     @Override
     public double[][] reasonableRandomPositions(ImmutableDiscretePolymerState immutableDiscretePolymerState, PositionGenerator positionGenerator) {
-        List<Boolean> isRandomized = new ArrayList<>(numBeads);
-        for (int bead = 0; bead < numBeads; bead++) {
-            isRandomized.add(false);
-        }
+        List<List<Integer>> chains = immutableDiscretePolymerState.getChains();
         final double[][] randomPositions = new double[numBeads][systemGeometry.getNumDimensions()];
-        for (int bead = 0; bead < numBeads; bead++) {
-            if (!isRandomized.get(bead)) {
-                List<Integer> chainOfBead = immutableDiscretePolymerState.getChainOfBead(bead);
-                reasonableChainRandomize(chainOfBead, positionGenerator, randomPositions);
-                for (Integer randomizedBead : chainOfBead) {
-                    isRandomized.set(randomizedBead, true);
-                }
-            }
-
+        for (List<Integer> chain : chains) {
+            reasonableChainRandomize(chain, positionGenerator, randomPositions);
         }
         return randomPositions;
     }
 
-    @Override
+    public void linearInitialize(ImmutableDiscretePolymerState immutableDiscretePolymerState) {
+        setBeadPositions(linearInitialization(immutableDiscretePolymerState));
+    }
+
+    private double[][] linearInitialization(ImmutableDiscretePolymerState immutableDiscretePolymerState) {
+        List<List<Integer>> chains = immutableDiscretePolymerState.getChains();
+        final double[][] initialPositions = new double[numBeads][systemGeometry.getNumDimensions()];
+        double x = 0;
+        double xStep = 2 * systemGeometry.getSizeOfDimension(0) / chains.size();
+        boolean isGoingUp = false;
+        for (List<Integer> chain : chains) {
+            linearChainInitialize(chain, x, isGoingUp, initialPositions);
+            if (isGoingUp) {
+                x += xStep;
+            }
+            isGoingUp = !isGoingUp;
+        }
+        return initialPositions;
+    }
+
+    private void linearChainInitialize(List<Integer> chain, final double x, final boolean isGoingUp, double[][] initialPositions) {
+        final int numBeadsInChain = chain.size();
+        final double direction = isGoingUp ? 1. : -1.;
+        final double yStep = direction * systemGeometry.getSizeOfDimension(1) / 2 / (numBeadsInChain + 1);
+        double currentY = systemGeometry.getSizeOfDimension(1) / 2 + yStep / 2;
+        for (Integer bead : chain) {
+            initialPositions[bead][0] = x;
+            initialPositions[bead][1] = currentY;
+            currentY += yStep;
+        }
+    }
+
     public void reasonableChainRandomize(List<Integer> chainOfBead, PositionGenerator positionGenerator, double[][] randomPositions) {
         double[] currentPosition = positionGenerator.generatePosition();
         reasonableChainRandomizeAtPosition(chainOfBead, currentPosition, randomPositions);
@@ -112,7 +135,6 @@ public class PolymerPosition implements ImmutablePolymerPosition {
 
     public void reasonableColumnRandomize(ImmutableDiscretePolymerState immutableDiscretePolymerState) {
         PositionGenerator positionGenerator = new PositionGenerator() {
-
             @Override
             public double[] generatePosition() {
                 return systemGeometry.randomColumnPosition(.15);
@@ -124,7 +146,6 @@ public class PolymerPosition implements ImmutablePolymerPosition {
 
     public void reasonableMiddleRandomize(ImmutableDiscretePolymerState immutableDiscretePolymerState) {
         PositionGenerator positionGenerator = new PositionGenerator() {
-
             @Override
             public double[] generatePosition() {
                 return systemGeometry.randomMiddlePosition();
@@ -136,7 +157,6 @@ public class PolymerPosition implements ImmutablePolymerPosition {
 
     public void reasonableRandomize(ImmutableDiscretePolymerState immutableDiscretePolymerState) {
         PositionGenerator positionGenerator = new PositionGenerator() {
-
             @Override
             public double[] generatePosition() {
                 return systemGeometry.randomPosition();

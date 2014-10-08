@@ -92,6 +92,27 @@ public class PolymerChain implements Serializable {
         }
     }
 
+    public void appendChain(PolymerChain polymerChain) {
+        if (this == polymerChain) {
+            polymerChain = PolymerChain.copy(polymerChain);
+        }
+        for (Boolean isTypeA : polymerChain.types) {
+            addBead(isTypeA);
+        }
+    }
+
+    public void appendChains(PolymerChain... polymerChains) {
+        for (PolymerChain polymerChain : polymerChains) {
+            appendChain(polymerChain);
+        }
+    }
+
+    public void appendChainRepeatedly(PolymerChain polymerChain, int numTimes) {
+        for (int i = 0; i < numTimes; i++) {
+            appendChain(polymerChain);
+        }
+    }
+
     public int getNumBeads() {
         return types.size();
     }

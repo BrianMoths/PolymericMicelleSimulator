@@ -4,6 +4,7 @@
  */
 package FocusedSimulation.micelle;
 
+import Engine.PolymerTopology.PolymerChain;
 import Engine.PolymerTopology.PolymerCluster;
 import Engine.SimulationStepping.StepGenerators.CompoundStepGenerators.GeneralStepGenerator;
 import Engine.SimulationStepping.StepGenerators.StepGenerator;
@@ -15,6 +16,7 @@ import FocusedSimulation.bulkmixture.BulkMixtureJobMaker;
 import FocusedSimulation.simulationrunner.StatisticsTracker.TrackableVariable;
 import SGEManagement.Input;
 import SGEManagement.Input.InputBuilder;
+import com.sun.org.apache.regexp.internal.REUtil;
 import java.io.FileNotFoundException;
 import java.util.EnumMap;
 
@@ -23,6 +25,8 @@ import java.util.EnumMap;
  * @author bmoths
  */
 public class MicelleFinder extends AbstractFocusedSimulation<MicelleResultsWriter> {
+
+    static private final int numChains = 1;
 
     static public void main(String[] args) {
         final Input input = readInput(args);
@@ -37,21 +41,13 @@ public class MicelleFinder extends AbstractFocusedSimulation<MicelleResultsWrite
 
     private static Input readInput(String[] args) {
         if (args.length == 0) {
-            final double verticalScaleFactor = .15;//.3
-            final double horizontalScaleFactor = 2;//6
+            final double verticalScaleFactor = 1;//.3
+            final double horizontalScaleFactor = 1;//6
             final double hydrophilicFraction = .405;//.5
 
-            InputBuilder inputBuilder = new InputBuilder();
-            inputBuilder.getJobParametersBuilder().setNumAnneals(1);
-            inputBuilder.getJobParametersBuilder().setNumSimulationTrials(4);
-            inputBuilder.getJobParametersBuilder().getSimulationRunnerParametersBuilder().setNumIterationsPerAnneal(10000);
-            inputBuilder.getJobParametersBuilder().getSimulationRunnerParametersBuilder().setNumIterationsPerSample(10000);
-            inputBuilder.getJobParametersBuilder().getSimulationRunnerParametersBuilder().setNumSamples(2000);
-            inputBuilder.getJobParametersBuilder().setShouldIterateUntilConvergence(false);
-            final SystemParametersBuilder systemParametersBuilder = inputBuilder.systemParametersBuilder;
-            final int numChains = systemParametersBuilder.getPolymerCluster().getNumChains();
+            InputBuilder inputBuilder = MicelleJobMaker.getDefaultInputDensityBuilder(.75);
             PolymerCluster newPolymerCluster = BulkMixtureJobMaker.getPolymerCluster(hydrophilicFraction, numChains, 16, 1);
-            systemParametersBuilder.setPolymerCluster(newPolymerCluster);
+//            inputBuilder.getSystemParametersBuilder().setPolymerCluster(makePeanutCluster());
             return inputBuilder.buildInput();
         } else if (args.length == 1) {
             final String fileName = args[0];
@@ -59,6 +55,17 @@ public class MicelleFinder extends AbstractFocusedSimulation<MicelleResultsWrite
         } else {
             throw new IllegalArgumentException("At most one input allowed");
         }
+    }
+
+    private static PolymerCluster makePeanutCluster() {
+        PolymerChain bridgeChain = PolymerChain.makeMultiblockPolymerChain(20, 2, .75);
+        PolymerChain blobChain = PolymerChain.makeMultiblockPolymerChain(40, 2, .92);
+        PolymerChain fullChain = new PolymerChain();
+        fullChain.appendChains(bridgeChain, blobChain, bridgeChain, blobChain);
+//        fullChain.appendChains(bridgeChain, bridgeChain, bridgeChain, bridgeChain);
+        PolymerCluster polymerCluster = PolymerCluster.makeClusterFromChain(fullChain);
+        polymerCluster.setConcentrationInWater(.02);
+        return polymerCluster;
     }
 
     private static MicelleFinder makeMicelleFinderWithDefaultWriter(Input input) throws FileNotFoundException {
@@ -72,9 +79,7 @@ public class MicelleFinder extends AbstractFocusedSimulation<MicelleResultsWrite
     @Override
     protected StepGenerator makeMainStepGenerator() {
         EnumMap<StepType, Double> weights = new EnumMap<>(StepType.class);
-        weights.put(StepType.REPTATION, .01);
         weights.put(StepType.SINGLE_BEAD, 1.);
-        weights.put(StepType.SINGLE_CHAIN, .01);
 
         StepGenerator stepGenerator = new GeneralStepGenerator(weights);
         return stepGenerator;
@@ -92,6 +97,7 @@ public class MicelleFinder extends AbstractFocusedSimulation<MicelleResultsWrite
 
     @Override
     protected void printInitialOutput() {
+        outputWriter.printInitialOutput();
     }
 
     @Override

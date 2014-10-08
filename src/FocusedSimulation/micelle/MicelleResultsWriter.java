@@ -24,6 +24,11 @@ public class MicelleResultsWriter extends AbstractResultsWriter {
         printAndSoutString("Micelle\n");
     }
 
+    void printInitialOutput() {
+        printAndSoutCaptionedObject("Number of A beads per chain", input.systemParameters.polymerCluster.getNumABeadsPerChain());
+        printAndSoutCaptionedObject("Number of B beads per chain", input.systemParameters.polymerCluster.getNumBBeadsPerChain());
+    }
+
     void printFreeEnergyPerBead(DoubleWithUncertainty freeEnergyPerBead) {
         printAndSoutCaptionedObject("free energy per bead", freeEnergyPerBead);
     }

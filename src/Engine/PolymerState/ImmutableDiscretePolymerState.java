@@ -45,4 +45,6 @@ public interface ImmutableDiscretePolymerState extends Serializable {
 
     public boolean isTypeA(int bead);
 
+    List<List<Integer>> getChains();
+
 }

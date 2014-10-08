@@ -7,10 +7,8 @@ package FocusedSimulation.bulkmixture;
 import Engine.PolymerTopology.PolymerCluster;
 import Engine.SimulationStepping.StepGenerators.CompoundStepGenerators.GeneralStepGenerator;
 import Engine.SimulationStepping.StepGenerators.StepGenerator;
-import Engine.SimulationStepping.StepTypes.SimulationStep;
 import Engine.SimulationStepping.StepTypes.StepType;
 import Engine.SimulatorParameters.SystemParametersBuilder;
-import Engine.SystemAnalyzer;
 import FocusedSimulation.AbstractFocusedSimulation;
 import FocusedSimulation.DoubleWithUncertainty;
 import FocusedSimulation.simulationrunner.StatisticsTracker.TrackableVariable;
@@ -39,8 +37,8 @@ public class BulkMixtureFinder extends AbstractFocusedSimulation<BulkMixtureResu
 
     private static Input readInput(String[] args) {
         if (args.length == 0) {
-            final double verticalScaleFactor = .15;//.3
-            final double horizontalScaleFactor = 2;//6
+            final double verticalScaleFactor = .2;//.3
+            final double horizontalScaleFactor = 4;//6
             final double hydrophilicFraction = .405;//.5
 
             InputBuilder inputBuilder = BulkMixtureJobMaker.makeRescaleInputBuilderWithHorizontalRescaling(verticalScaleFactor, horizontalScaleFactor, 0);
@@ -63,6 +61,10 @@ public class BulkMixtureFinder extends AbstractFocusedSimulation<BulkMixtureResu
         }
     }
 
+    private static BulkMixtureFinder makeBulkMixtureFinderWithDefaultWriter(Input input) throws FileNotFoundException {
+        return new BulkMixtureFinder(input, new BulkMixtureResultsWriter(input));
+    }
+
     private BulkMixtureFinder(Input input, BulkMixtureResultsWriter bulkMixtureResultsWriter) throws FileNotFoundException {
         super(input, bulkMixtureResultsWriter);
     }
@@ -70,7 +72,6 @@ public class BulkMixtureFinder extends AbstractFocusedSimulation<BulkMixtureResu
     @Override
     protected StepGenerator makeMainStepGenerator() {
         EnumMap<StepType, Double> weights = new EnumMap<>(StepType.class);
-        weights.put(StepType.REPTATION, .01);
         weights.put(StepType.SINGLE_BEAD, 1.);
         weights.put(StepType.SINGLE_CHAIN, .01);
         weights.put(StepType.SINGLE_WALL_HORIZONTAL_RESIZE, .001);
@@ -78,10 +79,6 @@ public class BulkMixtureFinder extends AbstractFocusedSimulation<BulkMixtureResu
 
         StepGenerator stepGenerator = new GeneralStepGenerator(weights);
         return stepGenerator;
-    }
-
-    private static BulkMixtureFinder makeBulkMixtureFinderWithDefaultWriter(Input input) throws FileNotFoundException {
-        return new BulkMixtureFinder(input, new BulkMixtureResultsWriter(input));
     }
 
     @Override

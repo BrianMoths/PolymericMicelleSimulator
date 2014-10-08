@@ -1,0 +1,282 @@
+The purpose of this file is to help guide you through my code. First I will
+give a reminder of what the code is supposed to do, in order to lay a
+foundation for how my code is structured.
+
+The purpose of the code is to simulate a system of monomers that interact with
+each other two ways. One way is that adjacent monomers on the same polymer
+interact with each other through a spring potential, and the other way is that
+all monomers interact with each other via a short range potential having to do
+with how much they overlap.
+
+The simulation is a metropolis monte carlo. So I have a system at some given
+step, and to evolve the system forward one step, I generate a move randomly, I
+calculate the free energy change resulting from that move and I accept that
+move with a probability determined by the boltzmann weight. 
+
+The must crucial object in my code is going to be a "PolymerSimulator" object
+that is responsible for doing the process described in the above paragraph.
+Everything else is related to the PolymerSimulator object in one of two ways:
+either it is an object that the PolymerSimulator uses to help it with its job,
+or it is an object that uses the polymer simulator to do a simulation with some
+set of parameters (the parameters could be the parameters of our external
+spring) and see what the result of the simulation is (for example, what is the
+average position of the movable wall?).
+
+
+
+Now I will start to talk about the code. All the code is in the src directory.
+The code is divided into packages. Each package is a folder, and here the
+package structure is shown hierarchically, so that a folder can have
+subfolders.
+
+
+Now I will go through these folders and give a brief overview of the different
+classes. The first package I will talk about is the engine package. This
+package contains all the code that is utilized by the PolymerSimulator. There
+are four source files immediately in the engine package.
+
+PolymerSimulator is the actual polymerSimulator class which is responsible for
+iterating the monte carlo
+
+AcceptanceStatistics keeps track of how often moves get accepted.
+
+SimulatorParameters is a class that contains all the parameters that you can
+adjust when making a PolymerSimulator. 
+
+SystemAnalyzer contains all the methods used to analyze the PolymerSimulator.
+The methods that PolymerSimulator relies on the most are the methods for
+finding energies.
+
+Now the engine package also contains packages. 
+
+========================================================================
+
+The BeadBinning package contains a class which provides a fast way of getting
+which beads are within an interaction length of a given bead.
+
+========================================================================
+
+The Energetics package has classes having to do with finding energies. These
+classes are 
+
+
+the EnergeticsConstants class which contains the spring constant
+and coefficeints for finding energy of overlap between beads.
+An EnergeticsConstants object contains an ExternalEnergyCalculator object.
+
+An ExternalEnergyCalculator object is responsible for keeping track of the
+parameters of the external spring and calculating energies related to the
+external spring.
+
+The other two classes in this package aren't as central to understanding the
+code.
+========================================================================
+The PolymerState package keeps track of the state of the polymer.
+
+It contains six classes. It is really just three classes plus immutable views
+of those classes.
+
+The DiscretePolymerState class keeps track of the connectivity of the beads.
+
+The PolymerPosition class keeps track of the position of each bead.
+
+The PolymerState class keeps contains a DiscretePolymerState and a
+PolymerPosition as well as a SystemGeometry. It organizes all three of these
+together
+
+This package also contians the SystemGeometry package. The SystemGeometry
+package has a GeometricalParameters class which contains the radius of
+attractive interaction, the radius of repulsive interaction and the ideal step
+length.
+
+The SystemGeometry package has an implementation package which contains the
+actual SystemGeometry objects. The one I use is PeriodicGeometry. This class is
+responsible for calculating distances and overlaps between beads and also
+adjusting the boundaries of the periodic box that the polymer lives in.
+
+========================================================================
+The Energetics package also has a polymer topology package. This package gives
+a convenient way of representing a collection of polymer chains. This package
+is used when specifying what polymer chains you want to put in your
+PolymerSimulator.
+========================================================================
+The energetics package has a SimulationStepping package. This package is
+responsible for dealing with steps in the simulation. It has two packages:
+StepTypes and StepGenerators
+
+The StepTypes package is responsible for defining what the different steps do.
+Looking at the SimulationStep interface in this package, we see that a step is
+responsible for actually doing the step to the polymerState, undoing the step,
+and reporting the energy and entropy change caused by the step (in addition to
+knowing what kind of step it is.) Then in the StepTypes package, I have also
+defined many different kinds of steps, including a single bead move, a chain
+move, a reptation step, and a resize step.
+
+The SimulationStepping package also has a StepGenerators package. A
+StepGenerator is responsible for generating a step to be used in the monte
+carlo simulation. The ElementaryStepGenerator package has one step generator for
+each type of step. These generators generate a random step of their type. Then
+there is the CompoundStepGenerator package which contains a class which can
+generate a step of any type, with configurable weights determining how likely a
+given type of step is to be generated.
+
+That concludes the discussion of then engine package
+========================================================================
+========================================================================
+========================================================================
+The next package is the FocusedSimulation package. This package contains all
+the classes that use the PolymerSimulator to find out the properties of the
+polymer such as surface tension etc.
+
+The FocusedSimulation package contains four packages. Three of them,
+compressibility, density, and surfacetension, are specific examples of things
+to study. The fourth package, called output, is manages how output from a
+simulation is sent to a file. 
+
+I will discuss the classes immediately in FocusedSimulation. The first class I
+will discuss is the StatisticsTracker class. This class is responsible for
+measuring a sample of a statistic of a polymer system (say for example the
+length of the system for the surface tension case). It is also responsible for
+remembering those measurements and calculating averages and standard deviations.
+
+Next in FocusedSimulation I will discuss SimulationRunner. This class contains
+a PolymerSimulator and a StatisticsTracker. It is responsible for using the
+for iterating the PolymerSimulator and periodically showing the
+PolymerSimulator to its StatisticsTracker so that the StatisticsTracker can
+record the statistics. The SimulationRunner can also do an anneal, where it
+displaces each bead randomly and then iterates the PolymerSimulator for a while.
+
+Next in FocusedSimulation I will discuss AbstractFocusedSimulation. This class
+contains a SimulationRunner. It is responsible for using the SimulationRunner
+to generate statistics and interpreting and printing those statistics. The
+order it does things in is to first initialize the PolymerSimulator. Then it
+tells the SimulationRunner to do some specified number of anneal iterations.
+Then it tells the SimulationRunner to generate statistics and it outputs the
+results obtained from these statistics (in the case of surface tension, the
+result output would be a surface tension even though the SimulationRunner was
+measuring length). It can optionally keep doing these measurement runs until
+the value equilibrates.
+
+Now in the surfacetension package of FocusedSimulation, I have the
+SurfaceTensionFinder class which extends (i.e., is derived from)
+AbstractFocusedSimulation. I have the SurfaceTensionResultsWriter, which is
+responsible for writing the results from the SurfaceTensionFinder. Also I have
+the SurfaceTensionJobMaker, which is responsible for making inputs to
+SurfaceTensionFinder. The inputs could specify different parameters for the
+spring or number of chains. It is capable of writing these inputs to a file and
+starting a superabacus job to read the input run SurfaceTensionFinder on that
+input.
+========================================================================
+========================================================================
+========================================================================
+Those are the most important package. I will briefly describe the other
+top-level packages. 
+
+The Gui packages contains all the gui's for visualing the simulation and
+displaying results and parameters.
+
+The SGEManagement class contains functions for submitting jobs to superabacus
+(using the Sun Grid Engine, hence SGE).
+
+The SystemAnalysis package contains functions used to analyze the polymer
+system. These classes might logically go into the SystemAnalyzer class, but I
+separated them out because there are a lot of them, and they are not necessary
+for the running of the PolymerSimulator (in fact the PolymerSimulator has no
+way of knowing when they are run.) There are classes in the SystemAnalysis
+package for finding area, perimeter, stress, and the histogram giving the
+average polymer density as a function of the y coordinate that I showed you last
+time we met.
+
+The tests package just contain one test. This is a test of the
+WallResizeStepGenerator.
+========================================================================
+xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
+xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
+========================================================================
+Now I will try to describe everything as it happens in the flow of the program.
+First I run the DensityJobMaker, and it makes the inputs for my simulation,
+which includes the attractive and repulsive forces between beads, the external
+spring, the size of the beads, the initial size of the simulation box, the
+number of chains, etc. Then the DensityJobMaker writes each input to a file and
+starts a job on superabacus for each file. Then the DensityJobMaker program
+terminates.
+
+Each job now begins with DensityFinder's main method. DensityFinder reads in
+the input and creates a new DensityFinder object for that input, and puts that
+new DensityFinder object to work at simulating. The DensityFinder object
+initialize and anneals, and then it begins its measurement trials, where it
+tells its SimulationRunner to gather statistics and outputs the results of
+these statistics.
+
+Computationally, the most taxing part of the SimulationRunner's job in
+generating statistics is to actually iterate the PolymerSimulator. To iterate
+the PolymerSimulator, the SimulationRunner calls the PolymerSimulator's
+doIterations method.
+
+The doIterations method basically just calls doIteration in a loop.
+
+In the doIteration method, the PolymerSimulator generates a step and does the
+step. The step may fail immediately (for example trying to move a bead outside
+the box in a hard wall geometry or shortening the simulation box to a length
+where one of the rightmost beads would lie outside the simulation box in the
+case of a NoStretchWallStep) in which case nothing further happens. On the
+other hand, if the step succeeds, the PolymerSimulator gets the change in energy
+and entropy from the step. (Computing this change in energy and entropy is the
+most taxing part, and I will come back to it later.) With the changes in energy
+and entropy in hand, the PolymerSimulator sees if the step is allowed according
+to the metropolis monte carlo criterion, and if so it accepts the step. If the
+move gets rejected, then the step is undone.
+
+Next I will go into more detail about how a SimulationStep calculates the change
+in energy and entropy. I will look at the example of the most common step in my
+simulations, the single bead step. When the doStep method is called, the
+SingleBeadStep first tells the SystemAnalyzer to calculate the energy of the
+bead to be moved. Then it tells the polymerState to change the position of the
+bead by the SingleBeadStep's stepVector. In the case of a periodic geometry this
+always succeeds. Then the SingleBeadStep tells the SystemAnalyzer to get the
+new energy of the bead. After doing this the SingleBeadStep remembers the
+difference between the final energy and the initial energy. When it is later
+asked what the changes in energy and entropy were, it says the change in energy
+was the remembered value and the change in entropy was zero.
+
+The most computationally intensive part of the above procedure is finding the
+energy of a bead. The SystemAnalyzer is responsible for doing this. The method
+responsible is called beadEnergy. It returns the sum of the bead's spring energy
+and the bead's overlap energy (which corresponds to the method called
+beadDensityEnergy). 
+
+To get the spring energy, it uses the DiscretePolymerState object to get the two
+neighbors of the bead along the PolymerChain, and then it uses the
+SystemGeometry object to get the square distance between the bead and its
+neighbors. Then it uses the EnergeticsConstants object to calculate the energy
+corresponding to this square distance.
+
+To get the overlap energy, the SystemAnalyzer uses the BeadBinner to iterate
+over all the beads that are within an interaction length. For each nearby bead,
+it uses SystemGeometry to get the overlaps for the attracting and repulsive
+parts of the potential. After adding up all these overlap areas, it uses the
+EnergeticsConstants object to get the energy corresponding to the overlap
+areas. 
+
+This concludes the discussion of how the SingleBeadStep gets the change in
+energy and entropy, but I can also explain how the SingleWallResizeStep gets
+the changes in energy and entropy. 
+
+In the case of a SingleWallResizeStep, the full energy of the system must be
+computed both before and after the step. The full energy is the sum of the
+total overlapping energy, the total spring energy and the external energy. The
+total overlapping energy is just the sum of each beads overlapping energy
+divided by 2. Similarly, the total spring energy is the sum of each bead's
+spring energy divided by two. The external energy is found by asking the
+EnergeticsConstants object. 
+
+The SingleWallResizeStep also makes a change of entropy. It calculates this by
+taking the product of the number of beads and the log of the relative change in
+size, and dividing this product by two. (I am not sure why it divides by two; I
+will look into this.)
+
+This concludes the discussion of how the SingleWallResizeStep calculates the
+energy and entropy. 
+
+Hopefully this discussion will give a good sense of how the code works. Of
+course, feel free to ask me if you have any questions.
