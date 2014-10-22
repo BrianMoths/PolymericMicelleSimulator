@@ -20,6 +20,12 @@ public class PolymerCluster implements Serializable {
         return new PolymerCluster();
     }
 
+    static public PolymerCluster makeEmptyPolymerClusterWithDensity(double density) {
+        PolymerCluster polymerCluster = new PolymerCluster();
+        polymerCluster.setConcentrationInWater(density);
+        return polymerCluster;
+    }
+
     static public PolymerCluster makeDefaultPolymerCluster() {
         PolymerChain polymerChain = PolymerChain.makeChainStartingWithA(6, 6);
         PolymerCluster polymerCluster = PolymerCluster.makeRepeatedChainCluster(polymerChain, 100);
