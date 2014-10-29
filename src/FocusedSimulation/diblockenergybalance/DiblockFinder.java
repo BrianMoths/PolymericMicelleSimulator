@@ -4,14 +4,16 @@
  */
 package FocusedSimulation.diblockenergybalance;
 
-import Engine.PolymerTopology.PolymerCluster;
-import Engine.SimulatorParameters.SystemParametersBuilder;
+import Engine.SimulationStepping.StepGenerators.CompoundStepGenerators.GeneralStepGenerator;
+import Engine.SimulationStepping.StepGenerators.StepGenerator;
+import Engine.SimulationStepping.StepTypes.StepType;
 import FocusedSimulation.bulkmixture.BulkMixtureFinder;
-import FocusedSimulation.bulkmixture.BulkMixtureJobMaker;
-import FocusedSimulation.bulkmixture.BulkMixtureResultsWriter;
+import static FocusedSimulation.diblockenergybalance.DiblockJobMaker.makeHorizontallyRescaledInputBuilder;
+import FocusedSimulation.simulationrunner.SimulationRunnerParameters.SimulationRunnerParametersBuilder;
 import SGEManagement.Input;
 import SGEManagement.Input.InputBuilder;
 import java.io.FileNotFoundException;
+import java.util.EnumMap;
 
 /**
  *
@@ -36,12 +38,14 @@ public class DiblockFinder extends BulkMixtureFinder<DiblockResultsWriter> {
             final double verticalScaleFactor = 1;//.3
             final double horizontalScaleFactor = 1;//6
 
-            InputBuilder inputBuilder = DiblockJobMaker.makeHorizontallyRescaledInputBuilder(1, 0);
-            inputBuilder.getJobParametersBuilder().setNumAnneals(1);
-            inputBuilder.getJobParametersBuilder().setNumSimulationTrials(4);
-            inputBuilder.getJobParametersBuilder().getSimulationRunnerParametersBuilder().setNumIterationsPerAnneal(10000);
-            inputBuilder.getJobParametersBuilder().getSimulationRunnerParametersBuilder().setNumIterationsPerSample(10000);
-            inputBuilder.getJobParametersBuilder().getSimulationRunnerParametersBuilder().setNumSamples(2000);
+            InputBuilder inputBuilder = makeHorizontallyRescaledInputBuilder(horizontalScaleFactor, 0);
+            SimulationRunnerParametersBuilder simulationRunnerParametersBuilder = inputBuilder.getJobParametersBuilder().getSimulationRunnerParametersBuilder();
+            inputBuilder.getJobParametersBuilder().setNumAnneals(200);
+            simulationRunnerParametersBuilder.setNumIterationsPerSample(100);
+            simulationRunnerParametersBuilder.setNumSamples(10);
+            inputBuilder.getJobParametersBuilder().setNumSimulationTrials(1000);
+            inputBuilder.getSystemParametersBuilder().getEnergeticsConstantsBuilder().getExternalEnergyCalculatorBuilder().setxTensionAndQuadratic(-.3, 0);
+            inputBuilder.getJobParametersBuilder().setJobString("EnergyScaling");
             return inputBuilder.buildInput();
         } else if (args.length == 1) {
             final String fileName = args[0];
@@ -60,9 +64,16 @@ public class DiblockFinder extends BulkMixtureFinder<DiblockResultsWriter> {
     }
 
     @Override
+    protected StepGenerator makeInitialStepGenerator() {
+        EnumMap<StepType, Double> stepweights = new EnumMap<>(StepType.class);
+        stepweights.put(StepType.SINGLE_BEAD, 1.);
+        return new GeneralStepGenerator(stepweights);
+    }
+
+    @Override
     protected void initializePositions() {
-//        polymerSimulator.linearInitialize();
-        polymerSimulator.reasonableRandomize();
+        polymerSimulator.linearInitialize();
+//        polymerSimulator.reasonableRandomize();
     }
 
 }

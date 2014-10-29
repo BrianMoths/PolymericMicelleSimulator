@@ -75,7 +75,7 @@ public class SimulationRunnerParameters implements Serializable {
         return defaultSimulationRunnerParameters;
     }
 
-    final int numIterationsPerSample;
+    private final int numIterationsPerSample;
     private final int numSamples;
     private final int numIterationsPerAnneal;
 

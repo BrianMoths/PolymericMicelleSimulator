@@ -62,18 +62,12 @@ public class ExternalEnergyCalculator implements Serializable {
         }
 
         public ExternalEnergyCalculatorBuilder rescaleHorizontally(double horizontalRescaleFactor) {
-            final double xSpringConstant = getxSpringConstant();
-            final double oldEquilibriumPosition = getxEquilibriumPosition();
-            final double newEquilibriumPosition = oldEquilibriumPosition * horizontalRescaleFactor;
-            setXPositionAndSpringConstant(newEquilibriumPosition, xSpringConstant);
+            xTension *= horizontalRescaleFactor;
             return this;
         }
 
         public ExternalEnergyCalculatorBuilder rescaleVertically(double verticalRescaleFactor) {
-            final double ySpringConstant = getySpringConstant();
-            final double oldEquilibriumPosition = getyEquilibriumPosition();
-            final double newEquilibriumPosition = oldEquilibriumPosition * verticalRescaleFactor;
-            setYPositionAndSpringConstant(newEquilibriumPosition, ySpringConstant);
+            yTension *= verticalRescaleFactor;
             return this;
         }
 

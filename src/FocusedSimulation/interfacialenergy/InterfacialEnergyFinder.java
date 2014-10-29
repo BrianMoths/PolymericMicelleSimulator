@@ -138,6 +138,8 @@ public class InterfacialEnergyFinder extends AbstractFocusedSimulation<Interfaci
     @Override
     protected void printInitialOutput() {
         outputWriter.printInitialOutput();
+        outputWriter.printInitialWidth(polymerSimulator.getGeometry().getSizeOfDimension(0));
+        outputWriter.printInitialHeight(polymerSimulator.getGeometry().getSizeOfDimension(1));
     }
 
     @Override

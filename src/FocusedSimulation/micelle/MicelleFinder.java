@@ -43,11 +43,20 @@ public class MicelleFinder extends AbstractFocusedSimulation<MicelleResultsWrite
         if (args.length == 0) {
             final double verticalScaleFactor = 1;//.3
             final double horizontalScaleFactor = 1;//6
-            final double hydrophilicFraction = .405;//.5
+            final double hydrophobicFraction = .7;//.5
+            final int numBeadsPerChain = 200;
+            final int numSubBlocks = 10;
+            final double defaultDensity = .02;
+
 
             InputBuilder inputBuilder = MicelleJobMaker.getDefaultInputDensityBuilder(.75);
-            PolymerCluster newPolymerCluster = BulkMixtureJobMaker.getPolymerCluster(hydrophilicFraction, numChains, 16, 1);
-//            inputBuilder.getSystemParametersBuilder().setPolymerCluster(makePeanutCluster());
+            PolymerChain polymerChain = PolymerChain.makeMultiblockPolymerChain(numBeadsPerChain, numSubBlocks, hydrophobicFraction);
+            PolymerChain polymerChainPeanut = PolymerChain.makeMultiblockPolymerChain(numBeadsPerChain / 3, 8, .6);
+            polymerChainPeanut.appendChain(PolymerChain.makeMultiblockPolymerChain(numBeadsPerChain / 10, 2, 0));
+            polymerChainPeanut.appendChain(PolymerChain.makeMultiblockPolymerChain(numBeadsPerChain / 3, 8, .6));
+            PolymerCluster newPolymerCluster = PolymerCluster.makeClusterFromChain(polymerChainPeanut);
+            newPolymerCluster.setConcentrationInWater(defaultDensity);
+            inputBuilder.getSystemParametersBuilder().setPolymerCluster(newPolymerCluster);
             return inputBuilder.buildInput();
         } else if (args.length == 1) {
             final String fileName = args[0];

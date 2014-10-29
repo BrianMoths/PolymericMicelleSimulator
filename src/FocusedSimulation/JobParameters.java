@@ -16,7 +16,9 @@ public class JobParameters implements Serializable {
 
     static public class JobParametersBuilder {
 
-        static public JobParametersBuilder getDefaultJobParametersBuilder() {
+        private static final long serialVersionUID = 0L;
+
+        public static JobParametersBuilder getDefaultJobParametersBuilder() {
             JobParametersBuilder jobParametersBuilder = new JobParametersBuilder();
             jobParametersBuilder.setNumAnneals(defaultNumAnneals);
             jobParametersBuilder.setNumSimulationTrials(defaultNumSurfaceTensionTrials);
@@ -28,14 +30,13 @@ public class JobParameters implements Serializable {
             return jobParametersBuilder;
         }
 
-        private static final long serialVersionUID = 0L;
         private int numAnneals; //50
         private int numSimulationTrials; //70
         private boolean shouldIterateUntilConvergence;
         private double convergencePrecision;
         private int jobNumber;
         private String jobString = "";
-        private SimulationRunnerParametersBuilder simulationRunnerParametersBuilder;
+        private SimulationRunnerParametersBuilder simulationRunnerParametersBuilder = SimulationRunnerParametersBuilder.deSimulationRunnerParametersBuilder();
 
         public JobParametersBuilder() {
         }

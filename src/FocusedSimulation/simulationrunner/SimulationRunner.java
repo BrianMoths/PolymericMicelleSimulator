@@ -85,7 +85,7 @@ public class SimulationRunner {
     }
 
     private void generateSamples(int numSamples) {
-        generateSamplesWithIterationsPerSample(numSamples, simulationRunnerParameters.numIterationsPerSample);
+        generateSamplesWithIterationsPerSample(numSamples, simulationRunnerParameters.getNumIterationsPerSample());
     }
 
     private void generateSamplesWithIterationsPerSample(int numSamples, int numIterationsPerSample) {

@@ -64,7 +64,7 @@ public class MicelleJobMaker {
 
     static public InputBuilder getDefaultInputDensityBuilder(double hydrophobicFraction) {
         SystemParametersBuilder systemParametersBuilder = getDefaultSystemParametersBuilder(hydrophobicFraction);
-        JobParametersBuilder jobParametersBuilder = JobParametersBuilder.getDefaultJobParametersBuilder();
+        JobParametersBuilder jobParametersBuilder = getDefaultJobParametersBuilder();
         Input.InputBuilder inputBuilder = new SGEManagement.Input.InputBuilder();
         inputBuilder.setSystemParametersBuilder(systemParametersBuilder);
         inputBuilder.setJobParametersBuilder(jobParametersBuilder);
@@ -76,7 +76,7 @@ public class MicelleJobMaker {
     static private final double defaultInteractionLength = 4.;
     static private final int defaultNumBeadsPerChain = 200;
     static private final int defaultNumChains = 1;
-    static private final double defaultDensity = .02;
+    static public final double defaultDensity = .02;
     private static final double defaultHydrophobicFraction = .7;
     static private final int numSubblocks = 10;
 
@@ -90,7 +90,7 @@ public class MicelleJobMaker {
         EnergeticsConstantsBuilder energeticsConstantsBuilder = EnergeticsConstantsBuilder.zeroEnergeticsConstantsBuilder();
         energeticsConstantsBuilder.setBBOverlapCoefficient(defaultOverlapCoefficient);
         energeticsConstantsBuilder.setAAOverlapCoefficient(0);
-        energeticsConstantsBuilder.setABOverlapCoefficient(defaultOverlapCoefficient / 2);
+        energeticsConstantsBuilder.setABOverlapCoefficient(defaultOverlapCoefficient / 4);//defaultOverlapCoefficient / 2
         systemParametersBuilder.setEnergeticsConstantsBuilder(energeticsConstantsBuilder);
         systemParametersBuilder.setInteractionLength(defaultInteractionLength);
         systemParametersBuilder.autosetCoreParameters();
@@ -103,7 +103,7 @@ public class MicelleJobMaker {
     }
 
     static private final int defaultNumAnneals = 5;//50
-    static private final int defaultNumSurfaceTensionTrials = 5;
+    static private final int defaultNumSurfaceTensionTrials = 20;
     static private final int defaultJobNumber = 0;
 
     static public JobParametersBuilder getDefaultJobParametersBuilder() {

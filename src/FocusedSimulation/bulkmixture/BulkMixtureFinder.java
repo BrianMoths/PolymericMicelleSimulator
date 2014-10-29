@@ -21,12 +21,12 @@ import java.util.EnumMap;
  *
  * @author bmoths
  */
-public class BulkMixtureFinder extends AbstractFocusedSimulation<BulkMixtureResultsWriter> {
+public class BulkMixtureFinder<U extends BulkMixtureResultsWriter> extends AbstractFocusedSimulation<U> {
 
     public static void main(String[] args) {
         final Input input = readInput(args);
         try {
-            final BulkMixtureFinder bulkMixtureFinder;
+            final BulkMixtureFinder<BulkMixtureResultsWriter> bulkMixtureFinder;
             bulkMixtureFinder = makeBulkMixtureFinderWithDefaultWriter(input);
             bulkMixtureFinder.doSimulation();
             bulkMixtureFinder.closeOutputWriter();
@@ -65,7 +65,7 @@ public class BulkMixtureFinder extends AbstractFocusedSimulation<BulkMixtureResu
         return new BulkMixtureFinder(input, new BulkMixtureResultsWriter(input));
     }
 
-    private BulkMixtureFinder(Input input, BulkMixtureResultsWriter bulkMixtureResultsWriter) throws FileNotFoundException {
+    protected BulkMixtureFinder(Input input, U bulkMixtureResultsWriter) throws FileNotFoundException {
         super(input, bulkMixtureResultsWriter);
     }
 
@@ -97,6 +97,8 @@ public class BulkMixtureFinder extends AbstractFocusedSimulation<BulkMixtureResu
     @Override
     protected void printInitialOutput() {
         outputWriter.printInitialOutput();
+        outputWriter.printInitialWidth(polymerSimulator.getGeometry().getSizeOfDimension(0));
+        outputWriter.printInitialHeight(polymerSimulator.getGeometry().getSizeOfDimension(1));
     }
 
     @Override

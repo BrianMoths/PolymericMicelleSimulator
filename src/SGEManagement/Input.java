@@ -7,6 +7,7 @@ package SGEManagement;
 import Engine.PolymerTopology.PolymerCluster;
 import Engine.SimulatorParameters;
 import Engine.SimulatorParameters.SystemParametersBuilder;
+import FocusedSimulation.FileLocations;
 import FocusedSimulation.JobParameters;
 import FocusedSimulation.JobParameters.JobParametersBuilder;
 import FocusedSimulation.output.OutputWriter;
@@ -91,7 +92,7 @@ public class Input implements Serializable {
 
     private static ObjectInputStream getObjectOutputStream(String fileName) {
         try {
-            final String absolutePath = OutputWriter.getProjectPath() + fileName;
+            final String absolutePath = FileLocations.PROJECT_PATH + fileName;
             FileInputStream fileInputStream = new FileInputStream(absolutePath);
             final ObjectInputStream objectInputStream = new ObjectInputStream(fileInputStream);
             return objectInputStream;

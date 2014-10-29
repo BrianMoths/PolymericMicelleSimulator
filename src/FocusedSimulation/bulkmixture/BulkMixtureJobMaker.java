@@ -30,7 +30,7 @@ public class BulkMixtureJobMaker {
     }
 
     static private List<Input> makeInputs() {
-        return makeBulkMixtureInputs();
+        return makeBulkMixtureInputs(1);
     }
 
     private static List<Input> makeBulkMixtureInputs() {
@@ -38,8 +38,8 @@ public class BulkMixtureJobMaker {
     }
 
     private static List<Input> makeBulkMixtureInputs(int jobNumber) {
-        final double[] verticalRescaleFactors = {.1, .15, .2, .3};
-        final double[] horizontalRescaleFactors = {2, 3, 4, 6};
+        final double[] verticalRescaleFactors = {.4, .6, .8, 1.2};
+        final double[] horizontalRescaleFactors = {.5, .75, 1, 1.5};
         final double[] polymericityFactors = {.5, 1, 2};
 
         final List<Input> noSpringInputs = new ArrayList<>();
@@ -51,10 +51,12 @@ public class BulkMixtureJobMaker {
                     inputBuilder.getJobParametersBuilder().getSimulationRunnerParametersBuilder().setNumIterationsPerAnneal(10000);
                     inputBuilder.getJobParametersBuilder().getSimulationRunnerParametersBuilder().setNumIterationsPerSample(30000);
                     inputBuilder.getJobParametersBuilder().getSimulationRunnerParametersBuilder().setNumSamples(2000);
+                    inputBuilder.getJobParametersBuilder().setNumSimulationTrials(5);
                     final SystemParametersBuilder systemParametersBuilder = inputBuilder.systemParametersBuilder;
                     final int numChains = systemParametersBuilder.getPolymerCluster().getNumChains();
                     PolymerCluster newPolymerCluster = getPolymerCluster(.5, (int) (numChains * polymericityFactors[k]), (int) (16 / polymericityFactors[k]), 1);
                     systemParametersBuilder.setPolymerCluster(newPolymerCluster);
+                    inputBuilder.getJobParametersBuilder().setJobString("SymmetricLayerSpacingShorterAgain");
                     noSpringInputs.add(inputBuilder.buildInput());
                     jobNumber++;
                 }
@@ -175,10 +177,6 @@ public class BulkMixtureJobMaker {
 
     }
 
-    static private List<Input> makeInterfacialEnergyInputs(int jobNumber) {
-        return new ArrayList<>();
-    }
-
     static private List<Input> makeLargeSystemResizingInputs(int jobNumber) {
         final double verticalRescaleFactor = .15;
         final double horizontalRescaleFactor = 4;
@@ -230,14 +228,14 @@ public class BulkMixtureJobMaker {
     //<editor-fold defaultstate="collapsed" desc="default input">
     static private InputBuilder getDefaultInputDensityBuilder() {
         SystemParametersBuilder systemParametersBuilder = getDefaultSystemParametersBuilder();
-        JobParametersBuilder jobParametersBuilder = JobParametersBuilder.getDefaultJobParametersBuilder();
+        JobParametersBuilder jobParametersBuilder = getDefaultJobParametersBuilder();
         Input.InputBuilder inputBuilder = new SGEManagement.Input.InputBuilder();
         inputBuilder.setSystemParametersBuilder(systemParametersBuilder);
         inputBuilder.setJobParametersBuilder(jobParametersBuilder);
         return inputBuilder;
     }
 
-    static private final double defaultAspectRatio = .0286;
+    static private final double defaultAspectRatio = .5;
     static private final double defaultOverlapCoefficient = -.378;
     static private final double defaultInteractionLength = 4.;
     static private final int defaultNumBeadsPerChain = 16;
@@ -272,7 +270,7 @@ public class BulkMixtureJobMaker {
     }
 
     static private final int defaultNumAnneals = 5;
-    static private final int defaultNumSurfaceTensionTrials = 5;
+    static private final int defaultNumSurfaceTensionTrials = 20;
     static private final int defaultJobNumber = 0;
 
     static public JobParametersBuilder getDefaultJobParametersBuilder() {

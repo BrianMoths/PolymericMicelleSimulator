@@ -5,6 +5,7 @@
 package FocusedSimulation.output;
 
 import Engine.PolymerSimulator;
+import FocusedSimulation.FileLocations;
 import FocusedSimulation.homopolymer.surfacetension.SurfaceTensionResultsWriter;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
@@ -25,7 +26,7 @@ public class PolymerSimulatorWriter {
     }
 
     private static String getPathAndFileString(int jobNumber, String jobString) throws AssertionError {
-        String projectPath = OutputWriter.getProjectPath();
+        String projectPath = FileLocations.SIMULATION_FOLDERS_PATH;
         final String path = projectPath + "../simulationSnapshots/";
         String fileName = makeFileName(jobNumber, jobString);
         final String pathAndFileString = path + fileName;

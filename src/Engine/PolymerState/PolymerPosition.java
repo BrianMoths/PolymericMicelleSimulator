@@ -121,6 +121,7 @@ public class PolymerPosition implements ImmutablePolymerPosition {
         }
     }
 
+    @Override
     public void reasonableChainRandomize(List<Integer> chainOfBead, PositionGenerator positionGenerator, double[][] randomPositions) {
         double[] currentPosition = positionGenerator.generatePosition();
         reasonableChainRandomizeAtPosition(chainOfBead, currentPosition, randomPositions);

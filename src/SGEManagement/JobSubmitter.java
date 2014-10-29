@@ -4,6 +4,7 @@
  */
 package SGEManagement;
 
+import FocusedSimulation.FileLocations;
 import FocusedSimulation.homopolymer.surfacetension.SurfaceTensionJobMaker;
 import FocusedSimulation.output.OutputWriter;
 import java.io.FileNotFoundException;
@@ -69,7 +70,7 @@ public class JobSubmitter {
 
     private static void makeInputFIle(String relativePath, Input input) {
         try {
-            final String absolutePath = OutputWriter.getProjectPath() + relativePath;
+            final String absolutePath = FileLocations.PROJECT_PATH + relativePath;
             FileOutputStream fileOutputStream = new FileOutputStream(absolutePath);
             ObjectOutputStream objectOutputStream = new ObjectOutputStream(fileOutputStream);
             objectOutputStream.writeObject(input);

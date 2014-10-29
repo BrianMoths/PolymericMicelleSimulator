@@ -36,13 +36,21 @@ public class BulkMixtureResultsWriter extends AbstractResultsWriter {
         printAndSoutCaptionedObject("free energy per bead", freeEnergyPerBead);
     }
 
-    void printInitialOutput() {
+    public void printInitialOutput() {
         printAndSoutCaptionedObject("Number of A beads per chain", input.systemParameters.polymerCluster.getNumABeadsPerChain());
         printAndSoutCaptionedObject("Number of B beads per chain", input.systemParameters.polymerCluster.getNumBBeadsPerChain());
     }
 
     void printEnergyPerBead(DoubleWithUncertainty energyPerBead) {
         printAndSoutCaptionedObject("potential energy per bead", energyPerBead);
+    }
+
+    void printInitialWidth(double width) {
+        printAndSoutCaptionedObject("initial width", width);
+    }
+
+    void printInitialHeight(double height) {
+        printAndSoutCaptionedObject("initial height", height);
     }
 
 }

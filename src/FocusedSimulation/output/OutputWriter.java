@@ -4,6 +4,7 @@
  */
 package FocusedSimulation.output;
 
+import FocusedSimulation.FileLocations;
 import FocusedSimulation.homopolymer.surfacetension.SurfaceTensionResultsWriter;
 import java.io.FileNotFoundException;
 import java.io.PrintWriter;
@@ -16,18 +17,6 @@ import java.util.logging.Logger;
  * @author bmoths
  */
 public class OutputWriter {
-
-    static public String getProjectPath() throws AssertionError {
-        String jarPath = SurfaceTensionResultsWriter.class.getProtectionDomain().getCodeSource().getLocation().getPath();
-        if (jarPath.contains("build/")) {
-            jarPath = jarPath.substring(0, jarPath.lastIndexOf("build/"));
-        } else if (jarPath.contains("dist/")) {
-            jarPath = jarPath.substring(0, jarPath.lastIndexOf("dist/"));
-        } else {
-            throw new AssertionError("jar is neither in build/ or dist/", null);
-        }
-        return jarPath;
-    }
 
     static public String makeDateString() {
         Calendar calendar = Calendar.getInstance();
@@ -89,7 +78,7 @@ public class OutputWriter {
     }
 
     private static String getPathAndFileString(int jobNumber, String jobString) throws AssertionError {
-        String projectPath = getProjectPath();
+        String projectPath = FileLocations.SIMULATION_FOLDERS_PATH;
         final String path = projectPath + "../simulationResults/";
         String fileName = makeFileName(jobNumber, jobString);
         final String pathAndFileString = path + fileName;

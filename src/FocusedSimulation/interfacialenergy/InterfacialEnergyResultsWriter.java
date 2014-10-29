@@ -15,33 +15,41 @@ import java.io.FileNotFoundException;
  * @author brian
  */
 public class InterfacialEnergyResultsWriter extends AbstractResultsWriter {
-    
+
     public InterfacialEnergyResultsWriter(Input input) throws FileNotFoundException {
         super(input);
     }
-    
+
     @Override
     public void printSimulationType() {
         printAndSoutString("Interfacial Energy\n");
     }
-    
+
     public void printWidthOfBox(DoubleWithUncertainty widthOfBox) {
         printAndSoutCaptionedObject("width of box", widthOfBox);
     }
-    
+
     public void printHeightOfBox(DoubleWithUncertainty heightOfBox) {
         printAndSoutCaptionedObject("height of box", heightOfBox);
     }
-    
+
     public void printFreeEnergyPerBead(DoubleWithUncertainty freeEnergyPerBead) {
         printAndSoutCaptionedObject("free energy per bead", freeEnergyPerBead);
     }
-    
+
     void printInitialOutput() {
     }
-    
+
     void printInterfacialEnergy(DoubleWithUncertainty measuredInterfacialEnergy) {
         printAndSoutCaptionedObject("interfacial energy", measuredInterfacialEnergy);
     }
-    
+
+    void printInitialWidth(double width) {
+        printAndSoutCaptionedObject("initial width", width);
+    }
+
+    void printInitialHeight(double height) {
+        printAndSoutCaptionedObject("initial height", height);
+    }
+
 }

@@ -10,6 +10,7 @@ import Engine.PolymerTopology.PolymerCluster;
 import Engine.SimulatorParameters.SystemParametersBuilder;
 import FocusedSimulation.AbstractFocusedSimulation;
 import FocusedSimulation.JobParameters.JobParametersBuilder;
+import FocusedSimulation.simulationrunner.SimulationRunnerParameters.SimulationRunnerParametersBuilder;
 import SGEManagement.Input;
 import SGEManagement.Input.InputBuilder;
 import SGEManagement.JobSubmitter;
@@ -32,7 +33,7 @@ public class DiblockJobMaker {
     static private List<Input> makeInputs() {
 //        List<Input> inputs = new ArrayList<>();
 //        inputs.add(makeHorizontallyRescaledInputBuilder(1, 1).buildInput());
-        return makeHorizontalRescalingInputs();
+        return makeEquilibrationTestInputs();
     }
 
     private static List<Input> makeHorizontalRescalingInputs() {
@@ -44,6 +45,29 @@ public class DiblockJobMaker {
         for (double horizontalScaleFactor : horizontalScaleFactors) {
             for (double forceFactor : forceFactors) {
                 InputBuilder inputBuilder = makeHorizontallyRescaledInputBuilder(horizontalScaleFactor, jobNumber);
+                inputBuilder.getSystemParametersBuilder().getEnergeticsConstantsBuilder().getExternalEnergyCalculatorBuilder().setxTensionAndQuadratic(defaultXTension * forceFactor, 0);
+                inputs.add(inputBuilder.buildInput());
+                inputBuilder.getJobParametersBuilder().setJobString("EnergyScaling");
+                jobNumber++;
+            }
+        }
+        return inputs;
+    }
+
+    private static List<Input> makeEquilibrationTestInputs() {
+        final double[] horizontalScaleFactors = {.5, 1};
+        final double[] forceFactors = {0, 1, 3};
+
+        final List<Input> inputs = new ArrayList<>();
+        int jobNumber = 1;
+        for (double horizontalScaleFactor : horizontalScaleFactors) {
+            for (double forceFactor : forceFactors) {
+                InputBuilder inputBuilder = makeHorizontallyRescaledInputBuilder(horizontalScaleFactor, jobNumber);
+                SimulationRunnerParametersBuilder simulationRunnerParametersBuilder = inputBuilder.getJobParametersBuilder().getSimulationRunnerParametersBuilder();
+                inputBuilder.getJobParametersBuilder().setNumAnneals(200);
+                simulationRunnerParametersBuilder.setNumIterationsPerSample(100);
+                simulationRunnerParametersBuilder.setNumSamples(10);
+                inputBuilder.getJobParametersBuilder().setNumSimulationTrials(1000);
                 inputBuilder.getSystemParametersBuilder().getEnergeticsConstantsBuilder().getExternalEnergyCalculatorBuilder().setxTensionAndQuadratic(defaultXTension * forceFactor, 0);
                 inputs.add(inputBuilder.buildInput());
                 inputBuilder.getJobParametersBuilder().setJobString("EnergyScaling");
