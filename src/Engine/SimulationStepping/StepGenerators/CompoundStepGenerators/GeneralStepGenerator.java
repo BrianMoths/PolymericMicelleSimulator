@@ -79,4 +79,15 @@ public class GeneralStepGenerator implements StepGenerator {
         return partialWeightSum;
     }
 
+    @Override
+    public String toString() {
+        final StringBuilder stringRepresentationBuilder = new StringBuilder();
+        for (Entry<StepType, Double> entry : weights.entrySet()) {
+            StepType stepType = entry.getKey();
+            Double weight = entry.getValue();
+            stringRepresentationBuilder.append(stepType.getName() + ": " + weight + "\n");
+        }
+        return stringRepresentationBuilder.toString();
+    }
+
 }
