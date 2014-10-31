@@ -43,7 +43,7 @@ public enum StepType implements Serializable {
         }
 
     },
-    "wall scaling"),
+    "horizontal wall scaling"),
     SINGLE_WALL_VERTICAL_RESIZE(new StepGenerator() {
         @Override
         public SimulationStep generateStep(SystemAnalyzer systemAnalyzer) {
@@ -51,7 +51,7 @@ public enum StepType implements Serializable {
         }
 
     },
-    "wall scaling"),
+    "vertical wall scaling"),
     NO_STRETCH_WALL(new StepGenerator() {
         @Override
         public SimulationStep generateStep(SystemAnalyzer systemAnalyzer) {
