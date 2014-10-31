@@ -7,6 +7,7 @@ package FocusedSimulation.output;
 import Engine.Energetics.EnergeticsConstants;
 import Engine.PolymerSimulator;
 import Engine.PolymerState.SystemGeometry.Interfaces.ImmutableSystemGeometry;
+import Engine.SimulationStepping.StepGenerators.StepGenerator;
 import Engine.SimulationStepping.StepTypes.StepType;
 import Engine.SystemAnalyzer;
 import FocusedSimulation.DoubleWithUncertainty;
@@ -106,6 +107,14 @@ public abstract class AbstractResultsWriter {
     public AbstractResultsWriter(Input input) throws FileNotFoundException {
         outputWriter = new OutputWriter(input.getJobNumber(), input.getJobParameters().getJobString());
         this.input = input;
+    }
+
+    public void printInitialStepGenerator(StepGenerator initialStepGenerator) {
+        printAndSoutString("Initial step generator weights:\n" + initialStepGenerator.toString());
+    }
+
+    public void printMainStepGenerator(StepGenerator mainStepGenerator) {
+        printAndSoutString("Main step generator weights:\n" + mainStepGenerator.toString());
     }
 
     public void printAnnealDone(int numAnnealsDone) {
