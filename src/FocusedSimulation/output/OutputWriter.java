@@ -79,7 +79,7 @@ public class OutputWriter {
 
     private static String getPathAndFileString(int jobNumber, String jobString) throws AssertionError {
         String projectPath = FileLocations.SIMULATION_FOLDERS_PATH;
-        final String path = projectPath + "../simulationResults/";
+        final String path = projectPath + "simulationResults/";
         String fileName = makeFileName(jobNumber, jobString);
         final String pathAndFileString = path + fileName;
         return pathAndFileString;

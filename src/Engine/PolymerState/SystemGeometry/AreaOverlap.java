@@ -12,8 +12,6 @@ import Engine.Energetics.TwoBeadOverlap;
  */
 public class AreaOverlap {
 
-    public double AAOverlap, BBOverlap, ABOverlap, hardOverlap;
-
     public static AreaOverlap overlapOfBead(boolean isTypeA, double AOverlap, double BOverlap) {
         AreaOverlap areaOverlap = new AreaOverlap();
         if (isTypeA) {
@@ -42,13 +40,6 @@ public class AreaOverlap {
         return areaOverlap;
     }
 
-    public AreaOverlap() {
-        AAOverlap = 0;
-        BBOverlap = 0;
-        ABOverlap = 0;
-        hardOverlap = 0;
-    }
-
     public static AreaOverlap subtract(AreaOverlap overlap1, AreaOverlap overlap2) {
         AreaOverlap overlapDifference = new AreaOverlap();
 
@@ -58,6 +49,15 @@ public class AreaOverlap {
         overlapDifference.hardOverlap = overlap1.hardOverlap - overlap2.hardOverlap;
 
         return overlapDifference;
+    }
+
+    public double AAOverlap, BBOverlap, ABOverlap, hardOverlap;
+
+    public AreaOverlap() {
+        AAOverlap = 0;
+        BBOverlap = 0;
+        ABOverlap = 0;
+        hardOverlap = 0;
     }
 
     public void incrementBy(AreaOverlap areaOverlap) {
@@ -73,4 +73,5 @@ public class AreaOverlap {
         BBOverlap /= 2;
         hardOverlap /= 2;
     }
+
 }

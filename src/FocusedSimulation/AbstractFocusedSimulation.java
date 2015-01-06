@@ -108,6 +108,8 @@ public abstract class AbstractFocusedSimulation<T extends AbstractResultsWriter>
 
     private void printInitialOutputGeneric() {
         outputWriter.printSimulationType();
+        outputWriter.printInitialStepGenerator(makeInitialStepGenerator());
+        outputWriter.printMainStepGenerator(makeMainStepGenerator());
         outputWriter.printParameters();
         printInitialOutput();
     }
@@ -116,22 +118,13 @@ public abstract class AbstractFocusedSimulation<T extends AbstractResultsWriter>
     //</editor-fold>
 
     private void doInitialEquilibrateAndAnneal() {
-        int annealsDoneSoFar = 0;
         simulationRunner.setStepGenerator(makeInitialStepGenerator());
-        simulationRunner.doEquilibrateAnnealIterations(Math.min(jobParameters.getNumAnneals(), 1));
-        annealsDoneSoFar++;
-
-        simulationRunner.setStepGenerator(makeMainStepGenerator());
-
-//        if (jobParameters.getNumAnneals() > 1) {
-//            simulationRunner.doEquilibrateAnnealIterations(jobParameters.getNumAnneals() - 1);
-//        }
-        for (; annealsDoneSoFar < jobParameters.getNumAnneals(); annealsDoneSoFar++) {
+        for (int annealsDoneSoFar = 0; annealsDoneSoFar < jobParameters.getNumAnneals(); annealsDoneSoFar++) {
             outputWriter.printAnnealDone(annealsDoneSoFar);
             simulationRunner.doEquilibrateAnnealIteration();
-
         }
-        outputWriter.printAnnealDone(annealsDoneSoFar);
+        outputWriter.printAnnealDone(jobParameters.getNumAnneals());
+        simulationRunner.setStepGenerator(makeMainStepGenerator());
     }
 
     protected StepGenerator makeInitialStepGenerator() {

@@ -64,8 +64,8 @@ public class SimulationRunnerParameters implements Serializable {
 
     }
 
-    private static final int defaultNumIterationsPerSample = 10_000; // should depend on number of beads and size of resize steps 100_000
-    private static final int defaultNumSamples = 10_000; //should depend on desired relative precision of result 10_000 high precision; 1_000 low precision
+    private static final int defaultNumIterationsPerSample = 1_000_000; // should depend on number of beads and size of resize steps 100_000
+    private static final int defaultNumSamples = 100; //should depend on desired relative precision of result 10_000 high precision; 1_000 low precision
     private static final int defaultNumIterationsPerAnneal = 300_000; //300_000
     private static final long serialVersionUID = 0L;
 

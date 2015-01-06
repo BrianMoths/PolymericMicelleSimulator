@@ -30,7 +30,7 @@ public class BulkMixtureJobMaker {
     }
 
     static private List<Input> makeInputs() {
-        return makeBulkMixtureInputs(1);
+        return makeBulkMixtureInputsFlippedAB(1);
     }
 
     private static List<Input> makeBulkMixtureInputs() {
@@ -57,6 +57,94 @@ public class BulkMixtureJobMaker {
                     PolymerCluster newPolymerCluster = getPolymerCluster(.5, (int) (numChains * polymericityFactors[k]), (int) (16 / polymericityFactors[k]), 1);
                     systemParametersBuilder.setPolymerCluster(newPolymerCluster);
                     inputBuilder.getJobParametersBuilder().setJobString("SymmetricLayerSpacingShorterAgain");
+                    noSpringInputs.add(inputBuilder.buildInput());
+                    jobNumber++;
+                }
+            }
+        }
+
+        return noSpringInputs;
+    }
+
+    private static List<Input> makeBulkMixtureInputsShorterAgain(int jobNumber) {
+        final double[] verticalRescaleFactors = {.4, .8, 1.2};
+        final double[] horizontalRescaleFactors = {.5, 1, 1.5};
+        final double[] polymericityFactors = {1};
+
+        final List<Input> noSpringInputs = new ArrayList<>();
+
+        for (int i = 0; i < verticalRescaleFactors.length; i++) {
+            for (int j = 0; j < horizontalRescaleFactors.length; j++) {
+                for (int k = 0; k < polymericityFactors.length; k++) {
+                    final InputBuilder inputBuilder = makeRescaleInputBuilderWithHorizontalRescaling(verticalRescaleFactors[i], horizontalRescaleFactors[j], jobNumber);
+                    inputBuilder.getJobParametersBuilder().getSimulationRunnerParametersBuilder().setNumIterationsPerAnneal(10000);
+                    inputBuilder.getJobParametersBuilder().getSimulationRunnerParametersBuilder().setNumIterationsPerSample(30000);
+                    inputBuilder.getJobParametersBuilder().getSimulationRunnerParametersBuilder().setNumSamples(2000);
+                    inputBuilder.getJobParametersBuilder().setNumSimulationTrials(5);
+                    final SystemParametersBuilder systemParametersBuilder = inputBuilder.systemParametersBuilder;
+                    final int numChains = systemParametersBuilder.getPolymerCluster().getNumChains();
+                    PolymerCluster newPolymerCluster = getPolymerCluster(.5, (int) (numChains * polymericityFactors[k]), (int) (16 / polymericityFactors[k]), 1);
+                    systemParametersBuilder.setPolymerCluster(newPolymerCluster);
+                    inputBuilder.getJobParametersBuilder().setJobString("SymmetricLayerSpacingShorterAgain");
+                    noSpringInputs.add(inputBuilder.buildInput());
+                    jobNumber++;
+                }
+            }
+        }
+
+        return noSpringInputs;
+    }
+
+    private static List<Input> makeBulkMixtureInputsFlippedAB(int jobNumber) {
+        final double[] verticalRescaleFactors = {.4, .8, 1.2};
+        final double[] horizontalRescaleFactors = {.5, 1, 1.5};
+        final double[] polymericityFactors = {1};
+
+        final List<Input> noSpringInputs = new ArrayList<>();
+
+        for (int i = 0; i < verticalRescaleFactors.length; i++) {
+            for (int j = 0; j < horizontalRescaleFactors.length; j++) {
+                for (int k = 0; k < polymericityFactors.length; k++) {
+                    final InputBuilder inputBuilder = makeRescaleInputBuilderWithHorizontalRescaling(verticalRescaleFactors[i], horizontalRescaleFactors[j], jobNumber);
+                    inputBuilder.getJobParametersBuilder().getSimulationRunnerParametersBuilder().setNumIterationsPerAnneal(10000);
+                    inputBuilder.getJobParametersBuilder().getSimulationRunnerParametersBuilder().setNumIterationsPerSample(30000);
+                    inputBuilder.getJobParametersBuilder().getSimulationRunnerParametersBuilder().setNumSamples(2000);
+                    inputBuilder.getJobParametersBuilder().setNumSimulationTrials(5);
+                    final SystemParametersBuilder systemParametersBuilder = inputBuilder.systemParametersBuilder;
+                    final int numChains = systemParametersBuilder.getPolymerCluster().getNumChains();
+                    PolymerCluster newPolymerCluster = getPolymerCluster(.5, (int) (numChains * polymericityFactors[k]), (int) (16 / polymericityFactors[k]), 1);
+                    systemParametersBuilder.setPolymerCluster(newPolymerCluster);
+                    systemParametersBuilder.getEnergeticsConstantsBuilder().setABOverlapCoefficient(-systemParametersBuilder.getEnergeticsConstantsBuilder().getABOverlapCoefficient());
+                    inputBuilder.getJobParametersBuilder().setJobString("SymmetricLayerSpacingFlippedAB");
+                    noSpringInputs.add(inputBuilder.buildInput());
+                    jobNumber++;
+                }
+            }
+        }
+
+        return noSpringInputs;
+    }
+
+    private static List<Input> makeBulkMixtureInputsLonger(int jobNumber) {
+        final double[] verticalRescaleFactors = {.4, .8, 1.2};
+        final double[] horizontalRescaleFactors = {.5, 1, 1.5};
+        final double[] polymericityFactors = {1};
+
+        final List<Input> noSpringInputs = new ArrayList<>();
+
+        for (int i = 0; i < verticalRescaleFactors.length; i++) {
+            for (int j = 0; j < horizontalRescaleFactors.length; j++) {
+                for (int k = 0; k < polymericityFactors.length; k++) {
+                    final InputBuilder inputBuilder = makeRescaleInputBuilderWithHorizontalRescaling(verticalRescaleFactors[i], horizontalRescaleFactors[j], jobNumber);
+                    inputBuilder.getJobParametersBuilder().getSimulationRunnerParametersBuilder().setNumIterationsPerAnneal(10000);
+                    inputBuilder.getJobParametersBuilder().getSimulationRunnerParametersBuilder().setNumIterationsPerSample(10000);
+                    inputBuilder.getJobParametersBuilder().getSimulationRunnerParametersBuilder().setNumSamples(10000);
+                    inputBuilder.getJobParametersBuilder().setNumSimulationTrials(20);
+                    final SystemParametersBuilder systemParametersBuilder = inputBuilder.systemParametersBuilder;
+                    final int numChains = systemParametersBuilder.getPolymerCluster().getNumChains();
+                    PolymerCluster newPolymerCluster = getPolymerCluster(.5, (int) (numChains * polymericityFactors[k]), (int) (16 / polymericityFactors[k]), 1);
+                    systemParametersBuilder.setPolymerCluster(newPolymerCluster);
+                    inputBuilder.getJobParametersBuilder().setJobString("SymmetricLayerSpacingLonger");
                     noSpringInputs.add(inputBuilder.buildInput());
                     jobNumber++;
                 }

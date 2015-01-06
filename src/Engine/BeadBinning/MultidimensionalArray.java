@@ -112,7 +112,7 @@ public class MultidimensionalArray<T> implements Serializable {
      *
      * @param multidimensionalArray the array to be copied.
      */
-    public MultidimensionalArray(MultidimensionalArray multidimensionalArray) {
+    public MultidimensionalArray(MultidimensionalArray<T> multidimensionalArray) {
         this.dimensionSizes = multidimensionalArray.dimensionSizes;
         this.strideOfDimension = multidimensionalArray.strideOfDimension;
         this.backingArray = new ArrayList<>(multidimensionalArray.backingArray);
@@ -130,7 +130,6 @@ public class MultidimensionalArray<T> implements Serializable {
             final int stride = strideOfDimensionLocal.get(dimension) * getSizeOfDimension(dimension);
             strideOfDimensionLocal.set(dimension - 1, stride);
         }
-
 
         return strideOfDimensionLocal;
     }
@@ -157,6 +156,7 @@ public class MultidimensionalArray<T> implements Serializable {
      * return the element at the given position.
      *
      * @param index the index of the element to be returned
+     *
      * @return the element at the specified position
      */
     public T get(List<Integer> index) {
@@ -211,6 +211,7 @@ public class MultidimensionalArray<T> implements Serializable {
      * maximum allowed index in that dimension.
      *
      * @param dimension the dimension whose size is to be returned
+     *
      * @return the size of the given dimension
      */
     public int getSizeOfDimension(int dimension) {

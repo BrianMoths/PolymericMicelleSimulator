@@ -33,12 +33,12 @@ public class DiblockJobMaker {
     static private List<Input> makeInputs() {
 //        List<Input> inputs = new ArrayList<>();
 //        inputs.add(makeHorizontallyRescaledInputBuilder(1, 1).buildInput());
-        return makeEquilibrationTestInputs();
+        return makeLongRescalingInputsWithPressure();
     }
 
     private static List<Input> makeHorizontalRescalingInputs() {
         final double[] horizontalScaleFactors = {.5, 1, 2, 4};
-        final double[] forceFactors = {0, 1, 3, 10};
+        final double[] forceFactors = {0, 1, 3, 5};
 
         final List<Input> inputs = new ArrayList<>();
         int jobNumber = 1;
@@ -54,6 +54,58 @@ public class DiblockJobMaker {
         return inputs;
     }
 
+    private static List<Input> makeLongRescalingInputsWithPressure() {
+        final double horizontalScaleFactor = 1;
+        final double[] forceFactors = {0, .5, 1, 1.5, 2};
+        final double[] polymericityFactors = {.5, .75, 1, 1.25, 1.5, 1.75, 2};
+
+        final List<Input> inputs = new ArrayList<>();
+        int jobNumber = 1;
+        for (double polymericityFactor : polymericityFactors) {
+            for (double forceFactor : forceFactors) {
+                inputs.add(makeRescalingInput(horizontalScaleFactor, jobNumber, polymericityFactor, forceFactor * defaultXTension).buildInput());
+                jobNumber++;
+            }
+        }
+        return inputs;
+    }
+
+    public static InputBuilder makeRescalingInput(double horizontalScaleFactor, int jobNumber, double polymericityFactor, double pressure) {
+        InputBuilder inputBuilder = makeRescalingInput(horizontalScaleFactor, jobNumber, polymericityFactor);
+        inputBuilder.getSystemParametersBuilder().getEnergeticsConstantsBuilder().getExternalEnergyCalculatorBuilder().setxTensionAndQuadratic(pressure, 0);
+        inputBuilder.getJobParametersBuilder().setJobString("LayerSpacingWithPressure");
+        return inputBuilder;
+    }
+
+    private static List<Input> makeLayerSpacingInputs() {
+        final double[] horizontalScaleFactors = {.5, 1, 1.5, 2};
+        final double[] polymericityFactors = {.5, 1, 2};
+
+        final List<Input> inputs = new ArrayList<>();
+        int jobNumber = 1;
+        for (double polymericityFactor : polymericityFactors) {
+            for (double horizontalScaleFactor : horizontalScaleFactors) {
+                inputs.add(makeRescalingInput(horizontalScaleFactor, jobNumber, polymericityFactor).buildInput());
+                jobNumber++;
+            }
+        }
+        return inputs;
+    }
+
+    public static InputBuilder makeRescalingInput(double horizontalScaleFactor, int jobNumber, double polymericityFactor) {
+        InputBuilder inputBuilder = makeHorizontallyRescaledInputBuilder(horizontalScaleFactor * Math.pow(polymericityFactor, 4. / 3.), jobNumber, polymericityFactor);
+        inputBuilder.getSystemParametersBuilder().getEnergeticsConstantsBuilder().getExternalEnergyCalculatorBuilder().setxTensionAndQuadratic(0, 0);
+        inputBuilder.getSystemParametersBuilder().setAspectRatio(inputBuilder.getSystemParametersBuilder().getAspectRatio() / Math.pow(polymericityFactor, 4. / 3.));
+        inputBuilder.getJobParametersBuilder().setJobString("LayerSpacing");
+        SimulationRunnerParametersBuilder simulationRunnerParametersBuilder = inputBuilder.getJobParametersBuilder().getSimulationRunnerParametersBuilder();
+        inputBuilder.getJobParametersBuilder().setNumAnneals(20);
+        final long hopefulNumIterations = 10_000_000L / 400 * (long) inputBuilder.getSystemParametersBuilder().getPolymerCluster().getNumBeads();
+        simulationRunnerParametersBuilder.setNumIterationsPerSample((int) Math.min(hopefulNumIterations, 2_000_000_000));
+        simulationRunnerParametersBuilder.setNumSamples(100);
+        inputBuilder.getJobParametersBuilder().setNumSimulationTrials(1);
+        return inputBuilder;
+    }
+
     private static List<Input> makeEquilibrationTestInputs() {
         final double[] horizontalScaleFactors = {.5, 1};
         final double[] forceFactors = {0, 1, 3};
@@ -63,8 +115,8 @@ public class DiblockJobMaker {
         for (double horizontalScaleFactor : horizontalScaleFactors) {
             for (double forceFactor : forceFactors) {
                 InputBuilder inputBuilder = makeHorizontallyRescaledInputBuilder(horizontalScaleFactor, jobNumber);
-                SimulationRunnerParametersBuilder simulationRunnerParametersBuilder = inputBuilder.getJobParametersBuilder().getSimulationRunnerParametersBuilder();
                 inputBuilder.getJobParametersBuilder().setNumAnneals(200);
+                SimulationRunnerParametersBuilder simulationRunnerParametersBuilder = inputBuilder.getJobParametersBuilder().getSimulationRunnerParametersBuilder();
                 simulationRunnerParametersBuilder.setNumIterationsPerSample(100);
                 simulationRunnerParametersBuilder.setNumSamples(10);
                 inputBuilder.getJobParametersBuilder().setNumSimulationTrials(1000);
@@ -78,7 +130,14 @@ public class DiblockJobMaker {
     }
 
     public static InputBuilder makeHorizontallyRescaledInputBuilder(final double horizontalScale, final int jobNumber) {
+        return makeHorizontallyRescaledInputBuilder(horizontalScale, jobNumber, 1);
+    }
+
+    public static InputBuilder makeHorizontallyRescaledInputBuilder(final double horizontalScale, final int jobNumber, double polymericityFactor) {
         InputBuilder inputBuilder = getDefaultInputDensityBuilder();
+        final double defaultHydrophobicFraction = .5;
+        PolymerCluster polymerCluster = getPolymerCluster(defaultHydrophobicFraction, (int) (defaultNumChains / polymericityFactor), (int) (defaultNumBeadsPerChain * polymericityFactor), 1);
+        inputBuilder.systemParametersBuilder.setPolymerCluster(polymerCluster);
         inputBuilder.rescale(1, horizontalScale);
         inputBuilder.getJobParametersBuilder().setJobNumber(jobNumber);
         inputBuilder.getSystemParametersBuilder().getEnergeticsConstantsBuilder().setExternalEnergyCalculatorBuilder(makeExternalEnergyCalculatorBuilder());
@@ -100,7 +159,7 @@ public class DiblockJobMaker {
     static private final double defaultInteractionLength = 4.;
     static private final int defaultNumBeadsPerChain = 16;
     static private final int defaultNumChains = 25;
-    static private final double defaultDensity = .37;//.7
+    static private final double defaultDensity = .3;//.7
 
     private static SystemParametersBuilder getDefaultSystemParametersBuilder(int numBeadsPerChain) {
         SystemParametersBuilder systemParametersBuilder = new SystemParametersBuilder();
@@ -114,7 +173,7 @@ public class DiblockJobMaker {
     }
 
     private static double findHeightFromNumBeadsPerChain(int numBeadsPerChain) {
-        final double layerSpacingCoefficient = 21.45 / Math.pow(8, 2. / 3.);
+        final double layerSpacingCoefficient = 29 / Math.pow(16., 2. / 3.);
         return layerSpacingCoefficient * Math.pow(numBeadsPerChain, 2. / 3.);
     }
 

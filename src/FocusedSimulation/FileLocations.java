@@ -29,7 +29,7 @@ public class FileLocations {
 
     static private String findSimulationFoldersPath() {
         if (isHostNode()) {
-            return "/work/bmoths/polymerSimulation";
+            return "/work/bmoths/polymerSimulation/";
         } else {
             return PROJECT_PATH + "../";
         }

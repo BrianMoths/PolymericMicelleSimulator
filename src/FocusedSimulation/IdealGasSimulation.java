@@ -30,7 +30,7 @@ import org.apache.commons.math3.stat.descriptive.DescriptiveStatistics;
 public class IdealGasSimulation {
 
     static private final int numBeadsPerChain = 1;
-    static private final int numBeads = 50;
+    static private final int numBeads = 5;
     static private final double density = .01;
 
     public static void main(String[] args) {
@@ -101,7 +101,8 @@ public class IdealGasSimulation {
         return energeticsConstantsBuilder.buildEnergeticsConstants();
     }
 
-    private int numSurfaceTensionTrials = 3;
+//    private int numSurfaceTensionTrials = 3;
+    private int numSurfaceTensionTrials = 1;
 
     private IdealGasSimulation() {
     }
@@ -127,8 +128,8 @@ public class IdealGasSimulation {
             ConvergenceResults convergenceResults;
             boolean hasEnoughSamplesPerIteration = false;
             double oldMeansPerStandardDeviation = 0;
-            int numSamples = 1000;
-            int numIterationsPerSample = 100;
+            int numSamples = 100_000;
+            int numIterationsPerSample = 1000;
             DescriptiveStatistics lengthStatistics;
             do {
                 System.out.println("New Run");
@@ -148,10 +149,11 @@ public class IdealGasSimulation {
                     numSamples *= 2;
                 }
                 oldMeansPerStandardDeviation = convergenceResults.getMeansStandardDeviation();
-            } while (!convergenceResults.isConverged());
+//            } while (!convergenceResults.isConverged());
+            } while (false);
             System.out.println("Pressure times Volume found is: " + pressure * polymerSimulator.getSystemAnalyzer().getSystemGeometry().getSizeOfDimension(1) * lengthStatistics.getMean());
         }
-
+        System.exit(0);
     }
 
 }

@@ -360,14 +360,12 @@ public class BeadBinner implements Serializable {
      * constructor.
      *
      * @param bead the bead whose neighbors are to be found
+     *
      * @return an iterator giving the neighbors of the given bead
      */
     public Iterator<Integer> getNearbyBeadIterator(int bead) {
         BinIndex binIndex = binIndices.get(bead);
-
-        NearbyBeadIterator iterator = new NearbyBeadIterator(binIndex);
-
-        return iterator;
+        return new NearbyBeadIterator(binIndex);
     }
 
     /**
@@ -377,14 +375,12 @@ public class BeadBinner implements Serializable {
      * constructor.
      *
      * @param position the position around which nearby beads are to be found
+     *
      * @return an iterator giving the beads near the given position
      */
     public Iterator<Integer> getNearbyBeadIterator(double[] position) {
         BinIndex binIndex = getBinIndex(position);
-
-        NearbyBeadIterator iterator = new NearbyBeadIterator(binIndex);
-
-        return iterator;
+        return new NearbyBeadIterator(binIndex);
     }
 
 }

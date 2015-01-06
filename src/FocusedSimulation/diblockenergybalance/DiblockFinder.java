@@ -13,6 +13,7 @@ import FocusedSimulation.simulationrunner.SimulationRunnerParameters.SimulationR
 import SGEManagement.Input;
 import SGEManagement.Input.InputBuilder;
 import java.io.FileNotFoundException;
+import java.util.ArrayList;
 import java.util.EnumMap;
 
 /**
@@ -35,18 +36,19 @@ public class DiblockFinder extends BulkMixtureFinder<DiblockResultsWriter> {
 
     private static Input readInput(String[] args) {
         if (args.length == 0) {
-            final double verticalScaleFactor = 1;//.3
-            final double horizontalScaleFactor = 1;//6
-
-            InputBuilder inputBuilder = makeHorizontallyRescaledInputBuilder(horizontalScaleFactor, 0);
-            SimulationRunnerParametersBuilder simulationRunnerParametersBuilder = inputBuilder.getJobParametersBuilder().getSimulationRunnerParametersBuilder();
-            inputBuilder.getJobParametersBuilder().setNumAnneals(200);
-            simulationRunnerParametersBuilder.setNumIterationsPerSample(100);
-            simulationRunnerParametersBuilder.setNumSamples(10);
-            inputBuilder.getJobParametersBuilder().setNumSimulationTrials(1000);
-            inputBuilder.getSystemParametersBuilder().getEnergeticsConstantsBuilder().getExternalEnergyCalculatorBuilder().setxTensionAndQuadratic(-.3, 0);
-            inputBuilder.getJobParametersBuilder().setJobString("EnergyScaling");
-            return inputBuilder.buildInput();
+//            final double verticalScaleFactor = 1;//.3
+//            final double horizontalScaleFactor = 1;//6
+//
+//            InputBuilder inputBuilder = makeHorizontallyRescaledInputBuilder(horizontalScaleFactor, 0);
+//            SimulationRunnerParametersBuilder simulationRunnerParametersBuilder = inputBuilder.getJobParametersBuilder().getSimulationRunnerParametersBuilder();
+//            inputBuilder.getJobParametersBuilder().setNumAnneals(20);
+//            simulationRunnerParametersBuilder.setNumIterationsPerSample(100000);
+//            simulationRunnerParametersBuilder.setNumSamples(10);
+//            inputBuilder.getJobParametersBuilder().setNumSimulationTrials(1000);
+//            inputBuilder.getSystemParametersBuilder().getEnergeticsConstantsBuilder().getExternalEnergyCalculatorBuilder().setxTensionAndQuadratic(-.3, 0);
+//            inputBuilder.getJobParametersBuilder().setJobString("EnergyScaling");
+//            return inputBuilder.buildInput();
+            return DiblockJobMaker.makeRescalingInput(1, 0, 2, -2 * 1.2 / 5).buildInput();
         } else if (args.length == 1) {
             final String fileName = args[0];
             return Input.readInputFromFile(fileName);

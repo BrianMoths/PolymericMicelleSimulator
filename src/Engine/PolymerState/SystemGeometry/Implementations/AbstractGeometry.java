@@ -121,8 +121,9 @@ public abstract class AbstractGeometry implements SystemGeometry {
         }
 
         private double findBoxLength(double numBeadsIncludingWater, GeometricalParameters geometricalParameters) {
-            double fractionInteracting = 14 / numBeadsIncludingWater;
-            return geometricalParameters.getInteractionLength() * Math.pow(1 / fractionInteracting, 1. / dimension);
+//            double fractionInteracting = 14 / numBeadsIncludingWater;
+//            return geometricalParameters.getInteractionLength() * Math.pow(1 / fractionInteracting, 1. / dimension);
+            return Math.pow(numBeadsIncludingWater, 1. / dimension);
         }
 
     }

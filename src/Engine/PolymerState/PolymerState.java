@@ -68,14 +68,12 @@ public class PolymerState implements ImmutablePolymerState {
 
     //<editor-fold defaultstate="collapsed" desc="reptate helpers">
     private double[] getStepVector(int movingBead, boolean isGoingRight) {
-        double[] stepVector;
 
         double[] movingBeadPosition = getMovingBeadPosition(movingBead);
         double[] initialNeighborPosition = getInitialNeighborPosition(movingBead, isGoingRight);
         double[] finalNeighborPosittion = getFinalNeighborPosition(movingBead, isGoingRight);
 
-        stepVector = getStepVectorFromPositions(movingBeadPosition, initialNeighborPosition, finalNeighborPosittion);
-        return stepVector;
+        return getStepVectorFromPositions(movingBeadPosition, initialNeighborPosition, finalNeighborPosittion);
     }
 
     private double[] getStepVectorFromPositions(double[] movingBeadPosition, double[] initialNeighborPosition, double[] finalNeighborPosittion) {

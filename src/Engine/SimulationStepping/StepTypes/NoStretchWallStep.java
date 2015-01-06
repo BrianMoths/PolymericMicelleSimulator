@@ -55,7 +55,7 @@ public class NoStretchWallStep implements SimulationStep {
         final int numBeads = systemAnalyzer.getNumBeads();
         final double fractionalSizeChange = 1. + sizeChange / systemAnalyzer.getSystemGeometry().getSizeOfDimension(dimension);
 
-        entropyChangeLocal = numBeads / 2 * Math.log(fractionalSizeChange);
+        entropyChangeLocal = numBeads * Math.log(fractionalSizeChange);
 
         return entropyChangeLocal;
     }

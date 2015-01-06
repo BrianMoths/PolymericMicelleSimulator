@@ -5,7 +5,6 @@
 package Engine.PolymerState;
 
 import Engine.PolymerTopology.PolymerCluster;
-import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -153,7 +152,6 @@ public class DiscretePolymerState implements ImmutableDiscretePolymerState {
     public int getLeftBeadOfChain(int bead) {
         int nextBead = bead;
         int currentBead = bead;
-        int count = 0;
         while (nextBead != -1) {
             currentBead = nextBead;
             nextBead = getNeighborToLeftOfBead(nextBead);
@@ -164,7 +162,6 @@ public class DiscretePolymerState implements ImmutableDiscretePolymerState {
     public int getRightBeadOfChain(int bead) {
         int nextBead = bead;
         int currentBead = bead;
-        int count = 0;
         while (nextBead != -1) {
             currentBead = nextBead;
             nextBead = getNeighborToRightOfBead(nextBead);
@@ -178,6 +175,7 @@ public class DiscretePolymerState implements ImmutableDiscretePolymerState {
      * a neighbor to its left, then -1 is output.
      *
      * @param bead the bead whose left neighbor is to be found
+     *
      * @return the index of the left neighbor if it exists, or -1 if it does
      * not.
      */
@@ -192,6 +190,7 @@ public class DiscretePolymerState implements ImmutableDiscretePolymerState {
      * a neighbor to its right, then -1 is output.
      *
      * @param bead the bead whose right neighbor is to be found
+     *
      * @return the index of the right neighbor if it exists, or -1 if it does
      * not.
      */
@@ -217,34 +216,25 @@ public class DiscretePolymerState implements ImmutableDiscretePolymerState {
 
     @Override
     public List<List<Integer>> getChains() {
-        List<Boolean> isRandomized = new ArrayList<>(numBeads);
+        List<Boolean> isBeadAdded = new ArrayList<>(numBeads);
         for (int bead = 0; bead < numBeads; bead++) {
-            isRandomized.add(false);
+            isBeadAdded.add(false);
         }
         List<List<Integer>> chains = new ArrayList<>();
         for (int bead = 0; bead < numBeads; bead++) {
-            if (!isRandomized.get(bead)) {
+            if (!isBeadAdded.get(bead)) {
                 List<Integer> chainOfBead = getChainOfBead(bead);
                 chains.add(chainOfBead);
                 for (Integer randomizedBead : chainOfBead) {
-                    isRandomized.set(randomizedBead, true);
+                    isBeadAdded.set(randomizedBead, true);
                 }
             }
         }
         return chains;
     }
 
-    public List<Integer> getLeftBeadsOfChains() {
-        List<List<Integer>> chains = getChains();
-        List<Integer> leftBeads = new ArrayList<>();
-        for (List<Integer> chain : chains) {
-            leftBeads.add(chain.get(0));
-        }
-        return leftBeads;
-    }
-
     public int getNumChains() {
-        return getLeftBeadsOfChains().size();
+        return getLeftmostBeads().size();
     }
 
     @Override
