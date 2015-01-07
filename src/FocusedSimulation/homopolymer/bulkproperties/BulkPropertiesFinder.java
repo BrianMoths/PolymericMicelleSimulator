@@ -5,8 +5,8 @@
 package FocusedSimulation.homopolymer.bulkproperties;
 
 import FocusedSimulation.AbstractFocusedSimulation;
-import FocusedSimulation.simulationrunner.ConvergenceMonitor;
 import FocusedSimulation.DoubleWithUncertainty;
+import FocusedSimulation.simulationrunner.ConvergenceMonitor;
 import FocusedSimulation.simulationrunner.StatisticsTracker.TrackableVariable;
 import SGEManagement.Input;
 import SGEManagement.Input.InputBuilder;
@@ -27,6 +27,7 @@ public class BulkPropertiesFinder<U extends BulkPropertiesResultsWriter> extends
             densityFinder = makeBulkPropertiesFinderWithDefaultWriter(input);
             densityFinder.doSimulation();
             densityFinder.closeOutputWriter();
+            System.exit(0);//47 seconds
         } catch (FileNotFoundException ex) {
             System.out.println("File not able to be opened");
         }
@@ -39,11 +40,11 @@ public class BulkPropertiesFinder<U extends BulkPropertiesResultsWriter> extends
 
             InputBuilder inputBuilder = BulkPropertiesJobMaker.makeRescaleInputBuilderWithHorizontalRescaling(verticalScaleFactor, horizontalScaleFactor, 0);
             inputBuilder.getJobParametersBuilder().setNumAnneals(1);
-            inputBuilder.getJobParametersBuilder().setNumSimulationTrials(2);
-            inputBuilder.getJobParametersBuilder().getSimulationRunnerParametersBuilder().setNumIterationsPerAnneal(10000);
-            inputBuilder.getJobParametersBuilder().getSimulationRunnerParametersBuilder().setNumIterationsPerSample(10000);
-            inputBuilder.getJobParametersBuilder().getSimulationRunnerParametersBuilder().setNumSamples(200);
-            inputBuilder.getJobParametersBuilder().setShouldIterateUntilConvergence(true);
+            inputBuilder.getJobParametersBuilder().setNumSimulationTrials(1);
+            inputBuilder.getJobParametersBuilder().getSimulationRunnerParametersBuilder().setNumIterationsPerAnneal(100);
+            inputBuilder.getJobParametersBuilder().getSimulationRunnerParametersBuilder().setNumIterationsPerSample(1000);
+            inputBuilder.getJobParametersBuilder().getSimulationRunnerParametersBuilder().setNumSamples(2000);
+            inputBuilder.getJobParametersBuilder().setShouldIterateUntilConvergence(false);
 //            final EnergeticsConstantsBuilder energeticsConstantsBuilder = inputBuilder.getSystemParametersBuilder().getEnergeticsConstantsBuilder();
 //            energeticsConstantsBuilder.setHardOverlapCoefficient(0);
 //            energeticsConstantsBuilder.setAAOverlapCoefficient(energeticsConstantsBuilder.getBBOverlapCoefficient());

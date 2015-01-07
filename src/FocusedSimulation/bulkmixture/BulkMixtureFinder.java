@@ -44,9 +44,9 @@ public class BulkMixtureFinder<U extends BulkMixtureResultsWriter> extends Abstr
             InputBuilder inputBuilder = BulkMixtureJobMaker.makeRescaleInputBuilderWithHorizontalRescaling(verticalScaleFactor, horizontalScaleFactor, 0);
             inputBuilder.getJobParametersBuilder().setNumAnneals(1);
             inputBuilder.getJobParametersBuilder().setNumSimulationTrials(4);
-            inputBuilder.getJobParametersBuilder().getSimulationRunnerParametersBuilder().setNumIterationsPerAnneal(10000);
-            inputBuilder.getJobParametersBuilder().getSimulationRunnerParametersBuilder().setNumIterationsPerSample(10000);
-            inputBuilder.getJobParametersBuilder().getSimulationRunnerParametersBuilder().setNumSamples(2000);
+            inputBuilder.getJobParametersBuilder().getSimulationRunnerParametersBuilder().setNumIterationsPerAnneal(100);
+            inputBuilder.getJobParametersBuilder().getSimulationRunnerParametersBuilder().setNumIterationsPerSample(1000);
+            inputBuilder.getJobParametersBuilder().getSimulationRunnerParametersBuilder().setNumSamples(200);
             inputBuilder.getJobParametersBuilder().setShouldIterateUntilConvergence(false);
             final SystemParametersBuilder systemParametersBuilder = inputBuilder.systemParametersBuilder;
             final int numChains = systemParametersBuilder.getPolymerCluster().getNumChains();

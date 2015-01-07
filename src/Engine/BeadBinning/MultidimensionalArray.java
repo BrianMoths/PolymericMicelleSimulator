@@ -160,9 +160,13 @@ public class MultidimensionalArray<T> implements Serializable {
      * @return the element at the specified position
      */
     public T get(List<Integer> index) {
-        final int backingIndex = getBackingIndex(index);
+        final int backingIndex = getLinearIndex(index);
 
         return backingArray.get(backingIndex);
+    }
+
+    public T getFromLinearIndex(int linearIndex) {
+        return backingArray.get(linearIndex);
     }
 
     /**
@@ -173,12 +177,16 @@ public class MultidimensionalArray<T> implements Serializable {
      * @param value the new element to store at the specified position
      */
     public void set(List<Integer> index, T value) {
-        final int backingIndex = getBackingIndex(index);
+        final int backingIndex = getLinearIndex(index);
 
         backingArray.set(backingIndex, value);
     }
 
-    private int getBackingIndex(List<Integer> index) {
+    public void setFromLinearIndex(int linearIndex, T value) {
+        backingArray.set(linearIndex, value);
+    }
+
+    private int getLinearIndex(List<Integer> index) {
         final int numDimensions = getNumDimensions();
         int backingIndex = 0;
         for (int dimension = numDimensions - 1; dimension >= 0; dimension--) {

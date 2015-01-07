@@ -7,9 +7,11 @@ package Engine.BeadBinning;
 import Engine.PolymerState.SystemGeometry.Interfaces.ImmutableSystemGeometry;
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
+import java.util.NoSuchElementException;
 import java.util.Set;
 
 /**
@@ -68,6 +70,10 @@ public class BeadBinner implements Serializable {
             this.indices = new ArrayList<>(binIndex.indices);
         }
 
+        public BinIndex(Collection<? extends Integer> indices) {
+            this.indices = new ArrayList<>(indices);
+        }
+
         public void setIndexOfDimension(int dimension, int value) {
             indices.set(dimension, value);
         }
@@ -84,48 +90,62 @@ public class BeadBinner implements Serializable {
 
     private class NearbyBeadIterator implements Iterator<Integer> {
 
-        private final BinIndex binIndex;
+        private Iterator<Set<Integer>> neighboringBinIterator;
         private Iterator<Integer> beadIterator;
-        final List<Integer> currentBinOffset;
         private boolean isOutOfBins;
 
         public NearbyBeadIterator(BinIndex binIndex) {
-            currentBinOffset = new ArrayList<>(initialBinOffset);
+            neighboringBinIterator = neighboringBins.get(binIndex.getIndices()).iterator();
             isOutOfBins = false;
-            this.binIndex = new BinIndex(binIndex);
-            updateBeadIterator();
+            iterateBin();
         }
 
         @Override
         public boolean hasNext() {
-            if (beadIterator.hasNext()) {//TODO keep track of how many beads are left in each bin.
-                return true;
-            } else {
-                goToNextNonEmptyBin();
-                return !isOutOfBins();
-            }
+            goToNextNonEmptyBin();
+            return !isOutOfBins();
         }
 
         @Override
         public Integer next() {
-            if (beadIterator.hasNext()) {
-                return beadIterator.next();
-            } else {
-                goToNextNonEmptyBin();
-                return beadIterator.next();
-            }
+            goToNextNonEmptyBin();
+            return beadIterator.next();
         }
 
         private void goToNextNonEmptyBin() {
-            while (!beadIterator.hasNext() && !isOutOfBins()) {
+            while (!(beadIterator.hasNext() || isOutOfBins())) {
                 iterateBin();
             }
         }
 
         private void iterateBin() {
-            iterateBinWithDimension(numDimensions - 1);
+            if (!neighboringBinIterator.hasNext()) {
+                isOutOfBins = true;
+            } else {
+                beadIterator = neighboringBinIterator.next().iterator();
+            }
+        }
 
-            updateBeadIterator();
+        private boolean isOutOfBins() {
+            return isOutOfBins;
+        }
+
+        @Override
+        public void remove() {
+            throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        }
+
+    }
+
+    private class NeighboringBinIndexIterator implements Iterator<BinIndex> {
+
+        private final BinIndex binIndex;
+        final List<Integer> currentBinOffset;
+
+        public NeighboringBinIndexIterator(BinIndex binIndex) {
+            currentBinOffset = new ArrayList<>(initialBinOffset);
+            currentBinOffset.set(numDimensions - 1, -ranges.get(numDimensions - 1) - 1);
+            this.binIndex = new BinIndex(binIndex);
         }
 
         private void iterateBinWithDimension(int dimension) { //highest dimension is least significant
@@ -136,7 +156,7 @@ public class BeadBinner implements Serializable {
                     resetOffsetOfDimension(dimension);
                     iterateBinWithDimension(dimension - 1);
                 } else {
-                    isOutOfBins = true;
+                    throw new NoSuchElementException();
                 }
             } else {
                 currentBinOffset.set(dimension, offsetOfDimension);
@@ -151,15 +171,22 @@ public class BeadBinner implements Serializable {
             currentBinOffset.set(dimension, -ranges.get(dimension));
         }
 
-        private void updateBeadIterator() {
-            BinIndex neighboringBinIndex = BinIndex.addIndices(binIndex, currentBinOffset);
-            projectBinIndex(neighboringBinIndex);
-            final Set<Integer> neighboringBin = getBin(neighboringBinIndex);
-            beadIterator = neighboringBin.iterator();
+        @Override
+        public boolean hasNext() {
+            for (int dimension = 0; dimension < numDimensions; dimension++) {
+                if (currentBinOffset.get(dimension) != ranges.get(dimension)) {
+                    return true;
+                }
+            }
+            return false;
         }
 
-        private boolean isOutOfBins() {
-            return isOutOfBins;
+        @Override
+        public BinIndex next() {
+            iterateBinWithDimension(numDimensions - 1);
+            BinIndex neighboringBinxIndex = BinIndex.addIndices(binIndex, currentBinOffset);
+            projectBinIndex(neighboringBinxIndex);
+            return neighboringBinxIndex;
         }
 
         @Override
@@ -174,7 +201,7 @@ public class BeadBinner implements Serializable {
     private final double[] binSize;
     private final int[] numBins;
     private MultidimensionalArray<Set<Integer>> beadBins;
-    private boolean isStepDone = false;
+    private MultidimensionalArray<List<Set<Integer>>> neighboringBins;
     private List<BinIndex> binIndices;
     private final List<Integer> ranges;
     private final List<Integer> initialBinOffset; //TODO make a list of bin offsets.
@@ -205,6 +232,24 @@ public class BeadBinner implements Serializable {
         initialBinOffset = makeInitialBinOffset();
 //        binOffsets = makeBinOffsets();
         binBeadsPrivate(beadPositions);
+        makeNeighboringBins();
+    }
+
+    private void makeNeighboringBins() {
+        neighboringBins = new MultidimensionalArray<>(numBins);
+        Iterator<List<Integer>> binIndexIterator = beadBins.getIndexIterator();
+        while (binIndexIterator.hasNext()) {
+            List<Integer> binIndex = binIndexIterator.next();
+            List<Set<Integer>> neighboringBinsOfCurrentBin = new ArrayList<>();
+            Iterator<BinIndex> neighboringBinIndexIterator = new NeighboringBinIndexIterator(new BinIndex(binIndex));
+            while (neighboringBinIndexIterator.hasNext()) {
+                final BinIndex neighboringBinIndex = neighboringBinIndexIterator.next();
+                final Set<Integer> neighboringBin = getBin(neighboringBinIndex);
+                neighboringBinsOfCurrentBin.add(neighboringBin);
+            }
+            neighboringBins.set(binIndex, neighboringBinsOfCurrentBin);
+        }
+
     }
 
     /**
@@ -220,11 +265,11 @@ public class BeadBinner implements Serializable {
         numDimensions = beadBinner.numDimensions;
         binSize = beadBinner.binSize;
         numBins = beadBinner.numBins;
-        beadBins = new MultidimensionalArray<>(beadBinner.beadBins);
-        isStepDone = beadBinner.isStepDone;
+        beadBins = new MultidimensionalArray<>(beadBinner.beadBins);//needs to be deep copy
         ranges = new ArrayList<>(beadBinner.ranges);
         initialBinOffset = new ArrayList<>(beadBinner.initialBinOffset);
 //        binOffsets = makeBinOffsets();
+
     }
 
     //<editor-fold defaultstate="collapsed" desc="constructor helpers">
@@ -282,10 +327,9 @@ public class BeadBinner implements Serializable {
 
     private void allocateBeadBins() {
         beadBins = new MultidimensionalArray<>(numBins);
-        Iterator<List<Integer>> indexIterator = beadBins.getIndexIterator();
-        while (indexIterator.hasNext()) {
-            final List<Integer> index = indexIterator.next();
-            beadBins.set(index, new HashSet<Integer>());
+        final int totalSize = beadBins.getTotalSize();
+        for (int linearIndex = 0; linearIndex < totalSize; linearIndex++) {
+            beadBins.setFromLinearIndex(linearIndex, new HashSet<Integer>());
         }
     }
 
