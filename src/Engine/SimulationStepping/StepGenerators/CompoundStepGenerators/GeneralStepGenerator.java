@@ -58,6 +58,10 @@ public class GeneralStepGenerator implements StepGenerator {
         return moveType.getSimulationStep(systemAnalyzer);
     }
 
+    public double getProbabilityOfStepType(StepType stepType) {
+        return weights.get(stepType) / weightSum;
+    }
+
     private StepType getRandomMoveType() {
         double randomDouble = random.nextDouble() * weightSum;
 
