@@ -14,7 +14,6 @@ import FocusedSimulation.DoubleWithUncertainty;
 import FocusedSimulation.simulationrunner.SimulationRunner;
 import SGEManagement.Input;
 import SystemAnalysis.FullStressTrackable;
-import SystemAnalysis.FractionalVolumeStressTrackable;
 import SystemAnalysis.StressTrackable;
 import java.io.FileNotFoundException;
 
@@ -63,6 +62,7 @@ public abstract class AbstractResultsWriter {
             final double hardOverlapCoefficient = energeticsConstants.getHardOverlapCoefficient();
             final double interactionLength = input.getSystemParameters().getSystemGeometry().getGeometricalParameters().getInteractionLength();
             final double hardCoreLength = input.getSystemParameters().getSystemGeometry().getGeometricalParameters().getCoreLength();
+            final double stepLength = input.getSystemParameters().getSystemGeometry().getGeometricalParameters().getStepLength();
             final double density = input.getSystemParameters().getPolymerCluster().getConcentrationInWater();
             StringBuilder parametersStringBuilder = new StringBuilder();
             parametersStringBuilder.append("Number of Chains: ").append(Integer.toString(numChains)).append("\n")
@@ -75,6 +75,7 @@ public abstract class AbstractResultsWriter {
                     .append("number of simulator iterations per anneal: ").append(Integer.toString(input.getJobParameters().getSimulationRunnerParameters().getNumIterationsPerAnneal())).append("\n")
                     .append("Interaction length of beads: ").append(Double.toString(interactionLength)).append("\n")
                     .append("hard core length of beads: ").append(Double.toString(hardCoreLength)).append("\n")
+                    .append("step length: ").append(Double.toString(stepLength)).append("\n")
                     .append("soft BB overlap coefficient: ").append(Double.toString(softBBOverlapCoefficient)).append("\n")
                     .append("soft AA overlap coefficient: ").append(Double.toString(softAAOverlapCoefficient)).append("\n")
                     .append("soft AB overlap coefficient: ").append(Double.toString(softABOverlapCoefficient)).append("\n")
