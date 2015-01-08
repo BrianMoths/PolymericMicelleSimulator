@@ -35,15 +35,15 @@ public class BulkPropertiesFinder<U extends BulkPropertiesResultsWriter> extends
 
     private static Input readInput(String[] args) {
         if (args.length == 0) {
-            final double verticalScaleFactor = .1;
             final double horizontalScaleFactor = 4;
+            final double verticalScaleFactor = .1;
 
             InputBuilder inputBuilder = BulkPropertiesJobMaker.makeRescaleInputBuilderWithHorizontalRescaling(verticalScaleFactor, horizontalScaleFactor, 0);
-            inputBuilder.getJobParametersBuilder().setNumAnneals(1);
+            inputBuilder.getJobParametersBuilder().setNumAnneals(0);
             inputBuilder.getJobParametersBuilder().setNumSimulationTrials(1);
             inputBuilder.getJobParametersBuilder().getSimulationRunnerParametersBuilder().setNumIterationsPerAnneal(100);
             inputBuilder.getJobParametersBuilder().getSimulationRunnerParametersBuilder().setNumIterationsPerSample(1000);
-            inputBuilder.getJobParametersBuilder().getSimulationRunnerParametersBuilder().setNumSamples(2000);
+            inputBuilder.getJobParametersBuilder().getSimulationRunnerParametersBuilder().setNumSamples(200);
             inputBuilder.getJobParametersBuilder().setShouldIterateUntilConvergence(false);
 //            final EnergeticsConstantsBuilder energeticsConstantsBuilder = inputBuilder.getSystemParametersBuilder().getEnergeticsConstantsBuilder();
 //            energeticsConstantsBuilder.setHardOverlapCoefficient(0);

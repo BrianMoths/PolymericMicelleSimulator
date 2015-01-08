@@ -21,8 +21,6 @@ import SystemAnalysis.AreaPerimeter.circleareaperimeter.CirclesAndClippedPerimet
 import SystemAnalysis.AreaPerimeter.rectangleareaperimeter.BeadRectangle;
 import SystemAnalysis.AreaPerimeter.rectangleareaperimeter.RectangleSplitting.RectanglesAndGluedPerimeter;
 import SystemAnalysis.GeometryAnalyzer;
-import SystemAnalysis.SimulationHistory;
-import SystemAnalysis.SimulationHistory.TrackedVariable;
 import java.io.Serializable;
 import java.util.Iterator;
 import java.util.List;
@@ -218,6 +216,7 @@ public class SystemAnalyzer implements Serializable {
      * between all pairs of beads, since each bond would be counted twice.
      *
      * @param bead the bead whose bonds' square length is to be determined
+     *
      * @return the sum of square lengths of all bonds attached to the given
      * bead.
      */
@@ -281,6 +280,7 @@ public class SystemAnalyzer implements Serializable {
      * calculated
      * @param secondBead the second bead of the pair whose area overlap is to be
      * calculated
+     *
      * @return the area overlap between the two given beads
      */
     public AreaOverlap beadOverlap(int firstBead, int secondBead) {
@@ -394,6 +394,7 @@ public class SystemAnalyzer implements Serializable {
      *
      * @param bead the bead whose neighbor is to be found
      * @param direction the direction specifying which neighbors is to be found
+     *
      * @return the index of the neighbor if it exists, or -1 if it does not.
      */
     public int getNeighbor(int bead, int direction) {
@@ -424,4 +425,5 @@ public class SystemAnalyzer implements Serializable {
         return immutableDiscretePolymerState.isTypeA(bead);
     }
     //</editor-fold>
+
 }
