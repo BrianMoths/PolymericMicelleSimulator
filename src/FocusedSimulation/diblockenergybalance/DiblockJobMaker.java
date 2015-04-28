@@ -70,6 +70,24 @@ public class DiblockJobMaker {
         return inputs;
     }
 
+    private static List<Input> makeLongRescalingInputsWithPressureJustAfterAnneal() {
+        final double horizontalScaleFactor = 1;
+        final double[] forceFactors = {0, .5, 1, 1.5, 2};
+        final double[] polymericityFactors = {.5, .75, 1, 1.25, 1.5, 1.75, 2};
+
+        final List<Input> inputs = new ArrayList<>();
+        int jobNumber = 1;
+        for (double polymericityFactor : polymericityFactors) {
+            for (double forceFactor : forceFactors) {
+                final InputBuilder inputBuilder = makeRescalingInput(horizontalScaleFactor, jobNumber, polymericityFactor, forceFactor * defaultXTension);
+                inputBuilder.getJobParametersBuilder().getSimulationRunnerParametersBuilder().setNumIterationsPerSample(inputBuilder.getJobParametersBuilder().getSimulationRunnerParametersBuilder().getNumIterationsPerSample() / 100);
+                inputs.add(inputBuilder.buildInput());
+                jobNumber++;
+            }
+        }
+        return inputs;
+    }
+
     public static InputBuilder makeRescalingInput(double horizontalScaleFactor, int jobNumber, double polymericityFactor, double pressure) {
         InputBuilder inputBuilder = makeRescalingInput(horizontalScaleFactor, jobNumber, polymericityFactor);
         inputBuilder.getSystemParametersBuilder().getEnergeticsConstantsBuilder().getExternalEnergyCalculatorBuilder().setxTensionAndQuadratic(pressure, 0);
@@ -172,7 +190,14 @@ public class DiblockJobMaker {
         return systemParametersBuilder;
     }
 
+    private static double getAspectRatio(int numBeadsPerChain, int numChains) {
+        final double systemHeight = findHeightFromNumBeadsPerChain(numBeadsPerChain);
+        final double systemWidth = findWidthFromNumBeadsPerChain(numBeadsPerChain, numChains, systemHeight);
+        return systemWidth / systemHeight;
+    }
+
     private static double findHeightFromNumBeadsPerChain(int numBeadsPerChain) {
+//        final double layerSpacingCoefficient = 23 / Math.pow(16., 2. / 3.);
         final double layerSpacingCoefficient = 29 / Math.pow(16., 2. / 3.);
         return layerSpacingCoefficient * Math.pow(numBeadsPerChain, 2. / 3.);
     }
@@ -223,11 +248,5 @@ public class DiblockJobMaker {
         return energeticsConstantsBuilder;
     }
 
-    private static double getAspectRatio(int numBeadsPerChain, int numChains) {
-        final double systemHeight = findHeightFromNumBeadsPerChain(numBeadsPerChain);
-        final double systemWidth = findWidthFromNumBeadsPerChain(numBeadsPerChain, numChains, systemHeight);
-        return systemWidth / systemHeight;
-    }
     //</editor-fold>
-
 }

@@ -89,14 +89,16 @@ public class SystemDrawer {
     }
 
     private void drawABeads() {
-        graphics.setColor(Color.RED);
+        graphics.setColor(new Color(255, 0, 0, 128));
+//        graphics.setColor(Color.RED);
         for (int i = 0; i < numABeads(); i++) {
             drawBead(i);
         }
     }
 
     private void drawBBeads() {
-        graphics.setColor(Color.BLUE);
+        graphics.setColor(new Color(0, 0, 255, 128));
+//        graphics.setColor(Color.BLUE);
         for (int i = numABeads(); i < numBeads(); i++) {
             drawBead(i);
         }

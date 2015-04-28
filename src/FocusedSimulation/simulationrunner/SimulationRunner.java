@@ -9,7 +9,6 @@ import Engine.SimulationStepping.StepGenerators.StepGenerator;
 import FocusedSimulation.DoubleWithUncertainty;
 import FocusedSimulation.simulationrunner.StatisticsTracker.TrackableVariable;
 import Gui.SystemViewer;
-import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
